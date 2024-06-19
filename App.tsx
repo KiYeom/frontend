@@ -11,7 +11,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 const Stack = createNativeStackNavigator();
 
 const App: React.FC = () => {
-  return <Tabbar />;
+  return <Login />;
 };
 
 const styles = StyleSheet.create({
