@@ -7,7 +7,7 @@ const Login: React.FC = () => {
   };
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>로그인 스크린</Text>
+      <Text style={styles.text}>로그인 스크린~</Text>
       <Pressable onPress={onClick} style={styles.btn}>
         <Text style={styles.text}>구글 로그인 버튼</Text>
       </Pressable>
