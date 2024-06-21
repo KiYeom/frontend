@@ -21,7 +21,7 @@
       },
       "package": "com.ceunnseo.reMIND"
     },
-    "scheme": "reMIND",
+    "scheme": "com.ceunnseo.reMIND",
     "web": {
       "favicon": "./assets/favicon.png"
     },
