@@ -1,0 +1,43 @@
+{
+  "expo": {
+    "name": "reMIND",
+    "slug": "reMIND",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/cookieSplash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#fff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ceunnseo.reMIND"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.ceunnseo.reMIND"
+    },
+    "scheme": "com.ceunnseo.reMIND",
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "1cd0480c-0399-4503-ae2d-ec73641ea4fd"
+      }
+    },
+    "plugins": [
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.94079762653-arcgeib4l0hbg6snh81cjimd9iuuoun3"
+        }
+      ]
+    ]
+  }
+}
