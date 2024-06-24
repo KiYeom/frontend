@@ -13,13 +13,11 @@ const Tab = createBottomTabNavigator();
 
 const Tabbar: React.FC = () => {
   return (
-    <NavigationContainer>
-      <Tab.Navigator initialRouteName="Home">
-        <Tab.Screen name="Chat" component={Chat} />
-        <Tab.Screen name="Home" component={Home} />
-        <Tab.Screen name="Setting" component={Setting} />
-      </Tab.Navigator>
-    </NavigationContainer>
+    <Tab.Navigator initialRouteName="Home">
+      <Tab.Screen name="Chat" component={Chat} />
+      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Setting" component={Setting} />
+    </Tab.Navigator>
   );
 };
 

@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import Login from "./src/screen/Login"; // 슬래시 확인
 import Chat from "./src/screen/Chat";
 import Home from "./src/screen/Home";
@@ -11,7 +11,26 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 const Stack = createNativeStackNavigator();
 
 const App: React.FC = () => {
-  return <Login />;
+  const [email, setEmail] = useState(""); //사애관리는 컴포넌트 외부가 아닌, "컴포넌트 안에서" 호출되어야 한다.
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName="Login"
+        screenOptions={{ headerShown: false }}
+      >
+        {email === "" ? (
+          <Stack.Screen
+            name="Login"
+            children={({ navigation }) => (
+              <Login email={email} setEmail={setEmail} />
+            )}
+          />
+        ) : (
+          <Stack.Screen name="Tabbar" component={Tabbar} />
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
 };
 
 const styles = StyleSheet.create({
