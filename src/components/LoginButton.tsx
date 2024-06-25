@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React, { SetStateAction, Dispatch } from "react";
 import * as WebBrowser from "expo-web-browser";
 import {
@@ -17,32 +17,40 @@ interface LoginButtonProps {
 }
 const LoginButton: React.FC<LoginButtonProps> = ({ email, setEmail }) => {
   return (
-    <GoogleSigninButton
-      size={GoogleSigninButton.Size.Wide}
-      color={GoogleSigninButton.Color.Light}
-      onPress={async () => {
-        GoogleSignin.configure({
-          iosClientId:
-            "94079762653-arcgeib4l0hbg6snh81cjimd9iuuoun3.apps.googleusercontent.com",
-        });
+    <TouchableOpacity style={styles.container}>
+      <GoogleSigninButton
+        size={GoogleSigninButton.Size.Wide}
+        color={GoogleSigninButton.Color.Light}
+        onPress={async () => {
+          GoogleSignin.configure({
+            iosClientId:
+              "94079762653-arcgeib4l0hbg6snh81cjimd9iuuoun3.apps.googleusercontent.com",
+          });
 
-        try {
-          const hasPreviousSignIn = await GoogleSignin.hasPlayServices();
-          //hasPlayServices : 이전에 로그인한 적이 있으면 true, 없으면 false
-          const userInfo = await GoogleSignin.signIn();
-          //signIn : 처음 로그인하면 구글 로그인 모달창을 띄워줌. 성공하면 Promise(object), 실패하면 error를 리턴
-          console.log("hasPreviousSignIn : ", hasPreviousSignIn);
-          console.log("userInfo : ", userInfo);
-          console.log("userInfo type : ", typeof userInfo);
-          setEmail(userInfo.user.email);
-          console.log("setEmail 함수 실행 : ", email);
-        } catch (error) {
-          console.log(error);
-        }
-      }}
-      disabled={false} // Set to true to disable the button
-    />
+          try {
+            const hasPreviousSignIn = await GoogleSignin.hasPlayServices();
+            //hasPlayServices : 이전에 로그인한 적이 있으면 true, 없으면 false
+            const userInfo = await GoogleSignin.signIn();
+            //signIn : 처음 로그인하면 구글 로그인 모달창을 띄워줌. 성공하면 Promise(object), 실패하면 error를 리턴
+            console.log("hasPreviousSignIn : ", hasPreviousSignIn);
+            console.log("userInfo : ", userInfo);
+            console.log("userInfo type : ", typeof userInfo);
+            setEmail(userInfo.user.email);
+            console.log("setEmail 함수 실행 : ", email);
+          } catch (error) {
+            console.log(error);
+          }
+        }}
+        disabled={false} // Set to true to disable the button
+      />
+    </TouchableOpacity>
   );
 };
 
 export default LoginButton;
+
+const styles = StyleSheet.create({
+  container: {
+    margin: 7,
+  },
+});
