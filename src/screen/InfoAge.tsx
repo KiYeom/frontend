@@ -1,9 +1,11 @@
 import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { useState } from "react";
+import { View, Text, Image, StyleSheet, SafeAreaView } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 
 const InfoAge: React.FC<any> = ({ navigation }) => {
   const [text, setText] = React.useState("");
+
   return (
     <View style={styles.container}>
       <View>
@@ -26,7 +28,6 @@ const InfoAge: React.FC<any> = ({ navigation }) => {
         maxLength={15}
         style={styles.input}
       />
-
       <View>
         <Button
           icon="check"
