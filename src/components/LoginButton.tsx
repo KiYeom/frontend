@@ -6,6 +6,7 @@ import {
   GoogleSigninButton,
   statusCodes,
 } from "@react-native-google-signin/google-signin";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 //WebBrowser.maybeCompleteAuthSession();
 // 로그인 버튼 누르면 웹 브라우저가 열리고, 구글 로그인 페이지로 이동함.
@@ -14,6 +15,13 @@ import {
 interface LoginButtonProps {
   email: string;
   setEmail: React.Dispatch<React.SetStateAction<string>>; //setState 함수, string 타입
+}
+interface UserData {
+  userID: string;
+  email: string;
+  name: string | null;
+  age: number | null;
+  gender: string | null;
 }
 const LoginButton: React.FC<LoginButtonProps> = ({ email, setEmail }) => {
   return (
@@ -31,6 +39,26 @@ const LoginButton: React.FC<LoginButtonProps> = ({ email, setEmail }) => {
             const hasPreviousSignIn = await GoogleSignin.hasPlayServices();
             //hasPlayServices : 이전에 로그인한 적이 있으면 true, 없으면 false
             const userInfo = await GoogleSignin.signIn();
+            const userID = userInfo.user.id; //유저의 고유 아이디값
+            const value: UserData = {
+              userID: userID,
+              email: userInfo.user.email,
+              name: null,
+              age: null,
+              gender: null,
+            }; //storage에 저장할 데이터
+            console.log("value : ", value); //유저의 정보 value를 만들었음
+            const storageData = async (value: UserData) => {
+              //value값을 storage에 json으로 저장
+              try {
+                const jsonValue = JSON.stringify(value);
+                await AsyncStorage.setItem("userID", jsonValue);
+              } catch (e) {
+                console.log(e);
+              }
+            }; //데이터를 만들고 저장
+            console.log("storage에 데이터 저장");
+
             //signIn : 처음 로그인하면 구글 로그인 모달창을 띄워줌. 성공하면 Promise(object), 실패하면 error를 리턴
             //console.log("hasPreviousSignIn : ", hasPreviousSignIn);
             //console.log("userInfo : ", userInfo);

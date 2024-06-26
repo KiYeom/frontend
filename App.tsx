@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Login from "./src/screen/Login"; // 슬래시 확인
 import Chat from "./src/screen/Chat";
 import Home from "./src/screen/Home";
@@ -11,12 +11,24 @@ import InfoAge from "./src/screen/InfoAge";
 import InfoGender from "./src/screen/InfoGender";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFonts } from "expo-font";
 
 const Stack = createNativeStackNavigator();
 
 const App: React.FC = () => {
   const [email, setEmail] = useState(""); //상태관리 컴포넌트 외부가 아닌, "컴포넌트 안에서" 호출되어야 한다.
   const [isUser, setIsUser] = useState(false);
+  const [isLogin, setIsLogin] = useState(false); //로그인 여부
+  const getData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem("userId");
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (e) {
+      // error reading value
+    }
+  };
+
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -30,7 +42,7 @@ const App: React.FC = () => {
               <Login email={email} setEmail={setEmail} />
             )}
           />
-        ) : isUser === false ? (
+        ) : isLogin === false ? (
           <>
             <Stack.Screen name="InfoScreen" component={InfoScreen} />
             {/* 

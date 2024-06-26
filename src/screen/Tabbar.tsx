@@ -8,10 +8,12 @@ import Setting from "./Setting";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Tab = createBottomTabNavigator();
 
 const Tabbar: React.FC = () => {
+  let value;
   return (
     <Tab.Navigator initialRouteName="Home">
       <Tab.Screen name="Chat" component={Chat} />
