@@ -6,47 +6,35 @@ import { useState } from "react";
 import { Button } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-const FemaleButton: React.FC = () => {
+const StartButton: React.FC = () => {
   const [isPressed, setIsPressed] = useState(false);
   const onPress = () => {
-    console.log("hi");
     setIsPressed(!isPressed);
   };
   return (
-    <TouchableOpacity
-      activeOpacity={0.8}
-      style={[styles.btn, isPressed && styles.btnPressed]}
-      onPress={onPress}
-    >
-      <Icon name="female" size={50} color="black" />
-      <Text style={styles.txt}>여성</Text>
+    <TouchableOpacity activeOpacity={0.8} style={styles.btn} onPress={onPress}>
+      <Text style={styles.txt}>쿠키와 대화할까?🐶</Text>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "green",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  txt: {
-    fontSize: 16,
-    color: "#333",
-  },
   btn: {
-    width: 100,
-    height: 100,
-    backgroundColor: "#D9D9D9",
+    width: "100%",
+    backgroundColor: "#3B506B",
     borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
     fontSize: 10,
+    paddingVertical: 15,
+    paddingHorizontal: 15,
   },
-  btnPressed: {
-    backgroundColor: "#A9A9A9",
+  txt: {
+    color: "white",
+    fontSize: 17,
+    fontFamily: "Pretend-Bold",
+    textAlign: "center",
   },
 });
 
-export default FemaleButton;
+export default StartButton;
