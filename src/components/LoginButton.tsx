@@ -32,11 +32,11 @@ const LoginButton: React.FC<LoginButtonProps> = ({ email, setEmail }) => {
             //hasPlayServices : 이전에 로그인한 적이 있으면 true, 없으면 false
             const userInfo = await GoogleSignin.signIn();
             //signIn : 처음 로그인하면 구글 로그인 모달창을 띄워줌. 성공하면 Promise(object), 실패하면 error를 리턴
-            console.log("hasPreviousSignIn : ", hasPreviousSignIn);
-            console.log("userInfo : ", userInfo);
-            console.log("userInfo type : ", typeof userInfo);
+            //console.log("hasPreviousSignIn : ", hasPreviousSignIn);
+            //console.log("userInfo : ", userInfo);
+            //console.log("userInfo type : ", typeof userInfo);
             setEmail(userInfo.user.email);
-            console.log("setEmail 함수 실행 : ", email);
+            //console.log("setEmail 함수 실행 : ", email);
           } catch (error) {
             console.log(error);
           }

@@ -6,12 +6,12 @@ interface UserInfo {
   email: string;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
 }
-const Setting: React.FC<UserInfo> = ({ email, setEmail }) => {
+const Setting: React.FC = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Setting</Text>
-      <Text>email : {email}</Text>
-      <LogoutButton email={email} setEmail={setEmail} />
+      {/*<Text>email : {email}</Text>
+      <LogoutButton email={email} setEmail={setEmail} />*/}
     </View>
   );
 };

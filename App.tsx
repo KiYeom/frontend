@@ -4,7 +4,11 @@ import React, { useState } from "react";
 import Login from "./src/screen/Login"; // 슬래시 확인
 import Chat from "./src/screen/Chat";
 import Home from "./src/screen/Home";
+import InfoScreen from "./src/screen/InfoScreen";
 import Tabbar from "./src/screen/Tabbar";
+import InfoName from "./src/screen/InfoName";
+import InfoAge from "./src/screen/InfoAge";
+import InfoGender from "./src/screen/InfoGender";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
@@ -12,6 +16,7 @@ const Stack = createNativeStackNavigator();
 
 const App: React.FC = () => {
   const [email, setEmail] = useState(""); //상태관리 컴포넌트 외부가 아닌, "컴포넌트 안에서" 호출되어야 한다.
+  const [isUser, setIsUser] = useState(false);
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -25,10 +30,19 @@ const App: React.FC = () => {
               <Login email={email} setEmail={setEmail} />
             )}
           />
+        ) : isUser === false ? (
+          <>
+            <Stack.Screen name="InfoScreen" component={InfoScreen} />
+            {/* 
+            <Stack.Screen name="InfoName" component={InfoName} />
+            <Stack.Screen name="InfoAge" component={InfoAge} />
+            <Stack.Screen name="InfoGender" component={InfoGender} />
+            <Stack.Screen name="Tabbar" component={Tabbar} />*/}
+          </>
         ) : (
-          <Stack.Screen name="Tabbar">
-            {() => <Tabbar email={email} setEmail={setEmail} />}
-          </Stack.Screen>
+          <>
+            <Stack.Screen name="Tabbar" component={Tabbar} />
+          </>
         )}
       </Stack.Navigator>
     </NavigationContainer>
