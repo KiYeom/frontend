@@ -10,13 +10,19 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 const Tab = createBottomTabNavigator();
+interface UserInfo {
+  email: string;
+  setEmail: React.Dispatch<React.SetStateAction<string>>;
+}
 
-const Tabbar: React.FC = () => {
+const Tabbar: React.FC<UserInfo> = ({ email, setEmail }) => {
   return (
     <Tab.Navigator initialRouteName="Home">
       <Tab.Screen name="Chat" component={Chat} />
       <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Setting" component={Setting} />
+      <Tab.Screen name="Setting">
+        {() => <Setting email={email} setEmail={setEmail} />}
+      </Tab.Screen>
     </Tab.Navigator>
   );
 };

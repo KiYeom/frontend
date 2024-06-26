@@ -12,7 +12,7 @@ const LogoutButton: React.FC<LogoutButtonProps> = ({ email, setEmail }) => {
   return (
     <TouchableOpacity>
       <Button
-        title="안녕"
+        title="Logout"
         onPress={async () => {
           //Google객체를 사용하려면 반드시 configure 메서드를 호출해야 한다.
           GoogleSignin.configure({
@@ -21,6 +21,7 @@ const LogoutButton: React.FC<LogoutButtonProps> = ({ email, setEmail }) => {
           });
           try {
             await GoogleSignin.signOut();
+            setEmail("");
           } catch (error) {
             console.error(error);
           }

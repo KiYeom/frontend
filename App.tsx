@@ -11,7 +11,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 const Stack = createNativeStackNavigator();
 
 const App: React.FC = () => {
-  const [email, setEmail] = useState(""); //사애관리는 컴포넌트 외부가 아닌, "컴포넌트 안에서" 호출되어야 한다.
+  const [email, setEmail] = useState(""); //상태관리 컴포넌트 외부가 아닌, "컴포넌트 안에서" 호출되어야 한다.
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -26,7 +26,9 @@ const App: React.FC = () => {
             )}
           />
         ) : (
-          <Stack.Screen name="Tabbar" component={Tabbar} />
+          <Stack.Screen name="Tabbar">
+            {() => <Tabbar email={email} setEmail={setEmail} />}
+          </Stack.Screen>
         )}
       </Stack.Navigator>
     </NavigationContainer>

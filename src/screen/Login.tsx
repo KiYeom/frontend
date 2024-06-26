@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   btnContainer: {
     flex: 1,
     alignItems: "center",
-    marginTop: 30,
+    marginTop: 10,
     color: "#333",
   },
 });

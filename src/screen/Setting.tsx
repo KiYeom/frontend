@@ -1,11 +1,17 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-
-const Setting: React.FC = () => {
+import LogoutButton from "../components/LogoutButton";
+interface UserInfo {
+  email: string;
+  setEmail: React.Dispatch<React.SetStateAction<string>>;
+}
+const Setting: React.FC<UserInfo> = ({ email, setEmail }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Setting</Text>
+      <Text>email : {email}</Text>
+      <LogoutButton email={email} setEmail={setEmail} />
     </View>
   );
 };
