@@ -12,12 +12,28 @@ const InfoScreen: React.FC = () => {
   const Stack = createNativeStackNavigator();
   return (
     <Stack.Navigator
-      screenOptions={{ headerShown: false, gestureEnabled: true }}
+      screenOptions={{ headerShown: true, gestureEnabled: true }}
     >
-      <Stack.Screen name="InfoName" component={InfoName} />
-      <Stack.Screen name="InfoAge" component={InfoAge} />
-      <Stack.Screen name="InfoGender" component={InfoGender} />
-      <Stack.Screen name="Tabbar" component={Tabbar} />
+      <Stack.Screen
+        name="InfoName"
+        component={InfoName}
+        options={{ title: "이름" }}
+      />
+      <Stack.Screen
+        name="InfoAge"
+        component={InfoAge}
+        options={{ title: "나이" }}
+      />
+      <Stack.Screen
+        name="InfoGender"
+        component={InfoGender}
+        options={{ title: "성별" }}
+      />
+      <Stack.Screen
+        name="Tabbar"
+        component={Tabbar}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };

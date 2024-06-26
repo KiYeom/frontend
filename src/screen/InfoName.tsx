@@ -32,7 +32,7 @@ const InfoName: React.FC<any> = ({ navigation }) => {
       </View>
       <View style={styles.textArea}>
         <Text style={styles.txt}>만나서 반가워요, 멍!🐶</Text>
-        <Text style={styles.txt1}>만나서 반가워요, 멍!🐶</Text>
+        <Text style={styles.txt1}>쿠키에게 당신의 이름을 알려주세요 :)</Text>
         {/* <Text style={styles.txt1}>쿠키는 당신의 이름을 알고 싶어요:)</Text> */}
       </View>
 
@@ -89,10 +89,10 @@ const styles = StyleSheet.create({
   },
   txt: {
     fontSize: 20,
-    // fontWeight: "bold",
     textAlign: "center",
     color: "#000", // 텍스트 색상 설정
     marginBottom: 10, // 텍스트 간의 간격 추가
+    fontFamily: "Pretendard-Medium",
   },
   txt1: {
     fontSize: 20,
