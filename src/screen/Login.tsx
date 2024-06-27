@@ -17,7 +17,7 @@ interface UserInfo {
   setEmail: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Login: React.FC<UserInfo> = ({ email, setEmail }) => {
+const Login: React.FC = () => {
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
@@ -28,9 +28,9 @@ const Login: React.FC<UserInfo> = ({ email, setEmail }) => {
         />
       </View>
       <View style={styles.btnContainer}>
-        <LoginButton email={email} setEmail={setEmail} />
-        <LoginButton email={email} setEmail={setEmail} />
-        <LoginButton email={email} setEmail={setEmail} />
+        <LoginButton />
+        <LoginButton />
+        <LoginButton />
       </View>
     </View>
   );
