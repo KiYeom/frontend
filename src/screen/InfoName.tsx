@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#000", // 텍스트 색상 설정
     marginBottom: 10, // 텍스트 간의 간격 추가
-    fontFamily: "Pretendard-Medium",
+    fontFamily: "Pretendard-Bold",
   },
   txt1: {
     fontSize: 20,

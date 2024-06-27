@@ -10,7 +10,8 @@ const Home: React.FC = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.text}>오늘 기분이 어떤가요? 🐶</Text>
+        <Text style={styles.txt1}>안녕?," (pretendard 적용)</Text>
+        <Text style={styles.txt2}>안녕?," (적용x)</Text>
       </View>
       <View style={styles.center}>
         <Image
@@ -46,9 +47,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 30, // 하단에 약간의 여백 추가
   },
-  text: {
+  txt1: {
     fontSize: 24,
-    fontFamily: "Pretendard-Medium",
+    fontFamily: "Pretendard-SemiBold",
+  },
+  txt2: {
+    fontSize: 24,
   },
   image: {
     width: 200,
