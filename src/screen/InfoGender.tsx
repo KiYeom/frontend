@@ -1,8 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import { Button } from "react-native-paper";
-import MaleButton from "../components/MaleButton";
-import FemaleButton from "../components/FemaleButton";
+import GenderButton from "../components/GenderButton";
 import Tabbar from "./Tabbar";
 
 const InfoGender: React.FC<any> = ({ navigation }) => {
@@ -23,8 +22,7 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
         {/* <Text style={styles.txt1}>쿠키는 당신의 이름을 알고 싶어요:)</Text> */}
       </View>
       <View style={styles.genderSelectArea}>
-        <MaleButton />
-        <FemaleButton />
+        <GenderButton />
       </View>
       <View>
         <Button
