@@ -57,7 +57,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({ email, setEmail }) => {
                 console.log(e);
               }
             }; //데이터를 만들고 저장
-            console.log("storage에 데이터 저장");
+            console.log("storage에 데이터 저장!");
 
             //signIn : 처음 로그인하면 구글 로그인 모달창을 띄워줌. 성공하면 Promise(object), 실패하면 error를 리턴
             //console.log("hasPreviousSignIn : ", hasPreviousSignIn);
