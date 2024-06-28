@@ -2,6 +2,7 @@ import * as React from "react";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import { Button, View, Text, TouchableOpacity, Image } from "react-native";
 import { useEffect, useState } from "react";
 import {
@@ -33,9 +34,11 @@ const Login: React.FC<any> = ({ navigation }) => {
         <LoginButton />
         <LoginButton />
       </View>
+
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -60,4 +63,5 @@ const styles = StyleSheet.create({
     color: "#333",
   },
 });
+
 export default Login;
