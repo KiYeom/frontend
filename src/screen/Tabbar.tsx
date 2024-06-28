@@ -13,7 +13,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Tab = createBottomTabNavigator();
 
-const Tabbar: React.FC = () => {
+const Tabbar: React.FC<any> = () => {
   return (
     <Tab.Navigator
       initialRouteName="Home"

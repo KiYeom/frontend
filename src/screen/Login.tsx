@@ -12,12 +12,13 @@ import {
 import LoginButton from "../components/LoginButton";
 import LogoutButton from "../components/LogoutButton";
 import { StyleSheet } from "react-native";
+import { GOOGLE_KEY } from "../../utils/storageUtils";
 interface UserInfo {
   email: string;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Login: React.FC = () => {
+const Login: React.FC<any> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
@@ -28,7 +29,7 @@ const Login: React.FC = () => {
         />
       </View>
       <View style={styles.btnContainer}>
-        <LoginButton />
+        <LoginButton navigation={navigation} />
         <LoginButton />
         <LoginButton />
       </View>

@@ -8,6 +8,9 @@ import {
 } from "@react-native-google-signin/google-signin";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { storageData, getData } from "../../utils/storageUtils";
+import { GOOGLE_KEY } from "../../utils/storageUtils";
+import { useNavigation } from "@react-navigation/native";
+import Login from "../screen/Login";
 //WebBrowser.maybeCompleteAuthSession();
 // 로그인 버튼 누르면 웹 브라우저가 열리고, 구글 로그인 페이지로 이동함.
 //web popup을 무시하기 위해 WebBrowser.maybeCompleteAuthSession()을 사용한다.
@@ -24,7 +27,7 @@ interface UserData {
   gender: string | null;
 }
 
-const LoginButton: React.FC = () => {
+const LoginButton: React.FC<any> = ({ navigation }) => {
   return (
     <TouchableOpacity style={styles.container}>
       <GoogleSigninButton
@@ -49,8 +52,7 @@ const LoginButton: React.FC = () => {
               gender: null,
             }; //storage에 저장할 데이터
             console.log("value : ", value); //유저의 정보 value를 만들었음
-            storageData("userInfo", value); //만든 데이터를 async storage에 저장
-
+            storageData(GOOGLE_KEY, value); //만든 데이터를 async storage에 저장
             //signIn : 처음 로그인하면 구글 로그인 모달창을 띄워줌. 성공하면 Promise(object), 실패하면 error를 리턴
             //console.log("hasPreviousSignIn : ", hasPreviousSignIn);
             //console.log("userInfo : ", userInfo);
@@ -59,6 +61,7 @@ const LoginButton: React.FC = () => {
           } catch (error) {
             console.log(error);
           }
+          navigation.navigate("InfoScreen");
         }}
         disabled={false} // Set to true to disable the button
       />

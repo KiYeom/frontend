@@ -1,5 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+export const GOOGLE_KEY = "google_auth_key";
+
 // 데이터 저장 함수
 export const storageData = async (key: string, value: object) => {
   try {
@@ -17,6 +19,15 @@ export const getData = async (key: string) => {
     const jsonValue = await AsyncStorage.getItem(key);
     console.log("========", jsonValue);
     return jsonValue != null ? JSON.parse(jsonValue) : null;
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+//데이터 삭제
+export const deleteDate = async (key: string) => {
+  try {
+    AsyncStorage.removeItem(key);
   } catch (e) {
     console.error(e);
   }

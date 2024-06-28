@@ -29,11 +29,6 @@ const InfoScreen: React.FC = () => {
         component={InfoGender}
         options={{ title: "성별" }}
       />
-      <Stack.Screen
-        name="Tabbar"
-        component={Tabbar}
-        options={{ headerShown: false }}
-      />
     </Stack.Navigator>
   );
 };
