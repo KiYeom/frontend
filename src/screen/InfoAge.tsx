@@ -2,9 +2,22 @@ import React from "react";
 import { useState } from "react";
 import { View, Text, Image, StyleSheet, SafeAreaView } from "react-native";
 import { Button, TextInput } from "react-native-paper";
+import { getData } from "../../utils/storageUtils";
+import { storageData } from "../../utils/storageUtils";
+import { GOOGLE_KEY } from "../../utils/storageUtils";
 
 const InfoAge: React.FC<any> = ({ navigation }) => {
   const [text, setText] = React.useState("");
+  const saveInfoAge = async () => {
+    const data = await getData(GOOGLE_KEY);
+    console.log("날짜로 바꾸기 전 : ", text);
+    console.log("날짜로 바꾼 후 : ", new Date(data)); //지금은 1998-07-17 로 입력해야 날짜로 바꿀 수 있음
+    data.age = new Date(text);
+    storageData(GOOGLE_KEY, data);
+    navigation.navigate("InfoGender");
+    const test = await getData(GOOGLE_KEY);
+    console.log("========infoage test======== : ", test);
+  };
 
   return (
     <View style={styles.container}>
@@ -32,7 +45,7 @@ const InfoAge: React.FC<any> = ({ navigation }) => {
         <Button
           icon="check"
           mode="contained"
-          onPress={() => navigation.navigate("InfoGender")}
+          onPress={saveInfoAge}
           textColor="#000"
           style={styles.btn}
         >

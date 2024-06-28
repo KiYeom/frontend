@@ -5,11 +5,15 @@ import { TouchableOpacity } from "react-native";
 import { useState } from "react";
 import { Button } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
+interface props {
+  selectedGender: string;
+  setSelectedGender: (gender: string) => void;
+}
 
-const GenderButton: React.FC = () => {
-  const [selectedGender, setSelectedGender] = useState<
-    "male" | "female" | null
-  >(null);
+const GenderButton: React.FC<props> = ({
+  selectedGender,
+  setSelectedGender,
+}) => {
   const onPress = (gender: "male" | "female") => {
     setSelectedGender(gender);
   };

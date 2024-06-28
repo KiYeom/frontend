@@ -6,9 +6,22 @@ import Tabbar from "./Tabbar";
 import { storageData } from "../../utils/storageUtils";
 import { GOOGLE_KEY } from "../../utils/storageUtils";
 import { getData } from "../../utils/storageUtils";
+import { useState } from "react";
 
 const InfoGender: React.FC<any> = ({ navigation }) => {
-  const [text, setText] = React.useState("");
+  const [selectedGender, setSelectedGender] = useState("");
+  const saveInfoGender = async () => {
+    const data = await getData(GOOGLE_KEY);
+    if (selectedGender === "male") {
+      data.gender = "1";
+    } else if (selectedGender === "female") {
+      data.gender = "2";
+    }
+    storageData(GOOGLE_KEY, data);
+    navigation.navigate("Tabbar");
+    const test = await getData(GOOGLE_KEY);
+    console.log("========infoGender test======== : ", test);
+  };
   return (
     <View style={styles.container}>
       <View>
@@ -24,13 +37,16 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
         {/* <Text style={styles.txt1}>쿠키는 당신의 이름을 알고 싶어요:)</Text> */}
       </View>
       <View style={styles.genderSelectArea}>
-        <GenderButton />
+        <GenderButton
+          selectedGender={selectedGender}
+          setSelectedGender={setSelectedGender}
+        />
       </View>
       <View>
         <Button
           icon="check"
           mode="contained"
-          onPress={() => navigation.navigate("Tabbar")}
+          onPress={saveInfoGender}
           textColor="#000"
           style={styles.btn}
         >
