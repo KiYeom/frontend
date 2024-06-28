@@ -5,22 +5,19 @@ import { useFonts } from "expo-font";
 import { useState, useEffect } from "react";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback } from "react";
+import { storageData, getData } from "../../utils/storageUtils";
+import { GOOGLE_KEY } from "../../utils/storageUtils";
 
 const InfoName: React.FC<any> = ({ navigation }) => {
   const [text, setText] = React.useState("");
-  /*
-  const [fontsLoaded, fontError] = useFonts({
-    "Pretendard-Bold": require("../../assets/fonts/Pretendard-Bold.ttf"),
-  });
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded || fontError) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded, fontError]);
-
-  if (!fontsLoaded && !fontError) {
-    return null;
-  }*/
+  const saveInfoName = async () => {
+    const data = await getData(GOOGLE_KEY);
+    data.name = text;
+    storageData(GOOGLE_KEY, data);
+    navigation.navigate("InfoAge");
+    const test = await getData(GOOGLE_KEY);
+    console.log("========test======== : ", test);
+  };
   return (
     <View style={styles.container}>
       <View>
@@ -48,7 +45,7 @@ const InfoName: React.FC<any> = ({ navigation }) => {
         <Button
           icon="check"
           mode="contained"
-          onPress={() => navigation.navigate("InfoAge")}
+          onPress={saveInfoName}
           textColor="#000"
           style={styles.btn}
         >

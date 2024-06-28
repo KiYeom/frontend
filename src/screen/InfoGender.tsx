@@ -3,10 +3,12 @@ import { View, Text, StyleSheet, Image } from "react-native";
 import { Button } from "react-native-paper";
 import GenderButton from "../components/GenderButton";
 import Tabbar from "./Tabbar";
+import { storageData } from "../../utils/storageUtils";
+import { GOOGLE_KEY } from "../../utils/storageUtils";
+import { getData } from "../../utils/storageUtils";
 
 const InfoGender: React.FC<any> = ({ navigation }) => {
   const [text, setText] = React.useState("");
-
   return (
     <View style={styles.container}>
       <View>
