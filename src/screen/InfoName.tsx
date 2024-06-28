@@ -16,7 +16,7 @@ const InfoName: React.FC<any> = ({ navigation }) => {
     storageData(GOOGLE_KEY, data);
     navigation.navigate("InfoAge");
     const test = await getData(GOOGLE_KEY);
-    console.log("========test======== : ", test);
+    //console.log("========test======== : ", test);
   };
   return (
     <View style={styles.container}>

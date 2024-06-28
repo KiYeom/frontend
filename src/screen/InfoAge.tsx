@@ -10,12 +10,12 @@ const InfoAge: React.FC<any> = ({ navigation }) => {
   const [text, setText] = React.useState("");
   const saveInfoAge = async () => {
     const data = await getData(GOOGLE_KEY);
-    console.log("날짜로 바꾸기 전 : ", text);
+    //console.log("날짜로 바꾸기 전 : ", text);
     data.birthdate = text;
     storageData(GOOGLE_KEY, data);
     navigation.navigate("InfoGender");
     const test = await getData(GOOGLE_KEY);
-    console.log("========infoage test======== : ", test);
+    //console.log("========infoage test======== : ", test);
   };
 
   return (

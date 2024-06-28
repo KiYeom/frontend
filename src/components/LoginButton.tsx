@@ -11,6 +11,7 @@ import { storageData, getData } from "../../utils/storageUtils";
 import { GOOGLE_KEY } from "../../utils/storageUtils";
 import { useNavigation } from "@react-navigation/native";
 import Login from "../screen/Login";
+import axios from "axios";
 //WebBrowser.maybeCompleteAuthSession();
 // 로그인 버튼 누르면 웹 브라우저가 열리고, 구글 로그인 페이지로 이동함.
 //web popup을 무시하기 위해 WebBrowser.maybeCompleteAuthSession()을 사용한다.
@@ -35,6 +36,7 @@ const LoginButton: React.FC<any> = ({ navigation }) => {
         size={GoogleSigninButton.Size.Wide}
         color={GoogleSigninButton.Color.Light}
         onPress={async () => {
+          console.log("눌리니ㅣ");
           GoogleSignin.configure({
             iosClientId:
               "94079762653-arcgeib4l0hbg6snh81cjimd9iuuoun3.apps.googleusercontent.com",
@@ -55,15 +57,33 @@ const LoginButton: React.FC<any> = ({ navigation }) => {
             }; //storage에 저장할 데이터
             console.log("value : ", value); //유저의 정보 value를 만들었음
             storageData(GOOGLE_KEY, value); //만든 데이터를 async storage에 저장
-            //signIn : 처음 로그인하면 구글 로그인 모달창을 띄워줌. 성공하면 Promise(object), 실패하면 error를 리턴
-            //console.log("hasPreviousSignIn : ", hasPreviousSignIn);
-            //console.log("userInfo : ", userInfo);
-            //console.log("userInfo type : ", typeof userInfo);
-            //console.log("setEmail 함수 실행 : ", email);
+            const newData = {
+              providerName: "google",
+              providerCode: providerCode,
+              deviceId: "aflkqwr",
+              appVersion: "v1.0.0",
+              deviceOs: "ios15.1",
+              notificationToken: "adfasdf",
+            };
+            axios
+              .post("http://34.125.112.144:8000/api/v1/auth/login", newData)
+              .then(function (response) {
+                //가입한 적이 있으면 -> 바로 tabbar 화면으로
+                storageData("ACCESS_TOKEN", response.data.data.accessToken); //access token을 storage에 저장
+                //console.log("response : ", response);
+                navigation.navigate("Tabbar");
+              })
+              .catch(function (error) {
+                //존재하지 않는 사용자는 code 404 (error.response.status) -> 인포메이션 페이지로
+                if (error.response.status === 404) {
+                  console.log(error.response.data);
+                  navigation.navigate("InfoScreen");
+                }
+              });
           } catch (error) {
-            console.log(error);
+            console.log("구글 로그인 한 적이 없는 경우", error);
           }
-          navigation.navigate("InfoScreen");
+          //navigation.navigate("InfoScreen");
         }}
         disabled={false} // Set to true to disable the button
       />

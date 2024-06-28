@@ -9,7 +9,7 @@ import {
 import { deleteDate } from "../../utils/storageUtils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { GOOGLE_KEY } from "../../utils/storageUtils";
-const LogoutButton: React.FC<any> = ({ navigation }) => {
+const DeleteAccoutButton: React.FC<any> = ({ navigation }) => {
   const handleLogout = async () => {
     //Google객체를 사용하려면 반드시 configure 메서드를 호출해야 한다.
     GoogleSignin.configure({
@@ -27,10 +27,10 @@ const LogoutButton: React.FC<any> = ({ navigation }) => {
   };
   return (
     <TouchableOpacity>
-      <Button onPress={handleLogout} mode="contained" buttonColor="black">
-        로그아웃 버튼!
+      <Button onPress={handleLogout} mode="contained">
+        계정 탈퇴 버튼..
       </Button>
     </TouchableOpacity>
   );
 };
-export default LogoutButton;
+export default DeleteAccoutButton;
