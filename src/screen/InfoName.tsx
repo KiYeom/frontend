@@ -12,7 +12,7 @@ const InfoName: React.FC<any> = ({ navigation }) => {
   const [text, setText] = React.useState("");
   const saveInfoName = async () => {
     const data = await getData(GOOGLE_KEY);
-    data.name = text;
+    data.nickname = text;
     storageData(GOOGLE_KEY, data);
     navigation.navigate("InfoAge");
     const test = await getData(GOOGLE_KEY);

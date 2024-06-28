@@ -13,9 +13,9 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
   const saveInfoGender = async () => {
     const data = await getData(GOOGLE_KEY);
     if (selectedGender === "male") {
-      data.gender = "1";
+      data.gender = 1;
     } else if (selectedGender === "female") {
-      data.gender = "2";
+      data.gender = 2;
     }
     storageData(GOOGLE_KEY, data);
     navigation.navigate("Tabbar");

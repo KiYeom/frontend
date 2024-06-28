@@ -11,8 +11,7 @@ const InfoAge: React.FC<any> = ({ navigation }) => {
   const saveInfoAge = async () => {
     const data = await getData(GOOGLE_KEY);
     console.log("날짜로 바꾸기 전 : ", text);
-    console.log("날짜로 바꾼 후 : ", new Date(data)); //지금은 1998-07-17 로 입력해야 날짜로 바꿀 수 있음
-    data.age = new Date(text);
+    data.birthdate = text;
     storageData(GOOGLE_KEY, data);
     navigation.navigate("InfoGender");
     const test = await getData(GOOGLE_KEY);

@@ -13,7 +13,7 @@ export const storageData = async (key: string, value: object) => {
   }
 };
 
-// 데이터 가져오기 함수
+// 데이터 가져오기 함수 (return : object)
 export const getData = async (key: string) => {
   try {
     const jsonValue = await AsyncStorage.getItem(key);
