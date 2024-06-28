@@ -4,19 +4,20 @@
     "slug": "reMIND",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/cookieSplash.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/cookieSplash.png",
-      "resizeMode": "contain",
+      "resizeMode": "cover",
       "backgroundColor": "#fff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ceunnseo.reMIND"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/cookieSplash.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.ceunnseo.reMIND"
@@ -29,6 +30,27 @@
       "eas": {
         "projectId": "1cd0480c-0399-4503-ae2d-ec73641ea4fd"
       }
-    }
-  }
+    },
+    "plugins": [
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.94079762653-arcgeib4l0hbg6snh81cjimd9iuuoun3"
+        }
+      ],
+      [
+        "expo-font",
+        {
+          "Pretend-Black": ["./assets/fonts/Pretendard-Black.ttf"],
+          "Pretend-Bold": ["./assets/fonts/Pretendard-Bold.ttf"],
+          "Pretend-ExtraBold": ["./assets/fonts/Pretendard-ExtraBold.ttf"],
+          "Pretend-ExtraLight": ["./assets/fonts/Pretendard-ExtraLight.ttf"],
+          "Pretend-Light": ["./assets/fonts/Pretendard-Light.ttf"],
+          "Pretendard-Medium": ["./assets/fonts/Pretendard-Medium.ttf"],
+          "Pretend-Regular": ["./assets/fonts/Pretendard-Regular.ttf"],
+          "Pretend-SemiBold": ["./assets/fonts/Pretendard-SemiBold.ttf"],
+          "Pretend-Thin": ["./assets/fonts/Pretendard-Thin.ttf"]
+        }
+      ]
+    ]
 }
