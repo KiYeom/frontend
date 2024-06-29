@@ -4,20 +4,19 @@
     "slug": "reMIND",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/cookieSplash.png",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/cookieSplash.png",
-      "resizeMode": "cover",
+      "resizeMode": "contain",
       "backgroundColor": "#fff"
     },
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.ceunnseo.reMIND"
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/cookieSplash.png",
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.ceunnseo.reMIND"
