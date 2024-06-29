@@ -6,10 +6,11 @@ import { useState } from "react";
 import { Button } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-const StartButton: React.FC = () => {
+const StartButton: React.FC<any> = ({ navigation }) => {
   const [isPressed, setIsPressed] = useState(false);
   const onPress = () => {
     setIsPressed(!isPressed);
+    navigation.navigate("Chat");
   };
   return (
     <TouchableOpacity activeOpacity={0.8} style={styles.btn} onPress={onPress}>

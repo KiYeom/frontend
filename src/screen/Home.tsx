@@ -6,7 +6,7 @@ import StartButton from "../components/StartButton";
 import Chat from "./Chat";
 import Setting from "./Setting";
 
-const Home: React.FC = () => {
+const Home: React.FC<any> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -21,7 +21,7 @@ const Home: React.FC = () => {
         />
       </View>
       <View style={styles.footer}>
-        <StartButton />
+        <StartButton navigation={navigation} />
       </View>
     </View>
   );
