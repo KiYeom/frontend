@@ -36,7 +36,7 @@ const LoginButton: React.FC<any> = ({ navigation }) => {
         size={GoogleSigninButton.Size.Wide}
         color={GoogleSigninButton.Color.Light}
         onPress={async () => {
-          console.log("눌리니ㅣ");
+          //console.log("눌리니ㅣ");
           GoogleSignin.configure({
             iosClientId:
               "94079762653-arcgeib4l0hbg6snh81cjimd9iuuoun3.apps.googleusercontent.com",
@@ -56,7 +56,7 @@ const LoginButton: React.FC<any> = ({ navigation }) => {
               gender: null,
             }; //storage에 저장할 데이터
             console.log("value : ", value); //유저의 정보 value를 만들었음
-            storageData(GOOGLE_KEY, value); //만든 데이터를 async storage에 저장
+            await storageData(GOOGLE_KEY, value); //만든 데이터를 async storage에 저장
             const newData = {
               providerName: "google",
               providerCode: providerCode,
@@ -65,17 +65,20 @@ const LoginButton: React.FC<any> = ({ navigation }) => {
               deviceOs: "ios15.1",
               notificationToken: "adfasdf",
             };
+            // 로그인에 성공하면 JWT 토큰을 부여받는다.
             axios
               .post("http://34.125.112.144:8000/api/v1/auth/login", newData)
               .then(function (response) {
-                //가입한 적이 있으면 -> 바로 tabbar 화면으로
+                //가입한 적이 있으면 서버는 토큰을 클라이언트에게 발급해준다.
+                //발급한 토큰을 클라이언트는 storage에 key-value로 저장해둔다.
                 storageData("ACCESS_TOKEN", response.data.data.accessToken); //access token을 storage에 저장
-                //console.log("response : ", response);
-                navigation.navigate("Tabbar");
+                storageData("REFRESH_TOKEN", response.data.data.refreshToken); //refresh token을 storage에 저장
+                navigation.navigate("Tabbar"); //저장하고 메인 페이지로 이동
               })
               .catch(function (error) {
-                //존재하지 않는 사용자는 code 404 (error.response.status) -> 인포메이션 페이지로
-                if (error.response.status === 404) {
+                console.log("error 발생, 로그인 실패", error);
+                //존재하지 않는 사용자는 code 404 (error.response.status) -> 인포메이션 페이지로 (회원가입 페이지 )
+                if (error.response.status == 404) {
                   console.log(error.response.data);
                   navigation.navigate("InfoScreen");
                 }

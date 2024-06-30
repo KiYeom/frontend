@@ -12,9 +12,9 @@ const InfoAge: React.FC<any> = ({ navigation }) => {
     const data = await getData(GOOGLE_KEY);
     //console.log("날짜로 바꾸기 전 : ", text);
     data.birthdate = text;
-    storageData(GOOGLE_KEY, data);
+    await storageData(GOOGLE_KEY, data);
+    await storageData("BIRTHDATE", text);
     navigation.navigate("InfoGender");
-    const test = await getData(GOOGLE_KEY);
     //console.log("========infoage test======== : ", test);
   };
 

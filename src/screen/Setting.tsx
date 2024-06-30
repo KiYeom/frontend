@@ -11,16 +11,16 @@ interface UserInfo {
   setEmail: React.Dispatch<React.SetStateAction<string>>;
 }
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import UserInfo from "../components/UserInfo";
+import UserSetting from "../components/UserSetting";
 
 const Setting: React.FC<any> = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Setting</Text>
       {/*<Text>email : {email}</Text>
       <LogoutButton email={email} setEmail={setEmail} />*/}
-
-      <LogoutButton navigation={navigation} />
-      <DeleteAccoutButton navigation={navigation} />
+      <UserInfo />
+      <UserSetting navigation={navigation} />
     </View>
   );
 };

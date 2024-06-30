@@ -27,7 +27,8 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
     } else if (selectedGender === "female") {
       data.gender = 2;
     }
-    storageData(GOOGLE_KEY, data);
+    await storageData(GOOGLE_KEY, data);
+    await storageData("GENDER", data.gender);
     navigation.navigate("Tabbar");
     const test = await getData(GOOGLE_KEY);
     //console.log("========infoGender test======== : ", test);
@@ -42,6 +43,7 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
         //response
         console.log("signup response", response);
         storageData("ACCESS_TOKEN", response.data.data.accessToken);
+        storageData("EMAIL", response.data.data.email);
       })
       .catch(function (error) {
         //오류 발생 시 실행
