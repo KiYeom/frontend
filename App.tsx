@@ -17,6 +17,7 @@ import { useFonts } from "expo-font";
 import { getData, storageData } from "./utils/storageUtils";
 import { GOOGLE_KEY } from "./utils/storageUtils";
 import SplashScreen from "./src/screen/SplashScreen";
+import axios from "axios";
 
 const Stack = createNativeStackNavigator();
 
@@ -37,6 +38,19 @@ const App: React.FC = () => {
         const token = await getData("ACCESS_TOKEN");
         if (token) {
           //토큰이 있으면 우리 회원이다. -> 바로 탭 화면
+          axios
+            .get("http://34.125.112.144:8000/api/v1/user", {
+              headers: { Authorization: `Bearer ${token}` },
+            })
+            .then(function (response) {
+              //성공 : refresh token으로 access token 재발급 (재발급하는 코드 작성)
+              // -> 성공적으로 access token을 재발급 받았다면 access token으로 유저 정보를 받고 홈화면
+              // -> refresh token 역시 만료되어 재발급이 불가한 경우, 로그인 페이지로
+            })
+            .catch(function (error) {
+              //실패한 경우 >> 로그인 페이지로
+              //navigation.navigate("Login");
+            });
           setIsSignIn(true);
         } else {
           setIsSignIn(false);
@@ -50,7 +64,6 @@ const App: React.FC = () => {
   }, []);
 
   console.log("issignin", isSignIn);
-  //문제점 : isSignin이 true이면 (유저면) Login 화면이 잠깐 나오고 Tabbar로 감
 
   if (loading) {
     return (
@@ -66,6 +79,7 @@ const App: React.FC = () => {
         <Stack.Screen name="Login" component={Login} />
         {isSignIn == true ? (
           <>
+            <Stack.Screen name="InfoScreen" component={InfoScreen} />
             <Stack.Screen name="Tabbar" component={Tabbar} />
           </>
         ) : (
