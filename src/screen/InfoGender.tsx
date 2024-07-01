@@ -8,12 +8,19 @@ import { GOOGLE_KEY } from "../../utils/storageUtils";
 import { getData } from "../../utils/storageUtils";
 import { useState } from "react";
 import axios from "axios";
+import { useEffect } from "react";
 
 //console.log(axios.isCancel("something"));
 
 const InfoGender: React.FC<any> = ({ navigation }) => {
   const [selectedGender, setSelectedGender] = useState("");
   //찐 완료 버튼 -> 데이터를 서버로 보내주자 (post)
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+
+  useEffect(() => {
+    setIsButtonDisabled(selectedGender === "");
+  }, [selectedGender]);
+
   const saveInfoGender = async () => {
     const data = await getData(GOOGLE_KEY);
     const additionalData = {
@@ -79,6 +86,7 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
           onPress={saveInfoGender}
           textColor="#000"
           style={styles.btn}
+          disabled={isButtonDisabled} // disabled 상태로 ���키 선택시 버�� 비��성화
         >
           완료!
         </Button>
