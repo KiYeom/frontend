@@ -8,7 +8,7 @@ import { useCallback } from "react";
 import { storageData, getData } from "../../utils/storageUtils";
 import { GOOGLE_KEY } from "../../utils/storageUtils";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { KeyboardAvoidingView, Platform } from "react-native";
+import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from "react-native";
 
 const InfoName: React.FC<any> = ({ navigation }) => {
   const [text, setText] = React.useState("");
@@ -36,11 +36,11 @@ const InfoName: React.FC<any> = ({ navigation }) => {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView edges={["bottom"]} style={styles.block}>
+      <SafeAreaView edges={["bottom", "top"]} style={styles.block}>
+      <TouchableWithoutFeedback onPress = {Keyboard.dismiss}>
         <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          behavior = {"padding"}
           style={styles.container}
-          keyboardVerticalOffset={80}
         >
           <View style={styles.imgArea}>
             <Image
@@ -77,6 +77,7 @@ const InfoName: React.FC<any> = ({ navigation }) => {
             </Button>
           </View>
         </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
       </SafeAreaView>
     </SafeAreaProvider>
   );
