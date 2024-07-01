@@ -7,9 +7,13 @@ import * as SplashScreen from "expo-splash-screen";
 import { useCallback } from "react";
 import { storageData, getData } from "../../utils/storageUtils";
 import { GOOGLE_KEY } from "../../utils/storageUtils";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { KeyboardAvoidingView, Platform } from "react-native";
 
 const InfoName: React.FC<any> = ({ navigation }) => {
   const [text, setText] = React.useState("");
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+
   const saveInfoName = async () => {
     const data = await getData(GOOGLE_KEY);
     data.nickname = text;
@@ -19,41 +23,62 @@ const InfoName: React.FC<any> = ({ navigation }) => {
     const test = await getData(GOOGLE_KEY);
     //console.log("========test======== : ", test);
   };
-  return (
-    <View style={styles.container}>
-      <View>
-        <Image
-          source={require("../../assets/cookieSplash.png")}
-          style={styles.image}
-          resizeMode="contain"
-        />
-      </View>
-      <View style={styles.textArea}>
-        <Text style={styles.txt}>만나서 반가워요, 멍!🐶</Text>
-        <Text style={styles.txt1}>쿠키에게 당신의 이름을 알려주세요 :)</Text>
-        {/* <Text style={styles.txt1}>쿠키는 당신의 이름을 알고 싶어요:)</Text> */}
-      </View>
-
-      <TextInput
-        label="이름 (15자 이내)"
-        value={text}
-        onChangeText={(text) => setText(text)}
-        maxLength={15}
-        style={styles.input}
-      />
-
-      <View>
-        <Button
-          icon="check"
-          mode="contained"
-          onPress={saveInfoName}
-          textColor="#000"
-          style={styles.btn}
+  const handleText = (text: string) => {
+    setText(text);
+    setIsButtonDisabled(text.trim().length === 0);
+  };
+  /*        </KeyboardAvoidingView>
+          <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+          style={styles.container}
         >
-          완료!
-        </Button>
-      </View>
-    </View>
+   */
+
+  return (
+    <SafeAreaProvider>
+      <SafeAreaView edges={["bottom"]} style={styles.block}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles.container}
+          keyboardVerticalOffset={80}
+        >
+          <View style={styles.imgArea}>
+            <Image
+              source={require("../../assets/cookieSplash.png")}
+              style={styles.image}
+              resizeMode="contain"
+            />
+          </View>
+          <View style={styles.textArea}>
+            <Text style={styles.txt}>만나서 반가워요, 멍!🐶</Text>
+            <Text style={styles.txt1}>
+              쿠키에게 당신의 이름을 알려주세요 :)
+            </Text>
+          </View>
+
+          <View style={styles.formArea}>
+            <TextInput
+              label="이름 (15자 이내)"
+              value={text}
+              onChangeText={(text) => handleText(text)}
+              maxLength={15}
+              style={styles.input}
+            />
+
+            <Button
+              icon="check"
+              mode="contained"
+              onPress={saveInfoName}
+              textColor="#000"
+              disabled={isButtonDisabled}
+              style={styles.btn}
+            >
+              완료!
+            </Button>
+          </View>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 };
 
@@ -63,12 +88,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
-    padding: 20, // 추가된 패딩으로 컨테이너의 여백 확보
+    padding: 20,
   },
   image: {
     width: 200,
     height: 200,
-    marginVertical: 20, // 이미지 상하 여백 추가
   },
   btn: {
     width: "30%",
@@ -78,18 +102,33 @@ const styles = StyleSheet.create({
   },
   input: {
     width: "100%",
-    marginVertical: 20, // 입력 상자 상하 여백 추가
   },
   textArea: {
     width: "100%",
-    padding: 10, // 텍스트 영역의 내부 패딩 추가
-    marginBottom: 20, // 텍스트 영역의 하단 여백 추가
+    flex: 1,
+    //backgroundColor: "blue",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imgArea: {
+    flex: 1,
+    //backgroundColor: "yellow",
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  formArea: {
+    flex: 1,
+    width: "100%",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    //backgroundColor: "red",
   },
   txt: {
     fontSize: 20,
     textAlign: "center",
     color: "#000", // 텍스트 색상 설정
-    marginBottom: 10, // 텍스트 간의 간격 추가
+    marginBottom: 10,
     fontFamily: "Pretendard-Bold",
   },
   txt1: {
@@ -97,9 +136,16 @@ const styles = StyleSheet.create({
     // fontWeight: "bold",
     textAlign: "center",
     color: "#000", // 텍스트 색상 설정
-    marginBottom: 10, // 텍스트 간의 간격 추가
+    marginBottom: 10,
     // fontFamily: "Pretendard-Medium",
     fontFamily: "Pretendard-Medium",
+  },
+  block: {
+    flex: 1,
+    backgroundColor: "white",
+  },
+  avoid: {
+    flex: 1,
   },
 });
 
