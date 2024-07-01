@@ -15,7 +15,11 @@ const GenderButton: React.FC<props> = ({
   setSelectedGender,
 }) => {
   const onPress = (gender: "male" | "female") => {
-    setSelectedGender(gender);
+    if (selectedGender == gender) {
+      setSelectedGender("");
+    } else {
+      setSelectedGender(gender);
+    }
   };
   return (
     <View style={styles.container}>
