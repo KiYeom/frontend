@@ -33,6 +33,7 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
       DATA.gender = FEMALE;
     }
 
+    setIsButtonDisabled(false);
     navigation.navigate("Tabbar");
 
 

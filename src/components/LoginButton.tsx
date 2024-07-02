@@ -13,6 +13,8 @@ import { useNavigation } from "@react-navigation/native";
 import Login from "../screen/Login";
 import axios from "axios";
 import { storage } from "../../utils/storageUtils";
+import { DATA, LOGINDATA } from "../constants/Constants";
+import InfoScreen from "../screen/InfoScreen";
 //WebBrowser.maybeCompleteAuthSession();
 // 로그인 버튼 누르면 웹 브라우저가 열리고, 구글 로그인 페이지로 이동함.
 //web popup을 무시하기 위해 WebBrowser.maybeCompleteAuthSession()을 사용한다.
@@ -47,44 +49,18 @@ const LoginButton: React.FC<any> = ({ navigation }) => {
             const hasPreviousSignIn = await GoogleSignin.hasPlayServices();
             //hasPlayServices : 이전에 로그인한 적이 있으면 true, 없으면 false
             const userInfo = await GoogleSignin.signIn();
-            const providerCode = userInfo.user.id; //유저의 고유 아이디값
+            //const providerCode = userInfo.user.id; //유저의 고유 아이디값
             
+            //console.log("로그인 버튼~~~~~~", userInfo, userInfo.user.email);
+            DATA.email = userInfo.user.email;
+            //DATA.email = userInfo.user.email;
+            LOGINDATA.providerName = "google";
+            LOGINDATA.providerCode = userInfo.user.id;      
 
-            const value: object = {
-              email: userInfo.user.email,
-              providerName: "google",
-              providerCode: providerCode,
-              nickname: null,
-              birthdate: null,
-              gender: null,
-            }; //storage에 저장할 데이터
-
-
-            storage.set("email", userInfo.user.email);
-            storage.set("providerName", "google");
-            storage.set("providerCode", providerCode);
-            storage.set("nickname", "");
-            storage.set("birthdate", "");
-            storage.set("gender", "");
-            
-
-
-            console.log("value : ", value); //유저의 정보 value를 만들었음
-            //await storageData(GOOGLE_KEY, value); //만든 데이터를 async storage에 저장
-            //const stringifyValye = JSON.stringify(value);
-            //storage.set(GOOGLE_KEY, stringifyValye);
-            const newData = {
-              providerName: "google",
-              providerCode: providerCode,
-              deviceId: "aflkqwr",
-              appVersion: "v1.0.0",
-              deviceOs: "ios15.1",
-              notificationToken: "adfasdf",
-            };
-            console.log("전달하는 데이터 확인", newData);
+            console.log("전달하는 데이터 확인", LOGINDATA);
             // 로그인에 성공하면 JWT 토큰을 부여받는다.
             axios
-              .post("http://34.125.112.144:8000/api/v1/auth/login", newData)
+              .post("http://34.125.112.144:8000/api/v1/auth/login", LOGINDATA)
               .then(function (response) {
                 //가입한 적이 있으면 서버는 토큰을 클라이언트에게 발급해준다.
                 //발급한 토큰을 클라이언트는 storage에 key-value로 저장해둔다.
@@ -96,7 +72,8 @@ const LoginButton: React.FC<any> = ({ navigation }) => {
                 console.log("error 발생, 로그인 실패", error);
                 //존재하지 않는 사용자는 code 404 (error.response.status) -> 인포메이션 페이지로 (회원가입 페이지 )
                 if (error.response.status == 404) {
-                  console.log(error.response.data);
+                  //console.log(error.response.data);
+                  console.log("존재하지 않는 사용자");
                   navigation.navigate("InfoScreen");
                 }
               });

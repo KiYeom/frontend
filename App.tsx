@@ -19,6 +19,7 @@ import { GOOGLE_KEY } from "./utils/storageUtils";
 import SplashScreen from "./src/screen/SplashScreen";
 import axios from "axios";
 import { storage } from "./utils/storageUtils";
+import { LOGINDATA, REFRESHDATA } from "./src/constants/Constants";
 
 const Stack = createNativeStackNavigator();
 
@@ -39,37 +40,42 @@ const App: React.FC = () => {
       try {
         const accessToken = storage.getString("ACCESS_TOKEN");
         const refreshToken = storage.getString("REFRESH_TOKEN");
-        console.log("accessToken : ", accessToken);
-        console.log("refreshToken : ", refreshToken);
+        setIsSignIn(!!accessToken); //근데 isSignin이 왜 false 이지
         if (accessToken) {
+          if (refreshToken != null
+          ) {
+            REFRESHDATA.refreshToken = refreshToken;
+          }
+          console.log("access token이 존재한다");
+          console.log(REFRESHDATA);
+          
           //토큰이 있으면 우리 회원이다.
           //<1> refresh token으로 access token으로 재발급 받는다. -> 재발급에 성공하면 access token으로 유저 정보를 받고 홈 화면에 보인다.
           axios
-            .get("http://34.125.112.144:8000/api/auth/refresh", {
-              data : {
-                "deviceId" : "dd96dec43fb81c97",
-                "appVersion" : "1.0.0",
-                "deviceOs" : "Android 10",
-                "refreshToken" : refreshToken,
-              }
+            .post("http://34.125.112.144:8000/api/v1/auth/refresh", {
+              data : REFRESHDATA
             })
             .then(function (response) {
               //성공 : refresh token으로 access token 재발급 (재발급하는 코드 작성)
               // -> 성공적으로 access token을 재발급 받았다면 access token으로 유저 정보를 받고 홈화면
               // -> refresh token 역시 만료되어 재발급이 불가한 경우, 로그인 페이지로
-              console.log("리프레시 토큰 발급", response);
-
+              console.log("리프레시 토큰 발급 성공", response);
             })
             .catch(function (error) {
               //실패한 경우 >> 로그인 페이지로
               //navigation.navigate("Login");
               //setIsSignIn(false); //로그인 실패
-              console.log("catch문으로 들어옴");
+              //오류 발생 시 실행
+              console.log("refreshToken error(data): ", error.response.data);
+              console.log("refreshToken error(stats)", error.response.status);
+              console.log("refreshToken error(headers)", error.response.headers);
+              console.log("리프레시 토큰")
             });
-          setIsSignIn(true);
+            setIsSignIn(true);
+          
         } else { //토큰이 없으면, 다른 기기에서 접근한 것이거나 우리의 회원이 아니다. 로그인 화면을 보여준다.
-          console.log("토큰이 없다 = 회원가입이 안 되어있다");
           setIsSignIn(false);
+          console.log("토큰이 없다 = 회원가입이 안 되어있다 ");
         }
       } catch (error) {
         console.log(error);
@@ -91,16 +97,15 @@ const App: React.FC = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Login" component={Login} />
-        {isSignIn == true ? ( //로그인이 되어있는 경우 바로 홈 화면, 로그인이 안 되어있는 경우에는 로그인 화면과 회원가입 화면
+        
+        {isSignIn ? ( //로그인이 되어있는 경우 바로 홈 화면, 로그인이 안 되어있는 경우에는 로그인 화면과 회원가입 화면
           <>
-            <Stack.Screen name="InfoScreen" component={InfoScreen} />
             <Stack.Screen name="Tabbar" component={Tabbar} />
           </>
         ) : ( 
           <>
+            <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="InfoScreen" component={InfoScreen} />
-            <Stack.Screen name="Tabbar" component={Tabbar} />
           </>
         )}
       </Stack.Navigator>

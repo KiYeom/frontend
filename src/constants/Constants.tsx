@@ -6,28 +6,32 @@ export enum USER {
 export const MALE = 1;
 export const FEMALE = 2;
 
-interface User {
-  email: string;
-  providerName: string;
-  providerCode: string;
-  nickname: string;
-  birthdate: string;
-  gender: number | null;
-  deviceId: string;
-  appVersion: string;
-  deviceOs: string;
-  notificationToken: string;
+
+export const REFRESHDATA = {
+  deviceId : "qwer",
+  appVersion : "1.0.0",
+  deviceOs : "ios15.1",
+  refreshToken : "qewr"
 }
 
-export const DATA : User = {
-  email : "email",
-  providerName : "providerName",
+export const LOGINDATA = {
+  providerName : "google",
   providerCode : "providerCode",
-  nickname : "nickname",
-  birthdate : "birthdate",
-  gender : null,
-  deviceId : "qwer1234",
+  deviceId : "qwer",
   appVersion : "v1.0.0",
   deviceOs : "ios15.1",
-  notificationToken : "qweqr1234"
+  notificationToken : "qwer"
+}
+
+export const DATA  = {
+  providerName : "google",
+  providerCode : "providerCode",
+  deviceId : "qwer",
+  appVersion : "v1.0.0",
+  deviceOs : "ios15.1",
+  notificationToken : "qwer",
+  email : "email",
+  nickname : "nickname",
+  birthdate : "birthdate",
+  gender : 0,
 };
