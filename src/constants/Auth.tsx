@@ -1,0 +1,4 @@
+export enum AUTH {
+  ACCESS_TOKEN = 'SESSION_TOKEN',
+  REFRESH_TOKEN = 'REFRESH_TOKEN',
+}

@@ -21,6 +21,7 @@ const GenderButton: React.FC<props> = ({
       setSelectedGender(gender);
     }
   };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity

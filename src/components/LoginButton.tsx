@@ -12,6 +12,7 @@ import { GOOGLE_KEY } from "../../utils/storageUtils";
 import { useNavigation } from "@react-navigation/native";
 import Login from "../screen/Login";
 import axios from "axios";
+import { storage } from "../../utils/storageUtils";
 //WebBrowser.maybeCompleteAuthSession();
 // 로그인 버튼 누르면 웹 브라우저가 열리고, 구글 로그인 페이지로 이동함.
 //web popup을 무시하기 위해 WebBrowser.maybeCompleteAuthSession()을 사용한다.
@@ -47,7 +48,9 @@ const LoginButton: React.FC<any> = ({ navigation }) => {
             //hasPlayServices : 이전에 로그인한 적이 있으면 true, 없으면 false
             const userInfo = await GoogleSignin.signIn();
             const providerCode = userInfo.user.id; //유저의 고유 아이디값
-            const value: UserData = {
+            
+
+            const value: object = {
               email: userInfo.user.email,
               providerName: "google",
               providerCode: providerCode,
@@ -55,8 +58,21 @@ const LoginButton: React.FC<any> = ({ navigation }) => {
               birthdate: null,
               gender: null,
             }; //storage에 저장할 데이터
+
+
+            storage.set("email", userInfo.user.email);
+            storage.set("providerName", "google");
+            storage.set("providerCode", providerCode);
+            storage.set("nickname", "");
+            storage.set("birthdate", "");
+            storage.set("gender", "");
+            
+
+
             console.log("value : ", value); //유저의 정보 value를 만들었음
-            await storageData(GOOGLE_KEY, value); //만든 데이터를 async storage에 저장
+            //await storageData(GOOGLE_KEY, value); //만든 데이터를 async storage에 저장
+            //const stringifyValye = JSON.stringify(value);
+            //storage.set(GOOGLE_KEY, stringifyValye);
             const newData = {
               providerName: "google",
               providerCode: providerCode,
@@ -65,6 +81,7 @@ const LoginButton: React.FC<any> = ({ navigation }) => {
               deviceOs: "ios15.1",
               notificationToken: "adfasdf",
             };
+            console.log("전달하는 데이터 확인", newData);
             // 로그인에 성공하면 JWT 토큰을 부여받는다.
             axios
               .post("http://34.125.112.144:8000/api/v1/auth/login", newData)
