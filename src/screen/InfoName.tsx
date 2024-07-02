@@ -9,30 +9,22 @@ import { storageData, getData } from "../../utils/storageUtils";
 import { GOOGLE_KEY } from "../../utils/storageUtils";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from "react-native";
+import { storage } from "../../utils/storageUtils";
+import { USER } from "../constants/Constants";
 
 const InfoName: React.FC<any> = ({ navigation }) => {
   const [text, setText] = React.useState("");
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
   const saveInfoName = async () => {
-    const data = await getData(GOOGLE_KEY);
-    data.nickname = text;
-    storageData(GOOGLE_KEY, data);
-    storageData("NICKNAME", text);
+    USER.NICKNAME = text;
     navigation.navigate("InfoAge");
-    const test = await getData(GOOGLE_KEY);
-    //console.log("========test======== : ", test);
   };
+
   const handleText = (text: string) => {
     setText(text);
     setIsButtonDisabled(text.trim().length === 0);
   };
-  /*        </KeyboardAvoidingView>
-          <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : undefined}
-          style={styles.container}
-        >
-   */
 
   return (
     <SafeAreaProvider>
@@ -51,7 +43,7 @@ const InfoName: React.FC<any> = ({ navigation }) => {
           </View>
           <View style={styles.textArea}>
             <Text style={styles.txt}>만나서 반가워요, 멍!🐶</Text>
-            <Text style={styles.txt1}>
+            <Text style={styles.txt}>
               쿠키에게 당신의 이름을 알려주세요 :)
             </Text>
           </View>

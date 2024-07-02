@@ -9,48 +9,52 @@ import { getData } from "../../utils/storageUtils";
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
+import { storage } from "../../utils/storageUtils";
+import { USER, MALE, FEMALE } from "../constants/Constants";
 
 //console.log(axios.isCancel("something"));
 
 const InfoGender: React.FC<any> = ({ navigation }) => {
   const [selectedGender, setSelectedGender] = useState("");
-  //찐 완료 버튼 -> 데이터를 서버로 보내주자 (post)
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const isMale = selectedGender === "male";
+  const isFemale = selectedGender === "female";
+  
 
   useEffect(() => {
     setIsButtonDisabled(selectedGender === "");
+    
   }, [selectedGender]);
 
   const saveInfoGender = async () => {
-    const data = await getData(GOOGLE_KEY);
-    const additionalData = {
-      deviceId: "aflkqwr",
-      appVersion: "v1.0.0",
-      deviceOs: "ios15.1",
-      notificationToken: "sdfqwerzxv",
-    };
-    if (selectedGender === "male") {
-      data.gender = 1;
-    } else if (selectedGender === "female") {
-      data.gender = 2;
+    if (isMale) {
+      USER.GENDER = MALE;
+    } else if (isFemale) {
+      USER.GENDER = FEMALE;
     }
-    await storageData(GOOGLE_KEY, data);
-    await storageData("GENDER", data.gender);
+
+    setIsButtonDisabled(false);
     navigation.navigate("Tabbar");
-    const test = await getData(GOOGLE_KEY);
-    //console.log("========infoGender test======== : ", test);
-    const newData = {
-      ...data,
-      ...additionalData,
-    };
-    //console.log("newData : ", newData);
+
+
+    //console.log("회원가입에 사용하는 데이터", DATA);
+
     axios //회원가입하기
-      .post("http://34.125.112.144:8000/api/v1/auth/signup", newData)
+      .post("http://34.125.112.144:8000/api/v1/auth/signup", {
+        email : USER.EMAIL,
+        providerName : USER.PROVIDERNAME,
+        providerCode : USER.PROVIDERCODE,
+        nickname : USER.NICKNAME,
+        birthdate : USER.BIRTHDATE,
+        gender : USER.GENDER,
+        deviceId : USER.DEVICEID,
+        appVersion : USER.APPVERSION,
+        deviceOs : USER.DEVICEOS,
+        notificationToken : USER.NOTIFICATIONTOKEN,
+      })
       .then(function (response) {
-        //response
         console.log("signup response", response);
-        storageData("ACCESS_TOKEN", response.data.data.accessToken);
-        storageData("EMAIL", response.data.data.email);
+        storage.set("ACCESS_TOKEN", response.data.data.accessToken);
       })
       .catch(function (error) {
         //오류 발생 시 실행

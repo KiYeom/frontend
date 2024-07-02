@@ -5,17 +5,16 @@ import { Button, TextInput } from "react-native-paper";
 import { getData } from "../../utils/storageUtils";
 import { storageData } from "../../utils/storageUtils";
 import { GOOGLE_KEY } from "../../utils/storageUtils";
+import { storage } from "../../utils/storageUtils";
+import { USER } from "../constants/Constants";
 
 const InfoAge: React.FC<any> = ({ navigation }) => {
   const [text, setText] = React.useState("");
   const saveInfoAge = async () => {
-    const data = await getData(GOOGLE_KEY);
-    //console.log("날짜로 바꾸기 전 : ", text);
-    data.birthdate = text;
-    await storageData(GOOGLE_KEY, data);
-    await storageData("BIRTHDATE", text);
-    navigation.navigate("InfoGender");
-    //console.log("========infoage test======== : ", test);
+    //const event = new Date('text');
+    //DATA.birthdate = event.toISOString();
+    USER.BIRTHDATE = text;
+    navigation.navigate("InfoGender");   
   };
 
   return (

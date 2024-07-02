@@ -6,9 +6,12 @@ import {
   GoogleSignin,
   statusCodes,
 } from "@react-native-google-signin/google-signin";
+import axios from "axios";
+import { storage } from "../../utils/storageUtils";
 import { deleteDate } from "../../utils/storageUtils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { GOOGLE_KEY } from "../../utils/storageUtils";
+import { USER } from "../constants/Constants";
 const LogoutButton: React.FC<any> = ({ navigation }) => {
   const handleLogout = async () => {
     //Google객체를 사용하려면 반드시 configure 메서드를 호출해야 한다.
@@ -16,9 +19,25 @@ const LogoutButton: React.FC<any> = ({ navigation }) => {
       iosClientId:
         "94079762653-arcgeib4l0hbg6snh81cjimd9iuuoun3.apps.googleusercontent.com",
     });
+    const accessToken = storage.getString("ACCESS_TOKEN");
     try {
       await GoogleSignin.signOut(); //계정 로그아웃
-      //deleteDate(GOOGLE_KEY);
+      //로그아웃 api 호출
+      axios
+        .delete("http://34.125.112.144:8000/api/v1/auth/logout", {
+          headers: { Authorization: `Bearer ${accessToken}` },
+          data : {deviceId : USER.DEVICEID},
+        })
+        .then(function (response) {
+          //성공 : 로그아웃이 됨
+          console.log("로그아웃 완료. response : ", response);
+        })
+        .catch(function (error) {
+          //실패한 경우 >> 로그인 페이지로
+          //navigation.navigate("Login");
+          //setIsSignIn(false); //로그인 실패
+          console.log("로그아웃 실패함", error);
+        });
       console.log("눌림");
       navigation.navigate("Login");
     } catch (error) {
