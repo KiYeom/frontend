@@ -19,7 +19,7 @@ import { GOOGLE_KEY } from "./utils/storageUtils";
 import SplashScreen from "./src/screen/SplashScreen";
 import axios from "axios";
 import { storage } from "./utils/storageUtils";
-import { LOGINDATA, REFRESHDATA } from "./src/constants/Constants";
+import { USER } from "./src/constants/Constants";
 
 const Stack = createNativeStackNavigator();
 
@@ -42,18 +42,17 @@ const App: React.FC = () => {
         const refreshToken = storage.getString("REFRESH_TOKEN");
         setIsSignIn(!!accessToken); //근데 isSignin이 왜 false 이지
         if (accessToken) {
-          if (refreshToken != null
-          ) {
-            REFRESHDATA.refreshToken = refreshToken;
-          }
           console.log("access token이 존재한다");
-          console.log(REFRESHDATA);
+          //console.log(REFRESHDATA);
           
           //토큰이 있으면 우리 회원이다.
           //<1> refresh token으로 access token으로 재발급 받는다. -> 재발급에 성공하면 access token으로 유저 정보를 받고 홈 화면에 보인다.
           axios
             .post("http://34.125.112.144:8000/api/v1/auth/refresh", {
-              data : REFRESHDATA
+                deviceId : USER.DEVICEID,  
+                appVersion : USER.APPVERSION,
+                deviceOs : USER.DEVICEOS,
+                refreshToken : USER.REFRESHTOKEN,
             })
             .then(function (response) {
               //성공 : refresh token으로 access token 재발급 (재발급하는 코드 작성)
@@ -66,10 +65,10 @@ const App: React.FC = () => {
               //navigation.navigate("Login");
               //setIsSignIn(false); //로그인 실패
               //오류 발생 시 실행
+              console.log("리프레시 토큰 발급 실패")
               console.log("refreshToken error(data): ", error.response.data);
               console.log("refreshToken error(stats)", error.response.status);
               console.log("refreshToken error(headers)", error.response.headers);
-              console.log("리프레시 토큰")
             });
             setIsSignIn(true);
           
@@ -101,6 +100,8 @@ const App: React.FC = () => {
         {isSignIn ? ( //로그인이 되어있는 경우 바로 홈 화면, 로그인이 안 되어있는 경우에는 로그인 화면과 회원가입 화면
           <>
             <Stack.Screen name="Tabbar" component={Tabbar} />
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="InfoScreen" component={InfoScreen} />
           </>
         ) : ( 
           <>

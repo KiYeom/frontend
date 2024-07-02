@@ -11,6 +11,7 @@ import { storage } from "../../utils/storageUtils";
 import { deleteDate } from "../../utils/storageUtils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { GOOGLE_KEY } from "../../utils/storageUtils";
+import { USER } from "../constants/Constants";
 const LogoutButton: React.FC<any> = ({ navigation }) => {
   const handleLogout = async () => {
     //Google객체를 사용하려면 반드시 configure 메서드를 호출해야 한다.
@@ -25,7 +26,7 @@ const LogoutButton: React.FC<any> = ({ navigation }) => {
       axios
         .delete("http://34.125.112.144:8000/api/v1/auth/logout", {
           headers: { Authorization: `Bearer ${accessToken}` },
-          data : {"deviceId" : "device123"},
+          data : {deviceId : USER.DEVICEID},
         })
         .then(function (response) {
           //성공 : 로그아웃이 됨

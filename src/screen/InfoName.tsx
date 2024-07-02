@@ -10,14 +10,14 @@ import { GOOGLE_KEY } from "../../utils/storageUtils";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { storage } from "../../utils/storageUtils";
-import { USER, DATA } from "../constants/Constants";
+import { USER } from "../constants/Constants";
 
 const InfoName: React.FC<any> = ({ navigation }) => {
   const [text, setText] = React.useState("");
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
   const saveInfoName = async () => {
-    DATA.nickname = text;
+    USER.NICKNAME = text;
     navigation.navigate("InfoAge");
   };
 

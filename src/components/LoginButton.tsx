@@ -13,7 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import Login from "../screen/Login";
 import axios from "axios";
 import { storage } from "../../utils/storageUtils";
-import { DATA, LOGINDATA } from "../constants/Constants";
+import { USER } from "../constants/Constants";
 import InfoScreen from "../screen/InfoScreen";
 //WebBrowser.maybeCompleteAuthSession();
 // 로그인 버튼 누르면 웹 브라우저가 열리고, 구글 로그인 페이지로 이동함.
@@ -52,20 +52,28 @@ const LoginButton: React.FC<any> = ({ navigation }) => {
             //const providerCode = userInfo.user.id; //유저의 고유 아이디값
             
             //console.log("로그인 버튼~~~~~~", userInfo, userInfo.user.email);
-            DATA.email = userInfo.user.email;
-            //DATA.email = userInfo.user.email;
-            LOGINDATA.providerName = "google";
-            LOGINDATA.providerCode = userInfo.user.id;      
+            USER.EMAIL = userInfo.user.email;
+            USER.PROVIDERCODE = userInfo.user.id;      
 
-            console.log("전달하는 데이터 확인", LOGINDATA);
+            console.log("로그인을 위해 전달하려는 데이터", USER);
             // 로그인에 성공하면 JWT 토큰을 부여받는다.
             axios
-              .post("http://34.125.112.144:8000/api/v1/auth/login", LOGINDATA)
+              .post("http://34.125.112.144:8000/api/v1/auth/login", {
+                providerName: USER.PROVIDERNAME,
+                providerCode: USER.PROVIDERCODE,
+                deviceId: USER.DEVICEID,
+                appVersion: USER.APPVERSION,
+                deviceOs: USER.DEVICEOS,
+                notificationToken: USER.NOTIFICATIONTOKEN,
+              })
               .then(function (response) {
                 //가입한 적이 있으면 서버는 토큰을 클라이언트에게 발급해준다.
                 //발급한 토큰을 클라이언트는 storage에 key-value로 저장해둔다.
-                storageData("ACCESS_TOKEN", response.data.data.accessToken); //access token을 storage에 저장
-                storageData("REFRESH_TOKEN", response.data.data.refreshToken); //refresh token을 storage에 저장
+                storage.set("ACCESS_TOKEN", response.data.data.accessToken); //access token을 storage에 저장
+                storage.set("REFRESH_TOKEN", response.data.data.refreshToken); //refresh token을 storage에 저장
+                USER.NICKNAME = response.data.data.nickname;
+                USER.GENDER = response.data.data.gender;
+                USER.BIRTHDATE = response.data.data.birthdate;
                 navigation.navigate("Tabbar"); //저장하고 메인 페이지로 이동
               })
               .catch(function (error) {

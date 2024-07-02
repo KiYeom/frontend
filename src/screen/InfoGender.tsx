@@ -10,7 +10,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
 import { storage } from "../../utils/storageUtils";
-import { USER, MALE, FEMALE, DATA } from "../constants/Constants";
+import { USER, MALE, FEMALE } from "../constants/Constants";
 
 //console.log(axios.isCancel("something"));
 
@@ -28,23 +28,33 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
 
   const saveInfoGender = async () => {
     if (isMale) {
-      DATA.gender = MALE;
+      USER.GENDER = MALE;
     } else if (isFemale) {
-      DATA.gender = FEMALE;
+      USER.GENDER = FEMALE;
     }
 
     setIsButtonDisabled(false);
     navigation.navigate("Tabbar");
 
 
-    console.log("회원가입에 사용하는 데이터", DATA);
+    //console.log("회원가입에 사용하는 데이터", DATA);
 
     axios //회원가입하기
-      .post("http://34.125.112.144:8000/api/v1/auth/signup", DATA)
+      .post("http://34.125.112.144:8000/api/v1/auth/signup", {
+        email : USER.EMAIL,
+        providerName : USER.PROVIDERNAME,
+        providerCode : USER.PROVIDERCODE,
+        nickname : USER.NICKNAME,
+        birthdate : USER.BIRTHDATE,
+        gender : USER.GENDER,
+        deviceId : USER.DEVICEID,
+        appVersion : USER.APPVERSION,
+        deviceOs : USER.DEVICEOS,
+        notificationToken : USER.NOTIFICATIONTOKEN,
+      })
       .then(function (response) {
         console.log("signup response", response);
         storage.set("ACCESS_TOKEN", response.data.data.accessToken);
-        storage.set("EMAIL", response.data.data.email);
       })
       .catch(function (error) {
         //오류 발생 시 실행

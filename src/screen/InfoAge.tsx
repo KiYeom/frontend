@@ -6,16 +6,15 @@ import { getData } from "../../utils/storageUtils";
 import { storageData } from "../../utils/storageUtils";
 import { GOOGLE_KEY } from "../../utils/storageUtils";
 import { storage } from "../../utils/storageUtils";
-import { USER, DATA } from "../constants/Constants";
+import { USER } from "../constants/Constants";
 
 const InfoAge: React.FC<any> = ({ navigation }) => {
   const [text, setText] = React.useState("");
   const saveInfoAge = async () => {
     //const event = new Date('text');
     //DATA.birthdate = event.toISOString();
-    DATA.birthdate = text;
-    navigation.navigate("InfoGender");
-    
+    USER.BIRTHDATE = text;
+    navigation.navigate("InfoGender");   
   };
 
   return (

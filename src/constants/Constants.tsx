@@ -1,37 +1,33 @@
-export enum USER {
-  NICKNAME = 'NICKNAME',
-  BIRTHDATE = 'BIRTHDATE',
-  GENDER = 'GENDER',
-}
 export const MALE = 1;
 export const FEMALE = 2;
 
-
-export const REFRESHDATA = {
-  deviceId : "qwer",
-  appVersion : "1.0.0",
-  deviceOs : "ios15.1",
-  refreshToken : "qewr"
+const APP_VERSION = "1.0.0"
+export interface User {
+  EMAIL : string;
+  NICKNAME: string;
+  BIRTHDATE: string;
+  GENDER: number | null;
+  DEVICEID: string;
+  APPVERSION: string;
+  DEVICEOS: string;
+  PROVIDERNAME: string;
+  PROVIDERCODE: string;
+  NOTIFICATIONTOKEN: string;
+  ACCESSTOKEN: string;
+  REFRESHTOKEN: string;
 }
 
-export const LOGINDATA = {
-  providerName : "google",
-  providerCode : "providerCode",
-  deviceId : "qwer",
-  appVersion : "v1.0.0",
-  deviceOs : "ios15.1",
-  notificationToken : "qwer"
+export const USER : User = {
+  EMAIL : "email",
+  NICKNAME : "nickname",
+  BIRTHDATE : 'birthdate',
+  GENDER : null,
+  DEVICEID : 'deviceId',
+  APPVERSION : "appVersion",
+  DEVICEOS : "deviceOs",
+  PROVIDERNAME : "google",
+  PROVIDERCODE : "providerCode",
+  NOTIFICATIONTOKEN : "notificationToken",
+  ACCESSTOKEN : "accessToken", // 수정된 부분
+  REFRESHTOKEN : "refreshToken",
 }
-
-export const DATA  = {
-  providerName : "google",
-  providerCode : "providerCode",
-  deviceId : "qwer",
-  appVersion : "v1.0.0",
-  deviceOs : "ios15.1",
-  notificationToken : "qwer",
-  email : "email",
-  nickname : "nickname",
-  birthdate : "birthdate",
-  gender : 0,
-};
