@@ -4,20 +4,9 @@ import { StyleSheet } from "react-native";
 //import Icon from "react-native-vector-icons/MaterialIcons";
 import { getData } from "../../utils/storageUtils";
 import { useEffect, useState } from "react";
+import { USER } from "../constants/Constants";
 
 const UserInfo: React.FC = () => {
-  const [nickname, setNickname] = useState<string | null>("test name");
-  const [email, setEmail] = useState<string | null>("test@example.com");
-  useEffect(() => {
-    const fetchData = async () => {
-      const fetchedNickname = await getData("NICKNAME");
-      const fetchedEmail = await getData("EMAIL");
-      console.log("fetch", fetchedNickname);
-      setNickname(fetchedNickname);
-      setEmail("test@example.com");
-    };
-    fetchData();
-  }, []);
   return (
     <View style={styles.container}>
       <View style={styles.imgContainer}>
@@ -28,8 +17,8 @@ const UserInfo: React.FC = () => {
         />
       </View>
       <View style={styles.userInfoContainer}>
-        <Text style={styles.userInfoText}>{nickname}</Text>
-        <Text style={styles.userInfoText}>{email}</Text>
+        <Text style={styles.userInfoText}>{USER.NICKNAME}</Text>
+        <Text style={styles.userInfoText}>{USER.EMAIL}</Text>
       </View>
     </View>
   );

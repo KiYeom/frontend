@@ -59,6 +59,7 @@ const App: React.FC = () => {
               // -> 성공적으로 access token을 재발급 받았다면 access token으로 유저 정보를 받고 홈화면
               // -> refresh token 역시 만료되어 재발급이 불가한 경우, 로그인 페이지로
               console.log("리프레시 토큰 발급 성공", response);
+              
             })
             .catch(function (error) {
               //실패한 경우 >> 로그인 페이지로
