@@ -49,6 +49,7 @@ const LogoutButton: React.FC<any> = ({ navigation }) => {
     } catch (error) {
       console.error(error);
     }
+    setIsDisabled(false)
   };
   const [isDisabled, setIsDisabled] = useState(false);
   return (

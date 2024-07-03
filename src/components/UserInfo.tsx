@@ -4,20 +4,25 @@ import { StyleSheet } from "react-native";
 //import Icon from "react-native-vector-icons/MaterialIcons";
 import { useEffect, useState } from "react";
 import { USER } from "../constants/Constants";
+import { Button } from "react-native-paper";
+import { IconButton, MD3Colors } from 'react-native-paper';
+import NameModal from "./NameModal";
+import { Modal, Portal, PaperProvider } from 'react-native-paper';
 
-const UserInfo: React.FC = () => {
+
+const UserInfo: React.FC<any> = ({showModal}) => {
+  const containerStyle = {backgroundColor: 'white', padding: 50};
   return (
     <View style={styles.container}>
-      <View style={styles.imgContainer}>
-        <Image
-          source={require("../../assets/cookieSplash.png")}
-          style={styles.image}
-          resizeMode="contain"
-        />
-      </View>
+      <Text>닉네임</Text>
       <View style={styles.userInfoContainer}>
         <Text style={styles.userInfoText}>{USER.NICKNAME}</Text>
-        <Text style={styles.userInfoText}>{USER.EMAIL}</Text>
+        <IconButton
+          icon="pencil"
+          iconColor="#58C3A5"
+          size={20}
+          onPress={showModal}
+        />
       </View>
     </View>
   );
@@ -25,32 +30,31 @@ const UserInfo: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    flexDirection: "row",
+    flex: 0.3,
+    width : "100%",
     backgroundColor: "#F8FCEC",
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "center",
-    paddingLeft: 16,
-    paddingRight: 16,
+    padding : 16,
   },
   imgContainer: {
     flex: 1,
-    //backgroundColor: "yellow",
+    backgroundColor: "yellow",
     justifyContent: "center",
     alignItems: "center",
   },
   userInfoContainer: {
-    flex: 2.5,
+    flex: 1,
     //backgroundColor: "blue",
-    paddingLeft: 16,
+    width : "100%",
+    flexDirection : "row",
     height: "100%",
-    justifyContent: "center",
-    alignItems: "flex-start",
+    justifyContent: "flex-start",
+    alignItems:"center",
   },
   userInfoText: {
     color: "black",
     fontSize: 20,
-    padding: 5,
   },
   image: {
     width: 100,

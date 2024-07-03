@@ -29,7 +29,7 @@ const UserSetting: React.FC<any> = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 2.5,
+    flex: 3,
     width: "100%",
     backgroundColor: "pink",
     alignItems: "center",

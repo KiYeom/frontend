@@ -41,6 +41,10 @@ const App: React.FC = () => {
         setIsSignIn(!!accessToken); 
         if (accessToken) {
           console.log("access token이 존재한다");
+          console.log("deviceId : ", USER.DEVICEID, 
+            "appVersion : ", USER.APPVERSION,
+          "deviceOs : ", USER.DEVICEOS,
+        "REFRESHTOken : ", USER.REFRESHTOKEN)
           //console.log(REFRESHDATA);
           
           //토큰이 있으면 우리 회원이다.
@@ -50,25 +54,32 @@ const App: React.FC = () => {
                 deviceId : USER.DEVICEID,  
                 appVersion : USER.APPVERSION,
                 deviceOs : USER.DEVICEOS,
-                refreshToken : USER.REFRESHTOKEN,
+                refreshToken : storage.getString(REFRESHTOKEN),
                 requireUserInfo : true,
             })
             .then(function (response) { //성공 => refresh token으로 access token 재발급하기
               // -> 성공적으로 access token을 재발급 받았다면 access token으로 유저 정보를 받고 홈화면
               // -> refresh token 역시 만료되어 재발급이 불가한 경우, 로그인 페이지로
-              console.log("리프레시 토큰 발급 성공", response);
-              storage.set(ACCESSTOKEN, response.data.accessToken);
-              USER.NICKNAME = response.data.nickname;
-              setIsSignIn(true);
+              try {
+                console.log("리프레시 토큰 발급 성공");
+                storage.set(ACCESSTOKEN, response.data.data.accessToken);
+                //console.log("새로 발급된 access token : ", storage.getString(ACCESSTOKEN))
+                USER.NICKNAME = response.data.data.nickname;
+                console.log("nickname 저장 확인", USER.NICKNAME);
+                setIsSignIn(true);
+              }catch (error) {
+                console.log("then 블록 내부 에러", error);
+                setIsSignIn(false);
+              }
             })
             .catch(function (error) {
               //refresh token도 만료되어 재발급이 불가한 경우 로그인 페이지로 이동하기
-              setIsSignIn(false); //로그인 실패
               //오류 발생 시 실행 알려주기
-              console.log("리프레시 토큰 발급 실패")
+              console.log("리프레시 토큰 발급 실패?")
               console.log("refreshToken error(data): ", error.response.data);
               console.log("refreshToken error(stats)", error.response.status);
               console.log("refreshToken error(headers)", error.response.headers);
+              setIsSignIn(false); //로그인 실패
             });
         } else { //토큰이 없으면, 다른 기기에서 접근한 것이거나 우리의 회원이 아니다. 로그인 화면을 보여준다.
           setIsSignIn(false);
@@ -98,6 +109,7 @@ const App: React.FC = () => {
         {isSignIn ? ( //로그인이 되어있는 경우 바로 홈 화면, 로그인이 안 되어있는 경우에는 로그인 화면과 회원가입 화면
           <>
             <Stack.Screen name="Tabbar" component={Tabbar}/>
+            <Stack.Screen name="Login" component={Login}/>
           </>
         ) : ( 
           <>
