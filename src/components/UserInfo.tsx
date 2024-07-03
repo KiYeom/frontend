@@ -2,7 +2,6 @@ import React from "react";
 import { Text, View, Image } from "react-native";
 import { StyleSheet } from "react-native";
 //import Icon from "react-native-vector-icons/MaterialIcons";
-import { getData } from "../../utils/storageUtils";
 import { useEffect, useState } from "react";
 import { USER } from "../constants/Constants";
 
