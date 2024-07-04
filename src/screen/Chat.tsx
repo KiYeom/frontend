@@ -4,14 +4,19 @@ import { Text, View, StyleSheet } from "react-native";
 import { Button, TextInput } from 'react-native-paper';
 
 const Chat: React.FC = () => {
-  const [text, setText] = React.useState("");
+  const [text, setText] = useState("");
+  const [myText, setMyText] = useState("");
+  const [aiText, setAiText] = useState("");
   const send = () => {
     console.log("보내기")
+    setMyText(text);
+    setText(""); 
   }
   return (
    <View style = {styles.container}>
     <View style = {styles.chat}>
-      <Text>채팅창</Text>
+      <Text>{myText}</Text>
+      
     </View>
     <View style = {styles.form}>
       <TextInput
