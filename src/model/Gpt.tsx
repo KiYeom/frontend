@@ -1,3 +1,36 @@
+import axios from "axios";
+import { storage } from "../../utils/storageUtils";
+import { ACCESSTOKEN } from "../constants/Constants";
+
+/* 백엔드 500번 에러 발생..
+export const callGpt = async (prompt) => {
+  // AccessToken을 가져옵니다.
+  const accessToken = storage.getString(ACCESSTOKEN);
+  console.log("accessToken", accessToken);
+
+  try {
+    // axios를 사용하여 POST 요청을 보냅니다.
+    const response = await axios.post(
+      "http://34.125.112.144:8000/chat", 
+      {
+        characterId: 1,
+        question: prompt, // prompt를 question 필드로 보냅니다.
+      },
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    // 요청이 성공하면 응답을 출력합니다.
+    console.log("백엔드 gpt랑 연결 완료");
+    console.log("response:", response.data);
+  } catch (error) {
+    // 오류가 발생하면 오류 정보를 출력합니다.
+    console.log("백엔드랑 gpt 연결 실패...");
+    console.log("error:", error);
+  }
+};
+*/
+
 import Config from "react-native-config";
 
 const apikey = process.env.EXPO_PUBLIC_API_KEY;

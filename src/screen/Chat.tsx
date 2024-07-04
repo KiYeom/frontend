@@ -4,91 +4,12 @@ import { Text, View, StyleSheet, FlatList } from "react-native";
 import { Button, TextInput } from 'react-native-paper';
 import ChatBubble from "../components/ChatBubble";
 import { callGpt } from "../model/Gpt";
-/*
-interface Message {
-  sender: 'user' | 'bot';
-  text: string;
-}
-const Chat: React.FC = () => {
-  const [text, setText] = useState("");
-  const [myText, setMyText] = useState("");
-  const [aiText, setAiText] = useState("");
-  const send = () => {
-    console.log("보내기")
-    setMyText(text);
-    setText(""); 
-  }
-  const message : Message = {
-    sender : "user",
-    text : "my name is eunseo",
-  }
-  const message1 : Message = {
-    sender : "bot",
-    text : "hi eunseo",
-  }
-  return (
-   <View style = {styles.container}>
-    <View style = {styles.chat}>
-    <ChatBubble message = {message}/>
-    <ChatBubble message = {message1}/>
-      
-    </View>
-    <View style = {styles.form}>
-      <TextInput
-        label="send message to cookie🐶"
-        value={text}
-        onChangeText={text => setText(text)}
-        mode = "outlined"
-        style = {styles.input}
-      />
-      <Button mode = "contained" onPress = {send} style = {styles.btn}>
-        send
-      </Button>
-    </View>
-   </View>
-    
-  );
-};
-
-const styles = StyleSheet.create({
-  container : {
-    width : "100%",
-    height : "100%",
-    paddingLeft : 16,
-    paddingRight : 16,
-    //backgroundColor : "red",
-  },
-  form : {
-    flexDirection : "row",
-    width : "100%",
-    //backgroundColor : "blue",
-    justifyContent : "space-between",
-    paddingBottom : 10,
-    paddingTop : 10,
-  },
-  input : {
-    width : "75%",
-  },
-  btn : {
-    width : "22%",
-    justifyContent : "center",
-    backgroundColor : "#FF6B6B",
-  },
-  chat : {
-    flex : 1,
-    //backgroundColor : "gray",
-  }
-
-});
-export default Chat;
-*/
+import { Image } from "react-native";
 
 interface Message {
   sender: 'user' | 'bot';
   text: string;
 }
-
-
 
 const originData =  [
   {
@@ -124,9 +45,26 @@ const Chat: React.FC = () => {
     setText("");
     aiSend();
   }
-  const renderItem = ({ item }) => (
-    <View style={[styles.bubble, item.sender === "user" ? styles.userBubble : styles.botBubble]}>
-      <Text style={styles.text}>{item.text}</Text>
+  const renderItem = ({ item }:any) => (
+    <View style={styles.messageContainer}>
+      {item.sender != "user" ? (
+        <View style={styles.botMessageContainer}>
+          <Image source={require("../../assets/cookieSplash.png")} style={styles.img} />
+          <View style={{flex: 1}}>
+            <Text style={styles.ai}>쿠키</Text>
+            <View style={[styles.bubble, styles.botBubble]}>
+              <Text style={styles.text}>{item.text}</Text>
+            </View>
+          </View>
+        </View>
+      ) : (
+        <View style={styles.userMessageContainer}>
+          <View style={[styles.bubble, styles.userBubble]}>
+            <Text style={styles.text}>{item.text}</Text>
+          </View>
+          {/*<Image source={require("../../assets/cookieSplash.png")} style={styles.img} />*/}
+        </View>
+      )}
     </View>
   );
 
@@ -153,51 +91,81 @@ const Chat: React.FC = () => {
     )
   }
 
-
-const styles = StyleSheet.create({
-  container : {
-    width : "100%",
-    height : "100%",
-    padding : 16,
-    //backgroundColor : "red",
-  },
-  form : {
-    flexDirection : "row",
-    width : "100%",
-    //backgroundColor : "blue",
-    justifyContent : "space-between",
-    paddingBottom : 10,
-    paddingTop : 10,
-  },
-  input : {
-    width : "75%",
-  },
-  btn : {
-    width : "22%",
-    justifyContent : "center",
-    backgroundColor : "#FF6B6B",
-  },
-  chat : {
-    flex : 1,
-    //backgroundColor : "gray",
-  },
-  bubble: {
-    padding: 10,
-    marginVertical: 5,
-    borderRadius: 20,
-    maxWidth: '80%',
-  },
-  userBubble: {
-    backgroundColor: '#007AFF',
-    alignSelf: 'flex-end',
-  },
-  botBubble: {
-    backgroundColor: '#E5E5EA',
-    alignSelf: 'flex-start',
-  },
-  text: {
-    color: 'black',
-  },
-
-});
+  
+  const styles = StyleSheet.create({
+    container: {
+      width: "100%",
+      height: "100%",
+      padding: 16,
+    },
+    form: {
+      flexDirection: "row",
+      width: "100%",
+      justifyContent: "space-between",
+      paddingBottom: 10,
+      paddingTop: 10,
+    },
+    input: {
+      width: "75%",
+    },
+    btn: {
+      width: "22%",
+      justifyContent: "center",
+      backgroundColor: "#FF6B6B",
+    },
+    chat: {
+      flex: 1,
+    },
+    messageContainer: {
+      marginVertical: 10,
+      //backgroundColor : "red",
+    },
+    botMessageContainer: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+      //backgroundColor : "blue",
+      maxWidth : "80%",
+    },
+    userMessageContainer: {
+      flexDirection: "row",
+      alignItems: "flex-end",
+      justifyContent: "flex-end",
+      //backgroundColor : "gray",
+    },
+    bubbleContainer: {
+      flexDirection: "row",
+      width: "100%",
+    },
+    bubble: {
+      padding: 10,
+      marginVertical: 10,
+      borderRadius: 10,
+      maxWidth: '70%',
+    },
+    userBubble: {
+      backgroundColor: '#58C3A5',
+      alignSelf: 'flex-end',
+    },
+    botBubble: {
+      backgroundColor: '#D7E6DB',
+      alignSelf: 'flex-start',
+    },
+    ai: {
+      paddingTop : 5,
+      alignSelf: 'flex-start',
+    },
+    user: {
+      alignSelf: 'flex-end',
+    },
+    text: {
+      color: 'black',
+      alignSelf: 'flex-start',
+    },
+    img: {
+      width: 50,
+      height: 50,
+      borderRadius: 25,
+      margin: 5,
+    },
+  });
 export default Chat;
