@@ -10,7 +10,7 @@ import NameModal from "./NameModal";
 import { Modal, Portal, PaperProvider } from 'react-native-paper';
 
 
-const UserInfo: React.FC<any> = ({showModal}) => {
+const ChatMessage: React.FC<any> = ({showModal}) => {
   const containerStyle = {backgroundColor: 'white', padding: 50};
   return (
     <View style={styles.container}>
@@ -67,4 +67,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UserInfo;
+export default ChatMessage;

@@ -1,69 +1,63 @@
-import { View, StyleSheet } from "react-native";
 import React from "react";
 import { useState } from "react";
-import { Modal, Portal, Text, Button, PaperProvider, IconButton } from 'react-native-paper';
-import { USER } from "../constants/Constants";
+import { Text, View, StyleSheet } from "react-native";
+import { Button, TextInput } from 'react-native-paper';
 
 const Chat: React.FC = () => {
-  const [visible, setVisible] = useState(false);
-  const showModal = () => setVisible(true);
-  const hideModal = () => setVisible(false);
-  const containerStyle = {backgroundColor: 'white', padding: 50};
+  const [text, setText] = React.useState("");
+  const send = () => {
+    console.log("보내기")
+  }
   return (
-    <PaperProvider>
-      <Portal>
-        <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
-          <Text>Example Modal.  Click outside this area to dismiss.</Text>
-        </Modal>
-      </Portal>
-      <View style={styles.container}>
-        <Text>닉네임</Text>
-        <View style={styles.userInfoContainer}>
-          <Text style={styles.userInfoText}>{USER.NICKNAME}</Text>
-          <IconButton
-            icon="pencil"
-            iconColor="#58C3A5"
-            size={20}
-            onPress={showModal}
-          />
-        </View>
-    </View> 
-    </PaperProvider>
-    );
+   <View style = {styles.container}>
+    <View style = {styles.chat}>
+      <Text>채팅창</Text>
+    </View>
+    <View style = {styles.form}>
+      <TextInput
+        label="send message to cookie🐶"
+        value={text}
+        onChangeText={text => setText(text)}
+        mode = "outlined"
+        style = {styles.input}
+      />
+      <Button mode = "contained" onPress = {send} style = {styles.btn}>
+        send
+      </Button>
+    </View>
+   </View>
+    
+  );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    height : 200,
-    backgroundColor: "green",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  text: {
-    fontSize: 24,
-    color: "#333",
-  },
-  imgContainer: {
-    flex: 1,
-    backgroundColor: "yellow",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  userInfoContainer: {
-    //backgroundColor: "blue",
+  container : {
     width : "100%",
+    height : "100%",
+    paddingLeft : 16,
+    paddingRight : 16,
+    //backgroundColor : "red",
+  },
+  form : {
     flexDirection : "row",
-    justifyContent: "flex-start",
-    alignItems:"center",
+    width : "100%",
+    //backgroundColor : "blue",
+    justifyContent : "space-between",
+    paddingBottom : 10,
+    paddingTop : 10,
   },
-  userInfoText: {
-    color: "black",
-    fontSize: 20,
+  input : {
+    width : "75%",
   },
-  image: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+  btn : {
+    width : "22%",
+    justifyContent : "center",
+    backgroundColor : "#FF6B6B",
   },
+  chat : {
+    flex : 1,
+    backgroundColor : "gray",
+  }
+
 });
 export default Chat;

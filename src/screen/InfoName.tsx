@@ -5,7 +5,6 @@ import { useFonts } from "expo-font";
 import { useState, useEffect } from "react";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback } from "react";
-import { storageData, getData } from "../../utils/storageUtils";
 import { GOOGLE_KEY } from "../../utils/storageUtils";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from "react-native";

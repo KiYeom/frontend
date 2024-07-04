@@ -50,14 +50,16 @@ const Setting: React.FC<any> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "gray",
+    backgroundColor: "white",
     alignItems: "center",
     justifyContent: "center",
   },
   userInfo : {
-    backgroundColor : "yellow",
+    ///backgroundColor : "yellow",
     width : "100%",
     padding : 16,
+    borderColor : "f0f3f8",
+    borderBottomWidth : 0.3,
   },
   userName : {
     flexDirection : "row",

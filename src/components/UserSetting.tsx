@@ -8,19 +8,26 @@ import DeleteAccoutButton from "./DeleteAccoutButton";
 const UserSetting: React.FC<any> = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <View>
-        <Text>알림설정</Text>
+      <View style = {styles.titleContainer}>
+        <Text style = {styles.text}>알림설정</Text>
       </View>
-      <View>
-        <Text>문의하기</Text>
+      <View style = {styles.titleContainer}>
+        <Text style = {styles.text}>문의하기</Text>
       </View>
-      <View>
-        <Text>개인정보 처리방침</Text>
+      <View style = {styles.titleContainer}>
+        <Text style = {styles.text}>개인정보 처리방침</Text>
       </View>
-      <View>
+      <View style = {styles.titleContainer}>
+        <Text style = {styles.text}>로그아웃</Text>
+      </View>
+      <View style = {styles.titleContainer}>
+        <Text style = {styles.text}>회원탈퇴</Text>
+      </View>
+      <View style = {styles.titleContainer}>
+        <Text style = {styles.text}>앱 버전 정보</Text>
+      </View>
+      <View style = {styles.btnContainer}>
         <LogoutButton navigation={navigation} />
-      </View>
-      <View>
         <DeleteAccoutButton navigation={navigation} />
       </View>
     </View>
@@ -28,32 +35,23 @@ const UserSetting: React.FC<any> = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 3,
-    width: "100%",
-    backgroundColor: "pink",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingLeft: 16,
-    paddingRight: 16,
+  container : {
+    flex : 1,
+    backgroundColor : "white",
+    width : "100%"
   },
-  imgContainer: {
-    width: 300,
-    height: 300,
-    backgroundColor: "yellow",
-    justifyContent: "center",
-    alignItems: "center",
+  titleContainer : {
+    borderColor : "f0f3f8",
+    //borderBottomWidth : 0.3, 
   },
-  userInfoContainer: {
-    flex: 7,
+  btnContainer : {
+    flexDirection : "row",
+    justifyContent : "space-evenly",
+    alignContent : "center",
   },
-  image: {
-    width: 200,
-    height: 200,
-  },
-  text: {
-    fontSize: 24,
-    color: "#333",
+  text : {
+    fontSize : 17,
+    padding : 16,
   },
 });
 
