@@ -7,44 +7,41 @@ import { callGpt } from "../model/Gpt";
 import { Image } from "react-native";
 
 interface Message {
-  sender: 'user' | 'bot';
+  sender: string;
   text: string;
 }
 
-const originData =  [
-  {
-    sender : "user",
-    text : "my name is eunseo",
-  },
-  {
-    sender : "bot",
-    text : "hi eunseo",
-  }
-]
-
 const Chat: React.FC = () => {
   const [text, setText] = useState(""); //유저가 작성한 말
-  const [data, setData] = useState(originData);
+  const [data, setData] = useState<Message[]>([]);
   const aiSend = async () => {
     const aiResponse = await callGpt(text);
     console.log("aiResponse ", aiResponse);
     setTimeout(()=> {
       const aiData = {sender : "bot", text : `${aiResponse}`};
-      setData (prevData => {
-        const updatedData = [...prevData, aiData];
-        return updatedData;
-      })
+      setData((prevData) => [...prevData, aiData]);
     }, 1000);
-  }
+  };
   const userSend = () => {
     const userData = {sender : "user", text : `${text}`}
-    setData(prevData => {
+    setData((prevData) => [...prevData, userData]);
+    /*setData(prevData => {
       const updatedData = [...prevData, userData];
       return updatedData;
-    })
+    })*/
     setText("");
+    setBtnDisable(true);
     aiSend();
   }
+  const changeText = (text: string) => {
+    if (text == "") {
+      setBtnDisable(true);
+    } else {
+      setBtnDisable(false);
+    }
+    setText(text);
+  }
+  
   const renderItem = ({ item }:any) => (
     <View style={styles.messageContainer}>
       {item.sender != "user" ? (
@@ -67,7 +64,7 @@ const Chat: React.FC = () => {
       )}
     </View>
   );
-
+  const [btnDisable, setBtnDisable] = useState(true);
   return (
     <View style = {styles.container }>
       <FlatList
@@ -78,13 +75,16 @@ const Chat: React.FC = () => {
         <TextInput
           label="send message to cookie🐶"
           value={text}
-          onChangeText={text => setText(text)}
+          onChangeText={(text) => changeText(text)}
           mode = "outlined"
+          outlineColor="#3B506B"
+          activeOutlineColor = "#3B506B"
           style = {styles.input}
         />
-        <Button mode = "contained" onPress = {userSend} style = {styles.btn}>
+        <Button mode = "contained" onPress = {userSend} style = {styles.btn} disabled = {btnDisable}>
           send
         </Button>
+        
       </View>
     </View>
       

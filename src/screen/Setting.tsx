@@ -6,6 +6,8 @@ import DeleteAccoutButton from "../components/DeleteAccoutButton";
 import { useNavigation } from "@react-navigation/native";
 import { GOOGLE_KEY } from "../../utils/storageUtils";
 import { USER } from "../constants/Constants";
+import { Provider } from "react-native-paper";
+import { Switch } from 'react-native-paper';
 interface UserInfo {
   email: string;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
@@ -17,33 +19,24 @@ import { PaperProvider, Portal, Modal, IconButton } from "react-native-paper";
 import { useState } from "react";
 
 const Setting: React.FC<any> = ({ navigation }) => {
-  const [visible, setVisible] = useState(false);
-  const showModal = () => setVisible(true);
-  const hideModal = () => setVisible(false);
-  const containerStyle = {backgroundColor: 'white', padding: 50};
   return (
-    <PaperProvider>
-      <Portal>
-        <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
-          <Text>Example Modal.  Click outside this area to dismiss.</Text>
-        </Modal>
-      </Portal>
-      <View style={styles.container}>
-        <View style={styles.userInfo}>
-          <Text>닉네임</Text>
-          <View style = {styles.userName}>
-            <Text style={styles.userInfoText}>{USER.NICKNAME}</Text>
-            <IconButton
-              icon="pencil"
-              iconColor="#58C3A5"
-              size={20}
-              onPress={showModal}
-            />
-          </View>
+    <Provider>
+    <View style={styles.container}>
+      <View style={styles.userInfo}>
+        <Text>닉네임</Text>
+        <View style = {styles.userName}>
+          <Text style={styles.userInfoText}>{USER.NICKNAME}</Text>
+          <IconButton
+            icon="pencil"
+            iconColor="#58C3A5"
+            size={20}
+            onPress={() => console.log("닉네임 수정하기")}
+          />
         </View>
-        <UserSetting navigation={navigation} />
       </View>
-    </PaperProvider>
+      <UserSetting navigation={navigation}/>
+    </View>
+    </Provider>
   );
 };
 
@@ -74,5 +67,19 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: 20,
   },
+  modal: {
+    backgroundColor: 'white',
+    padding: 30,
+    width: 300,
+    height : 200,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  modalTitle : {
+    fontSize : 20,
+    color : "pink",
+  }
 });
 export default Setting;

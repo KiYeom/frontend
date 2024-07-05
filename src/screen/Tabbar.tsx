@@ -6,12 +6,14 @@ import Chat from "./Chat";
 import Home from "./Home";
 import Setting from "./Setting";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Tab = createBottomTabNavigator();
+const color = "#58C3A5";
 
 const Tabbar: React.FC<any> = () => {
   return (
@@ -26,11 +28,27 @@ const Tabbar: React.FC<any> = () => {
           fontFamily: "Pretendard-Bold", // 사용할 폰트 패밀리
           fontSize: 17, // 폰트 크기
         },
+        tabBarActiveTintColor: '#58C3A5'
       }}
     >
-      <Tab.Screen name="Chat" component={Chat} />
-      <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Setting" component={Setting} />
+      <Tab.Screen name="Chat" component={Chat} options={{
+          tabBarLabel: 'Chat',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="home" color={color} size={size} />
+          ),
+        }}/>
+      <Tab.Screen name="Home" component={Home} options={{
+          tabBarLabel: 'Home',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="chat" color={color} size={size} />
+          ),
+        }}/>
+      <Tab.Screen name="Setting" component={Setting} options={{
+          tabBarLabel: 'Setting',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="cog" color={color} size={size} />
+          ),
+        }}/>
     </Tab.Navigator>
   );
 };
