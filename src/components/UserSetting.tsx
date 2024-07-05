@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View, Image, TouchableOpacity } from "react-native";
+import { Text, View, Image, TouchableOpacity, Button } from "react-native";
 import { StyleSheet } from "react-native";
 //import Icon from "react-native-vector-icons/MaterialIcons";
 import LogoutButton from "./LogoutButton";
@@ -7,15 +7,16 @@ import DeleteAccoutButton from "./DeleteAccoutButton";
 import { Switch, Icon, PaperProvider, Portal, Modal } from 'react-native-paper';
 import { APP_VERSION } from "../constants/Constants";
 import { Provider } from "react-native-paper";
-const UserSetting: React.FC<any> = ({navigation}) => {
+const UserSetting: React.FC<any> = ({navigation, showModal}) => {
   const [isSwitchOn, setIsSwitchOn] = React.useState(false);
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
   return (
-      <View style={styles.container}>
+    <View style={styles.container}>
       <View style = {styles.titleContainer}>
         <Text style = {styles.text}>알림설정</Text>
         <Switch value={isSwitchOn} onValueChange={onToggleSwitch} color = "#3B506B"/>
       </View>
+
       <TouchableOpacity style = {styles.titleContainer}>
         <Text style = {styles.text}>문의하기</Text>
         <Icon
@@ -23,6 +24,7 @@ const UserSetting: React.FC<any> = ({navigation}) => {
           size={32}
         />
       </TouchableOpacity>
+
       <TouchableOpacity style = {styles.titleContainer}>
         <Text style = {styles.text}>개인정보 처리방침</Text>
         <Icon
@@ -31,14 +33,14 @@ const UserSetting: React.FC<any> = ({navigation}) => {
         />
       </TouchableOpacity>
       
-        <TouchableOpacity style = {styles.titleContainer}>
+        <TouchableOpacity style = {styles.titleContainer} onPress = {()=>showModal("로그아웃 페이지")}>
           <Text style = {styles.text}>로그아웃</Text>
           <Icon
             source="chevron-right"
             size={32}
           />
         </TouchableOpacity>
-      <TouchableOpacity style = {styles.titleContainer}>
+      <TouchableOpacity style = {styles.titleContainer} onPress = {()=>showModal("회원탈퇴 페이지")}>
         <Text style = {styles.text}>회원탈퇴</Text>
         <Icon
           source="chevron-right"
@@ -63,7 +65,7 @@ const styles = StyleSheet.create({
   },
   container : {
     flex : 1,
-    backgroundColor : "red",
+    //backgroundColor : "red",
     width : "100%",
     height : "100%",
   },

@@ -25,10 +25,6 @@ const Chat: React.FC = () => {
   const userSend = () => {
     const userData = {sender : "user", text : `${text}`}
     setData((prevData) => [...prevData, userData]);
-    /*setData(prevData => {
-      const updatedData = [...prevData, userData];
-      return updatedData;
-    })*/
     setText("");
     setBtnDisable(true);
     aiSend();
