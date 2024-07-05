@@ -10,8 +10,7 @@ const Home: React.FC<any> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.txt1}>안녕?," (pretendard 적용)</Text>
-        <Text style={styles.txt2}>안녕?," (적용x)</Text>
+        <Text style={styles.txt1}>오늘도 와줘서 고마워 멍! : )</Text>
       </View>
       <View style={styles.center}>
         <Image

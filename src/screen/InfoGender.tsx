@@ -3,14 +3,12 @@ import { View, Text, StyleSheet, Image } from "react-native";
 import { Button } from "react-native-paper";
 import GenderButton from "../components/GenderButton";
 import Tabbar from "./Tabbar";
-import { storageData } from "../../utils/storageUtils";
 import { GOOGLE_KEY } from "../../utils/storageUtils";
-import { getData } from "../../utils/storageUtils";
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
 import { storage } from "../../utils/storageUtils";
-import { USER, MALE, FEMALE } from "../constants/Constants";
+import { USER, MALE, FEMALE, REFRESHTOKEN, ACCESSTOKEN } from "../constants/Constants";
 
 //console.log(axios.isCancel("something"));
 
@@ -53,8 +51,9 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
         notificationToken : USER.NOTIFICATIONTOKEN,
       })
       .then(function (response) {
-        console.log("signup response", response);
-        storage.set("ACCESS_TOKEN", response.data.data.accessToken);
+        console.log("회원가입 성공", response);
+        storage.set(ACCESSTOKEN, response.data.data.accessToken);
+        storage.set(REFRESHTOKEN, response.data.data.refreshToken);
       })
       .catch(function (error) {
         //오류 발생 시 실행

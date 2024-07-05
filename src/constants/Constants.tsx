@@ -1,7 +1,10 @@
 export const MALE = 1;
 export const FEMALE = 2;
 
-const APP_VERSION = "1.0.0"
+export const APP_VERSION = "1.0.0"
+export const ACCESSTOKEN = "ACCESSTOKEN";
+export const REFRESHTOKEN = "REFRESHTOKEN";
+
 export interface User {
   EMAIL : string;
   NICKNAME: string;
