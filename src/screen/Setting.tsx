@@ -17,25 +17,51 @@ import UserInfo from "../components/UserInfo";
 import UserSetting from "../components/UserSetting";
 import { PaperProvider, Portal, Modal, IconButton, Dialog } from "react-native-paper";
 import { useState } from "react";
+import axiosInstance from "../model/Chatting";
 
 const Setting: React.FC<any> = ({ navigation }) => {
   const [visible, setVisible] = useState(false);
   const [modaltext, setModaltext] = useState("");
+
+  const logoutRequest = async () => {
+    try {
+      await GoogleSignin.signOut(); //계정 로그아웃
+      const response = await axiosInstance.delete('/api/v1/auth/logout', {
+        data : {
+          deviceId : USER.DEVICEID,
+      }});
+      console.log("logout 응답 데이터", response.data);
+      navigation.navigate("Login");
+    }
+    catch(error) {
+      console.log("logoutRequest 요청 실패", error);
+    }
+  }
   
   const showModal = (text : string) => {
-    setModaltext(text);
+    setModaltext(text); //text : nickname, logout, deactivate
     setVisible(true);
   }
   const hideModal = () => setVisible(false);
   const btnClick = () => {
     console.log("모달의 완료 버튼 클릭함");
+    console.log("모달에 적혀있는 글자", modaltext);
+    if (modaltext === "nickname") {
+      console.log("유저는 닉네임을 변경하기를 원합니다.");
+    }
+    else if (modaltext === "logout") {
+      console.log("유저는 로그아웃을 하기를 원합니다.");
+      logoutRequest();
+    }
+    else if (modaltext === "deactivate") {
+      console.log("유저는 회원 탈퇴를 하기를 원합니다.");
+    }
     hideModal();
   }
-  const containerStyle = {backgroundColor: 'white', padding: 20, width : "70%", borderRadius : 20, height : "40%", justifycontent : "center", alignItems: 'center', alignSelf : "center"};
   return (
     <PaperProvider>
     <Portal>
-      <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
+      <Modal visible={visible} onDismiss={hideModal} style={styles.containerStyle}>
         <Text>{modaltext}</Text>
         <Button mode = "contained" onPress = {btnClick}>완료</Button>
       </Modal>
@@ -48,9 +74,9 @@ const Setting: React.FC<any> = ({ navigation }) => {
           <Text style={styles.userInfoText}>{USER.NICKNAME}</Text>
           <IconButton
             icon="pencil"
-            iconColor="#58C3A5"
+            iconColor="black"
             size={20}
-            onPress={() => showModal("수정하기 페이지")}
+            onPress={() => showModal("nickname")}
           />
         </View>
       </View>
@@ -87,19 +113,19 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: 20,
   },
-  modal: {
-    backgroundColor: 'white',
-    padding: 30,
-    width: 300,
-    height : 200,
-    alignSelf: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-  },
   modalTitle : {
     fontSize : 20,
     color : "pink",
-  }
+  },
+  containerStyle : {
+    backgroundColor: 'white', 
+    //padding: 20, 
+    width : "70%", 
+    borderRadius : 30,
+    height : "40%", 
+    justifyContent : "center", 
+    alignItems: 'center', 
+    //alignSelf : "center",
+  },
 });
 export default Setting;
