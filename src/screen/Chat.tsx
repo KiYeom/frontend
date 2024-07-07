@@ -5,6 +5,10 @@ import { Button, TextInput } from 'react-native-paper';
 import ChatBubble from "../components/ChatBubble";
 import { callGpt } from "../model/Gpt";
 import { Image } from "react-native";
+import axios from "axios";
+import { USER } from "../constants/Constants";
+import { storage } from "../../utils/storageUtils";
+import axiosInstance from "../model/Chatting";
 
 interface Message {
   sender: string;
@@ -14,13 +18,52 @@ interface Message {
 const Chat: React.FC = () => {
   const [text, setText] = useState(""); //유저가 작성한 말
   const [data, setData] = useState<Message[]>([]);
+  const sendChatRequest = async (characterId:number, question:string) => {
+    try {
+      const response = await axiosInstance.post('/chat', {
+        characterId: characterId,
+        question: question
+      });
+      console.log('응답 데이터:', response.data);
+      console.log("쿠키 답변", response.data.data.answer);
+      return response.data.data.answer;
+    } catch (error) {
+      console.error('요청 실패!!! :', error);
+    }    
+  };
+
   const aiSend = async () => {
-    const aiResponse = await callGpt(text);
-    console.log("aiResponse ", aiResponse);
+    //이전 코드
+    //const accessToken = storage.getString(USER.ACCESSTOKEN);
+    //const aiResponse = await callGpt(text);
+    //console.log("aiResponse ", aiResponse);
+    console.log("유저가 한 말", text);
+    const cookieAnswer = await sendChatRequest(1, text);
+    console.log("aisend", cookieAnswer);
     setTimeout(()=> {
-      const aiData = {sender : "bot", text : `${aiResponse}`};
+      const aiData = {sender : "bot", text : `${cookieAnswer}`};
       setData((prevData) => [...prevData, aiData]);
     }, 1000);
+    //axios interceptor 적용
+  
+    /*
+    axios
+      .post("http://34.125.112.144:8000/chat", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+        data : {  
+          characterId: 1,
+          question: `${text}`},
+      })
+      .then(function(response) { //성공
+        console.log("챗봇 api 연결 성공");
+      })
+      .catch(function (error) { //실패
+        console.log("챗봇 연결 실패 ㅠㅠ")
+        console.log(error);
+        console.log(error.response.data);
+      })
+         */
+
   };
   const userSend = () => {
     const userData = {sender : "user", text : `${text}`}
@@ -37,6 +80,7 @@ const Chat: React.FC = () => {
     }
     setText(text);
   }
+  
   
   const renderItem = ({ item }:any) => (
     <View style={styles.messageContainer}>
