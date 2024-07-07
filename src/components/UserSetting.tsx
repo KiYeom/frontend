@@ -33,14 +33,14 @@ const UserSetting: React.FC<any> = ({navigation, showModal}) => {
         />
       </TouchableOpacity>
       
-        <TouchableOpacity style = {styles.titleContainer} onPress = {()=>showModal("로그아웃 페이지")}>
+        <TouchableOpacity style = {styles.titleContainer} onPress = {()=>showModal("logout")}>
           <Text style = {styles.text}>로그아웃</Text>
           <Icon
             source="chevron-right"
             size={32}
           />
         </TouchableOpacity>
-      <TouchableOpacity style = {styles.titleContainer} onPress = {()=>showModal("회원탈퇴 페이지")}>
+      <TouchableOpacity style = {styles.titleContainer} onPress = {()=>showModal("deactivate")}>
         <Text style = {styles.text}>회원탈퇴</Text>
         <Icon
           source="chevron-right"

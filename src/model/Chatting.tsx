@@ -53,7 +53,7 @@ axiosInstance.interceptors.response.use(
 
         if (response.status === 200) {
           // 새로운 액세스 토큰을 성공적으로 받았을 때
-          storage.set(REFRESHTOKEN, response.data.accessToken); // 새로운 액세스 토큰을 로컬 스토리지에 저장
+          storage.set(ACCESSTOKEN, response.data.accessToken); // 새로운 액세스 토큰을 로컬 스토리지에 저장
 
           // 원래 요청의 Authorization 헤더를 새로운 토큰으로 업데이트
           originalRequest.headers['Authorization'] = `Bearer ${response.data.accessToken}`;
