@@ -2,8 +2,6 @@ import React from "react";
 import { useState } from "react";
 import { View, Text, Image, StyleSheet, SafeAreaView } from "react-native";
 import { Button, TextInput } from "react-native-paper";
-import { getData } from "../../utils/storageUtils";
-import { storageData } from "../../utils/storageUtils";
 import { GOOGLE_KEY } from "../../utils/storageUtils";
 import { storage } from "../../utils/storageUtils";
 import { USER } from "../constants/Constants";
