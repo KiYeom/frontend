@@ -13,6 +13,7 @@ import {
 import LoginButton from "../components/LoginButton";
 import { StyleSheet } from "react-native";
 import { GOOGLE_KEY } from "../../utils/storageUtils";
+import AppleLoginButton from "../components/AppleLoginButton";
 interface UserInfo {
   email: string;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
@@ -30,8 +31,7 @@ const Login: React.FC<any> = ({ navigation }) => {
       </View>
       <View style={styles.btnContainer}>
         <LoginButton navigation={navigation} />
-        <LoginButton />
-        <LoginButton />
+        <AppleLoginButton/>
       </View>
 
     </View>

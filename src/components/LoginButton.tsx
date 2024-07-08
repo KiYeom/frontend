@@ -31,7 +31,7 @@ interface UserData {
   birthdate: string | null;
   gender: number | null;
 }
-
+//구글 로그인
 const LoginButton: React.FC<any> = ({ navigation }) => {
   return (
     <TouchableOpacity style={styles.container}>

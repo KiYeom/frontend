@@ -13,7 +13,8 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.ceunnseo.reMIND"
+      "bundleIdentifier": "com.ceunnseo.reMIND",
+      "usesAppleSignIn": true
     },
     "android": {
       "adaptiveIcon": {
@@ -51,7 +52,8 @@
           "Pretend-SemiBold": ["./assets/fonts/Pretendard-SemiBold.ttf"],
           "Pretend-Thin": ["./assets/fonts/Pretendard-Thin.ttf"]
         }
-      ]
+      ],
+      "expo-apple-authentication"
     ]
   }
 }
