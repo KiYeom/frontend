@@ -24,19 +24,30 @@ const Setting: React.FC<any> = ({ navigation }) => {
   const [modaltext, setModaltext] = useState("");
 
   const logoutRequest = async () => {
+    console.log("logout Request 시작"); // 로그 추가
+    //Google객체를 사용하려면 반드시 configure 메서드를 호출해야 한다.
+    GoogleSignin.configure({
+      iosClientId:
+        "94079762653-arcgeib4l0hbg6snh81cjimd9iuuoun3.apps.googleusercontent.com",
+    });
     try {
+      console.log("Google 로그아웃 시도"); // 로그 추가
       await GoogleSignin.signOut(); //계정 로그아웃
+      console.log("계정 로그아웃 완료"); // 로그 추가
+  
+      console.log("서버 로그아웃 시도"); // 로그 추가
       const response = await axiosInstance.delete('/api/v1/auth/logout', {
-        data : {
-          deviceId : USER.DEVICEID,
-      }});
-      console.log("logout 응답 데이터", response.data);
+        data: {
+          deviceId: USER.DEVICEID,
+        }
+      });
+      console.log("서버 로그아웃 응답: "); // 로그 추가
       navigation.navigate("Login");
-    }
-    catch(error) {
+    } catch (error) {
       console.log("logoutRequest 요청 실패", error);
     }
   }
+  
   
   const showModal = (text : string) => {
     setModaltext(text); //text : nickname, logout, deactivate

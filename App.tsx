@@ -44,7 +44,7 @@ const App: React.FC = () => {
           console.log("deviceId : ", USER.DEVICEID, 
             "appVersion : ", USER.APPVERSION,
           "deviceOs : ", USER.DEVICEOS,
-        "REFRESHTOken : ", USER.REFRESHTOKEN)
+        "REFRESHTOken : ", storage.getString(REFRESHTOKEN))
           //console.log(REFRESHDATA);
           
           //토큰이 있으면 우리 회원이다.
