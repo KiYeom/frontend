@@ -40,7 +40,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
       console.log("계정 로그아웃 완료"); // 로그 추가
   
       console.log("서버 로그아웃 시도"); // 로그 추가
-      const response = await axiosInstance.delete('/api/v1/auth/logout', {
+      const response = await axiosInstance.delete('http://34.125.112.144:8000/api/v1/auth/logout', {
         data: {
           deviceId: USER.DEVICEID,
         }
@@ -56,7 +56,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
   const deactivateRequest = async () => {
     console.log("deactivate Request 시작");
     try {
-      const response = await axiosInstance.delete('/api/v1/auth/deactivate');
+      const response = await axiosInstance.delete('http://34.125.112.144:8000/api/v1/auth/deactivate');
       console.log("서버 회원탈퇴 응답 : ");
       navigation.navigate("Login");
       storage.delete(ACCESSTOKEN);
@@ -73,7 +73,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
     console.log("USER의 nickname (USER.NICKNAME) : ", USER.NICKNAME);
     console.log("USER의 nickname (inputText) : ", inputText);
     try {
-      const response = await axiosInstance.patch('/api/v1/user/nickname', 
+      const response = await axiosInstance.patch('http://34.125.112.144:8000/api/v1/user/nickname', 
         {
         data: {
           nickname : inputText,

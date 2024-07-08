@@ -74,14 +74,24 @@ const LoginButton: React.FC<any> = ({ navigation }) => {
                 navigation.navigate("Tabbar"); //저장하고 메인 페이지로 이동
               })
               .catch(function (error) {
-                console.log("error 발생, 로그인 실패", error);
-                navigation.navigate("InfoScreen");
-                //존재하지 않는 사용자는 code 404 (error.response.status) -> 인포메이션 페이지로 (회원가입 페이지 )
-                if (error.response.status == 404) {
-                  //console.log(error.response.data);
-                  console.log("존재하지 않는 사용자");
-                  navigation.navigate("InfoScreen");
+                if (error.response) {
+                  // 서버가 응답을 반환한 경우
+                  console.log("응답 에러:", error.response.data);
+                  console.log("응답 상태 코드:", error.response.status);
+                  console.log("응답 헤더:", error.response.headers);
+              
+                  if (error.response.status == 404) {
+                    console.log("존재하지 않는 사용자");
+                    navigation.navigate("InfoScreen");
+                  }
+                } else if (error.request) {
+                  // 요청이 서버에 도달하지 못한 경우
+                  console.log("요청 에러:", error.request);
+                } else {
+                  // 다른 에러
+                  console.log("Error", error.message);
                 }
+                console.log("Error config:", error.config);
               });
           } catch (error) {
             console.log("구글 로그인 한 적이 없는 경우", error);
