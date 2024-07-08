@@ -75,9 +75,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
     try {
       const response = await axiosInstance.patch('http://34.125.112.144:8000/api/v1/user/nickname', 
         {
-        data: {
           nickname : inputText,
-        }
       });
       console.log("서버 닉네임 응답");
       USER.NICKNAME = inputText;
