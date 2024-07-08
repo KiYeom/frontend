@@ -6,7 +6,13 @@ import DeleteAccoutButton from "./DeleteAccoutButton";
 import { Switch, Icon, PaperProvider, Portal, Modal } from 'react-native-paper';
 import { APP_VERSION } from "../constants/Constants";
 import { Provider } from "react-native-paper";
+import * as Linking from 'expo-linking';
+import { NavigationContainer } from '@react-navigation/native';
 const UserSetting: React.FC<any> = ({navigation, showModal}) => {
+  //개인정보 페이지 이동하기
+  const handlePrivacyPolicyPress = () => {
+    Linking.openURL('https://autumn-flier-d18.notion.site/29f845b297cd4188ade13c6e0c088b9b?pvs=4');
+  }
   const [isSwitchOn, setIsSwitchOn] = React.useState(false);
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
   return (
@@ -24,7 +30,7 @@ const UserSetting: React.FC<any> = ({navigation, showModal}) => {
         />
       </TouchableOpacity>
 
-      <TouchableOpacity style = {styles.titleContainer}>
+      <TouchableOpacity style = {styles.titleContainer} onPress = {handlePrivacyPolicyPress}>
         <Text style = {styles.text}>개인정보 처리방침</Text>
         <Icon
           source="chevron-right"
