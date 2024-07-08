@@ -2,7 +2,6 @@ import React from "react";
 import { Text, View, Image, TouchableOpacity, Button } from "react-native";
 import { StyleSheet } from "react-native";
 //import Icon from "react-native-vector-icons/MaterialIcons";
-import LogoutButton from "./LogoutButton";
 import DeleteAccoutButton from "./DeleteAccoutButton";
 import { Switch, Icon, PaperProvider, Portal, Modal } from 'react-native-paper';
 import { APP_VERSION } from "../constants/Constants";
@@ -50,10 +49,6 @@ const UserSetting: React.FC<any> = ({navigation, showModal}) => {
       <View style = {styles.titleContainer}>
         <Text style = {styles.text}>앱 버전 정보</Text>
         <Text>{APP_VERSION}</Text>
-      </View>
-      <View style = {styles.btnContainer}>
-        <LogoutButton navigation={navigation} />
-        <DeleteAccoutButton navigation={navigation} />
       </View>
     </View>
   );

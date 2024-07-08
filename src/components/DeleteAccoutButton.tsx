@@ -25,7 +25,7 @@ const DeleteAccoutButton: React.FC<any> = ({ navigation }) => {
       //deleteDate(GOOGLE_KEY);
       console.log("눌림");
       axios
-      .delete("http://34.125.112.144:8000/api/v1/auth/deactivate", {
+      .delete("/api/v1/auth/deactivate", {
         headers: { Authorization: `Bearer ${storage.getString(ACCESSTOKEN)}` },
       })
       .then(function (response) {

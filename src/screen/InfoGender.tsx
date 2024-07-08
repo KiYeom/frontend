@@ -32,7 +32,7 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
     }
 
     setIsButtonDisabled(false);
-    navigation.navigate("Tabbar");
+
 
 
     //console.log("회원가입에 사용하는 데이터", DATA);
@@ -54,6 +54,7 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
         console.log("회원가입 성공", response);
         storage.set(ACCESSTOKEN, response.data.data.accessToken);
         storage.set(REFRESHTOKEN, response.data.data.refreshToken);
+        navigation.navigate("Tabbar");
       })
       .catch(function (error) {
         //오류 발생 시 실행
