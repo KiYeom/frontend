@@ -33,10 +33,6 @@ const Chat: React.FC = () => {
   };
 
   const aiSend = async () => {
-    //이전 코드
-    //const accessToken = storage.getString(USER.ACCESSTOKEN);
-    //const aiResponse = await callGpt(text);
-    //console.log("aiResponse ", aiResponse);
     console.log("유저가 한 말", text);
     const cookieAnswer = await sendChatRequest(1, text);
     console.log("aisend", cookieAnswer);
@@ -45,24 +41,6 @@ const Chat: React.FC = () => {
       setData((prevData) => [...prevData, aiData]);
     }, 1000);
     //axios interceptor 적용
-  
-    /*
-    axios
-      .post("http://34.125.112.144:8000/chat", {
-        headers: { Authorization: `Bearer ${accessToken}` },
-        data : {  
-          characterId: 1,
-          question: `${text}`},
-      })
-      .then(function(response) { //성공
-        console.log("챗봇 api 연결 성공");
-      })
-      .catch(function (error) { //실패
-        console.log("챗봇 연결 실패 ㅠㅠ")
-        console.log(error);
-        console.log(error.response.data);
-      })
-         */
 
   };
   const userSend = () => {

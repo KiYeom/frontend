@@ -50,9 +50,6 @@ const UserSetting: React.FC<any> = ({navigation, showModal}) => {
         <Text style = {styles.text}>앱 버전 정보</Text>
         <Text>{APP_VERSION}</Text>
       </View>
-      <View style = {styles.btnContainer}>
-        <DeleteAccoutButton navigation={navigation} />
-      </View>
     </View>
   );
 };

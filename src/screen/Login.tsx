@@ -11,7 +11,6 @@ import {
   statusCodes,
 } from "@react-native-google-signin/google-signin";
 import LoginButton from "../components/LoginButton";
-import LogoutButton from "../components/LogoutButton";
 import { StyleSheet } from "react-native";
 import { GOOGLE_KEY } from "../../utils/storageUtils";
 interface UserInfo {
