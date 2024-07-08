@@ -1,12 +1,12 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import LogoutButton from "../components/LogoutButton";
 import DeleteAccoutButton from "../components/DeleteAccoutButton";
 import { useNavigation } from "@react-navigation/native";
 import { GOOGLE_KEY } from "../../utils/storageUtils";
-import { USER } from "../constants/Constants";
+import { ACCESSTOKEN, REFRESHTOKEN, USER } from "../constants/Constants";
 import { Provider, Button } from "react-native-paper";
+import { storage } from "../../utils/storageUtils";
 import { Switch } from 'react-native-paper';
 interface UserInfo {
   email: string;
@@ -47,6 +47,21 @@ const Setting: React.FC<any> = ({ navigation }) => {
       console.log("logoutRequest 요청 실패", error);
     }
   }
+
+  const deactivateRequest = async () => {
+    console.log("deactivate Request 시작");
+    try {
+      const response = await axiosInstance.delete('/api/v1/auth/deactivate');
+      console.log("서버 회원탈퇴 응답 : ");
+      navigation.navigate("Login");
+      storage.delete(ACCESSTOKEN);
+      storage.delete(REFRESHTOKEN);
+    }
+    catch(error) {
+      console.log("deactivateRequest 요청 실패", error);
+    }
+  }
+
   
   
   const showModal = (text : string) => {
@@ -66,6 +81,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
     }
     else if (modaltext === "deactivate") {
       console.log("유저는 회원 탈퇴를 하기를 원합니다.");
+      deactivateRequest();
     }
     hideModal();
   }

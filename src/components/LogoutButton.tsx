@@ -1,3 +1,4 @@
+/*
 import React from "react";
 import Login from "../screen/Login";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
@@ -63,3 +64,4 @@ const LogoutButton: React.FC<any> = ({ navigation }) => {
   );
 };
 export default LogoutButton;
+*/
