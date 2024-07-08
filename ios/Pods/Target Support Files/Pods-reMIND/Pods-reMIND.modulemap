@@ -1,0 +1,6 @@
+module Pods_reMIND {
+  umbrella header "Pods-reMIND-umbrella.h"
+
+  export *
+  module * { export * }
+}
