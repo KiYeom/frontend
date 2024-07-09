@@ -4,7 +4,7 @@ import React from "react";
 import DeleteAccoutButton from "../components/DeleteAccoutButton";
 import { useNavigation } from "@react-navigation/native";
 import { GOOGLE_KEY } from "../../utils/storageUtils";
-import { ACCESSTOKEN, REFRESHTOKEN, USER } from "../constants/Constants";
+import { ACCESSTOKEN, CHATLOG, REFRESHTOKEN, USER } from "../constants/Constants";
 import { Provider, Button, TextInput } from "react-native-paper";
 import { storage } from "../../utils/storageUtils";
 import { Switch } from 'react-native-paper';
@@ -47,6 +47,9 @@ const Setting: React.FC<any> = ({ navigation }) => {
       });
       console.log("minji", response);
       console.log("서버 로그아웃 응답: "); // 로그 추가
+      storage.delete(ACCESSTOKEN);
+      storage.delete(REFRESHTOKEN);
+      storage.delete(CHATLOG);
       navigation.navigate("Login");
     } catch (error) {
       console.log("logoutRequest 요청 실패", error);

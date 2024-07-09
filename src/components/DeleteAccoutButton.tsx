@@ -9,7 +9,7 @@ import {
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { GOOGLE_KEY } from "../../utils/storageUtils";
-import { USER, ACCESSTOKEN, REFRESHTOKEN } from "../constants/Constants";
+import { USER, ACCESSTOKEN, REFRESHTOKEN, CHATLOG } from "../constants/Constants";
 import { storage } from "../../utils/storageUtils";
 import axios from "axios";
 const DeleteAccoutButton: React.FC<any> = ({ navigation }) => {
@@ -33,6 +33,7 @@ const DeleteAccoutButton: React.FC<any> = ({ navigation }) => {
         //성공하면 스토리지에서 토큰 제거한다.
         storage.delete(ACCESSTOKEN); //회원 탈퇴를 위해 스토리지에서 access token 삭제
         storage.delete(REFRESHTOKEN); //회원 탈퇴를 위해 스토리지에 refresh token 삭제
+        storage.delete(CHATLOG);
       })
       .catch(function (error) {
         //실패하면 실패 메세지..
