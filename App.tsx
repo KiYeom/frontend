@@ -14,6 +14,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useFonts } from "expo-font";
+import * as Device from 'expo-device';
 
 import { GOOGLE_KEY } from "./utils/storageUtils";
 import SplashScreen from "./src/screen/SplashScreen";
@@ -33,8 +34,8 @@ const App: React.FC = () => {
 
   //앱이 실행이 될때 async storage에 access token이 있는지 확인한다 -> 우리 유저면 바로 tab으로
   useEffect(() => {
-    //storage.delete(ACCESSTOKEN)
-    //storage.delete(REFRESHTOKEN)
+    storage.delete(ACCESSTOKEN)
+    storage.delete(REFRESHTOKEN)
     console.log("========== 앱 실행 ==========")
 
     const bootstrapAsync = async () => {
@@ -50,6 +51,8 @@ const App: React.FC = () => {
             "appVersion : ", USER.APPVERSION,
           "deviceOs : ", USER.DEVICEOS,
         "REFRESHTOken : ", storage.getString(REFRESHTOKEN))
+          USER.DEVICEOS = Device.osName;
+        
           //console.log(REFRESHDATA);
           
           //토큰이 있으면 우리 회원이다.
