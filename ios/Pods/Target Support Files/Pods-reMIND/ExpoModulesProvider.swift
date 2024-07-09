@@ -11,6 +11,7 @@ import ExpoAppleAuthentication
 import ExpoAsset
 import EXConstants
 import ExpoCrypto
+import ExpoDevice
 import ExpoFileSystem
 import ExpoFont
 import ExpoKeepAwake
@@ -30,6 +31,7 @@ public class ExpoModulesProvider: ModulesProvider {
       AssetModule.self,
       ConstantsModule.self,
       CryptoModule.self,
+      DeviceModule.self,
       FileSystemModule.self,
       FontLoaderModule.self,
       KeepAwakeModule.self,
@@ -49,6 +51,7 @@ public class ExpoModulesProvider: ModulesProvider {
       AssetModule.self,
       ConstantsModule.self,
       CryptoModule.self,
+      DeviceModule.self,
       FileSystemModule.self,
       FontLoaderModule.self,
       KeepAwakeModule.self,

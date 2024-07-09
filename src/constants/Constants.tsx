@@ -13,7 +13,7 @@ export interface User {
   GENDER: number | null;
   DEVICEID: string;
   APPVERSION: string;
-  DEVICEOS: string;
+  DEVICEOS: string | null;
   PROVIDERNAME: string;
   PROVIDERCODE: string;
   NOTIFICATIONTOKEN: string;

@@ -13,7 +13,6 @@ interface UserInfo {
   setEmail: React.Dispatch<React.SetStateAction<string>>;
 }
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import UserInfo from "../components/UserInfo";
 import UserSetting from "../components/UserSetting";
 import { PaperProvider, Portal, Modal, IconButton, Dialog } from "react-native-paper";
 import { useState } from "react";

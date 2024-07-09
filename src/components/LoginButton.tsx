@@ -6,11 +6,7 @@ import {
   GoogleSigninButton,
   statusCodes,
 } from "@react-native-google-signin/google-signin";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
-import { GOOGLE_KEY } from "../../utils/storageUtils";
-import { useNavigation } from "@react-navigation/native";
-import Login from "../screen/Login";
+import * as Device from 'expo-device';
 import axios from "axios";
 import { storage } from "../../utils/storageUtils";
 import { ACCESSTOKEN, REFRESHTOKEN, USER } from "../constants/Constants";
@@ -50,7 +46,8 @@ const LoginButton: React.FC<any> = ({ navigation }) => {
             const userInfo = await GoogleSignin.signIn();
 
             USER.EMAIL = userInfo.user.email;
-            USER.PROVIDERCODE = userInfo.user.id;      
+            USER.PROVIDERCODE = userInfo.user.id; //고유 아이디
+            console.log("로그인 하는 기기의 OS", Device.osName); //기기의 운영체제 
 
             console.log("로그인을 위해 전달하려는 데이터", USER);
             // 로그인에 성공하면 JWT 토큰을 부여받는다.
