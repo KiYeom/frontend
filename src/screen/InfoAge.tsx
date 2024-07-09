@@ -5,13 +5,17 @@ import { Button, TextInput } from "react-native-paper";
 import { GOOGLE_KEY } from "../../utils/storageUtils";
 import { storage } from "../../utils/storageUtils";
 import { USER } from "../constants/Constants";
+import DatePicker from "react-native-date-picker";
 
 const InfoAge: React.FC<any> = ({ navigation }) => {
   const [text, setText] = React.useState("");
+  const [date, setDate] = useState(new Date('2000-01-01'));
   const saveInfoAge = async () => {
     //const event = new Date('text');
     //DATA.birthdate = event.toISOString();
-    USER.BIRTHDATE = text;
+    USER.BIRTHDATE = date.toISOString().split('T')[0];
+    //console.log("날짜 확인하기 : ", USER.BIRTHDATE);
+    //console.log("날짜 타입 확인하기 : ", typeof(USER.BIRTHDATE));
     navigation.navigate("InfoGender");   
   };
 
@@ -30,13 +34,16 @@ const InfoAge: React.FC<any> = ({ navigation }) => {
         {/* <Text style={styles.txt1}>쿠키는 당신의 이름을 알고 싶어요:)</Text> */}
       </View>
 
-      <TextInput
+      {/*<TextInput
         label="0000/00/00"
         value={text}
         onChangeText={(text) => setText(text)}
         maxLength={15}
         style={styles.input}
-      />
+      />*/}
+      <View style = {styles.datePicker}>
+        <DatePicker date={date} onDateChange={setDate} mode = "date" locale = "ko"/>
+        </View>
       <View>
         <Button
           icon="check"
@@ -58,6 +65,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#fff",
     padding: 20, // 추가된 패딩으로 컨테이너의 여백 확보
+    width : "100%",
   },
   image: {
     width: 200,
@@ -95,5 +103,11 @@ const styles = StyleSheet.create({
     // fontFamily: "Pretendard-Medium",
     fontFamily: "Pretendard-Medium",
   },
+  datePicker : {
+    width : "100%",
+    justifyContent : "center",
+    alignItems : "center",
+  },
+  
 });
 export default InfoAge;
