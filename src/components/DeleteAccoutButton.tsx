@@ -21,7 +21,9 @@ const DeleteAccoutButton: React.FC<any> = ({ navigation }) => {
     });
    
     try {
+      console.log("계정 로그아웃 시도");
       await GoogleSignin.signOut(); //계정 로그아웃
+      console.log("계정 로그아웃 성공");
       //deleteDate(GOOGLE_KEY);
       console.log("눌림");
       axios

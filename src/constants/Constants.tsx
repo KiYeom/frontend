@@ -6,6 +6,10 @@ export const ACCESSTOKEN = "ACCESSTOKEN";
 export const REFRESHTOKEN = "REFRESHTOKEN";
 export const CHATLOG = 'CHATLOG';
 
+export const GOOGLE = 'google';
+export const APPLE = 'apple';
+
+
 export interface User {
   EMAIL : string;
   NICKNAME: string;

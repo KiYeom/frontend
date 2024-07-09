@@ -9,7 +9,7 @@ import {
 import * as Device from 'expo-device';
 import axios from "axios";
 import { storage } from "../../utils/storageUtils";
-import { ACCESSTOKEN, REFRESHTOKEN, USER } from "../constants/Constants";
+import { ACCESSTOKEN, APP_VERSION, APPLE, GOOGLE, REFRESHTOKEN, USER } from "../constants/Constants";
 import InfoScreen from "../screen/InfoScreen";
 //WebBrowser.maybeCompleteAuthSession();
 // 로그인 버튼 누르면 웹 브라우저가 열리고, 구글 로그인 페이지로 이동함.
@@ -47,9 +47,12 @@ const LoginButton: React.FC<any> = ({ navigation }) => {
 
             USER.EMAIL = userInfo.user.email;
             USER.PROVIDERCODE = userInfo.user.id; //고유 아이디
-            console.log("로그인 하는 기기의 OS", Device.osName); //기기의 운영체제 
+            USER.DEVICEOS = Device.osName; //기기가 안드로이드인지 ios인지
+            //console.log("로그인 하는 기기의 OS", Device.osName); //기기의 운영체제 
+            //USER.DEVICEID = GOOGLE;
+            USER.APPVERSION = APP_VERSION;
 
-            console.log("로그인을 위해 전달하려는 데이터", USER);
+            //console.log("로그인을 위해 전달하려는 데이터", USER);
             // 로그인에 성공하면 JWT 토큰을 부여받는다.
             axios
               .post("http://34.125.112.144:8000/api/v1/auth/login", {
@@ -69,6 +72,7 @@ const LoginButton: React.FC<any> = ({ navigation }) => {
                 USER.GENDER = response.data.data.gender;
                 USER.BIRTHDATE = response.data.data.birthdate;
                 navigation.navigate("Tabbar"); //저장하고 메인 페이지로 이동
+                console.log("로그인을 위해 전달한 데이터 : ", response);
               })
               .catch(function (error) {
                 if (error.response) {
