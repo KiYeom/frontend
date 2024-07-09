@@ -4,6 +4,7 @@ export const FEMALE = 2;
 export const APP_VERSION = "1.0.0"
 export const ACCESSTOKEN = "ACCESSTOKEN";
 export const REFRESHTOKEN = "REFRESHTOKEN";
+export const CHATLOG = 'CHATLOG';
 
 export interface User {
   EMAIL : string;

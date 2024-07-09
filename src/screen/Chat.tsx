@@ -1,14 +1,14 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Text, View, StyleSheet, FlatList } from "react-native";
 import { Button, TextInput } from 'react-native-paper';
 import ChatBubble from "../components/ChatBubble";
-import { callGpt } from "../model/Gpt";
 import { Image } from "react-native";
 import axios from "axios";
 import { USER } from "../constants/Constants";
 import { storage } from "../../utils/storageUtils";
 import axiosInstance from "../model/Chatting";
+import { CHATLOG } from "../constants/Constants";
 
 interface Message {
   sender: string;
@@ -18,6 +18,25 @@ interface Message {
 const Chat: React.FC = () => {
   const [text, setText] = useState(""); //유저가 작성한 말
   const [data, setData] = useState<Message[]>([]);
+  const saveChatLogs = (logs : Message[]) => {
+    try {
+      storage.set(CHATLOG, JSON.stringify(logs))
+    }
+    catch(error) {
+      console.log("저장 실패", error);
+    }
+  }
+  const loadChatLogs = () => {
+    try {
+      const chatLogs = storage.getString(CHATLOG);
+      if (chatLogs) {
+        setData(JSON.parse(chatLogs));
+      }
+    }catch(error) {
+      console.log("데이터 로드 실패", error)
+    }
+  }
+  useEffect(()=>loadChatLogs(), [])
   const sendChatRequest = async (characterId:number, question:string) => {
     try {
       const response = await axiosInstance.post('/chat', {
@@ -32,13 +51,19 @@ const Chat: React.FC = () => {
     }    
   };
 
+  
+
   const aiSend = async () => {
     console.log("유저가 한 말", text);
     const cookieAnswer = await sendChatRequest(1, text);
     console.log("aisend", cookieAnswer);
     setTimeout(()=> {
       const aiData = {sender : "bot", text : `${cookieAnswer}`};
-      setData((prevData) => [...prevData, aiData]);
+      setData((prevData) => {
+        const newData = [...prevData, aiData];
+        saveChatLogs(newData);
+        return newData;
+      });
     }, 1000);
     //axios interceptor 적용
 

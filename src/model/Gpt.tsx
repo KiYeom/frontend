@@ -31,6 +31,7 @@ export const callGpt = async (prompt) => {
 };
 */
 
+/*
 import Config from "react-native-config";
 
 const apikey = process.env.EXPO_PUBLIC_API_KEY;
@@ -62,4 +63,4 @@ export const callGpt = async (prompt : string) => {
   //console.log("response : ", responseData);
   //console.log("gpt의 대답 : ", responseData.choices[0].message.content);
   return responseData.choices[0].message.content;
-}
+}*/
