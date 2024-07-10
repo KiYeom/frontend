@@ -31,12 +31,27 @@ const Tabbar: React.FC<any> = () => {
         tabBarActiveTintColor: '#58C3A5'
       }}
     >
-      <Tab.Screen name="Chat" component={Chat} options={{
+      <Tab.Screen 
+        name="Chat" 
+        component={Chat} 
+        options={({ navigation }) => ({
           tabBarLabel: 'Chat',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="chat" color={color} size={size} />
           ),
-        }}/>
+          tabBarStyle: { display: 'none' },
+          headerLeft: () => (
+            <MaterialCommunityIcons 
+              name="arrow-left" 
+              color="#fff" 
+              size={24} 
+              onPress={() => navigation.navigate('Home')} 
+              style={{ marginLeft: 16 }}
+            />
+          ),
+        })}
+      />
+
       <Tab.Screen name="Home" component={Home} options={{
           tabBarLabel: 'Home',
           tabBarIcon: ({ color, size }) => (
