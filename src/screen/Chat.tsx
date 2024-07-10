@@ -10,6 +10,7 @@ import { storage } from "../../utils/storageUtils";
 import axiosInstance from "../model/Chatting";
 import { CHATLOG } from "../constants/Constants";
 import { KeyboardAvoidingView } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 interface Message {
   sender: string;
   text: string;
@@ -19,6 +20,7 @@ const Chat: React.FC = () => {
   const flatListRef = useRef<FlatList<any>>(null);
   const [text, setText] = useState(""); //유저가 작성한 말
   const [data, setData] = useState<Message[]>([]);
+  //const testData = [];
   
   const saveChatLogs = (logs : Message[]) => {
     try {
@@ -41,8 +43,18 @@ const Chat: React.FC = () => {
   //최초 실행할 때 storage에 저장된 데이터를 불러옴
   useEffect(()=>{
     loadChatLogs()
-    console.log("============= flatlistRef ==========",flatListRef.current); //null
+    if (flatListRef.current) {
+      flatListRef.current.scrollToEnd({animated : false});
+    }
   }, [])
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (flatListRef.current) {
+        flatListRef.current.scrollToEnd({ animated: false });
+      }
+    }, [data])
+  );
 
   
   useEffect(()=> {
@@ -124,21 +136,18 @@ const Chat: React.FC = () => {
       )}
     </View>
   );
-
-
-
   const [btnDisable, setBtnDisable] = useState(true);
+
   return (
-    <KeyboardAvoidingView 
-      style = {styles.container } 
-      behavior = {"padding"}
-    >
+    <View style = {styles.container } >
       <FlatList
         ref = {flatListRef}
         data = {data}
         renderItem = {renderItem}
         contentContainerStyle = {{flexGrow : 1}}
-        onContentSizeChange={() => flatListRef.current?.scrollToEnd({animated : true})}
+        onContentSizeChange={() => flatListRef.current?.scrollToEnd({animated : false})}
+        onLayout={() => flatListRef.current?.scrollToEnd({animated : false})}
+        refreshing = {true}
       />
       <View style = {styles.form}>
         <TextInput
@@ -154,7 +163,7 @@ const Chat: React.FC = () => {
           send
         </Button>
       </View>
-    </KeyboardAvoidingView>
+    </View>
       
     )
   }

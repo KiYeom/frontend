@@ -16,6 +16,7 @@ const Tab = createBottomTabNavigator();
 const color = "#58C3A5";
 
 const Tabbar: React.FC<any> = () => {
+  console.log("채팅 화면 새로 그려짐..")
   return (
     <Tab.Navigator
       initialRouteName="Home"
