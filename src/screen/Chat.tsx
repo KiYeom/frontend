@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Text, View, StyleSheet, FlatList } from "react-native";
 import { Button, TextInput } from 'react-native-paper';
 import ChatBubble from "../components/ChatBubble";
@@ -9,15 +9,19 @@ import { USER } from "../constants/Constants";
 import { storage } from "../../utils/storageUtils";
 import axiosInstance from "../model/Chatting";
 import { CHATLOG } from "../constants/Constants";
-
+import { KeyboardAvoidingView } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 interface Message {
   sender: string;
   text: string;
 }
 
 const Chat: React.FC = () => {
+  const flatListRef = useRef<FlatList<any>>(null);
   const [text, setText] = useState(""); //유저가 작성한 말
   const [data, setData] = useState<Message[]>([]);
+  //const testData = [];
+  
   const saveChatLogs = (logs : Message[]) => {
     try {
       storage.set(CHATLOG, JSON.stringify(logs))
@@ -30,13 +34,38 @@ const Chat: React.FC = () => {
     try {
       const chatLogs = storage.getString(CHATLOG);
       if (chatLogs) {
-        setData(JSON.parse(chatLogs));
+        setData(JSON.parse(chatLogs)); 
       }
     }catch(error) {
       console.log("데이터 로드 실패", error)
     }
   }
-  useEffect(()=>loadChatLogs(), [])
+  //최초 실행할 때 storage에 저장된 데이터를 불러옴
+  useEffect(()=>{
+    loadChatLogs()
+    if (flatListRef.current) {
+      flatListRef.current.scrollToEnd({animated : false});
+    }
+  }, [])
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (flatListRef.current) {
+        flatListRef.current.scrollToEnd({ animated: false });
+      }
+    }, [data])
+  );
+
+  
+  useEffect(()=> {
+    console.log("data가 바뀔 때 실행되는 useEffect1", data)
+    if (flatListRef.current) {
+      console.log("data가 바뀔 때 실행되는 useEffect2")
+      flatListRef.current.scrollToEnd({animated:true})
+    }
+  }, [data]); 
+
+  //ai 챗봇을 보내는..
   const sendChatRequest = async (characterId:number, question:string) => {
     try {
       const response = await axiosInstance.post('/chat', {
@@ -48,7 +77,7 @@ const Chat: React.FC = () => {
       return response.data.data.answer;
     } catch (error) {
       console.error('요청 실패!!! :', error);
-    }    
+    }  
   };
 
   
@@ -84,10 +113,10 @@ const Chat: React.FC = () => {
     setText(text);
   }
   
-  
+  //ai + 유저 말 렌더링 
   const renderItem = ({ item }:any) => (
     <View style={styles.messageContainer}>
-      {item.sender != "user" ? (
+      {item.sender != "user" ? ( //ai
         <View style={styles.botMessageContainer}>
           <Image source={require("../../assets/cookieSplash.png")} style={styles.img} />
           <View style={{flex: 1}}>
@@ -97,8 +126,8 @@ const Chat: React.FC = () => {
             </View>
           </View>
         </View>
-      ) : (
-        <View style={styles.userMessageContainer}>
+      ) : (//user
+        <View style={styles.userMessageContainer}> 
           <View style={[styles.bubble, styles.userBubble]}>
             <Text style={styles.text}>{item.text}</Text>
           </View>
@@ -108,11 +137,17 @@ const Chat: React.FC = () => {
     </View>
   );
   const [btnDisable, setBtnDisable] = useState(true);
+
   return (
-    <View style = {styles.container }>
+    <View style = {styles.container } >
       <FlatList
+        ref = {flatListRef}
         data = {data}
         renderItem = {renderItem}
+        contentContainerStyle = {{flexGrow : 1}}
+        onContentSizeChange={() => flatListRef.current?.scrollToEnd({animated : false})}
+        onLayout={() => flatListRef.current?.scrollToEnd({animated : false})}
+        refreshing = {true}
       />
       <View style = {styles.form}>
         <TextInput
@@ -127,7 +162,6 @@ const Chat: React.FC = () => {
         <Button mode = "contained" onPress = {userSend} style = {styles.btn} disabled = {btnDisable}>
           send
         </Button>
-        
       </View>
     </View>
       
@@ -140,6 +174,7 @@ const Chat: React.FC = () => {
       width: "100%",
       height: "100%",
       padding: 16,
+      flex : 1,
     },
     form: {
       flexDirection: "row",

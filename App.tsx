@@ -34,8 +34,8 @@ const App: React.FC = () => {
 
   //앱이 실행이 될때 async storage에 access token이 있는지 확인한다 -> 우리 유저면 바로 tab으로
   useEffect(() => {
-    storage.delete(ACCESSTOKEN)
-    storage.delete(REFRESHTOKEN)
+    //storage.delete(ACCESSTOKEN)
+    //storage.delete(REFRESHTOKEN)
     console.log("========== 앱 실행 ==========")
 
     const bootstrapAsync = async () => {
