@@ -51,7 +51,7 @@ axiosInstance.interceptors.response.use(
 
         const response = await axios({
           method: 'patch',
-          url: 'http://34.125.112.144:8000/api/v1/auth/refresh',
+          url: 'http://34.125.112.144:8000/v1/auth/refresh',
           data: {
             deviceId: USER.DEVICEID,
             appVersion: USER.APPVERSION,

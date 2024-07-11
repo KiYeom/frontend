@@ -38,7 +38,7 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
     //console.log("회원가입에 사용하는 데이터", DATA);
 
     axios //회원가입하기
-      .post("http://34.125.112.144:8000/api/v1/auth/signup", {
+      .post("http://34.125.112.144:8000/v1/auth/signup", {
         email : USER.EMAIL,
         providerName : USER.PROVIDERNAME,
         providerCode : USER.PROVIDERCODE,
@@ -48,7 +48,6 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
         deviceId : USER.DEVICEID,
         appVersion : USER.APPVERSION,
         deviceOs : USER.DEVICEOS,
-        notificationToken : USER.NOTIFICATIONTOKEN,
       })
       .then(function (response) {
         console.log("회원가입 성공", response);

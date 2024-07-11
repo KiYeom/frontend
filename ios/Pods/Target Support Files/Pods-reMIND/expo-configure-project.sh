@@ -45,6 +45,6 @@ with_node \
   --no-warnings \
   --eval "require(require.resolve('expo-modules-autolinking', { paths: [require.resolve('expo/package.json')] }))(process.argv.slice(1))" \
   generate-modules-provider  \
-  --target "/Users/eunseo/github/fe-rn/ios/Pods/Target Support Files/Pods-reMIND/ExpoModulesProvider.swift" \
+  --target "/Users/eunseo/github/remind/frontend/ios/Pods/Target Support Files/Pods-reMIND/ExpoModulesProvider.swift" \
   --platform "apple" \
   --packages "@react-native-google-signin/google-signin" "expo-apple-authentication" "expo-asset" "expo-constants" "expo-crypto" "expo-dev-launcher" "expo-dev-menu" "expo-device" "expo-file-system" "expo-font" "expo-keep-awake" "expo-random" "expo-web-browser"

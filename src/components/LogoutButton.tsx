@@ -1,4 +1,4 @@
-/*
+
 import React from "react";
 import Login from "../screen/Login";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
@@ -30,7 +30,7 @@ const LogoutButton: React.FC<any> = ({ navigation }) => {
       await GoogleSignin.signOut(); //계정 로그아웃
       //로그아웃 api 호출
       axios
-        .delete("http://34.125.112.144:8000/api/v1/auth/logout", {
+        .delete("http://34.125.112.144:8000/v1/auth/logout", {
           headers: { Authorization: `Bearer ${accessToken}` },
           data : {deviceId : USER.DEVICEID},
         })
@@ -64,4 +64,3 @@ const LogoutButton: React.FC<any> = ({ navigation }) => {
   );
 };
 export default LogoutButton;
-*/
