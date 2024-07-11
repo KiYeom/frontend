@@ -8,6 +8,7 @@ import { APP_VERSION } from "../constants/Constants";
 import { Provider } from "react-native-paper";
 import * as Linking from 'expo-linking';
 import { NavigationContainer } from '@react-navigation/native';
+
 const UserSetting: React.FC<any> = ({navigation, showModal}) => {
   //개인정보 페이지 이동하기
   const handlePrivacyPolicyPress = () => {
