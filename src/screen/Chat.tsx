@@ -68,7 +68,7 @@ const Chat: React.FC = () => {
   //ai 챗봇을 보내는..
   const sendChatRequest = async (characterId:number, question:string) => {
     try {
-      const response = await axiosInstance.post('/chat', {
+      const response = await axiosInstance.post('/v1/chat', {
         characterId: characterId,
         question: question
       });

@@ -58,7 +58,7 @@ const App: React.FC = () => {
           //토큰이 있으면 우리 회원이다.
           //<1> refresh token으로 access token으로 재발급 받는다. -> 재발급에 성공하면 access token으로 유저 정보를 받고 홈 화면에 보인다.
           axios
-            .patch("http://34.125.112.144:8000/api/v1/auth/refresh", {
+            .patch("http://34.125.112.144:8000/v1/auth/refresh", {
                 deviceId : USER.DEVICEID,  
                 appVersion : USER.APPVERSION,
                 deviceOs : USER.DEVICEOS,
