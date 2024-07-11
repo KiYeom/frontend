@@ -13,6 +13,9 @@ const UserSetting: React.FC<any> = ({navigation, showModal}) => {
   const handlePrivacyPolicyPress = () => {
     Linking.openURL('https://autumn-flier-d18.notion.site/29f845b297cd4188ade13c6e0c088b9b?pvs=4');
   }
+  const handleAskPress = () => {
+    Linking.openURL('https://forms.gle/f92DzjUBNnU51vET6');
+  }
   const [isSwitchOn, setIsSwitchOn] = React.useState(false);
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
   return (
@@ -22,7 +25,7 @@ const UserSetting: React.FC<any> = ({navigation, showModal}) => {
         <Switch value={isSwitchOn} onValueChange={onToggleSwitch} color = "#3B506B"/>
       </View>
 
-      <TouchableOpacity style = {styles.titleContainer}>
+      <TouchableOpacity style = {styles.titleContainer} onPress = {handleAskPress}>
         <Text style = {styles.text}>문의하기</Text>
         <Icon
           source="chevron-right"

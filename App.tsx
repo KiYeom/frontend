@@ -17,7 +17,6 @@ import { useFonts } from "expo-font";
 import * as Device from 'expo-device';
 
 import { GOOGLE_KEY } from "./utils/storageUtils";
-import SplashScreen from "./src/screen/SplashScreen";
 import axios from "axios";
 import { storage } from "./utils/storageUtils";
 import { USER, ACCESSTOKEN, REFRESHTOKEN } from "./src/constants/Constants";

@@ -44,7 +44,6 @@ const Setting: React.FC<any> = ({ navigation }) => {
           deviceId: USER.DEVICEID,
         }
       });
-      console.log("minji", response);
       console.log("서버 로그아웃 응답: "); // 로그 추가
       storage.delete(ACCESSTOKEN);
       storage.delete(REFRESHTOKEN);
