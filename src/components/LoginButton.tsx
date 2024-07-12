@@ -11,6 +11,7 @@ import axios from "axios";
 import { storage } from "../../utils/storageUtils";
 import { ACCESSTOKEN, APP_VERSION, APPLE, GOOGLE, REFRESHTOKEN, USER } from "../constants/Constants";
 import InfoScreen from "../screen/InfoScreen";
+import useIsSignInState from "../store/signStatus";
 //WebBrowser.maybeCompleteAuthSession();
 // 로그인 버튼 누르면 웹 브라우저가 열리고, 구글 로그인 페이지로 이동함.
 //web popup을 무시하기 위해 WebBrowser.maybeCompleteAuthSession()을 사용한다.
@@ -29,6 +30,7 @@ interface UserData {
 }
 //구글 로그인
 const LoginButton: React.FC<any> = ({ navigation }) => {
+  const {isSignIn, setIsSignIn } = useIsSignInState();
   return (
     <TouchableOpacity style={styles.container}>
       <GoogleSigninButton
@@ -70,10 +72,12 @@ const LoginButton: React.FC<any> = ({ navigation }) => {
                 USER.NICKNAME = response.data.data.nickname;
                 USER.GENDER = response.data.data.gender;
                 USER.BIRTHDATE = response.data.data.birthdate;
+                setIsSignIn(true);
                 navigation.navigate("Tabbar"); //저장하고 메인 페이지로 이동
                 console.log("로그인을 위해 전달한 데이터 : ", response);
               })
               .catch(function (error) {
+                setIsSignIn(false);
                 if (error.response) {
                   // 서버가 응답을 반환한 경우
                   console.log("응답 에러:", error.response.data);
@@ -94,6 +98,7 @@ const LoginButton: React.FC<any> = ({ navigation }) => {
                 console.log("Error config:", error.config);
               });
           } catch (error) {
+            setIsSignIn(false);
             console.log("구글 로그인 한 적이 없는 경우", error);
           }
           //navigation.navigate("InfoScreen");

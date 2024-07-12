@@ -1,7 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import DeleteAccoutButton from "../components/DeleteAccoutButton";
 import { useNavigation } from "@react-navigation/native";
 import { GOOGLE_KEY } from "../../utils/storageUtils";
 import { ACCESSTOKEN, CHATLOG, REFRESHTOKEN, USER } from "../constants/Constants";
@@ -17,13 +16,14 @@ import UserSetting from "../components/UserSetting";
 import { PaperProvider, Portal, Modal, IconButton, Dialog } from "react-native-paper";
 import { useState } from "react";
 import axiosInstance from "../model/Chatting";
-
+import useIsSignInState from "../store/signStatus";
 
 const Setting: React.FC<any> = ({ navigation }) => {
   const [visible, setVisible] = useState(false);
   const [modaltext, setModaltext] = useState("");
   const [modalMode, setModalMode] = useState("");
   const [inputText, setInputText] = useState("");
+  const {isSignIn, setIsSignIn} = useIsSignInState();
 
 
   const logoutRequest = async () => {
@@ -44,6 +44,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
           deviceId: USER.DEVICEID,
         }
       });
+      setIsSignIn(false);
       console.log("서버 로그아웃 응답: "); // 로그 추가
       storage.delete(ACCESSTOKEN);
       storage.delete(REFRESHTOKEN);
@@ -51,6 +52,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
       navigation.navigate("Login");
     } catch (error) {
       console.log("logoutRequest 요청 실패", error);
+      setIsSignIn(true);
     }
   }
 
@@ -59,12 +61,14 @@ const Setting: React.FC<any> = ({ navigation }) => {
     try {
       const response = await axiosInstance.delete('http://34.125.112.144:8000/v1/auth/deactivate');
       console.log("서버 회원탈퇴 응답 : ");
+      setIsSignIn(false);
       navigation.navigate("Login");
       storage.delete(ACCESSTOKEN);
       storage.delete(REFRESHTOKEN);
     }
     catch(error) {
       console.log("deactivateRequest 요청 실패", error);
+      setIsSignIn(true);
     }
   }
 

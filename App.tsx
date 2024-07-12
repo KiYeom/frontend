@@ -19,17 +19,18 @@ import { GOOGLE_KEY } from "./utils/storageUtils";
 import axios from "axios";
 import { storage } from "./utils/storageUtils";
 import { USER, ACCESSTOKEN, REFRESHTOKEN } from "./src/constants/Constants";
+import useIsSignInState from "./src/store/signStatus";
 
 const Stack = createNativeStackNavigator();
 
 const App: React.FC = () => {
-  const [isSignIn, setIsSignIn] = useState(false); //로그인의 여부
+  //const [isSignIn, setIsSignIn] = useState(false); //로그인의 여부
   //처음에 앱을 켰을 때 토큰이 있는지를 확인하는 isSignin
   //로그인이 되어있으면 isSignin == true
   //회원인데 로그인이 안 되어있거나(로그인하라는 페이지 보여줘) 회원이 아니면(회원가입 페이지 보여줘) isSignin == false
   const [loading, setLoading] = useState(true); //로딩하는지 안하는지
-  
-
+  const {isSignIn, setIsSignIn } = useIsSignInState();
+  console.log("useState 이용해서 state 꺼냄", isSignIn);
   //앱이 실행이 될때 async storage에 access token이 있는지 확인한다 -> 우리 유저면 바로 tab으로
   useEffect(() => {
     //storage.delete(ACCESSTOKEN)
@@ -73,9 +74,11 @@ const App: React.FC = () => {
                 USER.NICKNAME = response.data.data.nickname;
                 console.log("nickname 저장 확인", USER.NICKNAME);
                 setIsSignIn(true);
+                console.log("로그인 완료, isSignIn : ", isSignIn);
               }catch (error) {
                 console.log("then 블록 내부 에러", error);
                 setIsSignIn(false);
+                console.log("로그인 완료, isSignIn : ", isSignIn);
               }
             })
             .catch(function (error) {
@@ -86,9 +89,11 @@ const App: React.FC = () => {
               console.log("refreshToken error(stats)", error.response.status);
               console.log("refreshToken error(headers)", error.response.headers);
               setIsSignIn(false); //로그인 실패
+              console.log("요청 실패 isSignIn : ", isSignIn);
             });
         } else { //토큰이 없으면, 다른 기기에서 접근한 것이거나 우리의 회원이 아니다. 로그인 화면을 보여준다.
-          setIsSignIn(false);
+          setIsSignIn(false); //로그인 실패
+          console.log("토큰이 없는 경우 isSignIn : ", isSignIn);
           console.log("토큰이 없다 = 다른 기기에 접근한 유저이거나 새로운 유저이다. 로그인 화면을 보여준다");
         }
       } catch (error) {
