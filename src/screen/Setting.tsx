@@ -112,7 +112,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
     else if (text === "deactivate") {
       //console.log("유저는 회원 탈퇴를 하기를 원합니다.");
       message = 
-      `탈퇴하시겠어요? 모든 정보가 삭제되며 되돌릴 수 없습니다.`
+      '탈퇴하시겠어요?\n모든 정보가 삭제되며 되돌릴 수 없습니다.'
       setModaltext(message);
     }
     setVisible(true);
@@ -148,7 +148,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
         </View>
         {modalMode === "nickname" ? 
           <View style = {styles.nickNameInput}>
-            <TextInput label = "닉네임" defaultValue = {inputText} onChangeText = {(inputText) => setInputText(inputText)} style = {styles.inputText}/>
+            <TextInput label = "닉네임" defaultValue = {USER.NICKNAME} onChangeText = {(inputText) => setInputText(inputText)} style = {styles.inputText}/>
           </View> 
           : 
           null}
@@ -227,6 +227,7 @@ const styles = StyleSheet.create({
     fontSize : 17,
     //fontWeight : "bold",
     padding : 15,
+    
   },
   nickNameInput : {
     width : "100%",

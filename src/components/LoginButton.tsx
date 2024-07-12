@@ -46,6 +46,7 @@ const LoginButton: React.FC<any> = ({ navigation }) => {
           try {
             //const hasPreviousSignIn = await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
+            console.log("구글 로그인", userInfo);
 
             USER.EMAIL = userInfo.user.email;
             USER.PROVIDERCODE = userInfo.user.id; //고유 아이디

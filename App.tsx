@@ -120,8 +120,6 @@ const App: React.FC = () => {
         {isSignIn ? ( //로그인이 되어있는 경우 바로 홈 화면, 로그인이 안 되어있는 경우에는 로그인 화면과 회원가입 화면
           <>
             <Stack.Screen name="Tabbar" component={Tabbar}/>
-            <Stack.Screen name="InfoScreen" component={InfoScreen} />
-            <Stack.Screen name="Login" component={Login}/>
             <Stack.Screen name="Chat" component = {Chat} options={{
               title : "Chat",
               headerTitleAlign : "center",
@@ -140,8 +138,6 @@ const App: React.FC = () => {
           <>
             <Stack.Screen name="Login" component={Login}/>
             <Stack.Screen name="InfoScreen" component={InfoScreen} />
-            <Stack.Screen name="Tabbar" component={Tabbar}/>
-            <Stack.Screen name="Chat" component = {Chat}/>
           </>
         )}
       </Stack.Navigator>

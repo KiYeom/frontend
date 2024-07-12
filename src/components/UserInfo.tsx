@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { USER } from "../constants/Constants";
 import { Button } from "react-native-paper";
 import { IconButton, MD3Colors } from 'react-native-paper';
-import NameModal from "./NameModal";
 import { Modal, Portal, PaperProvider } from 'react-native-paper';
 import useNicknameState from "../store/nicknameState";
 
