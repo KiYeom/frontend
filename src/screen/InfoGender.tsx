@@ -9,12 +9,13 @@ import axios from "axios";
 import { useEffect } from "react";
 import { storage } from "../../utils/storageUtils";
 import { USER, MALE, FEMALE, REFRESHTOKEN, ACCESSTOKEN } from "../constants/Constants";
-
+import useIsSignInState from "../store/signInStatus";
 //console.log(axios.isCancel("something"));
 
 const InfoGender: React.FC<any> = ({ navigation }) => {
   const [selectedGender, setSelectedGender] = useState("");
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const {isSignIn, setIsSignIn} = useIsSignInState();
   const isMale = selectedGender === "male";
   const isFemale = selectedGender === "female";
   
@@ -30,12 +31,9 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
     } else if (isFemale) {
       USER.GENDER = FEMALE;
     }
-
-    setIsButtonDisabled(false);
-
-
-
+    await setIsButtonDisabled(false);
     //console.log("회원가입에 사용하는 데이터", DATA);
+    console.log("======= ", isButtonDisabled);
 
     axios //회원가입하기
       .post("http://34.125.112.144:8000/v1/auth/signup", {
@@ -54,13 +52,16 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
         storage.set(ACCESSTOKEN, response.data.data.accessToken);
         storage.set(REFRESHTOKEN, response.data.data.refreshToken);
         console.log("회원가입 refreshtoken : ", response.data.data.refreshToken);
-        navigation.navigate("Tabbar");
+        setIsSignIn(true); //tabbar로 이동
+        console.log("======= ", isButtonDisabled);
+        //navigation.navigate("Tabbar");
       })
       .catch(function (error) {
         //오류 발생 시 실행
         console.log("InfoGender error(data): ", error.response.data);
         console.log("InfoGender error(stats)", error.response.status);
         console.log("InfoGender error(headers)", error.response.headers);
+        console.log("======= ", isButtonDisabled);
       });
   };
   return (

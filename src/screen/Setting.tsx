@@ -1,7 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import DeleteAccoutButton from "../components/DeleteAccoutButton";
 import { useNavigation } from "@react-navigation/native";
 import { GOOGLE_KEY } from "../../utils/storageUtils";
 import { ACCESSTOKEN, CHATLOG, REFRESHTOKEN, USER } from "../constants/Constants";
@@ -17,13 +16,16 @@ import UserSetting from "../components/UserSetting";
 import { PaperProvider, Portal, Modal, IconButton, Dialog } from "react-native-paper";
 import { useState } from "react";
 import axiosInstance from "../model/Chatting";
-
+import useIsSignInState from "../store/signInStatus";
+import useNicknameState from "../store/nicknameState";
 
 const Setting: React.FC<any> = ({ navigation }) => {
   const [visible, setVisible] = useState(false);
   const [modaltext, setModaltext] = useState("");
   const [modalMode, setModalMode] = useState("");
   const [inputText, setInputText] = useState("");
+  const {isSignIn, setIsSignIn} = useIsSignInState();
+  const {nickname, setNickname} = useNicknameState();
 
 
   const logoutRequest = async () => {
@@ -44,6 +46,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
           deviceId: USER.DEVICEID,
         }
       });
+      setIsSignIn(false);
       console.log("서버 로그아웃 응답: "); // 로그 추가
       storage.delete(ACCESSTOKEN);
       storage.delete(REFRESHTOKEN);
@@ -51,6 +54,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
       navigation.navigate("Login");
     } catch (error) {
       console.log("logoutRequest 요청 실패", error);
+      setIsSignIn(true);
     }
   }
 
@@ -59,22 +63,25 @@ const Setting: React.FC<any> = ({ navigation }) => {
     try {
       const response = await axiosInstance.delete('http://34.125.112.144:8000/v1/auth/deactivate');
       console.log("서버 회원탈퇴 응답 : ");
+      setIsSignIn(false);
       navigation.navigate("Login");
       storage.delete(ACCESSTOKEN);
       storage.delete(REFRESHTOKEN);
     }
     catch(error) {
       console.log("deactivateRequest 요청 실패", error);
+      setIsSignIn(true);
     }
   }
 
   const nicknameRequest = async () => {
     console.log("nickname Request 시작");
     USER.NICKNAME = inputText;
+    setNickname(inputText);
     console.log("USER의 nickname (USER.NICKNAME) : ", USER.NICKNAME);
     console.log("USER의 nickname (inputText) : ", inputText);
     try {
-      const response = await axiosInstance.patch('http://34.125.112.144:8000/v1/user/nickname', 
+      const response = await axiosInstance.patch('http://34.125.112.144:8000/v1/users/nickname', 
         {
           nickname : inputText,
       });
@@ -105,7 +112,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
     else if (text === "deactivate") {
       //console.log("유저는 회원 탈퇴를 하기를 원합니다.");
       message = 
-      `탈퇴하시겠어요? 모든 정보가 삭제되며 되돌릴 수 없습니다.`
+      '탈퇴하시겠어요?\n모든 정보가 삭제되며 되돌릴 수 없습니다.'
       setModaltext(message);
     }
     setVisible(true);
@@ -141,7 +148,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
         </View>
         {modalMode === "nickname" ? 
           <View style = {styles.nickNameInput}>
-            <TextInput label = "닉네임" defaultValue = {inputText} onChangeText = {(inputText) => setInputText(inputText)} style = {styles.inputText}/>
+            <TextInput label = "닉네임" defaultValue = {USER.NICKNAME} onChangeText = {(inputText) => setInputText(inputText)} style = {styles.inputText}/>
           </View> 
           : 
           null}
@@ -220,6 +227,7 @@ const styles = StyleSheet.create({
     fontSize : 17,
     //fontWeight : "bold",
     padding : 15,
+    
   },
   nickNameInput : {
     width : "100%",

@@ -2,12 +2,13 @@ import React from "react";
 import { Text, View, Image, TouchableOpacity, Button } from "react-native";
 import { StyleSheet } from "react-native";
 //import Icon from "react-native-vector-icons/MaterialIcons";
-import DeleteAccoutButton from "./DeleteAccoutButton";
 import { Switch, Icon, PaperProvider, Portal, Modal } from 'react-native-paper';
 import { APP_VERSION } from "../constants/Constants";
 import { Provider } from "react-native-paper";
 import * as Linking from 'expo-linking';
 import { NavigationContainer } from '@react-navigation/native';
+import useNicknameState from "../store/nicknameState";
+
 const UserSetting: React.FC<any> = ({navigation, showModal}) => {
   //개인정보 페이지 이동하기
   const handlePrivacyPolicyPress = () => {

@@ -10,13 +10,16 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { storage } from "../../utils/storageUtils";
 import { USER } from "../constants/Constants";
+import useNicknameState from "../store/nicknameState";
 
 const InfoName: React.FC<any> = ({ navigation }) => {
   const [text, setText] = React.useState("");
+  const {nickname, setNickname} = useNicknameState();
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
   const saveInfoName = async () => {
     USER.NICKNAME = text;
+    setNickname(text);
     navigation.navigate("InfoAge");
   };
 

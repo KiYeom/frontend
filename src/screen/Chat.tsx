@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useEffect, useRef } from "react";
-import { Text, View, StyleSheet, FlatList, KeyboardAvoidingView, Platform, Keyboard } from "react-native";
-import { Button, TextInput } from 'react-native-paper';
+import { Text, View, StyleSheet, FlatList, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback } from "react-native";
+import { Button, TextInput, IconButton } from 'react-native-paper';
 import ChatBubble from "../components/ChatBubble";
 import { Image } from "react-native";
 import axios from "axios";
@@ -10,6 +10,8 @@ import { storage } from "../../utils/storageUtils";
 import axiosInstance from "../model/Chatting";
 import { CHATLOG } from "../constants/Constants";
 import { useFocusEffect } from "@react-navigation/native";
+import { ERRORMESSAGE } from "../constants/Constants";
+import { InputAccessoryView } from "react-native";
 
 interface Message {
   sender: string;
@@ -69,22 +71,20 @@ const Chat: React.FC = () => {
         characterId: characterId,
         question: question
       });
-      return response.data.data.answer;
+      return response.data.data.answer; //쿠키의 답장을 리턴
     } catch (error) {
-      console.error('요청 실패:', error);
+      return ERRORMESSAGE; //api 연결이 실패한 경우 실패 메세지가 뜸
     }  
   };
 
   const aiSend = async () => {
     const cookieAnswer = await sendChatRequest(1, text);
-    setTimeout(()=> {
-      const aiData = {sender : "bot", text : `${cookieAnswer}`};
-      setData((prevData) => {
-        const newData = [...prevData, aiData];
-        saveChatLogs(newData);
-        return newData;
-      });
-    }, 1000);
+    const aiData = {sender : "bot", text : `${cookieAnswer}`}
+    setData((prevData) => {
+      const newData = [...prevData, aiData];
+      saveChatLogs(newData);
+      return newData;
+    });
   };
 
   const userSend = () => {
@@ -123,49 +123,91 @@ const Chat: React.FC = () => {
   );
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <FlatList
-        ref={flatListRef}
-        data={data}
-        renderItem={renderItem}
-        onContentSizeChange={() => flatListRef.current?.scrollToEnd({animated : false})}
-        onLayout={() => flatListRef.current?.scrollToEnd({animated : false})}
-        refreshing={true}
-      />
-      <View style={styles.form}>
-        <TextInput
-          label="send message to cookie🐶"
-          value={text}
-          onChangeText={(text) => changeText(text)}
-          mode="outlined"
-          outlineColor="#3B506B"
-          activeOutlineColor="#3B506B"
-          style={styles.input}
+    <TouchableWithoutFeedback onPress = {Keyboard.dismiss}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={"padding"}
+      >
+        <FlatList
+          ref={flatListRef}
+          data={data}
+          renderItem={renderItem}
+          onContentSizeChange={() => flatListRef.current?.scrollToEnd({animated : false})}
+          onLayout={() => flatListRef.current?.scrollToEnd({animated : false})}
+          refreshing={true}
+          style = {styles.flatList}
         />
-        <Button mode="contained" onPress={userSend} style={styles.btn} disabled={btnDisable}>
-          send
-        </Button>
-      </View>
-    </KeyboardAvoidingView>
+        {Platform.OS === "ios" ? (
+          <InputAccessoryView>
+            <View style={styles.form}>
+              <TextInput
+                label="send message to cookie🐶"
+                value={text}
+                onChangeText={(text) => changeText(text)}
+                mode="outlined"
+                outlineColor="#3B506B"
+                activeOutlineColor="#3B506B"
+                style={styles.textInput}
+                outlineStyle = {{borderRadius : 20}}
+              />
+              <IconButton
+                icon="arrow-up"
+                iconColor = "white"
+                containerColor="#FF6B6B"
+                size={25}
+                onPress={userSend}
+                disabled = {btnDisable}
+              />
+            </View>
+          </InputAccessoryView>
+        ) : (
+        <View style={styles.form}>
+          <TextInput
+            label="send message to cookie🐶"
+            value={text}
+            onChangeText={(text) => changeText(text)}
+            mode="outlined"
+            outlineColor="#3B506B"
+            activeOutlineColor="#3B506B"
+            style={styles.textInput}
+            outlineStyle = {{borderRadius : 20}}
+          />
+          <IconButton
+            icon="arrow-up"
+            iconColor = "white"
+            containerColor="#FF6B6B"
+            size={25}
+            onPress={userSend}
+            disabled = {btnDisable}
+          />
+        </View>
+        )}
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    //padding : 16,
+  },
+  flatList : {
+    padding : 16,
   },
   form: {
     flexDirection: "row",
     width: "100%",
     justifyContent: "space-between",
-    padding: 10,
+    alignItems : "center",
+    padding : 16,
+    backgroundColor : "white",
+    marginTop : 16,
   },
-  input: {
+  textInput: {
     flex: 1,
-    marginRight: 10,
+    //marginRight: 10,
+    borderRadius : 20,
   },
   btn: {
     justifyContent: "center",

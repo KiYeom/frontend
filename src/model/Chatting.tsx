@@ -65,10 +65,12 @@ axiosInstance.interceptors.response.use(
         });
 
         if (response.status === 200) {
-          console.log("새로운 액세스 토큰 수신: ", response.data.accessToken);
-          storage.set(ACCESSTOKEN, response.data.accessToken);
+          console.log("response 살펴보기", response);
+          console.log("ddd", response.data);
+          console.log("새로운 액세스 토큰 수신: ", response.data.data.accessToken);
+          storage.set(ACCESSTOKEN, response.data.data.accessToken);
 
-          originalRequest.headers['Authorization'] = `Bearer ${response.data.accessToken}`;
+          originalRequest.headers['Authorization'] = `Bearer ${response.data.data.accessToken}`;
 
           return axiosInstance(originalRequest);
         }

@@ -15,7 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const Tab = createBottomTabNavigator();
 const color = "#58C3A5";
 
-const Tabbar: React.FC<any> = () => {
+const Tabbar: React.FC<any> = ({isSignIn, setIsSignIn}) => {
   console.log("채팅 화면 새로 그려짐..")
   return (
     <Tab.Navigator
@@ -29,30 +29,9 @@ const Tabbar: React.FC<any> = () => {
           fontFamily: "Pretendard-Bold", // 사용할 폰트 패밀리
           fontSize: 17, // 폰트 크기
         },
-        tabBarActiveTintColor: '#58C3A5'
+      tabBarActiveTintColor: '#58C3A5'
       }}
     >
-      <Tab.Screen 
-        name="Chat" 
-        component={Chat} 
-        options={({ navigation }) => ({
-          tabBarLabel: 'Chat',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="chat" color={color} size={size} />
-          ),
-          tabBarStyle: { display: 'none' },
-          headerLeft: () => (
-            <MaterialCommunityIcons 
-              name="arrow-left" 
-              color="#fff" 
-              size={24} 
-              onPress={() => navigation.navigate('Home')} 
-              style={{ marginLeft: 16 }}
-            />
-          ),
-        })}
-      />
-
       <Tab.Screen name="Home" component={Home} options={{
           tabBarLabel: 'Home',
           tabBarIcon: ({ color, size }) => (
