@@ -15,7 +15,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useFonts } from "expo-font";
 import * as Device from 'expo-device';
-
 import { GOOGLE_KEY } from "./utils/storageUtils";
 import axios from "axios";
 import { storage } from "./utils/storageUtils";
@@ -118,12 +117,26 @@ const App: React.FC = () => {
             <Stack.Screen name="Tabbar" component={Tabbar}/>
             <Stack.Screen name="InfoScreen" component={InfoScreen} />
             <Stack.Screen name="Login" component={Login}/>
+            <Stack.Screen name="Chat" component = {Chat} options={{
+              title : "Chat",
+              headerTitleAlign : "center",
+              headerStyle : {
+                backgroundColor : '#58C3A5'
+              },
+              headerTintColor : '#fff',
+              headerTitleStyle : {
+                fontFamily : "Pretendard-Bold",
+                fontSize : 17,
+              },
+              headerShown : true,
+            }}/>
           </>
         ) : ( 
           <>
             <Stack.Screen name="Login" component={Login}/>
             <Stack.Screen name="InfoScreen" component={InfoScreen} />
             <Stack.Screen name="Tabbar" component={Tabbar}/>
+            <Stack.Screen name="Chat" component = {Chat}/>
           </>
         )}
       </Stack.Navigator>
