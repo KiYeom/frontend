@@ -52,9 +52,9 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
         storage.set(ACCESSTOKEN, response.data.data.accessToken);
         storage.set(REFRESHTOKEN, response.data.data.refreshToken);
         console.log("회원가입 refreshtoken : ", response.data.data.refreshToken);
-        setIsSignIn(true);
+        setIsSignIn(true); //tabbar로 이동
         console.log("======= ", isButtonDisabled);
-        navigation.navigate("Tabbar");
+        //navigation.navigate("Tabbar");
       })
       .catch(function (error) {
         //오류 발생 시 실행

@@ -73,8 +73,8 @@ const LoginButton: React.FC<any> = ({ navigation }) => {
                 USER.NICKNAME = response.data.data.nickname;
                 USER.GENDER = response.data.data.gender;
                 USER.BIRTHDATE = response.data.data.birthdate;
-                setIsSignIn(true);
-                navigation.navigate("Tabbar"); //저장하고 메인 페이지로 이동
+                setIsSignIn(true); //로그인 성공하면 tabbar 페이지로 이동
+                //navigation.navigate("Main"); //저장하고 메인 페이지로 이동
                 console.log("로그인을 위해 전달한 데이터 : ", response);
               })
               .catch(function (error) {

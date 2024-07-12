@@ -73,7 +73,7 @@ const App: React.FC = () => {
                 //console.log("새로 발급된 access token : ", storage.getString(ACCESSTOKEN))
                 USER.NICKNAME = response.data.data.nickname;
                 console.log("nickname 저장 확인", USER.NICKNAME);
-                setIsSignIn(true);
+                setIsSignIn(true); //true이면 tabbar로 이동
                 console.log("로그인 완료, isSignIn : ", isSignIn);
               }catch (error) {
                 console.log("then 블록 내부 에러", error);
@@ -115,11 +115,13 @@ const App: React.FC = () => {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName = "Main">
         
         {isSignIn ? ( //로그인이 되어있는 경우 바로 홈 화면, 로그인이 안 되어있는 경우에는 로그인 화면과 회원가입 화면
           <>
-            <Stack.Screen name="Tabbar" component={Tabbar}/>
+            <Stack.Screen name="Tabbar" component={Tabbar} options = {{
+              title : "Home",
+            }}/>
             <Stack.Screen name="Chat" component = {Chat} options={{
               title : "Chat",
               headerTitleAlign : "center",
