@@ -11,6 +11,7 @@ import axiosInstance from "../model/Chatting";
 import { CHATLOG } from "../constants/Constants";
 import { useFocusEffect } from "@react-navigation/native";
 import { ERRORMESSAGE } from "../constants/Constants";
+import { InputAccessoryView } from "react-native";
 
 interface Message {
   sender: string;
@@ -84,15 +85,6 @@ const Chat: React.FC = () => {
       saveChatLogs(newData);
       return newData;
     });
-    /* 
-    setTimeout(()=> {
-      const aiData = {sender : "bot", text : `${cookieAnswer}`};
-      setData((prevData) => {
-        const newData = [...prevData, aiData];
-        saveChatLogs(newData);
-        return newData;
-      });
-    }, 1000);*/
   };
 
   const userSend = () => {
@@ -145,6 +137,30 @@ const Chat: React.FC = () => {
           refreshing={true}
           style = {styles.flatList}
         />
+        {Platform.OS === "ios" ? (
+          <InputAccessoryView>
+            <View style={styles.form}>
+              <TextInput
+                label="send message to cookie🐶"
+                value={text}
+                onChangeText={(text) => changeText(text)}
+                mode="outlined"
+                outlineColor="#3B506B"
+                activeOutlineColor="#3B506B"
+                style={styles.textInput}
+                outlineStyle = {{borderRadius : 20}}
+              />
+              <IconButton
+                icon="arrow-up"
+                iconColor = "white"
+                containerColor="#FF6B6B"
+                size={25}
+                onPress={userSend}
+                disabled = {btnDisable}
+              />
+            </View>
+          </InputAccessoryView>
+        ) : (
         <View style={styles.form}>
           <TextInput
             label="send message to cookie🐶"
@@ -165,6 +181,7 @@ const Chat: React.FC = () => {
             disabled = {btnDisable}
           />
         </View>
+        )}
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   )
