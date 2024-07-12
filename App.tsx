@@ -19,7 +19,7 @@ import { GOOGLE_KEY } from "./utils/storageUtils";
 import axios from "axios";
 import { storage } from "./utils/storageUtils";
 import { USER, ACCESSTOKEN, REFRESHTOKEN } from "./src/constants/Constants";
-import useIsSignInState from "./src/store/signStatus";
+import useIsSignInState from "./src/store/signInStatus";
 
 const Stack = createNativeStackNavigator();
 

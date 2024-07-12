@@ -11,7 +11,7 @@ import axios from "axios";
 import { storage } from "../../utils/storageUtils";
 import { ACCESSTOKEN, APP_VERSION, APPLE, GOOGLE, REFRESHTOKEN, USER } from "../constants/Constants";
 import InfoScreen from "../screen/InfoScreen";
-import useIsSignInState from "../store/signStatus";
+import useIsSignInState from "../store/signInStatus";
 //WebBrowser.maybeCompleteAuthSession();
 // 로그인 버튼 누르면 웹 브라우저가 열리고, 구글 로그인 페이지로 이동함.
 //web popup을 무시하기 위해 WebBrowser.maybeCompleteAuthSession()을 사용한다.

@@ -8,15 +8,16 @@ import { Button } from "react-native-paper";
 import { IconButton, MD3Colors } from 'react-native-paper';
 import NameModal from "./NameModal";
 import { Modal, Portal, PaperProvider } from 'react-native-paper';
-
+import useNicknameState from "../store/nicknameState";
 
 const UserInfo: React.FC<any> = ({showModal}) => {
+  const {nickname, setNickname} = useNicknameState();
   const containerStyle = {backgroundColor: 'white', padding: 50};
   return (
     <View style={styles.container}>
       <Text>닉네임</Text>
       <View style={styles.userInfoContainer}>
-        <Text style={styles.userInfoText}>{USER.NICKNAME}</Text>
+        <Text style={styles.userInfoText}>{nickname}</Text>
         <IconButton
           icon="pencil"
           iconColor="black"

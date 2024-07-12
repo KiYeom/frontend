@@ -16,7 +16,8 @@ import UserSetting from "../components/UserSetting";
 import { PaperProvider, Portal, Modal, IconButton, Dialog } from "react-native-paper";
 import { useState } from "react";
 import axiosInstance from "../model/Chatting";
-import useIsSignInState from "../store/signStatus";
+import useIsSignInState from "../store/signInStatus";
+import useNicknameState from "../store/nicknameState";
 
 const Setting: React.FC<any> = ({ navigation }) => {
   const [visible, setVisible] = useState(false);
@@ -24,6 +25,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
   const [modalMode, setModalMode] = useState("");
   const [inputText, setInputText] = useState("");
   const {isSignIn, setIsSignIn} = useIsSignInState();
+  const {nickname, setNickname} = useNicknameState();
 
 
   const logoutRequest = async () => {
@@ -75,10 +77,11 @@ const Setting: React.FC<any> = ({ navigation }) => {
   const nicknameRequest = async () => {
     console.log("nickname Request 시작");
     USER.NICKNAME = inputText;
+    setNickname(inputText);
     console.log("USER의 nickname (USER.NICKNAME) : ", USER.NICKNAME);
     console.log("USER의 nickname (inputText) : ", inputText);
     try {
-      const response = await axiosInstance.patch('http://34.125.112.144:8000/v1/user/nickname', 
+      const response = await axiosInstance.patch('http://34.125.112.144:8000/v1/users/nickname', 
         {
           nickname : inputText,
       });
