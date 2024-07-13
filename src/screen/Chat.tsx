@@ -67,7 +67,7 @@ const Chat: React.FC = () => {
 
   const sendChatRequest = async (characterId:number, question:string) => {
     try {
-      const response = await axiosInstance.post('/v1/chat', {
+      const response = await axiosInstance.post('/chat', {
         characterId: characterId,
         question: question
       });

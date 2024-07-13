@@ -4,7 +4,7 @@ import { REFRESHTOKEN, USER, ACCESSTOKEN } from "../constants/Constants";
 
 // Axios 인스턴스 생성
 const axiosInstance = axios.create({
-  baseURL: 'http://34.125.112.144:8000', // API의 기본 URL
+  baseURL: 'https://api.remind4u.co.kr/v1', // API의 기본 URL
   headers: {
     'Content-Type': 'application/json', // 기본 Content-Type 헤더 설정
   },
@@ -51,13 +51,13 @@ axiosInstance.interceptors.response.use(
 
         const response = await axios({
           method: 'patch',
-          url: 'http://34.125.112.144:8000/v1/auth/refresh',
+          url: 'https://api.remind4u.co.kr/v1/auth/refresh',
           data: {
             deviceId: USER.DEVICEID,
             appVersion: USER.APPVERSION,
             deviceOs: USER.DEVICEOS,
             refreshToken: refreshToken,
-            requireUserInfo: true,
+            isAppStart: false,
           },
           headers: {
             'Content-Type': 'application/json',
