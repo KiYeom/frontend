@@ -28,6 +28,7 @@ interface UserData {
   birthdate: string | null;
   gender: number | null;
 }
+
 //구글 로그인
 const LoginButton: React.FC<any> = ({ navigation }) => {
   const {isSignIn, setIsSignIn } = useIsSignInState();
@@ -58,8 +59,8 @@ const LoginButton: React.FC<any> = ({ navigation }) => {
             //console.log("로그인을 위해 전달하려는 데이터", USER);
             // 로그인에 성공하면 JWT 토큰을 부여받는다.
             axios
-              .post("http://34.125.112.144:8000/v1/auth/login", {
-                providerName: USER.PROVIDERNAME,
+              .post("https://api.remind4u.co.kr/v1/auth/login", {
+                providerName: "google",
                 providerCode: USER.PROVIDERCODE,
                 deviceId: USER.DEVICEID,
                 appVersion: USER.APPVERSION,

@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { GOOGLE_KEY } from "../../utils/storageUtils";
 import { ACCESSTOKEN, CHATLOG, REFRESHTOKEN, USER } from "../constants/Constants";
@@ -27,7 +27,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
   const {isSignIn, setIsSignIn} = useIsSignInState();
   const {nickname, setNickname} = useNicknameState();
 
-
+  //로그아웃
   const logoutRequest = async () => {
     console.log("logout Request 시작"); // 로그 추가
     //Google객체를 사용하려면 반드시 configure 메서드를 호출해야 한다.
@@ -41,7 +41,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
       console.log("계정 로그아웃 완료"); // 로그 추가
   
       console.log("서버 로그아웃 시도"); // 로그 추가
-      const response = await axiosInstance.delete('http://34.125.112.144:8000/v1/auth/logout', {
+      const response = await axiosInstance.delete('/auth/logout', {
         data: {
           deviceId: USER.DEVICEID,
         }
@@ -50,30 +50,31 @@ const Setting: React.FC<any> = ({ navigation }) => {
       console.log("서버 로그아웃 응답: "); // 로그 추가
       storage.delete(ACCESSTOKEN);
       storage.delete(REFRESHTOKEN);
-      storage.delete(CHATLOG);
+      //storage.delete(CHATLOG); 테스트
       navigation.navigate("Login");
     } catch (error) {
       console.log("logoutRequest 요청 실패", error);
       setIsSignIn(true);
     }
   }
-
+  //회원 탈퇴
   const deactivateRequest = async () => {
     console.log("deactivate Request 시작");
     try {
-      const response = await axiosInstance.delete('http://34.125.112.144:8000/v1/auth/deactivate');
+      const response = await axiosInstance.delete('/auth/deactivate');
       console.log("서버 회원탈퇴 응답 : ");
       setIsSignIn(false);
       navigation.navigate("Login");
       storage.delete(ACCESSTOKEN);
       storage.delete(REFRESHTOKEN);
+      storage.delete(CHATLOG);
     }
     catch(error) {
       console.log("deactivateRequest 요청 실패", error);
       setIsSignIn(true);
     }
   }
-
+  //유저 별명 변경
   const nicknameRequest = async () => {
     console.log("nickname Request 시작");
     USER.NICKNAME = inputText;
@@ -81,7 +82,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
     console.log("USER의 nickname (USER.NICKNAME) : ", USER.NICKNAME);
     console.log("USER의 nickname (inputText) : ", inputText);
     try {
-      const response = await axiosInstance.patch('http://34.125.112.144:8000/v1/users/nickname', 
+      const response = await axiosInstance.patch('/users/nickname', 
         {
           nickname : inputText,
       });
@@ -93,6 +94,19 @@ const Setting: React.FC<any> = ({ navigation }) => {
     }
   }
 
+
+  //유저 정보 가져오기
+  const userInfo = async () => {
+    try {
+      const response = await axiosInstance.get('/users/me');
+      console.log("유저 정보 가져오기 성공", response);
+      USER.NICKNAME = response.data.data.nickname;
+      setNickname(response.data.data.nickname);
+    }
+    catch(error) {
+      console.log("유저 정보 가져오기 실패", error);
+    }
+  }
   
   //모달창이 열리는 경우 
   const showModal = (text : string) => {
@@ -138,7 +152,12 @@ const Setting: React.FC<any> = ({ navigation }) => {
     }
     hideModal();
   }
-  
+
+
+  useEffect(()=> {
+    userInfo();
+  }, [])
+
   return (
     <PaperProvider>
     <Portal>

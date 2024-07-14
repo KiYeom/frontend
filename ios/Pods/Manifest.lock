@@ -239,6 +239,8 @@ PODS:
     - ExpoModulesCore
   - ExpoKeepAwake (13.0.2):
     - ExpoModulesCore
+  - ExpoLocalization (15.0.3):
+    - ExpoModulesCore
   - ExpoModulesCore (1.12.18):
     - DoubleConversion
     - glog
@@ -1541,6 +1543,7 @@ DEPENDENCIES:
   - ExpoFileSystem (from `../node_modules/expo-file-system/ios`)
   - ExpoFont (from `../node_modules/expo-font/ios`)
   - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
+  - ExpoLocalization (from `../node_modules/expo-localization/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
   - ExpoRandom (from `../node_modules/expo-random/ios`)
   - ExpoWebBrowser (from `../node_modules/expo-web-browser/ios`)
@@ -1655,6 +1658,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-font/ios"
   ExpoKeepAwake:
     :path: "../node_modules/expo-keep-awake/ios"
+  ExpoLocalization:
+    :path: "../node_modules/expo-localization/ios"
   ExpoModulesCore:
     :path: "../node_modules/expo-modules-core"
   ExpoRandom:
@@ -1805,6 +1810,7 @@ SPEC CHECKSUMS:
   ExpoFileSystem: 80bfe850b1f9922c16905822ecbf97acd711dc51
   ExpoFont: 43b69559cef3d773db57c7ae7edd3cb0aa0dc610
   ExpoKeepAwake: 3b8815d9dd1d419ee474df004021c69fdd316d08
+  ExpoLocalization: f04eeec2e35bed01ab61c72ee1768ec04d093d01
   ExpoModulesCore: 30e1ed4659356cb9a84e0e5ddf1d090d735973c1
   ExpoRandom: 099ddce39b39ffb984b45118d031e8713e962a50
   ExpoWebBrowser: 7595ccac6938eb65b076385fd23d035db9ecdc8e

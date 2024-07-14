@@ -33,7 +33,7 @@ export const USER : User = {
   BIRTHDATE : 'birthdate',
   GENDER : null,
   DEVICEID : 'deviceId',
-  APPVERSION : "appVersion",
+  APPVERSION : "1.0.0",
   DEVICEOS : "deviceOs",
   PROVIDERNAME : "google",
   PROVIDERCODE : "providerCode",
@@ -41,3 +41,4 @@ export const USER : User = {
   ACCESSTOKEN : "accessToken", // 수정된 부분
   REFRESHTOKEN : "refreshToken",
 }
+

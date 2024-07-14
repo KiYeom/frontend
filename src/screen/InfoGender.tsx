@@ -36,13 +36,13 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
     console.log("======= ", isButtonDisabled);
 
     axios //회원가입하기
-      .post("http://34.125.112.144:8000/v1/auth/signup", {
+      .post("https://api.remind4u.co.kr/v1/auth/signup", {
+        nickname : USER.NICKNAME,
         email : USER.EMAIL,
+        gender : USER.GENDER,
         providerName : USER.PROVIDERNAME,
         providerCode : USER.PROVIDERCODE,
-        nickname : USER.NICKNAME,
         birthdate : USER.BIRTHDATE,
-        gender : USER.GENDER,
         deviceId : USER.DEVICEID,
         appVersion : USER.APPVERSION,
         deviceOs : USER.DEVICEOS,
