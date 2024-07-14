@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useState, useEffect, useRef } from "react";
 import { Text, View, StyleSheet, FlatList, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback } from "react-native";
@@ -12,6 +13,8 @@ import { CHATLOG } from "../constants/Constants";
 import { useFocusEffect } from "@react-navigation/native";
 import { ERRORMESSAGE } from "../constants/Constants";
 import { InputAccessoryView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { StatusBar } from "expo-status-bar";
 
 interface Message {
   sender: string;
@@ -44,26 +47,28 @@ const Chat: React.FC = () => {
     }
   }
 
+  
   useEffect(() => {
     loadChatLogs()
-    if (flatListRef.current) {
-      flatListRef.current.scrollToEnd({animated : false});
-    }
+    //if (flatListRef.current) {
+      //flatListRef.current.scrollToEnd({animated : false});
+    //}
   }, [])
 
-  useFocusEffect(
-    React.useCallback(() => {
-      if (flatListRef.current) {
-        flatListRef.current.scrollToEnd({ animated: false });
-      }
-    }, [data])
-  );
+  //useFocusEffect(
+    //React.useCallback(() => {
+      //if (flatListRef.current) {
+        //flatListRef.current.scrollToEnd({ animated: false });
+      //}
+    //}, [data])
+  //);
 
-  useEffect(()=> {
-    if (flatListRef.current) {
-      flatListRef.current.scrollToEnd({animated:true})
-    }
-  }, [data]); 
+  //useEffect(() => {
+    //if (flatListRef.current) {
+      //flatListRef.current.scrollToEnd({ animated: true });
+    //}
+  //}, [data]);
+
 
   const sendChatRequest = async (characterId:number, question:string) => {
     try {
@@ -81,7 +86,7 @@ const Chat: React.FC = () => {
     const cookieAnswer = await sendChatRequest(1, text);
     const aiData = {sender : "bot", text : `${cookieAnswer}`}
     setData((prevData) => {
-      const newData = [...prevData, aiData];
+      const newData = [aiData, ...prevData];
       saveChatLogs(newData);
       return newData;
     });
@@ -89,7 +94,7 @@ const Chat: React.FC = () => {
 
   const userSend = () => {
     const userData = {sender : "user", text : `${text}`}
-    setData((prevData) => [...prevData, userData]);
+    setData((prevData) => [userData, ...prevData]);
     setText("");
     setBtnDisable(true);
     aiSend();
@@ -101,7 +106,7 @@ const Chat: React.FC = () => {
   }
 
   const renderItem = ({ item }:any) => (
-    <View style={styles.messageContainer}>
+    <View style = {{backgroundColor : "blue"}}>
       {item.sender != "user" ? (
         <View style={styles.botMessageContainer}>
           <Image source={require("../../assets/cookieSplash.png")} style={styles.img} />
@@ -123,20 +128,19 @@ const Chat: React.FC = () => {
   );
 
   return (
-    <TouchableWithoutFeedback onPress = {Keyboard.dismiss}>
       <KeyboardAvoidingView
         style={styles.container}
         behavior={"padding"}
       >
         <FlatList
-          ref={flatListRef}
+          inverted
           data={data}
           renderItem={renderItem}
-          onContentSizeChange={() => flatListRef.current?.scrollToEnd({animated : false})}
-          onLayout={() => flatListRef.current?.scrollToEnd({animated : false})}
-          refreshing={true}
-          style = {styles.flatList}
+          style = {styles.flatList} //flatlist 컴포넌트 자체에 스타일을 적용 -> flatlist의 크기, 배경색, 테두리 등의 스타일 지정
+          contentContainerStyle = {styles.contentContainerStyle} 
+          //flatlist의 "콘텐츠 컨테이너"에 스타일을 적용 -> 스크롤뷰 콘텐츠에 패딩을 추가하거나 정렬 설정, 아이템 감싸는 뷰에 스타일 적용할 때
         />
+        
         {Platform.OS === "ios" ? (
           <InputAccessoryView>
             <View style={styles.form}>
@@ -182,8 +186,27 @@ const Chat: React.FC = () => {
           />
         </View>
         )}
+        <View style={styles.form}>
+          <TextInput
+            label="send message to cookie🐶"
+            value={text}
+            onChangeText={(text) => changeText(text)}
+            mode="outlined"
+            outlineColor="#3B506B"
+            activeOutlineColor="#3B506B"
+            style={styles.textInput}
+            outlineStyle = {{borderRadius : 20}}
+          />
+          <IconButton
+            icon="arrow-up"
+            iconColor = "white"
+            containerColor="#FF6B6B"
+            size={25}
+            onPress={userSend}
+            disabled = {btnDisable}
+          />
+        </View>
       </KeyboardAvoidingView>
-    </TouchableWithoutFeedback>
   )
 }
 
@@ -193,7 +216,14 @@ const styles = StyleSheet.create({
     //padding : 16,
   },
   flatList : {
-    padding : 16,
+    //flexGrow : 1,
+    //padding : 16,
+    backgroundColor : "pink",
+  },
+  contentContainerStyle : {
+    backgroundColor : "red",
+    minHeight : "100%",
+    justifyContent : 'flex-end',
   },
   form: {
     flexDirection: "row",
@@ -220,6 +250,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     maxWidth : "80%",
+    backgroundColor : "pink",
   },
   userMessageContainer: {
     flexDirection: "row",

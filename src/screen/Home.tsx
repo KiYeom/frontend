@@ -35,9 +35,9 @@ const Home: React.FC<any> = ({ navigation }) => {
   }, [])*/
   console.log("---------home notice---------", notice);
   const [visible, setVisible] = React.useState(false);
-  const title = notice.title;
-  const content = notice.content;
-  const btns = notice.options;
+  const title = notice ? notice.title : null;
+  const content = notice? notice.content : null;
+  const btns = notice? notice.options : null;
 
   const showModal = () => {
     setVisible(true);
@@ -53,10 +53,10 @@ const Home: React.FC<any> = ({ navigation }) => {
       <Portal>
         <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
           <View>
-            <Text>{title ? title : null}</Text>
+            <Text style = {{textAlign : "center"}}>{title ? title : null}</Text>
           </View>
           <View>
-            <Text>{content ? content : null}</Text>
+            <Text style = {{textAlign : "center"}}>{content ? content : null}</Text>
           </View>
           <View>
             {btns ? btns.map((option: Option, index : number) => (

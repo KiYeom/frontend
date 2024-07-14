@@ -50,7 +50,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
       console.log("서버 로그아웃 응답: "); // 로그 추가
       storage.delete(ACCESSTOKEN);
       storage.delete(REFRESHTOKEN);
-      storage.delete(CHATLOG);
+      //storage.delete(CHATLOG); 테스트
       navigation.navigate("Login");
     } catch (error) {
       console.log("logoutRequest 요청 실패", error);
@@ -67,6 +67,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
       navigation.navigate("Login");
       storage.delete(ACCESSTOKEN);
       storage.delete(REFRESHTOKEN);
+      storage.delete(CHATLOG);
     }
     catch(error) {
       console.log("deactivateRequest 요청 실패", error);
@@ -93,6 +94,19 @@ const Setting: React.FC<any> = ({ navigation }) => {
     }
   }
 
+
+  //유저 정보 가져오기
+  const userInfo = async () => {
+    try {
+      const response = await axiosInstance.get('/users/me');
+      console.log("유저 정보 가져오기 성공", response);
+      USER.NICKNAME = response.data.data.nickname;
+      setNickname(response.data.data.nickname);
+    }
+    catch(error) {
+      console.log("유저 정보 가져오기 실패", error);
+    }
+  }
   
   //모달창이 열리는 경우 
   const showModal = (text : string) => {
@@ -138,6 +152,11 @@ const Setting: React.FC<any> = ({ navigation }) => {
     }
     hideModal();
   }
+
+
+  useEffect(()=> {
+    userInfo();
+  }, [])
 
   return (
     <PaperProvider>

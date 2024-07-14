@@ -15,6 +15,7 @@ import ExpoDevice
 import ExpoFileSystem
 import ExpoFont
 import ExpoKeepAwake
+import ExpoLocalization
 import ExpoRandom
 import ExpoWebBrowser
 #if EXPO_CONFIGURATION_DEBUG
@@ -35,6 +36,7 @@ public class ExpoModulesProvider: ModulesProvider {
       FileSystemModule.self,
       FontLoaderModule.self,
       KeepAwakeModule.self,
+      LocalizationModule.self,
       RandomModule.self,
       WebBrowserModule.self,
       DevLauncherInternal.self,
@@ -55,6 +57,7 @@ public class ExpoModulesProvider: ModulesProvider {
       FileSystemModule.self,
       FontLoaderModule.self,
       KeepAwakeModule.self,
+      LocalizationModule.self,
       RandomModule.self,
       WebBrowserModule.self
     ]

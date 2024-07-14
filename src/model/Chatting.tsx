@@ -57,7 +57,7 @@ axiosInstance.interceptors.response.use(
             appVersion: USER.APPVERSION,
             deviceOs: USER.DEVICEOS,
             refreshToken: refreshToken,
-            isAppStart: false,
+            isAppStart: false, //재발급 할 때는 x
           },
           headers: {
             'Content-Type': 'application/json',

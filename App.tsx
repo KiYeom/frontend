@@ -59,7 +59,7 @@ const App: React.FC = () => {
           //토큰이 있으면 우리 회원이다.
           //<1> refresh token으로 access token으로 재발급 받는다. -> 재발급에 성공하면 access token으로 유저 정보를 받고 홈 화면에 보인다.
           axios
-            .patch("https://api.remind4u.co.kr/v1/auth/refresh", {
+            .patch("https://api.remind4u.co.kr/v1/auth/refresh", { //앱을 처음 실행했을 때는 true
                 deviceId : USER.DEVICEID,  
                 appVersion : USER.APPVERSION,
                 deviceOs : USER.DEVICEOS,
@@ -74,7 +74,7 @@ const App: React.FC = () => {
                 console.log('결과 : ', response);
                 storage.set(ACCESSTOKEN, response.data.data.accessToken);
                 //console.log("새로 발급된 access token : ", storage.getString(ACCESSTOKEN))
-                USER.NICKNAME = response.data.data.nickname;
+                USER.NICKNAME = response.data.data.nickname; //전달받은 정보를 저장
                 console.log("nickname 저장 확인", USER.NICKNAME);
                 if (response.data.data.notice != null) {
                   setNotice(response.data.data.notice);
