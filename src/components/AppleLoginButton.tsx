@@ -53,9 +53,9 @@ const AppleLoginButton: React.FC<any> = ({navigation}) => {
             .catch(function (error) {
               setIsSignIn(false);
               console.log("서버에 애플 로그인 실패");
-              //console.log(error);
-              //console.log(USER.PROVIDERCODE, USER.DEVICEID, USER.APPVERSION, USER.DEVICEOS);
-              //console.log(typeof(USER.PROVIDERCODE), typeof(USER.DEVICEID), typeof(USER.APPVERSION), typeof(USER.DEVICEOS));
+              console.log(error);
+              console.log(USER.PROVIDERCODE, USER.DEVICEID, USER.APPVERSION, USER.DEVICEOS);
+              console.log(typeof(USER.PROVIDERCODE), typeof(USER.DEVICEID), typeof(USER.APPVERSION), typeof(USER.DEVICEOS));
               if (error.response.status == 404) {
                 console.log("애플 유저. 새로운 사용자입니다");
                 navigation.navigate("InfoScreen");

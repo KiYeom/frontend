@@ -21,7 +21,8 @@
         "foregroundImage": "./assets/cookieSplash.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.ceunnseo.reMIND"
+      "package": "com.ceunnseo.reMIND",
+      "permissions": ["INTERNET"]
     },
     "scheme": "com.ceunnseo.reMIND",
     "web": {
@@ -69,6 +70,15 @@
           "Pretend-Thin": [
             "./assets/fonts/Pretendard-Thin.ttf"
           ]
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./local/path/to/myNotificationIcon.png",
+          "color": "#ffffff",
+          "sounds": ["./local/path/to/mySound.wav", "./local/path/to/myOtherSound.wav"],
+          "mode": "production"
         }
       ],
       "expo-apple-authentication",

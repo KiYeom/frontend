@@ -10,6 +10,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import useNicknameState from "../store/nicknameState";
 import useNotificationState from "../store/notificationState";
 import axiosInstance from "../model/Chatting";
+import * as Notifications from 'expo-notifications';
+
 
 const UserSetting: React.FC<any> = ({navigation, showModal}) => {
   //개인정보 페이지 이동하기
@@ -36,6 +38,19 @@ const UserSetting: React.FC<any> = ({navigation, showModal}) => {
   };
   return (
     <View style={styles.container}>
+      <Button title = "안녕" 
+              onPress = {async () => {
+                console.log("hellooo")
+                await Notifications.scheduleNotificationAsync({
+                  content: {
+                    title: "Time's up!",
+                    body: 'Change sides!',
+                  },
+                  trigger: {
+                    seconds: 5, //onPress가 클릭이 되면 60초 뒤에 알람이 발생합니다.
+                  },
+                });
+              }}/>
       <View style = {styles.titleContainer}>
         <Text style = {styles.text}>알림설정</Text>
         <Switch value={isSwitchOn} onValueChange={onToggleSwitch} color = "#3B506B"/>

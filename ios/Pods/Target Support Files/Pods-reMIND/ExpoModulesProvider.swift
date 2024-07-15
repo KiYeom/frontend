@@ -8,15 +8,18 @@
 import ExpoModulesCore
 import ExpoAdapterGoogleSignIn
 import ExpoAppleAuthentication
+import EXApplication
 import ExpoAsset
 import EXConstants
 import ExpoCrypto
 import ExpoDevice
+import EASClient
 import ExpoFileSystem
 import ExpoFont
 import ExpoKeepAwake
 import ExpoLocalization
 import ExpoRandom
+import EXUpdates
 import ExpoWebBrowser
 #if EXPO_CONFIGURATION_DEBUG
 import EXDevLauncher
@@ -29,15 +32,18 @@ public class ExpoModulesProvider: ModulesProvider {
     #if EXPO_CONFIGURATION_DEBUG
     return [
       AppleAuthenticationModule.self,
+      ApplicationModule.self,
       AssetModule.self,
       ConstantsModule.self,
       CryptoModule.self,
       DeviceModule.self,
+      EASClientModule.self,
       FileSystemModule.self,
       FontLoaderModule.self,
       KeepAwakeModule.self,
       LocalizationModule.self,
       RandomModule.self,
+      UpdatesModule.self,
       WebBrowserModule.self,
       DevLauncherInternal.self,
       DevLauncherAuth.self,
@@ -50,15 +56,18 @@ public class ExpoModulesProvider: ModulesProvider {
     #else
     return [
       AppleAuthenticationModule.self,
+      ApplicationModule.self,
       AssetModule.self,
       ConstantsModule.self,
       CryptoModule.self,
       DeviceModule.self,
+      EASClientModule.self,
       FileSystemModule.self,
       FontLoaderModule.self,
       KeepAwakeModule.self,
       LocalizationModule.self,
       RandomModule.self,
+      UpdatesModule.self,
       WebBrowserModule.self
     ]
     #endif
@@ -82,11 +91,13 @@ public class ExpoModulesProvider: ModulesProvider {
   public override func getReactDelegateHandlers() -> [ExpoReactDelegateHandlerTupleType] {
     #if EXPO_CONFIGURATION_DEBUG
     return [
+      (packageName: "expo-updates", handler: ExpoUpdatesReactDelegateHandler.self),
       (packageName: "expo-dev-launcher", handler: ExpoDevLauncherReactDelegateHandler.self),
       (packageName: "expo-dev-menu", handler: ExpoDevMenuReactDelegateHandler.self)
     ]
     #else
     return [
+      (packageName: "expo-updates", handler: ExpoUpdatesReactDelegateHandler.self)
     ]
     #endif
   }
