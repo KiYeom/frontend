@@ -31,7 +31,7 @@ const Login: React.FC<any> = ({ navigation }) => {
       </View>
       <View style={styles.btnContainer}>
         <LoginButton navigation={navigation} />
-        <AppleLoginButton/>
+        <AppleLoginButton navigation = {navigation}/>
       </View>
 
     </View>
