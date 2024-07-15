@@ -8,6 +8,8 @@ import { Provider } from "react-native-paper";
 import * as Linking from 'expo-linking';
 import { NavigationContainer } from '@react-navigation/native';
 import useNicknameState from "../store/nicknameState";
+import useNotificationState from "../store/notificationState";
+import axiosInstance from "../model/Chatting";
 
 const UserSetting: React.FC<any> = ({navigation, showModal}) => {
   //개인정보 페이지 이동하기
@@ -17,8 +19,21 @@ const UserSetting: React.FC<any> = ({navigation, showModal}) => {
   const handleAskPress = () => {
     Linking.openURL('https://forms.gle/f92DzjUBNnU51vET6');
   }
-  const [isSwitchOn, setIsSwitchOn] = React.useState(false);
-  const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+  const {isSwitchOn, setIsSwitchOn} = useNotificationState();
+  //const [isSwitchOn, setIsSwitchOn] = React.useState(false);
+
+  const onToggleSwitch = async () => {
+    const response = await axiosInstance.patch('/notifications', {
+      isAllow : !isSwitchOn
+    });
+    if (response) { //반환값이 true이면 원하는대로 스위치 값 바꾸기
+      setIsSwitchOn(!isSwitchOn);
+      console.log("토글 바꾸기 성공");
+    }
+    else {
+      console.log("토글 바꾸기 실패");
+    }
+  };
   return (
     <View style={styles.container}>
       <View style = {styles.titleContainer}>

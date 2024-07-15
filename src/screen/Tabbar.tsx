@@ -17,6 +17,9 @@ const color = "#58C3A5";
 
 const Tabbar: React.FC<any> = ({isSignIn, setIsSignIn}) => {
   console.log("채팅 화면 새로 그려짐..")
+  const click = () => {
+    //console.log("클릭함");
+  }
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -35,15 +38,16 @@ const Tabbar: React.FC<any> = ({isSignIn, setIsSignIn}) => {
       <Tab.Screen name="Home" component={Home} options={{
           tabBarLabel: 'Home',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="home" color={color} size={size} />
+            <MaterialCommunityIcons name="home" color={color} size={size} onPress = {click}/>
           ),
-        }}/>
+          
+          }}/>
       <Tab.Screen name="Setting" component={Setting} options={{
           tabBarLabel: 'Setting',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="cog" color={color} size={size} />
+            <MaterialCommunityIcons name="cog" color={color} size={size} onPress = {click}/>
           ),
-        }}/>
+          }}/>
     </Tab.Navigator>
   );
 };

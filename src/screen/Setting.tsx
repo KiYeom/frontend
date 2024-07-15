@@ -7,6 +7,7 @@ import { ACCESSTOKEN, CHATLOG, REFRESHTOKEN, USER } from "../constants/Constants
 import { Provider, Button, TextInput } from "react-native-paper";
 import { storage } from "../../utils/storageUtils";
 import { Switch } from 'react-native-paper';
+import useNotificationState from "../store/notificationState";
 interface UserInfo {
   email: string;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
@@ -26,6 +27,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
   const [inputText, setInputText] = useState("");
   const {isSignIn, setIsSignIn} = useIsSignInState();
   const {nickname, setNickname} = useNicknameState();
+  const {isSwitchOn, setIsSwitchOn} = useNotificationState();
 
   //로그아웃
   const logoutRequest = async () => {
@@ -107,6 +109,21 @@ const Setting: React.FC<any> = ({ navigation }) => {
       console.log("유저 정보 가져오기 실패", error);
     }
   }
+
+  //알림 설정 확인하기 -> 서버에서 유저의 알림 정보를 가져오고
+  //가져온 대로 토글의 위치를 바꾼다.
+  const setNotification = async () => {
+    try {
+      const response = await axiosInstance.get('/notifications');
+      setIsSwitchOn(response.data.data.isAllow);
+      console.log("서버에서 알림 설정 가져오기", response.data.data.isAllow);
+      return;
+    }
+    catch (error) {
+      console.log("알림 설정 확인하기 실패")
+      return false;
+    }
+  }
   
   //모달창이 열리는 경우 
   const showModal = (text : string) => {
@@ -156,6 +173,9 @@ const Setting: React.FC<any> = ({ navigation }) => {
 
   useEffect(()=> {
     userInfo();
+    console.log("설정화면");
+    setNotification();
+    console.log("서버에 저장된 값 : ", isSwitchOn);
   }, [])
 
   return (
