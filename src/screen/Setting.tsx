@@ -7,6 +7,7 @@ import { ACCESSTOKEN, CHATLOG, REFRESHTOKEN, USER } from "../constants/Constants
 import { Provider, Button, TextInput } from "react-native-paper";
 import { storage } from "../../utils/storageUtils";
 import { Switch } from 'react-native-paper';
+import useNotificationState from "../store/notificationState";
 interface UserInfo {
   email: string;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
@@ -18,6 +19,15 @@ import { useState } from "react";
 import axiosInstance from "../model/Chatting";
 import useIsSignInState from "../store/signInStatus";
 import useNicknameState from "../store/nicknameState";
+import * as Notifications from 'expo-notifications';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 const Setting: React.FC<any> = ({ navigation }) => {
   const [visible, setVisible] = useState(false);
@@ -26,6 +36,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
   const [inputText, setInputText] = useState("");
   const {isSignIn, setIsSignIn} = useIsSignInState();
   const {nickname, setNickname} = useNicknameState();
+  const {isSwitchOn, setIsSwitchOn} = useNotificationState();
 
   //로그아웃
   const logoutRequest = async () => {
@@ -52,9 +63,10 @@ const Setting: React.FC<any> = ({ navigation }) => {
       storage.delete(REFRESHTOKEN);
       //storage.delete(CHATLOG); 테스트
       navigation.navigate("Login");
-    } catch (error) {
+    } catch (error:any) {
       console.log("logoutRequest 요청 실패", error);
       setIsSignIn(true);
+      console.log("로그아웃 실패 json", error)
     }
   }
   //회원 탈퇴
@@ -69,8 +81,9 @@ const Setting: React.FC<any> = ({ navigation }) => {
       storage.delete(REFRESHTOKEN);
       storage.delete(CHATLOG);
     }
-    catch(error) {
+    catch(error:any) {
       console.log("deactivateRequest 요청 실패", error);
+      console.log("회원탈퇴 안 됨 json", error)
       setIsSignIn(true);
     }
   }
@@ -105,6 +118,21 @@ const Setting: React.FC<any> = ({ navigation }) => {
     }
     catch(error) {
       console.log("유저 정보 가져오기 실패", error);
+    }
+  }
+
+  //알림 설정 확인하기 -> 서버에서 유저의 알림 정보를 가져오고
+  //가져온 대로 토글의 위치를 바꾼다.
+  const setNotification = async () => {
+    try {
+      const response = await axiosInstance.get('/notifications');
+      setIsSwitchOn(response.data.data.isAllow);
+      console.log("서버에서 알림 설정 가져오기", response.data.data.isAllow);
+      return;
+    }
+    catch (error) {
+      console.log("알림 설정 확인하기 실패")
+      return false;
     }
   }
   
@@ -156,6 +184,9 @@ const Setting: React.FC<any> = ({ navigation }) => {
 
   useEffect(()=> {
     userInfo();
+    console.log("설정화면");
+    setNotification();
+    console.log("서버에 저장된 값 : ", isSwitchOn);
   }, [])
 
   return (

@@ -8,8 +8,24 @@ import { Provider } from "react-native-paper";
 import * as Linking from 'expo-linking';
 import { NavigationContainer } from '@react-navigation/native';
 import useNicknameState from "../store/nicknameState";
+import useNotificationState from "../store/notificationState";
+import axiosInstance from "../model/Chatting";
+import * as Notifications from 'expo-notifications';
+import { Platform } from "react-native";
+import * as Device from 'expo-device';
+import Constants from 'expo-constants';
+import requestPermission from "./NotificationToken";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 const UserSetting: React.FC<any> = ({navigation, showModal}) => {
+  let token;
   //개인정보 페이지 이동하기
   const handlePrivacyPolicyPress = () => {
     Linking.openURL('https://autumn-flier-d18.notion.site/29f845b297cd4188ade13c6e0c088b9b?pvs=4');
@@ -17,10 +33,28 @@ const UserSetting: React.FC<any> = ({navigation, showModal}) => {
   const handleAskPress = () => {
     Linking.openURL('https://forms.gle/f92DzjUBNnU51vET6');
   }
-  const [isSwitchOn, setIsSwitchOn] = React.useState(false);
-  const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+  const {isSwitchOn, setIsSwitchOn} = useNotificationState();
+  //const [isSwitchOn, setIsSwitchOn] = React.useState(false);
+
+  const onToggleSwitch = async () => {
+    const response = await axiosInstance.patch('/notifications', {
+      isAllow : !isSwitchOn
+    });
+    if (response) { //반환값이 true이면 원하는대로 스위치 값 바꾸기
+      setIsSwitchOn(!isSwitchOn);
+      console.log("토글 바꾸기 성공");
+    }
+    else {
+      console.log("토글 바꾸기 실패");
+    }
+  };
   return (
     <View style={styles.container}>
+      <Button title = "안녕" 
+              onPress = {async () => {
+                await requestPermission();
+                console.log("hellooo")
+              }}/>
       <View style = {styles.titleContainer}>
         <Text style = {styles.text}>알림설정</Text>
         <Switch value={isSwitchOn} onValueChange={onToggleSwitch} color = "#3B506B"/>

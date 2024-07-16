@@ -62,6 +62,11 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
         console.log("InfoGender error(stats)", error.response.status);
         console.log("InfoGender error(headers)", error.response.headers);
         console.log("======= ", isButtonDisabled);
+        //배포할 때는 지우기
+        if(error.response.status == 409) {
+          console.log('이미 기본에 가입하셨습니다.')
+          setIsSignIn(true);
+        }
       });
   };
   return (

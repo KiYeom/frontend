@@ -21,7 +21,11 @@
         "foregroundImage": "./assets/cookieSplash.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.ceunnseo.reMIND"
+      "package": "com.ceunnseo.reMIND",
+      "permissions": [
+        "INTERNET"
+      ],
+      "googleServicesFile": "./google-services.json"
     },
     "scheme": "com.ceunnseo.reMIND",
     "web": {
@@ -71,8 +75,25 @@
           ]
         }
       ],
+      [
+        "expo-notifications",
+        {
+
+          "color": "#ffffff",
+          "mode": "production"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ],  
       "expo-apple-authentication",
-      "expo-localization"
+      "expo-localization",
+      "expo-build-properties"
     ]
   }
 }
