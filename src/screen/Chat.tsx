@@ -153,6 +153,8 @@ const Chat: React.FC = () => {
                 activeOutlineColor="#3B506B"
                 style={styles.textInput}
                 outlineStyle = {{borderRadius : 20}}
+                multiline = {true}
+                //maxLength = {5}
               />
               <IconButton
                 icon="arrow-up"
@@ -164,7 +166,7 @@ const Chat: React.FC = () => {
               />
             </View>
           </InputAccessoryView>
-        ) : (
+        ) : ( //안드로이드
         <View style={styles.form}>
           <TextInput
             label="send message to cookie🐶"
@@ -175,6 +177,8 @@ const Chat: React.FC = () => {
             activeOutlineColor="#3B506B"
             style={styles.textInput}
             outlineStyle = {{borderRadius : 20}}
+            multiline = {true}
+            //maxLength = {5}
           />
           <IconButton
             icon="arrow-up"
@@ -186,26 +190,6 @@ const Chat: React.FC = () => {
           />
         </View>
         )}
-        <View style={styles.form}>
-          <TextInput
-            label="send message to cookie🐶"
-            value={text}
-            onChangeText={(text) => changeText(text)}
-            mode="outlined"
-            outlineColor="#3B506B"
-            activeOutlineColor="#3B506B"
-            style={styles.textInput}
-            outlineStyle = {{borderRadius : 20}}
-          />
-          <IconButton
-            icon="arrow-up"
-            iconColor = "white"
-            containerColor="#FF6B6B"
-            size={25}
-            onPress={userSend}
-            disabled = {btnDisable}
-          />
-        </View>
       </KeyboardAvoidingView>
   )
 }
@@ -238,6 +222,7 @@ const styles = StyleSheet.create({
     flex: 1,
     //marginRight: 10,
     borderRadius : 20,
+    maxHeight : 130,
   },
   btn: {
     justifyContent: "center",
@@ -249,13 +234,14 @@ const styles = StyleSheet.create({
   botMessageContainer: {
     flexDirection: "row",
     alignItems: "flex-start",
-    maxWidth : "80%",
-    backgroundColor : "pink",
+    //maxWidth : "80%",
+    backgroundColor : "yellow",
   },
   userMessageContainer: {
     flexDirection: "row",
     alignItems: "flex-end",
     justifyContent: "flex-end",
+    backgroundColor : "green",
   },
   bubble: {
     padding: 10,
