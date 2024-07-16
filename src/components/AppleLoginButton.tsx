@@ -26,15 +26,17 @@ const AppleLoginButton: React.FC<any> = ({navigation}) => {
             ], //애플이 앱으로 접근할 때 요청되는 사용자 정보 범위의 배열 (보안상 처음 로그인 할 때만 유저 정보를 준다)
           }); 
           console.log(credential);
+          //console.log("=============", credential.user)
           // signed in
-          USER.EMAIL = credential.email ? credential.email : "appleTesting@gmail.com";
+          USER.EMAIL = credential.email;
           USER.PROVIDERCODE = credential.user; //고유 id  
           USER.DEVICEOS = Device.osName;
           USER.APPVERSION = APP_VERSION;
+          USER.PROVIDERNAME = "apple";
 
           axios
             .post("https://api.remind4u.co.kr/v1/auth/login", {
-              providerName : "apple",
+              providerName : USER.PROVIDERNAME,
               providerCode : USER.PROVIDERCODE,
               deviceId : USER.DEVICEID,
               appVersion : USER.APPVERSION,
@@ -51,6 +53,7 @@ const AppleLoginButton: React.FC<any> = ({navigation}) => {
               console.log("애플 로그인을 위해 전달한 데이터 : ", response);
             })
             .catch(function (error) {
+              console.log("애플 로그인 버튼 클릭 후 시스템 로그인 안 됨 json", error)
               setIsSignIn(false);
               console.log("서버에 애플 로그인 실패");
               console.log(error);
@@ -61,10 +64,11 @@ const AppleLoginButton: React.FC<any> = ({navigation}) => {
                 navigation.navigate("InfoScreen");
               }
             });
-        } catch (e) {
+        } catch (error: any) {
           console.log("살패");
-          console.log(e);
-          if (e.code === 'ERR_REQUEST_CANCELED') {
+          console.log("소셜 로그인 자제 안 됨 json", error)
+          console.log(error);
+          if (error.code === 'ERR_REQUEST_CANCELED') {
             // handle that the user canceled the sign-in flow
           } else {
             // handle other errors

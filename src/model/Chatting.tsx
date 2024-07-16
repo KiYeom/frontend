@@ -21,9 +21,10 @@ axiosInstance.interceptors.request.use(
     console.log("요청 인터셉터 config: ", config);
     return config; // 수정된 요청 반환
   },
-  function (error) {
+  function (error:any) {
     console.log("요청 인터셉터 오류: ", error);
-    return Promise.reject(error); // 오류를 그대로 반환
+    console.log("요청 인터셉터 오류남 json", JSON.parse(error.toString()))
+    return Promise.reject(error); // 오류를 그대로 반환 
   }
 );
 
@@ -35,6 +36,7 @@ axiosInstance.interceptors.response.use(
   },
   async function (error) {
     console.log("응답 인터셉터 오류: ", error);
+    console.log("응답 인터셉터 안 됨 json", error)
     const originalRequest = error.config;
 
     if (error.response && error.response.status === 401 && !originalRequest._retry) {
@@ -75,6 +77,7 @@ axiosInstance.interceptors.response.use(
           return axiosInstance(originalRequest);
         }
       } catch (refreshError:any) {
+        console.log("토큰 자동 갱신 안 됨 json", refreshError)
         console.error('토큰 갱신 실패: ', refreshError);
         console.error('토큰 갱신 실패 - 상세 정보: ', {
           message: refreshError.message,

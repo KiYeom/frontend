@@ -82,16 +82,19 @@ const App: React.FC = () => {
                 console.log("공지사항 !!!!!", response.data.data.notice, notice);
                 setIsSignIn(true); //true이면 tabbar로 이동
                 console.log("로그인 완료, isSignIn : ", isSignIn);
-              }catch (error) {
+              }catch (error: any) {
                 console.log("then 블록 내부 에러", error);
                 setIsSignIn(false);
                 console.log("로그인 완료, isSignIn : ", isSignIn);
+                console.log("로그인 안 됨 json", error)
               }
             })
             .catch(function (error) {
               //refresh token도 만료되어 재발급이 불가한 경우 로그인 페이지로 이동하기
               //오류 발생 시 실행 알려주기
-              console.log("토큰 발급 실패?")
+              console.log("access token 재발급 안 됨 됨 json", error)
+              console.log("==============app.tsx==========", USER.PROVIDERCODE);
+              console.log("토큰 발급 실패, access token : ", accessToken);
               console.error('토큰 갱신 실패 - 상세 정보: ',error.message)
               console.log("config : ",error.config)
               console.log("config : ",error.code)

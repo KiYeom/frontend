@@ -13,7 +13,7 @@ export const ERRORMESSAGE = "멍멍!🐶 쿠키 조금 아픈데 잠시 후에 �
 
 
 export interface User {
-  EMAIL : string;
+  EMAIL : string | null;
   NICKNAME: string;
   BIRTHDATE: string;
   GENDER: number | null;

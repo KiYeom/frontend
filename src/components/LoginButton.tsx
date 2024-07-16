@@ -21,7 +21,7 @@ interface LoginButtonProps {
   setEmail: React.Dispatch<React.SetStateAction<string>>; //setState 함수, string 타입
 }
 interface UserData {
-  email: string;
+  email?: string | null;
   providerName: string;
   providerCode: string; //고유 ID
   nickname: string | null;

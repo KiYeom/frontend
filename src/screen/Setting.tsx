@@ -19,6 +19,15 @@ import { useState } from "react";
 import axiosInstance from "../model/Chatting";
 import useIsSignInState from "../store/signInStatus";
 import useNicknameState from "../store/nicknameState";
+import * as Notifications from 'expo-notifications';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 const Setting: React.FC<any> = ({ navigation }) => {
   const [visible, setVisible] = useState(false);
@@ -54,9 +63,10 @@ const Setting: React.FC<any> = ({ navigation }) => {
       storage.delete(REFRESHTOKEN);
       //storage.delete(CHATLOG); 테스트
       navigation.navigate("Login");
-    } catch (error) {
+    } catch (error:any) {
       console.log("logoutRequest 요청 실패", error);
       setIsSignIn(true);
+      console.log("로그아웃 실패 json", error)
     }
   }
   //회원 탈퇴
@@ -71,8 +81,9 @@ const Setting: React.FC<any> = ({ navigation }) => {
       storage.delete(REFRESHTOKEN);
       storage.delete(CHATLOG);
     }
-    catch(error) {
+    catch(error:any) {
       console.log("deactivateRequest 요청 실패", error);
+      console.log("회원탈퇴 안 됨 json", error)
       setIsSignIn(true);
     }
   }

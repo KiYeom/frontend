@@ -11,9 +11,21 @@ import useNicknameState from "../store/nicknameState";
 import useNotificationState from "../store/notificationState";
 import axiosInstance from "../model/Chatting";
 import * as Notifications from 'expo-notifications';
+import { Platform } from "react-native";
+import * as Device from 'expo-device';
+import Constants from 'expo-constants';
+import requestPermission from "./NotificationToken";
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 const UserSetting: React.FC<any> = ({navigation, showModal}) => {
+  let token;
   //개인정보 페이지 이동하기
   const handlePrivacyPolicyPress = () => {
     Linking.openURL('https://autumn-flier-d18.notion.site/29f845b297cd4188ade13c6e0c088b9b?pvs=4');
@@ -40,16 +52,8 @@ const UserSetting: React.FC<any> = ({navigation, showModal}) => {
     <View style={styles.container}>
       <Button title = "안녕" 
               onPress = {async () => {
+                await requestPermission();
                 console.log("hellooo")
-                await Notifications.scheduleNotificationAsync({
-                  content: {
-                    title: "Time's up!",
-                    body: 'Change sides!',
-                  },
-                  trigger: {
-                    seconds: 5, //onPress가 클릭이 되면 60초 뒤에 알람이 발생합니다.
-                  },
-                });
               }}/>
       <View style = {styles.titleContainer}>
         <Text style = {styles.text}>알림설정</Text>

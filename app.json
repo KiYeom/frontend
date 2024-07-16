@@ -22,7 +22,10 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.ceunnseo.reMIND",
-      "permissions": ["INTERNET"]
+      "permissions": [
+        "INTERNET"
+      ],
+      "googleServicesFile": "./google-services.json"
     },
     "scheme": "com.ceunnseo.reMIND",
     "web": {
@@ -75,14 +78,22 @@
       [
         "expo-notifications",
         {
-          "icon": "./local/path/to/myNotificationIcon.png",
+
           "color": "#ffffff",
-          "sounds": ["./local/path/to/mySound.wav", "./local/path/to/myOtherSound.wav"],
           "mode": "production"
         }
       ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ],  
       "expo-apple-authentication",
-      "expo-localization"
+      "expo-localization",
+      "expo-build-properties"
     ]
   }
 }

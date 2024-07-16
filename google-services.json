@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "987320530739",
+    "project_id": "remind-826f4",
+    "storage_bucket": "remind-826f4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:987320530739:android:bbda98f8bc62c380fdf046",
+        "android_client_info": {
+          "package_name": "com.ceunnseo.reMIND"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5kQFfoJK-bdJPHrZr5adkxb8AUfW3PvY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:987320530739:android:fafd70dc0d14ccf5fdf046",
+        "android_client_info": {
+          "package_name": "con.ceunnseo.reMIND"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5kQFfoJK-bdJPHrZr5adkxb8AUfW3PvY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
