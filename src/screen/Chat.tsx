@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useState, useEffect, useRef } from "react";
 import { Text, View, StyleSheet, FlatList, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback } from "react-native";
@@ -15,34 +14,15 @@ import { ERRORMESSAGE } from "../constants/Constants";
 import { InputAccessoryView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
+import { KeyboardAwareFlatList } from "react-native-keyboard-aware-scroll-view";
 
 interface Message {
   sender: string;
   text: string;
 }
 
-const getTime = (): Date => {
-  const currentDate : Date = new Date();
-  console.log("현재 시간 : ", currentDate);
-  return currentDate;
-}
-
-const formatTime = (date : Date): string => {
-  console.log("=======================", date);
-  console.log("---------------------------",typeof(date));
-  let hours = date.getHours(); //시 0~24 를 받아오고
-  const minutes = date.getMinutes(); //분 0~59을 받아오고
-  const period = hours >= 12 ? '오후' : '오전'; // 오전과 오후를 시로 구분한다
-  hours = hours % 12;
-  hours = hours ? hours : 12; //12로 나눴는데 0이면 24시 또는 0시이니, 12로 고정
-  const formattedMinutes = minutes < 10 ? '0' + minutes : minutes; //분이 0~9 사이면 앞에 0을 붙인다.
-  return `${period} ${hours}:${formattedMinutes}` // [오전/오후]시:분 형태로 출력
-}
-
 const Chat: React.FC = () => {
-  const flatListRef = useRef<FlatList | null>(null);
-  //flatList 컴포넌트의 메서드 (scrollToTop)를 호출하기 위한 변수 (객체를 반환)
-  //객체에 있는 값에 접근하기 위해서는 current로 접근하면 된다 
+  const flatListRef = useRef<FlatList<any>>(null);
   const [text, setText] = useState(""); //유저가 작성한 말
   const [data, setData] = useState<Message[]>([]);
   const [btnDisable, setBtnDisable] = useState(true);
@@ -69,15 +49,12 @@ const Chat: React.FC = () => {
 
   const scrollToTop = () => {
     console.log("scroll to end 함수 동작")
-    flatListRef.current?.scrollToOffset({offset : 0, animated : true});
-    //scrollToOffset 메서드는 FlatList의 스크롤 위치를 특정 오프셋으로 이동시킨다.
-    //offset = 스크롤할 오프셋 위치, 0은 맨 위 (인데.. inverted되어서 맨 밑)
+    flatListRef.current?.scrollToOffset({offset : 0, animated : true}); //커서 맨 끝으로
   }
   
   useEffect(() => {
-    loadChatLogs() //앱을 처음 켰을 때 대화의 모든 내용을 스토리지에 꺼내서 출력
+    loadChatLogs()
   }, [])
-
 
 
   const sendChatRequest = async (characterId:number, question:string) => {
@@ -94,18 +71,17 @@ const Chat: React.FC = () => {
 
   const aiSend = async () => {
     const cookieAnswer = await sendChatRequest(1, text);
-    const today = getTime();
-    const aiData = {sender : "bot", text : `${cookieAnswer}`, id : `${today}`, date : `${formatTime(today)}`}
+    const aiData = {sender : "bot", text : `${cookieAnswer}`}
     setData((prevData) => {
       const newData = [aiData, ...prevData];
       saveChatLogs(newData);
       return newData;
     });
+    scrollToTop();
   };
 
   const userSend = () => {
-    const today = getTime();
-    const userData = {sender : "user", text : `${text}`, id : `${today}`, date : `${formatTime(today)}`}
+    const userData = {sender : "user", text : `${text}`}
     setData((prevData) => [userData, ...prevData]);
     setText("");
     setBtnDisable(true);
@@ -119,25 +95,19 @@ const Chat: React.FC = () => {
   
 
   const renderItem = ({ item }:any) => (
-    <View style = {{backgroundColor : "#F0F3F8"}}>
+    <View>
       {item.sender != "user" ? (
         <View style={styles.botMessageContainer}>
-          <View style = {{flexDirection : "row", backgroundColor : "blue"}}>
-            <Image source={require("../../assets/cookieSplash.png")} style={styles.img} />
-            <View style = {{backgroundColor : "red", width : "100%"}}>
-              <Text style={styles.ai}>쿠키</Text>
-              <View style={{flexDirection : "row", alignItems : "flex-end"}}>
-                <View style={[styles.bubble, styles.botBubble]}>
-                  <Text style={styles.text}>{item.text}</Text>
-                </View>
-                <Text>{item.date}</Text>
-              </View>
-            </View>  
+          <Image source={require("../../assets/cookieSplash.png")} style={styles.img} />
+          <View style={{flex: 1}}>
+            <Text style={styles.ai}>쿠키</Text>
+            <View style={[styles.bubble, styles.botBubble]}>
+              <Text style={styles.text}>{item.text}</Text>
+            </View>
           </View>
         </View>
       ) : (
         <View style={styles.userMessageContainer}> 
-          <Text>{item.date}</Text>
           <View style={[styles.bubble, styles.userBubble]}>
             <Text style={styles.text}>{item.text}</Text>
           </View>
@@ -147,19 +117,19 @@ const Chat: React.FC = () => {
   );
 
   return (
-    <TouchableWithoutFeedback onPress = {Keyboard.dismiss}>
       <KeyboardAvoidingView
         style={styles.container}
-        behavior={"padding"}>
+        behavior={"padding"}
+        keyboardVerticalOffset={80}
+      >
         <FlatList
-          ref = {flatListRef} 
+          ref = {flatListRef}
           inverted
           data={data}
           renderItem={renderItem}
           style = {styles.flatList} //flatlist 컴포넌트 자체에 스타일을 적용 -> flatlist의 크기, 배경색, 테두리 등의 스타일 지정
           contentContainerStyle = {styles.contentContainerStyle} 
           //flatlist의 "콘텐츠 컨테이너"에 스타일을 적용 -> 스크롤뷰 콘텐츠에 패딩을 추가하거나 정렬 설정, 아이템 감싸는 뷰에 스타일 적용할 때
-          keyExtractor = {data => data.id}
         />
         
         {Platform.OS === "ios" ? (
@@ -174,13 +144,18 @@ const Chat: React.FC = () => {
                 activeOutlineColor="#3B506B"
                 style={styles.textInput}
                 outlineStyle = {{borderRadius : 20}}
+                //onFocus = {scrollToTop}
+                multiline = {true}
               />
               <IconButton
                 icon="arrow-up"
                 iconColor = "white"
                 containerColor="#FF6B6B"
                 size={25}
-                onPress={userSend}
+                onPress={()=>{
+                  userSend()
+                  scrollToTop()
+                }}
                 disabled = {btnDisable}
               />
             </View>
@@ -196,6 +171,7 @@ const Chat: React.FC = () => {
             activeOutlineColor="#3B506B"
             style={styles.textInput}
             outlineStyle = {{borderRadius : 20}}
+            multiline = {true}
             //onFocus = {scrollToTop}
           />
           <IconButton
@@ -205,16 +181,14 @@ const Chat: React.FC = () => {
             size={25}
             onPress={() => {
               userSend()
-              //scrollToTop()
-              //getTime()
+              scrollToTop()
             }}
             disabled = {btnDisable}
           />
         </View>
         )}
       </KeyboardAvoidingView>
-    </TouchableWithoutFeedback>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -223,15 +197,15 @@ const styles = StyleSheet.create({
     //padding : 16,
   },
   flatList : {
-    //flexGrow : 1,
+    flexGrow : 0,
     //padding : 16,
-    backgroundColor : "pink",
+    backgroundColor : "yellow",
+    //height : 200,
   },
   contentContainerStyle : {
-    //backgroundColor : "red",
-    paddingLeft : 32,
-    paddingRight : 32,
-    minHeight : "100%",
+    backgroundColor : "red",
+    flexGrow : 1,
+    //minHeight : "100%",
     justifyContent : 'flex-end',
   },
   form: {
@@ -242,6 +216,9 @@ const styles = StyleSheet.create({
     padding : 16,
     backgroundColor : "white",
     marginTop : 16,
+    flexGrow : 1,
+    //height : 100,
+    height : 80,
   },
   textInput: {
     flex: 1,
@@ -268,8 +245,8 @@ const styles = StyleSheet.create({
   },
   bubble: {
     padding: 10,
-    marginTop : 10,
     //marginVertical: 10,
+    marginTop : 10,
     borderRadius: 10,
     maxWidth: '70%',
   },
