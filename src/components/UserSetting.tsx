@@ -15,6 +15,12 @@ import { Platform } from "react-native";
 import * as Device from 'expo-device';
 import Constants from 'expo-constants';
 import requestPermission from "./NotificationToken";
+import OpenSourceLicense from "../constants/OpenSourceLicense.json"
+import { FlatList } from "react-native";
+import LicensePage from "../screen/LicensePage";
+
+
+
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -25,6 +31,25 @@ Notifications.setNotificationHandler({
 });
 
 const UserSetting: React.FC<any> = ({navigation, showModal}) => {
+  //라이센스 보여주기
+  //const handleLicense = () => {
+    //const oss = JSON.stringify(OpenSourceLicense);
+    //return oss;
+    
+  //}
+  /*
+  const render = (item) => {
+    
+  }*/
+/*
+  return (
+    <FlatList 
+      data = {OpenSourceLicense}
+      renderItem = {item}
+    />
+  );
+  */
+  
   let token;
   //개인정보 페이지 이동하기
   const handlePrivacyPolicyPress = () => {
@@ -34,7 +59,10 @@ const UserSetting: React.FC<any> = ({navigation, showModal}) => {
     Linking.openURL('https://forms.gle/f92DzjUBNnU51vET6');
   }
   const {isSwitchOn, setIsSwitchOn} = useNotificationState();
-  //const [isSwitchOn, setIsSwitchOn] = React.useState(false);
+  const handleOpenSource = () => {
+    navigation.navigate("LicensePage")
+  }
+
 
   const onToggleSwitch = async () => {
     const response = await axiosInstance.patch('/notifications', {
@@ -94,10 +122,12 @@ const UserSetting: React.FC<any> = ({navigation, showModal}) => {
           color="#3B506B"
         />
       </TouchableOpacity>
-      <View style = {styles.titleContainer}>
-        <Text style = {styles.text}>앱 버전 정보</Text>
-        <Text>{APP_VERSION}</Text>
-      </View>
+      <TouchableOpacity onPress = {handleOpenSource}>
+        <View style = {styles.titleContainer}>
+          <Text style = {styles.text}>앱 버전 정보</Text>
+          <Text>{APP_VERSION}</Text>
+        </View>
+      </TouchableOpacity>
     </View>
   );
 };

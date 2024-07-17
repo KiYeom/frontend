@@ -11,6 +11,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import SettingHome from "./SettingHome";
 
 const Tab = createBottomTabNavigator();
 const color = "#58C3A5";
@@ -24,6 +25,7 @@ const Tabbar: React.FC<any> = ({isSignIn, setIsSignIn}) => {
     <Tab.Navigator
       initialRouteName="Home"
       screenOptions={{
+        headerShown : false,
         headerTitleAlign: "center",
         headerStyle: { backgroundColor: "#58C3A5" }, //상단 탭 바
         tabBarStyle: { backgroundColor: "#F0F3F8" }, //하단 탭 바
@@ -36,17 +38,26 @@ const Tabbar: React.FC<any> = ({isSignIn, setIsSignIn}) => {
       }}
     >
       <Tab.Screen name="Home" component={Home} options={{
+          headerShown : true,
+          headerTitleAlign: "center",
+          headerStyle: { backgroundColor: "#58C3A5" }, //상단 탭 바
+          headerTintColor: "#fff", // 헤더 텍스트 색상
+          headerTitleStyle: {
+            fontFamily: "Pretendard-Bold", // 사용할 폰트 패밀리
+            fontSize: 17, // 폰트 크기
+          },
           tabBarLabel: 'Home',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="home" color={color} size={size} onPress = {click}/>
           ),
           
           }}/>
-      <Tab.Screen name="Setting" component={Setting} options={{
-          tabBarLabel: 'Setting',
+      <Tab.Screen name="SettingHome" component={SettingHome} options={{
+          tabBarLabel: 'SettingHome',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="cog" color={color} size={size} onPress = {click}/>
           ),
+          title : "Setting"
           }}/>
     </Tab.Navigator>
   );
