@@ -15,6 +15,7 @@ import { ERRORMESSAGE } from "../constants/Constants";
 import { InputAccessoryView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
+import { TypingAnimation } from 'react-native-typing-animation';
 
 interface Message {
   sender: string;
@@ -26,6 +27,11 @@ const Chat: React.FC = () => {
   const [text, setText] = useState(""); //유저가 작성한 말
   const [data, setData] = useState<Message[]>([]);
   const [btnDisable, setBtnDisable] = useState(true);
+  const [isTyping, setIsTyping] = useState(false);
+
+  const scrollToEnd = () => {
+    flatListRef.current?.scrollToEnd({animated : true})
+  }
 
   const saveChatLogs = (logs : Message[]) => {
     try {
@@ -50,24 +56,44 @@ const Chat: React.FC = () => {
   
   useEffect(() => {
     loadChatLogs()
-    //if (flatListRef.current) {
-      //flatListRef.current.scrollToEnd({animated : false});
-    //}
   }, [])
 
-  //useFocusEffect(
-    //React.useCallback(() => {
-      //if (flatListRef.current) {
-        //flatListRef.current.scrollToEnd({ animated: false });
-      //}
-    //}, [data])
-  //);
-
-  //useEffect(() => {
-    //if (flatListRef.current) {
-      //flatListRef.current.scrollToEnd({ animated: true });
-    //}
-  //}, [data]);
+  useEffect(()=> {
+    console.log("스크롤 맨 끝으로 가라")
+    scrollToEnd();
+  }, [data])
+  /*bubble: {
+    padding: 10,
+    marginVertical: 10,
+    borderRadius: 10,
+    maxWidth: '70%',
+  },
+  userBubble: {
+    backgroundColor: '#58C3A5',
+    alignSelf: 'flex-end',
+  },
+  botBubble: {
+    backgroundColor: '#D7E6DB',
+    alignSelf: 'flex-start',
+  },*/
+  const renderTypingIndicator = () => (
+    <View style={styles.botMessageContainer}>
+      <Image source={require("../../assets/cookieSplash.png")} style={styles.img} />
+      <View style={{flex: 1}}>
+        <Text style={styles.ai}>쿠키</Text>
+        <View style={{
+          padding : 10, 
+          marginVertical : 10, 
+          borderRadius : 10, 
+          maxWidth : '70%', 
+          backgroundColor : '#D7E6DB', 
+          alignSelf : 'flex-start', 
+          width : 50, height : 40}}>
+          <TypingAnimation dotMargin = {8} dotSpeed = {0.3}/>
+        </View>
+      </View>
+    </View>    
+  );
 
 
   const sendChatRequest = async (characterId:number, question:string) => {
@@ -83,6 +109,7 @@ const Chat: React.FC = () => {
   };
 
   const aiSend = async () => {
+    setIsTyping(true);
     const cookieAnswer = await sendChatRequest(1, text);
     const aiData = {sender : "bot", text : `${cookieAnswer}`}
     setData((prevData) => {
@@ -90,6 +117,7 @@ const Chat: React.FC = () => {
       saveChatLogs(newData);
       return newData;
     });
+    setIsTyping(false);
   };
 
   const userSend = () => {
@@ -138,8 +166,10 @@ const Chat: React.FC = () => {
           renderItem={renderItem}
           style = {styles.flatList} //flatlist 컴포넌트 자체에 스타일을 적용 -> flatlist의 크기, 배경색, 테두리 등의 스타일 지정
           contentContainerStyle = {styles.contentContainerStyle} 
-          //flatlist의 "콘텐츠 컨테이너"에 스타일을 적용 -> 스크롤뷰 콘텐츠에 패딩을 추가하거나 정렬 설정, 아이템 감싸는 뷰에 스타일 적용할 때
+          //flatlist의 "콘텐츠 컨테이너"에 스타일을 적용 -> 스크롤뷰 콘텐츠에 패딩을 추가하거나 정렬 설정, 아이템 감싸는 뷰에 스타일 적용할 때)
         />
+
+        {isTyping && renderTypingIndicator()}
         
         {Platform.OS === "ios" ? (
           <InputAccessoryView>
