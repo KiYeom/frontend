@@ -30,17 +30,19 @@ const getTime = (): Date => {
 const formatTime = (date : Date): string => {
   console.log("=======================", date);
   console.log("---------------------------",typeof(date));
-  let hours = date.getHours();
-  const minutes = date.getMinutes();
-  const period = hours >= 12 ? '오후' : '오전';
+  let hours = date.getHours(); //시 0~24 를 받아오고
+  const minutes = date.getMinutes(); //분 0~59을 받아오고
+  const period = hours >= 12 ? '오후' : '오전'; // 오전과 오후를 시로 구분한다
   hours = hours % 12;
-  hours = hours ? hours : 12;
-  const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
-  return `${period} ${hours}:${formattedMinutes}`
+  hours = hours ? hours : 12; //12로 나눴는데 0이면 24시 또는 0시이니, 12로 고정
+  const formattedMinutes = minutes < 10 ? '0' + minutes : minutes; //분이 0~9 사이면 앞에 0을 붙인다.
+  return `${period} ${hours}:${formattedMinutes}` // [오전/오후]시:분 형태로 출력
 }
 
 const Chat: React.FC = () => {
-  const flatListRef = useRef<FlatList<any>>(null);
+  const flatListRef = useRef<FlatList | null>(null);
+  //flatList 컴포넌트의 메서드 (scrollToTop)를 호출하기 위한 변수 (객체를 반환)
+  //객체에 있는 값에 접근하기 위해서는 current로 접근하면 된다 
   const [text, setText] = useState(""); //유저가 작성한 말
   const [data, setData] = useState<Message[]>([]);
   const [btnDisable, setBtnDisable] = useState(true);
@@ -148,10 +150,9 @@ const Chat: React.FC = () => {
     <TouchableWithoutFeedback onPress = {Keyboard.dismiss}>
       <KeyboardAvoidingView
         style={styles.container}
-        behavior={"padding"}
-      >
+        behavior={"padding"}>
         <FlatList
-          ref = {flatListRef}
+          ref = {flatListRef} 
           inverted
           data={data}
           renderItem={renderItem}
@@ -173,7 +174,6 @@ const Chat: React.FC = () => {
                 activeOutlineColor="#3B506B"
                 style={styles.textInput}
                 outlineStyle = {{borderRadius : 20}}
-                //onFocus = {scrollToTop}
               />
               <IconButton
                 icon="arrow-up"
@@ -205,8 +205,8 @@ const Chat: React.FC = () => {
             size={25}
             onPress={() => {
               userSend()
-              scrollToTop()
-              getTime()
+              //scrollToTop()
+              //getTime()
             }}
             disabled = {btnDisable}
           />
@@ -214,7 +214,7 @@ const Chat: React.FC = () => {
         )}
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
