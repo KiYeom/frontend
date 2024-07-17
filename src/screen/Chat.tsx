@@ -111,7 +111,7 @@ const Chat: React.FC = () => {
   
 
   const renderItem = ({ item }:any) => (
-    <View style = {{backgroundColor : "blue"}}>
+    <View style = {{backgroundColor : "#F0F3F8"}}>
       {item.sender != "user" ? (
         <View style={styles.botMessageContainer}>
           <Image source={require("../../assets/cookieSplash.png")} style={styles.img} />
@@ -133,6 +133,7 @@ const Chat: React.FC = () => {
   );
 
   return (
+    <TouchableWithoutFeedback onPress = {Keyboard.dismiss}>
       <KeyboardAvoidingView
         style={styles.container}
         behavior={"padding"}
@@ -198,6 +199,7 @@ const Chat: React.FC = () => {
         </View>
         )}
       </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   )
 }
 
@@ -209,10 +211,12 @@ const styles = StyleSheet.create({
   flatList : {
     //flexGrow : 1,
     //padding : 16,
-    backgroundColor : "pink",
+    //backgroundColor : "pink",
   },
   contentContainerStyle : {
-    backgroundColor : "red",
+    //backgroundColor : "red",
+    paddingLeft : 16,
+    paddingRight : 16,
     minHeight : "100%",
     justifyContent : 'flex-end',
   },
@@ -241,7 +245,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     maxWidth : "80%",
-    backgroundColor : "pink",
+    //backgroundColor : "pink",
   },
   userMessageContainer: {
     flexDirection: "row",
