@@ -39,6 +39,7 @@ const Home: React.FC<any> = ({ navigation }) => {
   const content = notice? notice.content : null;
   const btns = notice? notice.options : null;
 
+  /*
   const showModal = () => {
     setVisible(true);
     console.log("실행함")
@@ -47,47 +48,23 @@ const Home: React.FC<any> = ({ navigation }) => {
   const containerStyle = {backgroundColor: 'white', padding: 20};
   useEffect(()=> {
     showModal();
-  }, [notice])
+  }, [notice])*/
   return (
-    <PaperProvider>
-      <Portal>
-        <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
-          <View>
-            <Text style = {{textAlign : "center"}}>{title ? title : null}</Text>
-          </View>
-          <View>
-            <Text style = {{textAlign : "center"}}>{content ? content : null}</Text>
-          </View>
-          <View>
-            {btns ? btns.map((option: Option, index : number) => (
-              <Button
-                key = {index}
-                title = {option.text}
-                onPress = {()=> {
-                  Linking.openURL(option.link)
-                  hideModal();
-                }}
-              />
-            )) : null }
-          </View>
-        </Modal>
-      </Portal>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.txt1}>🐾오늘도 와줘서 고마워 멍! ૮ ・ﻌ・ა</Text>
-        </View>
-        <View style={styles.center}>
-          <Image
-            source={require("../../assets/cookieSplash.png")}
-            style={styles.image}
-            resizeMode="contain"
-          />
-        </View>
-        <View style={styles.footer}>
-          <StartButton navigation={navigation} />
-        </View>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.txt1}>🐾오늘도 와줘서 고마워 멍! ૮ ・ﻌ・ა</Text>
       </View>
-    </PaperProvider>
+      <View style={styles.center}>
+        <Image
+          source={require("../../assets/cookieSplash.png")}
+          style={styles.image}
+          resizeMode="contain"
+        />
+      </View>
+      <View style={styles.footer}>
+        <StartButton navigation={navigation} />
+      </View>
+    </View>
   );
 };
 

@@ -21,6 +21,24 @@ interface Message {
   text: string;
 }
 
+const getTime = (): Date => {
+  const currentDate : Date = new Date();
+  console.log("현재 시간 : ", currentDate);
+  return currentDate;
+}
+
+const formatTime = (date : Date): string => {
+  console.log("=======================", date);
+  console.log("---------------------------",typeof(date));
+  let hours = date.getHours();
+  const minutes = date.getMinutes();
+  const period = hours >= 12 ? '오후' : '오전';
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+  const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+  return `${period} ${hours}:${formattedMinutes}`
+}
+
 const Chat: React.FC = () => {
   const flatListRef = useRef<FlatList<any>>(null);
   const [text, setText] = useState(""); //유저가 작성한 말
@@ -50,28 +68,14 @@ const Chat: React.FC = () => {
   const scrollToTop = () => {
     console.log("scroll to end 함수 동작")
     flatListRef.current?.scrollToOffset({offset : 0, animated : true});
+    //scrollToOffset 메서드는 FlatList의 스크롤 위치를 특정 오프셋으로 이동시킨다.
+    //offset = 스크롤할 오프셋 위치, 0은 맨 위 (인데.. inverted되어서 맨 밑)
   }
   
   useEffect(() => {
-    loadChatLogs()
-    //if (flatListRef.current) {
-      //flatListRef.current.scrollToEnd({animated : false});
-    //}
+    loadChatLogs() //앱을 처음 켰을 때 대화의 모든 내용을 스토리지에 꺼내서 출력
   }, [])
 
-  //useFocusEffect(
-    //React.useCallback(() => {
-      //if (flatListRef.current) {
-        //flatListRef.current.scrollToEnd({ animated: false });
-      //}
-    //}, [data])
-  //);
-
-  //useEffect(() => {
-    //if (flatListRef.current) {
-      //flatListRef.current.scrollToEnd({ animated: true });
-    //}
-  //}, [data]);
 
 
   const sendChatRequest = async (characterId:number, question:string) => {
@@ -88,7 +92,8 @@ const Chat: React.FC = () => {
 
   const aiSend = async () => {
     const cookieAnswer = await sendChatRequest(1, text);
-    const aiData = {sender : "bot", text : `${cookieAnswer}`}
+    const today = getTime();
+    const aiData = {sender : "bot", text : `${cookieAnswer}`, id : `${today}`, date : `${formatTime(today)}`}
     setData((prevData) => {
       const newData = [aiData, ...prevData];
       saveChatLogs(newData);
@@ -97,7 +102,8 @@ const Chat: React.FC = () => {
   };
 
   const userSend = () => {
-    const userData = {sender : "user", text : `${text}`}
+    const today = getTime();
+    const userData = {sender : "user", text : `${text}`, id : `${today}`, date : `${formatTime(today)}`}
     setData((prevData) => [userData, ...prevData]);
     setText("");
     setBtnDisable(true);
@@ -114,16 +120,22 @@ const Chat: React.FC = () => {
     <View style = {{backgroundColor : "#F0F3F8"}}>
       {item.sender != "user" ? (
         <View style={styles.botMessageContainer}>
-          <Image source={require("../../assets/cookieSplash.png")} style={styles.img} />
-          <View style={{flex: 1}}>
-            <Text style={styles.ai}>쿠키</Text>
-            <View style={[styles.bubble, styles.botBubble]}>
-              <Text style={styles.text}>{item.text}</Text>
-            </View>
+          <View style = {{flexDirection : "row", backgroundColor : "blue"}}>
+            <Image source={require("../../assets/cookieSplash.png")} style={styles.img} />
+            <View style = {{backgroundColor : "red", width : "100%"}}>
+              <Text style={styles.ai}>쿠키</Text>
+              <View style={{flexDirection : "row", alignItems : "flex-end"}}>
+                <View style={[styles.bubble, styles.botBubble]}>
+                  <Text style={styles.text}>{item.text}</Text>
+                </View>
+                <Text>{item.date}</Text>
+              </View>
+            </View>  
           </View>
         </View>
       ) : (
         <View style={styles.userMessageContainer}> 
+          <Text>{item.date}</Text>
           <View style={[styles.bubble, styles.userBubble]}>
             <Text style={styles.text}>{item.text}</Text>
           </View>
@@ -146,6 +158,7 @@ const Chat: React.FC = () => {
           style = {styles.flatList} //flatlist 컴포넌트 자체에 스타일을 적용 -> flatlist의 크기, 배경색, 테두리 등의 스타일 지정
           contentContainerStyle = {styles.contentContainerStyle} 
           //flatlist의 "콘텐츠 컨테이너"에 스타일을 적용 -> 스크롤뷰 콘텐츠에 패딩을 추가하거나 정렬 설정, 아이템 감싸는 뷰에 스타일 적용할 때
+          keyExtractor = {data => data.id}
         />
         
         {Platform.OS === "ios" ? (
@@ -193,6 +206,7 @@ const Chat: React.FC = () => {
             onPress={() => {
               userSend()
               scrollToTop()
+              getTime()
             }}
             disabled = {btnDisable}
           />
@@ -211,12 +225,12 @@ const styles = StyleSheet.create({
   flatList : {
     //flexGrow : 1,
     //padding : 16,
-    //backgroundColor : "pink",
+    backgroundColor : "pink",
   },
   contentContainerStyle : {
     //backgroundColor : "red",
-    paddingLeft : 16,
-    paddingRight : 16,
+    paddingLeft : 32,
+    paddingRight : 32,
     minHeight : "100%",
     justifyContent : 'flex-end',
   },
@@ -245,7 +259,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     maxWidth : "80%",
-    //backgroundColor : "pink",
+    backgroundColor : "pink",
   },
   userMessageContainer: {
     flexDirection: "row",
@@ -254,7 +268,8 @@ const styles = StyleSheet.create({
   },
   bubble: {
     padding: 10,
-    marginVertical: 10,
+    marginTop : 10,
+    //marginVertical: 10,
     borderRadius: 10,
     maxWidth: '70%',
   },

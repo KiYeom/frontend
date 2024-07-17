@@ -53,7 +53,7 @@ const Tabbar: React.FC<any> = ({isSignIn, setIsSignIn}) => {
           
           }}/>
       <Tab.Screen name="SettingHome" component={SettingHome} options={{
-          tabBarLabel: 'SettingHome',
+          tabBarLabel: 'Setting',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="cog" color={color} size={size} onPress = {click}/>
           ),

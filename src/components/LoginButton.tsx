@@ -32,8 +32,9 @@ interface UserData {
 //구글 로그인
 const LoginButton: React.FC<any> = ({ navigation }) => {
   const {isSignIn, setIsSignIn } = useIsSignInState();
+  console.log("구글 로그인 버튼 누름..");
   return (
-    <TouchableOpacity style={styles.container}>
+    <View style={styles.container}>
       <GoogleSigninButton
         size={GoogleSigninButton.Size.Wide}
         color={GoogleSigninButton.Color.Light}
@@ -107,7 +108,7 @@ const LoginButton: React.FC<any> = ({ navigation }) => {
         }}
         disabled={false} // Set to true to disable the button
       />
-    </TouchableOpacity>
+    </View>
   );
 };
 
