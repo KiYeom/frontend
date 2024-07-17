@@ -1,16 +1,17 @@
-import { View } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { TextInput, IconButton } from "react-native-paper";
 import React from "react";
 import { useState } from "react";
 import { Message } from "../constants/Constants";
 
 const CustomInput: React.FC = () => {
-  const [text, setText] = useState(""); //유저가 작성한 말
+  const [text, setText] = useState(""); //유저가 작성한 
 
   return (
     <View style={styles.form}>
       <TextInput
         label="send message to cookie🐶"
+        multiline = {true}
         value={text}
         onChangeText={(text) => changeText(text)}
         mode="outlined"
@@ -45,7 +46,9 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     //marginRight: 10,
-    borderRadius : 20,
+    //borderRadius : 20,
+    width : 250,
+    height : 100,
   },
 
 

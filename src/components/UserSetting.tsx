@@ -65,6 +65,7 @@ const UserSetting: React.FC<any> = ({navigation, showModal}) => {
         <Icon
           source="chevron-right"
           size={32}
+          color="#3B506B"
         />
       </TouchableOpacity>
 
@@ -73,6 +74,7 @@ const UserSetting: React.FC<any> = ({navigation, showModal}) => {
         <Icon
           source="chevron-right"
           size={32}
+          color="#3B506B"
         />
       </TouchableOpacity>
       
@@ -81,6 +83,7 @@ const UserSetting: React.FC<any> = ({navigation, showModal}) => {
           <Icon
             source="chevron-right"
             size={32}
+            color="#3B506B"
           />
         </TouchableOpacity>
       <TouchableOpacity style = {styles.titleContainer} onPress = {()=>showModal("deactivate")}>
@@ -88,6 +91,7 @@ const UserSetting: React.FC<any> = ({navigation, showModal}) => {
         <Icon
           source="chevron-right"
           size={32}
+          color="#3B506B"
         />
       </TouchableOpacity>
       <View style = {styles.titleContainer}>

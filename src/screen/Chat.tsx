@@ -47,6 +47,10 @@ const Chat: React.FC = () => {
     }
   }
 
+  const scrollToTop = () => {
+    console.log("scroll to end 함수 동작")
+    flatListRef.current?.scrollToOffset({offset : 0, animated : true});
+  }
   
   useEffect(() => {
     loadChatLogs()
@@ -104,6 +108,7 @@ const Chat: React.FC = () => {
     setBtnDisable(text === "");
     setText(text);
   }
+  
 
   const renderItem = ({ item }:any) => (
     <View style = {{backgroundColor : "blue"}}>
@@ -133,6 +138,7 @@ const Chat: React.FC = () => {
         behavior={"padding"}
       >
         <FlatList
+          ref = {flatListRef}
           inverted
           data={data}
           renderItem={renderItem}
@@ -153,6 +159,7 @@ const Chat: React.FC = () => {
                 activeOutlineColor="#3B506B"
                 style={styles.textInput}
                 outlineStyle = {{borderRadius : 20}}
+                //onFocus = {scrollToTop}
               />
               <IconButton
                 icon="arrow-up"
@@ -175,37 +182,21 @@ const Chat: React.FC = () => {
             activeOutlineColor="#3B506B"
             style={styles.textInput}
             outlineStyle = {{borderRadius : 20}}
+            //onFocus = {scrollToTop}
           />
           <IconButton
             icon="arrow-up"
             iconColor = "white"
             containerColor="#FF6B6B"
             size={25}
-            onPress={userSend}
+            onPress={() => {
+              userSend()
+              scrollToTop()
+            }}
             disabled = {btnDisable}
           />
         </View>
         )}
-        <View style={styles.form}>
-          <TextInput
-            label="send message to cookie🐶"
-            value={text}
-            onChangeText={(text) => changeText(text)}
-            mode="outlined"
-            outlineColor="#3B506B"
-            activeOutlineColor="#3B506B"
-            style={styles.textInput}
-            outlineStyle = {{borderRadius : 20}}
-          />
-          <IconButton
-            icon="arrow-up"
-            iconColor = "white"
-            containerColor="#FF6B6B"
-            size={25}
-            onPress={userSend}
-            disabled = {btnDisable}
-          />
-        </View>
       </KeyboardAvoidingView>
   )
 }
