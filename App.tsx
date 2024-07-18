@@ -23,6 +23,9 @@ import useIsSignInState from "./src/store/signInStatus";
 import useNoticeState from "./src/store/notice";
 import LicenseDetailPage from "./src/screen/LicenseDetailPage";
 import LicensePage from "./src/screen/LicensePage";
+import { Platform } from "react-native";
+import * as Application from 'expo-application';
+import { Portal, Modal, PaperProvider } from "react-native-paper";
 
 const Stack = createNativeStackNavigator();
 
@@ -51,11 +54,17 @@ const App: React.FC = () => {
         setIsSignIn(!!accessToken); 
         if (accessToken) {
           console.log("access token이 존재한다");
-          console.log("deviceId : ", USER.DEVICEID, 
-            "appVersion : ", USER.APPVERSION,
-          "deviceOs : ", USER.DEVICEOS,
-        "REFRESHTOken : ", storage.getString(REFRESHTOKEN))
+
           USER.DEVICEOS = Device.osName;
+          if (USER.DEVICEOS == "iOS" || USER.DEVICEOS == "iPadOS") {
+            const deviceIdCode = await Application.getIosIdForVendorAsync();
+            USER.DEVICEID = deviceIdCode;
+          }
+          else if (USER.DEVICEOS == "Android") {
+            const deviceIdCode = await Application.getAndroidId();
+            USER.DEVICEID = deviceIdCode;
+          }
+          
           //console.log(REFRESHDATA);
           
           //토큰이 있으면 우리 회원이다.
@@ -130,9 +139,9 @@ const App: React.FC = () => {
   }
 
   return (
+    <PaperProvider>
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName = "Main">
-      <StatusBar translucent backgroundColor="transparent" />
         {isSignIn ? ( //로그인이 되어있는 경우 바로 홈 화면, 로그인이 안 되어있는 경우에는 로그인 화면과 회원가입 화면
           <>
             <Stack.Screen name="Tabbar" component={Tabbar} options = {{
@@ -160,6 +169,7 @@ const App: React.FC = () => {
         )}
       </Stack.Navigator>
     </NavigationContainer>
+    </PaperProvider>
   );
 };
 

@@ -11,6 +11,7 @@ import { storage } from "../../utils/storageUtils";
 import { USER, MALE, FEMALE, REFRESHTOKEN, ACCESSTOKEN } from "../constants/Constants";
 import useIsSignInState from "../store/signInStatus";
 //console.log(axios.isCancel("something"));
+import { Portal, Modal, PaperProvider } from "react-native-paper";
 
 const InfoGender: React.FC<any> = ({ navigation }) => {
   const [selectedGender, setSelectedGender] = useState("");
@@ -18,12 +19,18 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
   const {isSignIn, setIsSignIn} = useIsSignInState();
   const isMale = selectedGender === "male";
   const isFemale = selectedGender === "female";
-  
-
+  const [visible, setVisible] = useState(false);
+  const hideModal = () => setVisible(false);
+  const showModal = () => setVisible(true);
   useEffect(() => {
     setIsButtonDisabled(selectedGender === "");
     
   }, [selectedGender]);
+
+  const gotoHome = () => {
+    hideModal();
+    navigation.navigate("Login")
+  }
 
   const saveInfoGender = async () => {
     if (isMale) {
@@ -40,8 +47,8 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
         nickname : USER.NICKNAME,
         //email : USER.EMAIL,
         gender : USER.GENDER,
-        //providerName : USER.PROVIDERNAME,
-        providerCode : USER.PROVIDERCODE,
+        providerName : USER.PROVIDERNAME,
+        oauthToken : USER.PROVIDERCODE,
         birthdate : USER.BIRTHDATE,
         deviceId : USER.DEVICEID,
         appVersion : USER.APPVERSION,
@@ -67,9 +74,22 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
           console.log('이미 기본에 가입하셨습니다.')
           setIsSignIn(true);
         }
+        showModal();
       });
   };
   return (
+    <>
+      <Portal>
+        <Modal visible={visible} dismissable = {false} contentContainerStyle={styles.containerStyle}>
+          <View style = {styles.modalText}>
+            <Text style = {{fontWeight : 'bold', fontSize : 20, padding : 5,}}>회원가입에 실패했습니다🥲</Text>
+            <Text style = {{fontSize : 15, padding : 5,}}>다른 계정으로 회원가입을 부탁드립니다🐶</Text>
+          </View>
+          <View style = {styles.modalBtnContainer}>
+            <Button mode = "contained" onPress = {gotoHome} buttonColor="#58C3A5" contentStyle = {{width : "100%"}}>돌아가기</Button>
+          </View>
+        </Modal>
+      </Portal>
     <View style={styles.container}>
       <View>
         <Image
@@ -102,6 +122,7 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
         </Button>
       </View>
     </View>
+  </>
   );
 };
 const styles = StyleSheet.create({
@@ -156,5 +177,30 @@ const styles = StyleSheet.create({
     // fontFamily: "Pretendard-Medium",
     fontFamily: "Pretendard-Medium",
   },
+  modalBtnContainer : {
+    flexDirection : "row",
+    width : "100%",
+    justifyContent : "center",
+    //backgroundColor : "black",
+  },
+  containerStyle : {
+    backgroundColor: 'white', 
+    paddingTop : 30,
+    paddingBottom : 30,
+    width : "80%", 
+    height : "20%",
+    borderRadius : 30,
+    //height : "30%", 
+    justifyContent : "center", 
+    alignItems: 'center', 
+    alignSelf : "center",
+  },
+  modalText : {
+    width : "100%",
+    height : "80%",
+    alignItems : "center",
+    justifyContent : "flex-start",
+    //backgroundColor : "pink",
+  }
 });
 export default InfoGender;

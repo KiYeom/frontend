@@ -17,7 +17,7 @@ export interface User {
   NICKNAME: string;
   BIRTHDATE: string;
   GENDER: number | null;
-  DEVICEID: string;
+  DEVICEID: string | null;
   APPVERSION: string;
   DEVICEOS: string | null;
   PROVIDERNAME: string;

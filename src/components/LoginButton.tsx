@@ -48,7 +48,7 @@ const LoginButton: React.FC<any> = ({ navigation }) => {
           try {
             //const hasPreviousSignIn = await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
-            const idtoken = await GoogleSignin.getTokens();
+            const idtoken = await (await GoogleSignin.getTokens()).accessToken
             console.log("구글 로그인", userInfo);
 
             USER.EMAIL = userInfo.user.email;
@@ -62,8 +62,8 @@ const LoginButton: React.FC<any> = ({ navigation }) => {
             // 로그인에 성공하면 JWT 토큰을 부여받는다.
             axios
               .post("https://api.remind4u.co.kr/v1/auth/login", {
-                //providerName: "google",
-                providerCode: USER.PROVIDERCODE,
+                providerName: "google",
+                oauthToken: USER.PROVIDERCODE,
                 deviceId: USER.DEVICEID,
                 appVersion: USER.APPVERSION,
                 deviceOs: USER.DEVICEOS,
