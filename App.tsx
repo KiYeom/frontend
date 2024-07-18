@@ -26,6 +26,10 @@ import LicensePage from "./src/screen/LicensePage";
 import { Platform } from "react-native";
 import * as Application from 'expo-application';
 import { Portal, Modal, PaperProvider } from "react-native-paper";
+import * as amplitude from '@amplitude/analytics-react-native';
+
+amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE);
+amplitude.track('Sign Up');
 
 const Stack = createNativeStackNavigator();
 
@@ -52,19 +56,18 @@ const App: React.FC = () => {
         console.log("access token : ", accessToken);
         console.log("refresh token : ", refreshToken);
         setIsSignIn(!!accessToken); 
+        USER.DEVICEOS = ""+Device.osName + Device.osVersion;
+        if (Device.osName == "iOS" || Device.osName == "iPadOS") {
+          const deviceIdCode = await Application.getIosIdForVendorAsync();
+          USER.DEVICEID = deviceIdCode;
+        }
+        else if (Device.osName == "Android") {
+          const deviceIdCode = await Application.getAndroidId();
+          USER.DEVICEID = deviceIdCode;
+        }
+
         if (accessToken) {
           console.log("access token이 존재한다");
-
-          USER.DEVICEOS = ""+Device.osName + Device.osVersion;
-          if (Device.osName == "iOS" || Device.osName == "iPadOS") {
-            const deviceIdCode = await Application.getIosIdForVendorAsync();
-            USER.DEVICEID = deviceIdCode;
-          }
-          else if (Device.osName == "Android") {
-            const deviceIdCode = await Application.getAndroidId();
-            USER.DEVICEID = deviceIdCode;
-          }
-          
           //console.log(REFRESHDATA);
           
           //토큰이 있으면 우리 회원이다.

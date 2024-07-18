@@ -46,15 +46,15 @@ const Tabbar: React.FC<any> = ({isSignIn, setIsSignIn}) => {
           },
           tabBarLabel: 'Home',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="home" color={color} size={size} onPress = {click}/>
+            <MaterialCommunityIcons name="home" color={color} size={size}/>
           ),
           
           }}/>
       <Tab.Screen name="Setting" component={Setting} options={{
           headerShown : true,
           tabBarLabel: 'Setting',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="cog" color={color} size={size} onPress = {click}/>
+          tabBarIcon: ({ color, size,  }) => (
+            <MaterialCommunityIcons name="cog" color={color} size={size}/>
           ),
           title : "Setting"
           }}/>

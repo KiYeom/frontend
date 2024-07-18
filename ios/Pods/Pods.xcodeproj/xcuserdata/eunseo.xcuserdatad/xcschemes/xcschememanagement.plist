@@ -509,6 +509,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>amplitude-react-native.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>boost.xcscheme</key>
 		<dict>
 			<key>isShown</key>
