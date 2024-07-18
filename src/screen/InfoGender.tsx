@@ -38,9 +38,9 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
     axios //회원가입하기
       .post("https://api.remind4u.co.kr/v1/auth/signup", {
         nickname : USER.NICKNAME,
-        email : USER.EMAIL,
+        //email : USER.EMAIL,
         gender : USER.GENDER,
-        providerName : USER.PROVIDERNAME,
+        //providerName : USER.PROVIDERNAME,
         providerCode : USER.PROVIDERCODE,
         birthdate : USER.BIRTHDATE,
         deviceId : USER.DEVICEID,

@@ -21,6 +21,8 @@ import { storage } from "./utils/storageUtils";
 import { USER, ACCESSTOKEN, REFRESHTOKEN } from "./src/constants/Constants";
 import useIsSignInState from "./src/store/signInStatus";
 import useNoticeState from "./src/store/notice";
+import LicenseDetailPage from "./src/screen/LicenseDetailPage";
+import LicensePage from "./src/screen/LicensePage";
 
 const Stack = createNativeStackNavigator();
 
@@ -130,7 +132,7 @@ const App: React.FC = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName = "Main">
-        
+      <StatusBar translucent backgroundColor="transparent" />
         {isSignIn ? ( //로그인이 되어있는 경우 바로 홈 화면, 로그인이 안 되어있는 경우에는 로그인 화면과 회원가입 화면
           <>
             <Stack.Screen name="Tabbar" component={Tabbar} options = {{

@@ -21,7 +21,7 @@ export interface User {
   APPVERSION: string;
   DEVICEOS: string | null;
   PROVIDERNAME: string;
-  PROVIDERCODE: string;
+  PROVIDERCODE: any;
   NOTIFICATIONTOKEN: string;
   ACCESSTOKEN: string;
   REFRESHTOKEN: string;

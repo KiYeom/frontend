@@ -21,6 +21,24 @@ interface Message {
   text: string;
 }
 
+const getTime = (): Date => {
+  const currentDate : Date = new Date();
+  console.log("현재 시간 : ", currentDate);
+  return currentDate;
+}
+
+const formatTime = (date : Date): string => {
+  console.log("=======================", date);
+  console.log("---------------------------",typeof(date));
+  let hours = date.getHours();
+  const minutes = date.getMinutes();
+  const period = hours >= 12 ? '오후' : '오전';
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+  const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+  return `${period} ${hours}:${formattedMinutes}`
+}
+
 const Chat: React.FC = () => {
   const flatListRef = useRef<FlatList<any>>(null);
   const [text, setText] = useState(""); //유저가 작성한 말
@@ -71,7 +89,8 @@ const Chat: React.FC = () => {
 
   const aiSend = async () => {
     const cookieAnswer = await sendChatRequest(1, text);
-    const aiData = {sender : "bot", text : `${cookieAnswer}`}
+    const today = getTime();
+    const aiData = {sender : "bot", text : `${cookieAnswer}`, id : `${today}`, date : `${formatTime(today)}`}
     setData((prevData) => {
       const newData = [aiData, ...prevData];
       saveChatLogs(newData);
@@ -81,7 +100,8 @@ const Chat: React.FC = () => {
   };
 
   const userSend = () => {
-    const userData = {sender : "user", text : `${text}`}
+    const today = getTime();
+    const userData = {sender : "user", text : `${text}`, id : `${today}`, date : `${formatTime(today)}`}
     setData((prevData) => [userData, ...prevData]);
     setText("");
     setBtnDisable(true);
@@ -95,19 +115,25 @@ const Chat: React.FC = () => {
   
 
   const renderItem = ({ item }:any) => (
-    <View>
+    <View style = {{padding : 16}}>
       {item.sender != "user" ? (
         <View style={styles.botMessageContainer}>
-          <Image source={require("../../assets/cookieSplash.png")} style={styles.img} />
-          <View style={{flex: 1}}>
-            <Text style={styles.ai}>쿠키</Text>
-            <View style={[styles.bubble, styles.botBubble]}>
-              <Text style={styles.text}>{item.text}</Text>
+          <View style = {{flexDirection : "row"}}>
+            <Image source={require("../../assets/cookieSplash.png")} style={styles.img} />
+            <View style = {{width : "100%"}}>
+              <Text style={styles.ai}>쿠키</Text>
+              <View style={{flexDirection : "row", alignItems : "flex-end"}}>
+                <View style={[styles.bubble, styles.botBubble]}>
+                  <Text style={styles.text}>{item.text}</Text>
+                </View>
+                <Text style = {{fontSize : 13}}>{item.date}</Text>
+              </View>
             </View>
           </View>
         </View>
       ) : (
         <View style={styles.userMessageContainer}> 
+          <Text style = {{fontSize : 13}}>{item.date}</Text>
           <View style={[styles.bubble, styles.userBubble]}>
             <Text style={styles.text}>{item.text}</Text>
           </View>
@@ -194,16 +220,17 @@ const Chat: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor : "white",
     //padding : 16,
   },
   flatList : {
     flexGrow : 0,
     //padding : 16,
-    backgroundColor : "yellow",
+    //backgroundColor : "yellow",
     //height : 200,
   },
   contentContainerStyle : {
-    backgroundColor : "red",
+    //backgroundColor : "white",
     flexGrow : 1,
     //minHeight : "100%",
     justifyContent : 'flex-end',
@@ -236,7 +263,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     maxWidth : "80%",
-    backgroundColor : "pink",
+    //backgroundColor : "pink",
   },
   userMessageContainer: {
     flexDirection: "row",

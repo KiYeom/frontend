@@ -28,15 +28,15 @@ const AppleLoginButton: React.FC<any> = ({navigation}) => {
           console.log(credential);
           //console.log("=============", credential.user)
           // signed in
-          USER.EMAIL = credential.email;
-          USER.PROVIDERCODE = credential.user; //고유 id  
+          //USER.EMAIL = credential.email;
+          USER.PROVIDERCODE = credential.authorizationCode; 
           USER.DEVICEOS = Device.osName;
           USER.APPVERSION = APP_VERSION;
           USER.PROVIDERNAME = "apple";
 
           axios
             .post("https://api.remind4u.co.kr/v1/auth/login", {
-              providerName : USER.PROVIDERNAME,
+              //providerName : USER.PROVIDERNAME,
               providerCode : USER.PROVIDERCODE,
               deviceId : USER.DEVICEID,
               appVersion : USER.APPVERSION,
