@@ -15,23 +15,25 @@ import { InputAccessoryView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { KeyboardAwareFlatList } from "react-native-keyboard-aware-scroll-view";
+import useChatBtnState from "../store/chatBtnState";
 
 interface Message {
   sender: string;
   text: string;
 }
 
-const getTime = (): Date => {
-  const currentDate : Date = new Date();
+const getTime = (): number => {
+  const currentDate : number = Date.now();
   console.log("현재 시간 : ", currentDate);
   return currentDate;
 }
 
-const formatTime = (date : Date): string => {
+const formatTime = (date : number): string => {
   console.log("=======================", date);
   console.log("---------------------------",typeof(date));
-  let hours = date.getHours();
-  const minutes = date.getMinutes();
+  const dateObject = new Date(date)
+  let hours = dateObject.getHours();
+  const minutes = dateObject.getMinutes();
   const period = hours >= 12 ? '오후' : '오전';
   hours = hours % 12;
   hours = hours ? hours : 12;
@@ -44,6 +46,7 @@ const Chat: React.FC = () => {
   const [text, setText] = useState(""); //유저가 작성한 말
   const [data, setData] = useState<Message[]>([]);
   const [btnDisable, setBtnDisable] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const saveChatLogs = (logs : Message[]) => {
     try {
@@ -77,6 +80,7 @@ const Chat: React.FC = () => {
 
   const sendChatRequest = async (characterId:number, question:string) => {
     try {
+      setIsLoading(true); //비활성화
       const response = await axiosInstance.post('/chat', {
         characterId: characterId,
         question: question
@@ -84,7 +88,7 @@ const Chat: React.FC = () => {
       return response.data.data.answer; //쿠키의 답장을 리턴
     } catch (error) {
       return ERRORMESSAGE; //api 연결이 실패한 경우 실패 메세지가 뜸
-    }  
+    }
   };
 
   const aiSend = async () => {
@@ -97,19 +101,21 @@ const Chat: React.FC = () => {
       return newData;
     });
     scrollToTop();
+    setIsLoading(false);
   };
 
   const userSend = () => {
+    //setBtnDisable(true); //버튼 비활성화 on
     const today = getTime();
     const userData = {sender : "user", text : `${text}`, id : `${today}`, date : `${formatTime(today)}`}
     setData((prevData) => [userData, ...prevData]);
     setText("");
-    setBtnDisable(true);
     aiSend();
   }
 
   const changeText = (text: string) => {
-    setBtnDisable(text === "");
+    setBtnDisable((text === "" || isLoading)  ? true : false);
+    //빈칸이거나 flag가 true면 버튼 활성화, 아니면 버튼 비활성화
     setText(text);
   }
   
@@ -156,6 +162,7 @@ const Chat: React.FC = () => {
           style = {styles.flatList} //flatlist 컴포넌트 자체에 스타일을 적용 -> flatlist의 크기, 배경색, 테두리 등의 스타일 지정
           contentContainerStyle = {styles.contentContainerStyle} 
           //flatlist의 "콘텐츠 컨테이너"에 스타일을 적용 -> 스크롤뷰 콘텐츠에 패딩을 추가하거나 정렬 설정, 아이템 감싸는 뷰에 스타일 적용할 때
+
         />
         
         {Platform.OS === "ios" ? (
@@ -181,6 +188,7 @@ const Chat: React.FC = () => {
                 onPress={()=>{
                   userSend()
                   scrollToTop()
+
                 }}
                 disabled = {btnDisable}
               />
@@ -263,7 +271,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     maxWidth : "80%",
-    //backgroundColor : "pink",
+    backgroundColor : "pink",
   },
   userMessageContainer: {
     flexDirection: "row",

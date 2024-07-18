@@ -8,6 +8,7 @@ import Setting from "./Setting";
 import { useEffect } from "react";
 import useNoticeState from "../store/notice";
 import {PaperProvider, Portal, Modal} from "react-native-paper";
+import requestPermission from "../components/NotificationToken";
 
 interface Option {
   link : string;
@@ -16,39 +17,17 @@ interface Option {
 
 const Home: React.FC<any> = ({ navigation }) => {
   const {notice, setNotice} = useNoticeState();
-  //useEffect를 사용하면 동시에 그려지는 것 같다.
-  /*
-  useEffect(()=> {
-    console.log("useEffect!");
-    if (notice != null) {
-      console.log("notice 전체 : ", notice);
-      console.log("Notice title : ", notice.title);
-      console.log("Notice content : ", notice.content);
-      console.log("버튼의 개수 : ", notice.options.length);
-      console.log("options : ", notice.options[0]);
-      console.log("options detail : ", notice.options[0], notice.options[0].text, notice.options[0].link);
-      showModal();
-    }
-    else {
-      console.log("없습니다");
-    }
-  }, [])*/
   console.log("---------home notice---------", notice);
   const [visible, setVisible] = React.useState(false);
   const title = notice ? notice.title : null;
   const content = notice? notice.content : null;
   const btns = notice? notice.options : null;
 
-  /*
-  const showModal = () => {
-    setVisible(true);
-    console.log("실행함")
-  };
-  const hideModal = () => setVisible(false);
-  const containerStyle = {backgroundColor: 'white', padding: 20};
   useEffect(()=> {
-    showModal();
-  }, [notice])*/
+    requestPermission();
+  }, [])
+
+  
   return (
     <View style={styles.container}>
       <View style={styles.header}>

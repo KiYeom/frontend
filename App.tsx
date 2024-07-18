@@ -55,12 +55,12 @@ const App: React.FC = () => {
         if (accessToken) {
           console.log("access token이 존재한다");
 
-          USER.DEVICEOS = Device.osName;
-          if (USER.DEVICEOS == "iOS" || USER.DEVICEOS == "iPadOS") {
+          USER.DEVICEOS = ""+Device.osName + Device.osVersion;
+          if (Device.osName == "iOS" || Device.osName == "iPadOS") {
             const deviceIdCode = await Application.getIosIdForVendorAsync();
             USER.DEVICEID = deviceIdCode;
           }
-          else if (USER.DEVICEOS == "Android") {
+          else if (Device.osName == "Android") {
             const deviceIdCode = await Application.getAndroidId();
             USER.DEVICEID = deviceIdCode;
           }

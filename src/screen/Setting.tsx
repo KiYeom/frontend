@@ -61,7 +61,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
       console.log("서버 로그아웃 응답: "); // 로그 추가
       storage.delete(ACCESSTOKEN);
       storage.delete(REFRESHTOKEN);
-      //storage.delete(CHATLOG); 테스트
+      storage.delete(CHATLOG);
       navigation.navigate("Login");
     } catch (error:any) {
       console.log("logoutRequest 요청 실패", error);

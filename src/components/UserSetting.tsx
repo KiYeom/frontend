@@ -31,25 +31,6 @@ Notifications.setNotificationHandler({
 });
 
 const UserSetting: React.FC<any> = ({navigation, showModal}) => {
-  //라이센스 보여주기
-  //const handleLicense = () => {
-    //const oss = JSON.stringify(OpenSourceLicense);
-    //return oss;
-    
-  //}
-  /*
-  const render = (item) => {
-    
-  }*/
-/*
-  return (
-    <FlatList 
-      data = {OpenSourceLicense}
-      renderItem = {item}
-    />
-  );
-  */
-  
   let token;
   //개인정보 페이지 이동하기
   const handlePrivacyPolicyPress = () => {
@@ -61,6 +42,9 @@ const UserSetting: React.FC<any> = ({navigation, showModal}) => {
   const {isSwitchOn, setIsSwitchOn} = useNotificationState();
   const handleOpenSource = () => {
     navigation.navigate("LicensePage")
+  }
+  const handleOpenNotification = () => {
+    Linking.openSettings();
   }
 
 
@@ -78,15 +62,14 @@ const UserSetting: React.FC<any> = ({navigation, showModal}) => {
   };
   return (
     <View style={styles.container}>
-      <Button title = "안녕" 
-              onPress = {async () => {
-                await requestPermission();
-                console.log("hellooo")
-              }}/>
-      <View style = {styles.titleContainer}>
+      <TouchableOpacity style = {styles.titleContainer} onPress = {handleOpenNotification}>
         <Text style = {styles.text}>알림설정</Text>
-        <Switch value={isSwitchOn} onValueChange={onToggleSwitch} color = "#3B506B"/>
-      </View>
+        <Icon
+          source="chevron-right"
+          size={32}
+          color="#3B506B"
+        />
+      </TouchableOpacity>
 
       <TouchableOpacity style = {styles.titleContainer} onPress = {handleAskPress}>
         <Text style = {styles.text}>문의하기</Text>

@@ -32,15 +32,16 @@ const AppleLoginButton: React.FC<any> = ({navigation}) => {
             //console.log("=============", credential.user)
             // signed in
             //USER.EMAIL = credential.email;
-            USER.PROVIDERCODE = credential.authorizationCode; 
-            USER.DEVICEOS = Device.osName;
+            USER.AUTHCODE = credential.authorizationCode; 
+            USER.IDTOKEN = credential.identityToken;
+            USER.DEVICEOS = ""+Device.osName + Device.osVersion;
             USER.APPVERSION = APP_VERSION;
             USER.PROVIDERNAME = "apple";
 
             axios
-              .post("https://api.remind4u.co.kr/v1/auth/login", {
-                providerName : "apple",
-                oauthToken : USER.PROVIDERCODE,
+              .post("https://api.remind4u.co.kr/v1/auth/apple-login", {
+                authCode : USER.AUTHCODE,
+                idToken : USER.IDTOKEN,
                 deviceId : USER.DEVICEID,
                 appVersion : USER.APPVERSION,
                 deviceOs : USER.DEVICEOS,
@@ -63,7 +64,7 @@ const AppleLoginButton: React.FC<any> = ({navigation}) => {
                 console.log(USER.PROVIDERCODE, USER.DEVICEID, USER.APPVERSION, USER.DEVICEOS);
                 console.log(typeof(USER.PROVIDERCODE), typeof(USER.DEVICEID), typeof(USER.APPVERSION), typeof(USER.DEVICEOS));
                 if (error.response.status == 404) {
-                  console.log("애플 유저. 새로운 사용자입니다");
+                  console.log("존재하지 않는 사용자");
                   navigation.navigate("InfoScreen");
                 }
               });

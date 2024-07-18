@@ -48,12 +48,13 @@ const LoginButton: React.FC<any> = ({ navigation }) => {
           try {
             //const hasPreviousSignIn = await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
-            const idtoken = await (await GoogleSignin.getTokens()).accessToken
+            const googleAccessToken = await (await GoogleSignin.getTokens()).accessToken
             console.log("구글 로그인", userInfo);
-
+            
+            USER.PROVIDERNAME = "google"
             USER.EMAIL = userInfo.user.email;
-            USER.PROVIDERCODE = idtoken;
-            USER.DEVICEOS = Device.osName; //기기가 안드로이드인지 ios인지
+            USER.GOOGLEACCTOKEN = googleAccessToken;
+            USER.DEVICEOS = ""+Device.osName + Device.osVersion; //기기가 안드로이드인지 ios인지
             //console.log("로그인 하는 기기의 OS", Device.osName); //기기의 운영체제 
             //USER.DEVICEID = GOOGLE;
             USER.APPVERSION = APP_VERSION;
@@ -61,9 +62,8 @@ const LoginButton: React.FC<any> = ({ navigation }) => {
             //console.log("로그인을 위해 전달하려는 데이터", USER);
             // 로그인에 성공하면 JWT 토큰을 부여받는다.
             axios
-              .post("https://api.remind4u.co.kr/v1/auth/login", {
-                providerName: "google",
-                oauthToken: USER.PROVIDERCODE,
+              .post("https://api.remind4u.co.kr/v1/auth/google-login", {
+                accessToken: USER.GOOGLEACCTOKEN,
                 deviceId: USER.DEVICEID,
                 appVersion: USER.APPVERSION,
                 deviceOs: USER.DEVICEOS,
@@ -74,8 +74,8 @@ const LoginButton: React.FC<any> = ({ navigation }) => {
                 storage.set(ACCESSTOKEN, response.data.data.accessToken); //access token을 storage에 저장
                 storage.set(REFRESHTOKEN, response.data.data.refreshToken); //refresh token을 storage에 저장
                 USER.NICKNAME = response.data.data.nickname;
-                USER.GENDER = response.data.data.gender;
                 USER.BIRTHDATE = response.data.data.birthdate;
+                USER.GENDER = response.data.data.gender;
                 setIsSignIn(true); //로그인 성공하면 tabbar 페이지로 이동
                 //navigation.navigate("Main"); //저장하고 메인 페이지로 이동
                 console.log("로그인을 위해 전달한 데이터 : ", response);

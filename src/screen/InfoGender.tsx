@@ -42,40 +42,63 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
     //console.log("회원가입에 사용하는 데이터", DATA);
     console.log("======= ", isButtonDisabled);
 
-    axios //회원가입하기
-      .post("https://api.remind4u.co.kr/v1/auth/signup", {
-        nickname : USER.NICKNAME,
-        //email : USER.EMAIL,
-        gender : USER.GENDER,
-        providerName : USER.PROVIDERNAME,
-        oauthToken : USER.PROVIDERCODE,
-        birthdate : USER.BIRTHDATE,
-        deviceId : USER.DEVICEID,
-        appVersion : USER.APPVERSION,
-        deviceOs : USER.DEVICEOS,
-      })
-      .then(function (response) {
-        console.log("회원가입 성공", response);
-        storage.set(ACCESSTOKEN, response.data.data.accessToken);
-        storage.set(REFRESHTOKEN, response.data.data.refreshToken);
-        console.log("회원가입 refreshtoken : ", response.data.data.refreshToken);
-        setIsSignIn(true); //tabbar로 이동
-        console.log("======= ", isButtonDisabled);
-        //navigation.navigate("Tabbar");
-      })
-      .catch(function (error) {
-        //오류 발생 시 실행
-        console.log("InfoGender error(data): ", error.response.data);
-        console.log("InfoGender error(stats)", error.response.status);
-        console.log("InfoGender error(headers)", error.response.headers);
-        console.log("======= ", isButtonDisabled);
-        //배포할 때는 지우기
-        if(error.response.status == 409) {
-          console.log('이미 기본에 가입하셨습니다.')
-          setIsSignIn(true);
-        }
-        showModal();
-      });
+    //회원가입을 성공했을 때 함수
+    const signUpSuccess = (response:any) => {
+      console.log("회원가입 성공", response);
+      storage.set(ACCESSTOKEN, response.data.data.accessToken);
+      storage.set(REFRESHTOKEN, response.data.data.refreshToken);
+      console.log("회원가입 refreshtoken : ", response.data.data.refreshToken);
+      setIsSignIn(true); //tabbar로 이동
+      console.log("======= ", isButtonDisabled);
+    }
+
+    //회원가입을 실패했을 때 함수
+    const signUpFail = (error:any) => {
+      //오류 발생 시 실행
+      console.log("InfoGender error(data): ", error.response.data);
+      console.log("InfoGender error(stats)", error.response.status);
+      console.log("InfoGender error(headers)", error.response.headers);
+      console.log("======= ", isButtonDisabled);
+      showModal();
+    }
+
+    if (USER.PROVIDERNAME === "google") {
+      axios
+        .post("https://api.remind4u.co.kr/v1/auth/google-signup", {
+          nickname : USER.NICKNAME,
+          gender : USER.GENDER,
+          accessToken : USER.GOOGLEACCTOKEN,
+          birthdate : USER.BIRTHDATE,
+          deviceId : USER.DEVICEID,
+          appVersion : USER.APPVERSION,
+          deviceOs : USER.DEVICEOS,
+        })
+        .then(function (response) {
+          signUpSuccess(response);
+        })
+        .catch(function (error) {
+          signUpFail(error);
+        });
+    }
+    else if (USER.PROVIDERNAME === "apple") {
+      axios
+        .post("https://api.remind4u.co.kr/v1/auth/apple-signup", {
+          nickname : USER.NICKNAME,
+          gender : USER.GENDER,
+          authCode : USER.AUTHCODE,
+          idToken : USER.IDTOKEN,
+          birthdate : USER.BIRTHDATE,
+          deviceId : USER.DEVICEID,
+          appVersion : USER.APPVERSION,
+          deviceOs : USER.DEVICEOS,
+        })
+        .then(function (response) {
+          signUpSuccess(response);
+        })
+        .catch(function (error) {
+          signUpFail(error);
+        });
+    }
   };
   return (
     <>
