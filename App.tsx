@@ -144,11 +144,37 @@ const App: React.FC = () => {
       <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName = "Main">
         {isSignIn ? ( //로그인이 되어있는 경우 바로 홈 화면, 로그인이 안 되어있는 경우에는 로그인 화면과 회원가입 화면
           <>
-            <Stack.Screen name="Tabbar" component={Tabbar} options = {{
+            <Stack.Screen name="Tabbar" component={Tabbar} options={{
               title : "Home",
             }}/>
             <Stack.Screen name="Chat" component = {Chat} options={{
               title : "Chat",
+              headerTitleAlign : "center",
+              headerStyle : {
+                backgroundColor : '#58C3A5'
+              },
+              headerTintColor : '#fff',
+              headerTitleStyle : {
+                fontFamily : "Pretendard-Bold",
+                fontSize : 17,
+              },
+              headerShown : true,
+            }}/>
+            <Stack.Screen name="LicensePage" component = {LicensePage} options={{
+              title : "License",
+              headerTitleAlign : "center",
+              headerStyle : {
+                backgroundColor : '#58C3A5'
+              },
+              headerTintColor : '#fff',
+              headerTitleStyle : {
+                fontFamily : "Pretendard-Bold",
+                fontSize : 17,
+              },
+              headerShown : true,
+            }}/>
+            <Stack.Screen name="LicenseDetailPage" component = {LicenseDetailPage} options={{
+              title : "Detail",
               headerTitleAlign : "center",
               headerStyle : {
                 backgroundColor : '#58C3A5'

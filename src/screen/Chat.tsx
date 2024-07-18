@@ -298,6 +298,8 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     margin: 5,
+    //borderColor : "gray",
+    //borderWidth : 1,
   },
 });
 
