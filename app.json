@@ -78,7 +78,6 @@
       [
         "expo-notifications",
         {
-
           "color": "#ffffff",
           "mode": "production"
         }
@@ -90,10 +89,14 @@
             "usesCleartextTraffic": true
           }
         }
-      ],  
+      ],
       "expo-apple-authentication",
       "expo-localization",
       "expo-build-properties"
-    ]
+    ],
+    "runtimeVersion": "1.0.0",
+    "updates": {
+      "url": "https://u.expo.dev/1cd0480c-0399-4503-ae2d-ec73641ea4fd"
+    }
   }
 }

@@ -80,7 +80,7 @@ const Chat: React.FC = () => {
 
   const sendChatRequest = async (characterId:number, question:string) => {
     try {
-      setIsLoading(true); //비활성화
+      setIsLoading(true); //비활성화 (챗봇이 할 말 생각중)
       const response = await axiosInstance.post('/chat', {
         characterId: characterId,
         question: question
@@ -162,7 +162,6 @@ const Chat: React.FC = () => {
           style = {styles.flatList} //flatlist 컴포넌트 자체에 스타일을 적용 -> flatlist의 크기, 배경색, 테두리 등의 스타일 지정
           contentContainerStyle = {styles.contentContainerStyle} 
           //flatlist의 "콘텐츠 컨테이너"에 스타일을 적용 -> 스크롤뷰 콘텐츠에 패딩을 추가하거나 정렬 설정, 아이템 감싸는 뷰에 스타일 적용할 때
-
         />
         
         {Platform.OS === "ios" ? (
@@ -188,7 +187,6 @@ const Chat: React.FC = () => {
                 onPress={()=>{
                   userSend()
                   scrollToTop()
-
                 }}
                 disabled = {btnDisable}
               />
@@ -259,6 +257,7 @@ const styles = StyleSheet.create({
     flex: 1,
     //marginRight: 10,
     borderRadius : 20,
+    //backgroundColor : "pink"
   },
   btn: {
     justifyContent: "center",
@@ -271,7 +270,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     maxWidth : "80%",
-    backgroundColor : "pink",
+    //backgroundColor : "pink",
   },
   userMessageContainer: {
     flexDirection: "row",
