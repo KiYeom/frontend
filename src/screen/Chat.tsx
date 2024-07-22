@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useState, useEffect, useRef } from "react";
 import { Text, View, StyleSheet, FlatList, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback } from "react-native";
@@ -15,10 +14,31 @@ import { ERRORMESSAGE } from "../constants/Constants";
 import { InputAccessoryView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
+import { KeyboardAwareFlatList } from "react-native-keyboard-aware-scroll-view";
+import useChatBtnState from "../store/chatBtnState";
 
 interface Message {
   sender: string;
   text: string;
+}
+
+const getTime = (): number => {
+  const currentDate : number = Date.now();
+  console.log("현재 시간 : ", currentDate);
+  return currentDate;
+}
+
+const formatTime = (date : number): string => {
+  console.log("=======================", date);
+  console.log("---------------------------",typeof(date));
+  const dateObject = new Date(date)
+  let hours = dateObject.getHours();
+  const minutes = dateObject.getMinutes();
+  const period = hours >= 12 ? '오후' : '오전';
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+  const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+  return `${period} ${hours}:${formattedMinutes}`
 }
 
 const Chat: React.FC = () => {
@@ -26,6 +46,7 @@ const Chat: React.FC = () => {
   const [text, setText] = useState(""); //유저가 작성한 말
   const [data, setData] = useState<Message[]>([]);
   const [btnDisable, setBtnDisable] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const saveChatLogs = (logs : Message[]) => {
     try {
@@ -49,33 +70,17 @@ const Chat: React.FC = () => {
 
   const scrollToTop = () => {
     console.log("scroll to end 함수 동작")
-    flatListRef.current?.scrollToOffset({offset : 0, animated : true});
+    flatListRef.current?.scrollToOffset({offset : 0, animated : true}); //커서 맨 끝으로
   }
   
   useEffect(() => {
     loadChatLogs()
-    //if (flatListRef.current) {
-      //flatListRef.current.scrollToEnd({animated : false});
-    //}
   }, [])
-
-  //useFocusEffect(
-    //React.useCallback(() => {
-      //if (flatListRef.current) {
-        //flatListRef.current.scrollToEnd({ animated: false });
-      //}
-    //}, [data])
-  //);
-
-  //useEffect(() => {
-    //if (flatListRef.current) {
-      //flatListRef.current.scrollToEnd({ animated: true });
-    //}
-  //}, [data]);
 
 
   const sendChatRequest = async (characterId:number, question:string) => {
     try {
+      setIsLoading(true); //비활성화 (챗봇이 할 말 생각중)
       const response = await axiosInstance.post('/chat', {
         characterId: characterId,
         question: question
@@ -83,47 +88,58 @@ const Chat: React.FC = () => {
       return response.data.data.answer; //쿠키의 답장을 리턴
     } catch (error) {
       return ERRORMESSAGE; //api 연결이 실패한 경우 실패 메세지가 뜸
-    }  
+    }
   };
 
   const aiSend = async () => {
     const cookieAnswer = await sendChatRequest(1, text);
-    const aiData = {sender : "bot", text : `${cookieAnswer}`}
+    const today = getTime();
+    const aiData = {sender : "bot", text : `${cookieAnswer}`, id : `${today}`, date : `${formatTime(today)}`}
     setData((prevData) => {
       const newData = [aiData, ...prevData];
       saveChatLogs(newData);
       return newData;
     });
+    scrollToTop();
+    setIsLoading(false);
   };
 
   const userSend = () => {
-    const userData = {sender : "user", text : `${text}`}
+    //setBtnDisable(true); //버튼 비활성화 on
+    const today = getTime();
+    const userData = {sender : "user", text : `${text}`, id : `${today}`, date : `${formatTime(today)}`}
     setData((prevData) => [userData, ...prevData]);
     setText("");
-    setBtnDisable(true);
     aiSend();
   }
 
   const changeText = (text: string) => {
-    setBtnDisable(text === "");
+    setBtnDisable((text === "" || isLoading)  ? true : false);
+    //빈칸이거나 flag가 true면 버튼 활성화, 아니면 버튼 비활성화
     setText(text);
   }
   
 
   const renderItem = ({ item }:any) => (
-    <View style = {{backgroundColor : "blue"}}>
+    <View style = {{padding : 16}}>
       {item.sender != "user" ? (
         <View style={styles.botMessageContainer}>
-          <Image source={require("../../assets/cookieSplash.png")} style={styles.img} />
-          <View style={{flex: 1}}>
-            <Text style={styles.ai}>쿠키</Text>
-            <View style={[styles.bubble, styles.botBubble]}>
-              <Text style={styles.text}>{item.text}</Text>
+          <View style = {{flexDirection : "row"}}>
+            <Image source={require("../../assets/cookieSplash.png")} style={styles.img} />
+            <View style = {{width : "100%"}}>
+              <Text style={styles.ai}>쿠키</Text>
+              <View style={{flexDirection : "row", alignItems : "flex-end"}}>
+                <View style={[styles.bubble, styles.botBubble]}>
+                  <Text style={styles.text}>{item.text}</Text>
+                </View>
+                <Text style = {{fontSize : 13}}>{item.date}</Text>
+              </View>
             </View>
           </View>
         </View>
       ) : (
         <View style={styles.userMessageContainer}> 
+          <Text style = {{fontSize : 13}}>{item.date}</Text>
           <View style={[styles.bubble, styles.userBubble]}>
             <Text style={styles.text}>{item.text}</Text>
           </View>
@@ -136,6 +152,7 @@ const Chat: React.FC = () => {
       <KeyboardAvoidingView
         style={styles.container}
         behavior={"padding"}
+        keyboardVerticalOffset={80}
       >
         <FlatList
           ref = {flatListRef}
@@ -160,13 +177,17 @@ const Chat: React.FC = () => {
                 style={styles.textInput}
                 outlineStyle = {{borderRadius : 20}}
                 //onFocus = {scrollToTop}
+                multiline = {true}
               />
               <IconButton
                 icon="arrow-up"
                 iconColor = "white"
                 containerColor="#FF6B6B"
                 size={25}
-                onPress={userSend}
+                onPress={()=>{
+                  userSend()
+                  scrollToTop()
+                }}
                 disabled = {btnDisable}
               />
             </View>
@@ -182,6 +203,7 @@ const Chat: React.FC = () => {
             activeOutlineColor="#3B506B"
             style={styles.textInput}
             outlineStyle = {{borderRadius : 20}}
+            multiline = {true}
             //onFocus = {scrollToTop}
           />
           <IconButton
@@ -204,16 +226,19 @@ const Chat: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor : "white",
     //padding : 16,
   },
   flatList : {
-    //flexGrow : 1,
+    flexGrow : 0,
     //padding : 16,
-    backgroundColor : "pink",
+    //backgroundColor : "yellow",
+    //height : 200,
   },
   contentContainerStyle : {
-    backgroundColor : "red",
-    minHeight : "100%",
+    //backgroundColor : "white",
+    flexGrow : 1,
+    //minHeight : "100%",
     justifyContent : 'flex-end',
   },
   form: {
@@ -224,11 +249,15 @@ const styles = StyleSheet.create({
     padding : 16,
     backgroundColor : "white",
     marginTop : 16,
+    flexGrow : 1,
+    //height : 100,
+    height : 80,
   },
   textInput: {
     flex: 1,
     //marginRight: 10,
     borderRadius : 20,
+    //backgroundColor : "pink"
   },
   btn: {
     justifyContent: "center",
@@ -241,7 +270,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     maxWidth : "80%",
-    backgroundColor : "pink",
+    //backgroundColor : "pink",
   },
   userMessageContainer: {
     flexDirection: "row",
@@ -250,7 +279,8 @@ const styles = StyleSheet.create({
   },
   bubble: {
     padding: 10,
-    marginVertical: 10,
+    //marginVertical: 10,
+    marginTop : 10,
     borderRadius: 10,
     maxWidth: '70%',
   },
@@ -275,6 +305,8 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     margin: 5,
+    //borderColor : "gray",
+    //borderWidth : 1,
   },
 });
 

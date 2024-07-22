@@ -21,6 +21,15 @@ import { storage } from "./utils/storageUtils";
 import { USER, ACCESSTOKEN, REFRESHTOKEN } from "./src/constants/Constants";
 import useIsSignInState from "./src/store/signInStatus";
 import useNoticeState from "./src/store/notice";
+import LicenseDetailPage from "./src/screen/LicenseDetailPage";
+import LicensePage from "./src/screen/LicensePage";
+import { Platform } from "react-native";
+import * as Application from 'expo-application';
+import { Portal, Modal, PaperProvider } from "react-native-paper";
+import * as amplitude from '@amplitude/analytics-react-native';
+
+amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE);
+amplitude.track('Sign Up');
 
 const Stack = createNativeStackNavigator();
 
@@ -47,13 +56,18 @@ const App: React.FC = () => {
         console.log("access token : ", accessToken);
         console.log("refresh token : ", refreshToken);
         setIsSignIn(!!accessToken); 
+        USER.DEVICEOS = ""+Device.osName + Device.osVersion;
+        if (Device.osName == "iOS" || Device.osName == "iPadOS") {
+          const deviceIdCode = await Application.getIosIdForVendorAsync();
+          USER.DEVICEID = deviceIdCode;
+        }
+        else if (Device.osName == "Android") {
+          const deviceIdCode = await Application.getAndroidId();
+          USER.DEVICEID = deviceIdCode;
+        }
+
         if (accessToken) {
           console.log("access token이 존재한다");
-          console.log("deviceId : ", USER.DEVICEID, 
-            "appVersion : ", USER.APPVERSION,
-          "deviceOs : ", USER.DEVICEOS,
-        "REFRESHTOken : ", storage.getString(REFRESHTOKEN))
-          USER.DEVICEOS = Device.osName;
           //console.log(REFRESHDATA);
           
           //토큰이 있으면 우리 회원이다.
@@ -128,16 +142,42 @@ const App: React.FC = () => {
   }
 
   return (
+    <PaperProvider>
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName = "Main">
-        
         {isSignIn ? ( //로그인이 되어있는 경우 바로 홈 화면, 로그인이 안 되어있는 경우에는 로그인 화면과 회원가입 화면
           <>
-            <Stack.Screen name="Tabbar" component={Tabbar} options = {{
+            <Stack.Screen name="Tabbar" component={Tabbar} options={{
               title : "Home",
             }}/>
             <Stack.Screen name="Chat" component = {Chat} options={{
               title : "Chat",
+              headerTitleAlign : "center",
+              headerStyle : {
+                backgroundColor : '#58C3A5'
+              },
+              headerTintColor : '#fff',
+              headerTitleStyle : {
+                fontFamily : "Pretendard-Bold",
+                fontSize : 17,
+              },
+              headerShown : true,
+            }}/>
+            <Stack.Screen name="LicensePage" component = {LicensePage} options={{
+              title : "License",
+              headerTitleAlign : "center",
+              headerStyle : {
+                backgroundColor : '#58C3A5'
+              },
+              headerTintColor : '#fff',
+              headerTitleStyle : {
+                fontFamily : "Pretendard-Bold",
+                fontSize : 17,
+              },
+              headerShown : true,
+            }}/>
+            <Stack.Screen name="LicenseDetailPage" component = {LicenseDetailPage} options={{
+              title : "Detail",
               headerTitleAlign : "center",
               headerStyle : {
                 backgroundColor : '#58C3A5'
@@ -158,6 +198,7 @@ const App: React.FC = () => {
         )}
       </Stack.Navigator>
     </NavigationContainer>
+    </PaperProvider>
   );
 };
 

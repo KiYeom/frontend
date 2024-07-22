@@ -17,14 +17,17 @@ export interface User {
   NICKNAME: string;
   BIRTHDATE: string;
   GENDER: number | null;
-  DEVICEID: string;
+  DEVICEID: string | null;
   APPVERSION: string;
   DEVICEOS: string | null;
   PROVIDERNAME: string;
-  PROVIDERCODE: string;
+  PROVIDERCODE: any;
   NOTIFICATIONTOKEN: string;
   ACCESSTOKEN: string;
   REFRESHTOKEN: string;
+  GOOGLEACCTOKEN : string;
+  AUTHCODE : string | null;
+  IDTOKEN : string | null;
 }
 
 export const USER : User = {
@@ -40,5 +43,8 @@ export const USER : User = {
   NOTIFICATIONTOKEN : "notificationToken",
   ACCESSTOKEN : "accessToken", // 수정된 부분
   REFRESHTOKEN : "refreshToken",
+  GOOGLEACCTOKEN : "",
+  AUTHCODE : "",
+  IDTOKEN : "",
 }
 

@@ -1,6 +1,8 @@
 import axios from "axios";
 import { storage } from "../../utils/storageUtils";
 import { REFRESHTOKEN, USER, ACCESSTOKEN } from "../constants/Constants";
+import useChatBtnState from "../store/chatBtnState";
+//const {chatDisable, setChatDisable} = useChatBtnState();
 
 // Axios 인스턴스 생성
 const axiosInstance = axios.create({

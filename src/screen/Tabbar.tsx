@@ -7,11 +7,9 @@ import Home from "./Home";
 import Setting from "./Setting";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import SettingHome from "./SettingHome";
 
 const Tab = createBottomTabNavigator();
 const color = "#58C3A5";
@@ -25,7 +23,7 @@ const Tabbar: React.FC<any> = ({isSignIn, setIsSignIn}) => {
     <Tab.Navigator
       initialRouteName="Home"
       screenOptions={{
-        headerShown : false,
+        //headerShown : false,
         headerTitleAlign: "center",
         headerStyle: { backgroundColor: "#58C3A5" }, //상단 탭 바
         tabBarStyle: { backgroundColor: "#F0F3F8" }, //하단 탭 바
@@ -48,14 +46,15 @@ const Tabbar: React.FC<any> = ({isSignIn, setIsSignIn}) => {
           },
           tabBarLabel: 'Home',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="home" color={color} size={size} onPress = {click}/>
+            <MaterialCommunityIcons name="home" color={color} size={size}/>
           ),
           
           }}/>
-      <Tab.Screen name="SettingHome" component={SettingHome} options={{
-          tabBarLabel: 'SettingHome',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="cog" color={color} size={size} onPress = {click}/>
+      <Tab.Screen name="Setting" component={Setting} options={{
+          headerShown : true,
+          tabBarLabel: 'Setting',
+          tabBarIcon: ({ color, size,  }) => (
+            <MaterialCommunityIcons name="cog" color={color} size={size}/>
           ),
           title : "Setting"
           }}/>

@@ -11,6 +11,7 @@ import { storage } from "../../utils/storageUtils";
 import { USER, MALE, FEMALE, REFRESHTOKEN, ACCESSTOKEN } from "../constants/Constants";
 import useIsSignInState from "../store/signInStatus";
 //console.log(axios.isCancel("something"));
+import { Portal, Modal, PaperProvider } from "react-native-paper";
 
 const InfoGender: React.FC<any> = ({ navigation }) => {
   const [selectedGender, setSelectedGender] = useState("");
@@ -18,12 +19,18 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
   const {isSignIn, setIsSignIn} = useIsSignInState();
   const isMale = selectedGender === "male";
   const isFemale = selectedGender === "female";
-  
-
+  const [visible, setVisible] = useState(false);
+  const hideModal = () => setVisible(false);
+  const showModal = () => setVisible(true);
   useEffect(() => {
     setIsButtonDisabled(selectedGender === "");
     
   }, [selectedGender]);
+
+  const gotoHome = () => {
+    hideModal();
+    navigation.navigate("Login")
+  }
 
   const saveInfoGender = async () => {
     if (isMale) {
@@ -35,41 +42,77 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
     //console.log("회원가입에 사용하는 데이터", DATA);
     console.log("======= ", isButtonDisabled);
 
-    axios //회원가입하기
-      .post("https://api.remind4u.co.kr/v1/auth/signup", {
-        nickname : USER.NICKNAME,
-        email : USER.EMAIL,
-        gender : USER.GENDER,
-        providerName : USER.PROVIDERNAME,
-        providerCode : USER.PROVIDERCODE,
-        birthdate : USER.BIRTHDATE,
-        deviceId : USER.DEVICEID,
-        appVersion : USER.APPVERSION,
-        deviceOs : USER.DEVICEOS,
-      })
-      .then(function (response) {
-        console.log("회원가입 성공", response);
-        storage.set(ACCESSTOKEN, response.data.data.accessToken);
-        storage.set(REFRESHTOKEN, response.data.data.refreshToken);
-        console.log("회원가입 refreshtoken : ", response.data.data.refreshToken);
-        setIsSignIn(true); //tabbar로 이동
-        console.log("======= ", isButtonDisabled);
-        //navigation.navigate("Tabbar");
-      })
-      .catch(function (error) {
-        //오류 발생 시 실행
-        console.log("InfoGender error(data): ", error.response.data);
-        console.log("InfoGender error(stats)", error.response.status);
-        console.log("InfoGender error(headers)", error.response.headers);
-        console.log("======= ", isButtonDisabled);
-        //배포할 때는 지우기
-        if(error.response.status == 409) {
-          console.log('이미 기본에 가입하셨습니다.')
-          setIsSignIn(true);
-        }
-      });
+    //회원가입을 성공했을 때 함수
+    const signUpSuccess = (response:any) => {
+      console.log("회원가입 성공", response);
+      storage.set(ACCESSTOKEN, response.data.data.accessToken);
+      storage.set(REFRESHTOKEN, response.data.data.refreshToken);
+      console.log("회원가입 refreshtoken : ", response.data.data.refreshToken);
+      setIsSignIn(true); //tabbar로 이동
+      console.log("======= ", isButtonDisabled);
+    }
+
+    //회원가입을 실패했을 때 함수
+    const signUpFail = (error:any) => {
+      //오류 발생 시 실행
+      console.log("InfoGender error(data): ", error.response.data);
+      console.log("InfoGender error(stats)", error.response.status);
+      console.log("InfoGender error(headers)", error.response.headers);
+      console.log("======= ", isButtonDisabled);
+      showModal();
+    }
+
+    if (USER.PROVIDERNAME === "google") {
+      axios
+        .post("https://api.remind4u.co.kr/v1/auth/google-signup", {
+          nickname : USER.NICKNAME,
+          gender : USER.GENDER,
+          accessToken : USER.GOOGLEACCTOKEN,
+          birthdate : USER.BIRTHDATE,
+          deviceId : USER.DEVICEID,
+          appVersion : USER.APPVERSION,
+          deviceOs : USER.DEVICEOS,
+        })
+        .then(function (response) {
+          signUpSuccess(response);
+        })
+        .catch(function (error) {
+          signUpFail(error);
+        });
+    }
+    else if (USER.PROVIDERNAME === "apple") {
+      axios
+        .post("https://api.remind4u.co.kr/v1/auth/apple-signup", {
+          nickname : USER.NICKNAME,
+          gender : USER.GENDER,
+          authCode : USER.AUTHCODE,
+          idToken : USER.IDTOKEN,
+          birthdate : USER.BIRTHDATE,
+          deviceId : USER.DEVICEID,
+          appVersion : USER.APPVERSION,
+          deviceOs : USER.DEVICEOS,
+        })
+        .then(function (response) {
+          signUpSuccess(response);
+        })
+        .catch(function (error) {
+          signUpFail(error);
+        });
+    }
   };
   return (
+    <>
+      <Portal>
+        <Modal visible={visible} dismissable = {false} contentContainerStyle={styles.containerStyle}>
+          <View style = {styles.modalText}>
+            <Text style = {{fontWeight : 'bold', fontSize : 20, padding : 5,}}>회원가입에 실패했습니다🥲</Text>
+            <Text style = {{fontSize : 15, padding : 5,}}>다른 계정으로 회원가입을 부탁드립니다🐶</Text>
+          </View>
+          <View style = {styles.modalBtnContainer}>
+            <Button mode = "contained" onPress = {gotoHome} buttonColor="#58C3A5" contentStyle = {{width : "100%"}}>돌아가기</Button>
+          </View>
+        </Modal>
+      </Portal>
     <View style={styles.container}>
       <View>
         <Image
@@ -102,6 +145,7 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
         </Button>
       </View>
     </View>
+  </>
   );
 };
 const styles = StyleSheet.create({
@@ -156,5 +200,30 @@ const styles = StyleSheet.create({
     // fontFamily: "Pretendard-Medium",
     fontFamily: "Pretendard-Medium",
   },
+  modalBtnContainer : {
+    flexDirection : "row",
+    width : "100%",
+    justifyContent : "center",
+    //backgroundColor : "black",
+  },
+  containerStyle : {
+    backgroundColor: 'white', 
+    paddingTop : 30,
+    paddingBottom : 30,
+    width : "80%", 
+    height : "20%",
+    borderRadius : 30,
+    //height : "30%", 
+    justifyContent : "center", 
+    alignItems: 'center', 
+    alignSelf : "center",
+  },
+  modalText : {
+    width : "100%",
+    height : "80%",
+    alignItems : "center",
+    justifyContent : "flex-start",
+    //backgroundColor : "pink",
+  }
 });
 export default InfoGender;
