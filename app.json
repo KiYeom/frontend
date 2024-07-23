@@ -12,7 +12,7 @@
       "backgroundColor": "#fff"
     },
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.ceunnseo.reMIND",
       "usesAppleSignIn": true
     },
@@ -22,9 +22,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.ceunnseo.reMIND",
-      "permissions": [
-        "INTERNET"
-      ],
+      "permissions": ["INTERNET"],
       "googleServicesFile": "./google-services.json"
     },
     "scheme": "com.ceunnseo.reMIND",
@@ -46,33 +44,15 @@
       [
         "expo-font",
         {
-          "Pretend-Black": [
-            "./assets/fonts/Pretendard-Black.ttf"
-          ],
-          "Pretend-Bold": [
-            "./assets/fonts/Pretendard-Bold.ttf"
-          ],
-          "Pretend-ExtraBold": [
-            "./assets/fonts/Pretendard-ExtraBold.ttf"
-          ],
-          "Pretend-ExtraLight": [
-            "./assets/fonts/Pretendard-ExtraLight.ttf"
-          ],
-          "Pretend-Light": [
-            "./assets/fonts/Pretendard-Light.ttf"
-          ],
-          "Pretendard-Medium": [
-            "./assets/fonts/Pretendard-Medium.ttf"
-          ],
-          "Pretend-Regular": [
-            "./assets/fonts/Pretendard-Regular.ttf"
-          ],
-          "Pretend-SemiBold": [
-            "./assets/fonts/Pretendard-SemiBold.ttf"
-          ],
-          "Pretend-Thin": [
-            "./assets/fonts/Pretendard-Thin.ttf"
-          ]
+          "Pretend-Black": ["./assets/fonts/Pretendard-Black.ttf"],
+          "Pretend-Bold": ["./assets/fonts/Pretendard-Bold.ttf"],
+          "Pretend-ExtraBold": ["./assets/fonts/Pretendard-ExtraBold.ttf"],
+          "Pretend-ExtraLight": ["./assets/fonts/Pretendard-ExtraLight.ttf"],
+          "Pretend-Light": ["./assets/fonts/Pretendard-Light.ttf"],
+          "Pretendard-Medium": ["./assets/fonts/Pretendard-Medium.ttf"],
+          "Pretend-Regular": ["./assets/fonts/Pretendard-Regular.ttf"],
+          "Pretend-SemiBold": ["./assets/fonts/Pretendard-SemiBold.ttf"],
+          "Pretend-Thin": ["./assets/fonts/Pretendard-Thin.ttf"]
         }
       ],
       [

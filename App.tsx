@@ -18,7 +18,7 @@ import * as Device from 'expo-device';
 import { GOOGLE_KEY } from './utils/storageUtils';
 import axios from 'axios';
 import { storage } from './utils/storageUtils';
-import { USER, ACCESSTOKEN, REFRESHTOKEN } from './src/constants/Constants';
+import { USER, ACCESSTOKEN, REFRESHTOKEN, CHATLOG } from './src/constants/Constants';
 import useIsSignInState from './src/store/signInStatus';
 import useNoticeState from './src/store/notice';
 import LicenseDetailPage from './src/screen/LicenseDetailPage';
@@ -98,6 +98,8 @@ const App: React.FC = () => {
               console.log('refreshToken error(headers)', error.response.headers);
               setIsSignIn(false); //로그인 실패
               console.log('요청 실패 isSignIn : ', isSignIn);
+              setIsSignIn(true); //디버깅을 위한 true (구글 키)
+              storage.delete(CHATLOG); //디버깅을 위한 초기화
             });
         } else {
           //토큰이 없으면, 다른 기기에서 접근한 것이거나 우리의 회원이 아니다. 로그인 화면을 보여준다.
