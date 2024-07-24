@@ -1,19 +1,19 @@
-import * as React from "react";
-import * as WebBrowser from "expo-web-browser";
-import * as Google from "expo-auth-session/providers/google";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as React from 'react';
+import * as WebBrowser from 'expo-web-browser';
+import * as Google from 'expo-auth-session/providers/google';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { Button, View, Text, TouchableOpacity, Image } from "react-native";
-import { useEffect, useState } from "react";
+import { Button, View, Text, TouchableOpacity, Image } from 'react-native';
+import { useEffect, useState } from 'react';
 import {
   GoogleSignin,
   GoogleSigninButton,
   statusCodes,
-} from "@react-native-google-signin/google-signin";
-import LoginButton from "../components/LoginButton";
-import { StyleSheet } from "react-native";
-import { GOOGLE_KEY } from "../../utils/storageUtils";
-import AppleLoginButton from "../components/AppleLoginButton";
+} from '@react-native-google-signin/google-signin';
+import LoginButton from '../components/LoginButton';
+import { StyleSheet } from 'react-native';
+import { GOOGLE_KEY } from '../../utils/storageUtils';
+import AppleLoginButton from '../components/AppleLoginButton';
 interface UserInfo {
   email: string;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
@@ -24,31 +24,29 @@ const Login: React.FC<any> = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <Image
-          source={require("../../assets/cookieSplash.png")}
+          source={require('../../assets/cookieSplash.png')}
           style={styles.image}
           resizeMode="contain"
         />
       </View>
       <View style={styles.btnContainer}>
         <LoginButton navigation={navigation} />
-        <AppleLoginButton navigation = {navigation}/>
+        <AppleLoginButton navigation={navigation} />
       </View>
-
     </View>
   );
 };
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    backgroundColor: "#fff",
+    justifyContent: 'center',
+    backgroundColor: '#fff',
   },
   imageContainer: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     margin: 50,
   },
   image: {
@@ -57,9 +55,9 @@ const styles = StyleSheet.create({
   },
   btnContainer: {
     flex: 1,
-    alignItems: "center",
+    alignItems: 'center',
     marginTop: 10,
-    color: "#333",
+    color: '#333',
   },
 });
 

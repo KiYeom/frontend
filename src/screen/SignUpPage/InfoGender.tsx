@@ -123,11 +123,11 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
       </Portal>
       <View style={styles.container}>
         <View>
-          <Image
+          {/*<Image
             source={require('../../assets/cookieSplash.png')}
             style={styles.image}
             resizeMode="contain"
-          />
+          />*/}
         </View>
         <View style={styles.textArea}>
           <Text style={styles.txt}>쿠키는 당신을 더 잘 이해하고 싶어요</Text>

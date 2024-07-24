@@ -22,11 +22,11 @@ const InfoAge: React.FC<any> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View>
-        <Image
+        {/*<Image
           source={require('../../assets/cookieSplash.png')}
           style={styles.image}
           resizeMode="contain"
-        />
+        />*/}
       </View>
       <View style={styles.textArea}>
         <Text style={styles.txt}>당신의 생일을 축하해주고 싶어요!</Text>

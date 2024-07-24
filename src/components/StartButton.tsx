@@ -11,7 +11,7 @@ const StartButton: React.FC<any> = ({ navigation }) => {
   const onPress = () => {
     setIsPressed(!isPressed);
     console.log('버튼 누름');
-    navigation.navigate('SettingStackNavigator', { screen: 'PrivacyPolicy' });
+    navigation.navigate('HomeStackNavigator', { screen: 'Chat' });
   };
   return (
     <TouchableOpacity activeOpacity={0.8} style={styles.btn} onPress={onPress}>

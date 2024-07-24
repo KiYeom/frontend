@@ -32,16 +32,22 @@ const Home: React.FC<any> = ({ navigation }) => {
       <View style={styles.header}>
         <Text style={styles.txt1}>🐾오늘 몸 상태는 어때?૮ ・ﻌ・ა</Text>
         <StartButton navigation={navigation} />
-        <Image
-          source={require('../../assets/cookieSplash.png')}
-          style={styles.image}
-          resizeMode="contain"
-        />
+        {
+          <Image
+            source={require('../../assets/cookieSplash.png')}
+            style={styles.image}
+            resizeMode="contain"
+          />
+        }
       </View>
       <View style={styles.footer}>
         <Text style={styles.txt1}>오늘의 감정 기록</Text>
         <View style={styles.footerContainer}>
           <Text>감정기록박스</Text>
+          <Button
+            title="감정기록하기"
+            onPress={() => navigation.navigate('HomeStackNavigator', { screen: 'MoodChart' })}
+          />
         </View>
       </View>
     </View>

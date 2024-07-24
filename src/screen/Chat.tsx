@@ -141,7 +141,7 @@ const Chat: React.FC = () => {
       {item.sender != 'user' ? (
         <View style={styles.botMessageContainer}>
           <View style={{ flexDirection: 'row' }}>
-            <Image source={require('../../assets/cookieSplash.png')} style={styles.img} />
+            {/*<Image source={require('../../assets/cookieSplash.png')} style={styles.img} />*/}
             <View style={{ width: '100%' }}>
               <Text style={styles.ai}>쿠키</Text>
               <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>

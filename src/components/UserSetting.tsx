@@ -29,18 +29,27 @@ Notifications.setNotificationHandler({
 
 const UserSetting: React.FC<any> = ({ navigation, showModal }) => {
   let token;
-  //개인정보 페이지 이동하기
+  //개인정보 처리방침 클릭 시, 처리방침 페이지로 이동
   const handlePrivacyPolicyPress = () => {
-    Linking.openURL('https://autumn-flier-d18.notion.site/29f845b297cd4188ade13c6e0c088b9b?pvs=4');
+    //Linking.openURL('https://autumn-flier-d18.notion.site/29f845b297cd4188ade13c6e0c088b9b?pvs=4');
+    navigation.navigate('SettingStackNavigator', { screen: 'PrivacyPolicy' });
   };
+
+  //문의하기 클릭 시, 채널톡 페이지로 이동하기
   const handleAskPress = () => {
-    Linking.openURL('https://forms.gle/f92DzjUBNnU51vET6');
+    //Linking.openURL('https://forms.gle/f92DzjUBNnU51vET6'); 구글폼 딥링크 삭제
+    navigation.navigate('SettingStackNavigator', { screen: 'ChannelTalk' });
   };
+  //알림설정 토글 상태
   const { isSwitchOn, setIsSwitchOn } = useNotificationState();
+
+  //앱 버전 클릭 시 오픈소스 라이센스로 이동
   const handleOpenSource = () => {
     //navigation.navigate("LicensePage")
     navigation.navigate('SettingStackNavigator', { screen: 'LicensePage' });
   };
+
+  //알림설정 클릭 시, 앱 내의 설정 페이지로
   const handleOpenNotification = () => {
     Linking.openSettings();
   };

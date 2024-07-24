@@ -35,7 +35,7 @@ const InfoName: React.FC<any> = ({ navigation }) => {
           <KeyboardAvoidingView behavior={'padding'} style={styles.container}>
             <View style={styles.imgArea}>
               <Image
-                source={require('../../assets/cookieSplash.png')}
+                source={require('../../../assets/cookieSplash.png')}
                 style={styles.image}
                 resizeMode="contain"
               />
