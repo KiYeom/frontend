@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { Button } from 'react-native-paper';
 import GenderButton from '../../components/GenderButton';
-import Tabbar from '../../navigations/BottomTabNavigator';
+import Tabbar from '../../navigators/BottomTabNavigator';
 import { GOOGLE_KEY } from '../../utils/storageUtils';
 import { useState } from 'react';
 import axios from 'axios';

@@ -209,7 +209,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
 
       <View style={styles.container}>
         <View style={styles.userInfo}>
-          <Text>닉네임??</Text>
+          <Text>닉네임</Text>
           <View style={styles.userName}>
             <Text style={styles.userInfoText}>{USER.NICKNAME}</Text>
             <IconButton

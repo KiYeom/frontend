@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Login from './src/screen/SignInPage/Login'; // 슬래시 확인
 import Chat from './src/screen/HomePage/Chat';
 import Home from './src/screen/HomePage/Home';
-import BottomTabNavigator from './src/navigations/BottomTabNavigator';
+import BottomTabNavigator from './src/navigators/BottomTabNavigator';
 import InfoName from './src/screen/SignUpPage/InfoName';
 import InfoAge from './src/screen/SignUpPage/InfoAge';
 import InfoGender from './src/screen/SignUpPage/InfoGender';
@@ -26,14 +26,14 @@ import { Platform } from 'react-native';
 import * as Application from 'expo-application';
 import { Portal, Modal, PaperProvider } from 'react-native-paper';
 import * as amplitude from '@amplitude/analytics-react-native';
-import SettingStackNavigator from './src/navigations/SettingStackNavigator';
-import SignUpStackNavigator from './src/navigations/SignUpStackNavigator';
-import HomeStackNavigator from './src/navigations/HomeStackNavigator';
+import SettingStackNavigator from './src/navigators/SettingStackNavigator';
+import SignUpStackNavigator from './src/navigators/SignUpStackNavigator';
+import HomeStackNavigator from './src/navigators/HomeStackNavigator';
 
 amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE);
 amplitude.track('Sign Up');
 
-const Stack = createNativeStackNavigator();
+const RootStack = createNativeStackNavigator();
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true); //로딩중이면 true, 로딩이 끝났으면 false
@@ -130,27 +130,27 @@ const App: React.FC = () => {
   return (
     <PaperProvider>
       <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Main">
+        <RootStack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Main">
           {isSignIn ? ( //로그인이 되어있을 경우 보여줄 페이지 : 홈 화면(Tabbar), 채팅화면 (Chat), 설정화면들
             <>
-              <Stack.Screen
+              <RootStack.Screen
                 name="BottomTabNavigator"
                 component={BottomTabNavigator}
                 options={{
                   title: 'Home',
                 }}
               />
-              <Stack.Screen name="HomeStackNavigator" component={HomeStackNavigator} />
-              <Stack.Screen name="SettingStackNavigator" component={SettingStackNavigator} />
+              <RootStack.Screen name="HomeStackNavigator" component={HomeStackNavigator} />
+              <RootStack.Screen name="SettingStackNavigator" component={SettingStackNavigator} />
             </>
           ) : (
             //로그인이 안 되어있을 때 보여줄 페이지 : 소셜 로그인 페이지 (Login), 회원가입 페이지 (InfoScreen)
             <>
-              <Stack.Screen name="Login" component={Login} />
-              <Stack.Screen name="SignUpStackNavigator" component={SignUpStackNavigator} />
+              <RootStack.Screen name="Login" component={Login} />
+              <RootStack.Screen name="SignUpStackNavigator" component={SignUpStackNavigator} />
             </>
           )}
-        </Stack.Navigator>
+        </RootStack.Navigator>
       </NavigationContainer>
     </PaperProvider>
   );

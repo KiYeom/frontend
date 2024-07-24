@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
 
 import { Button, View, Text, TouchableOpacity, Image } from 'react-native';
 import { useEffect, useState } from 'react';
@@ -10,15 +10,11 @@ import {
   GoogleSigninButton,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
-import LoginButton from '../../components/LoginButton';
+import GoogleLoginButton from '../../components/GoogleLoginButton';
 import { StyleSheet } from 'react-native';
-import { GOOGLE_KEY } from '../../utils/storageUtils';
 import AppleLoginButton from '../../components/AppleLoginButton';
-interface UserInfo {
-  email: string;
-  setEmail: React.Dispatch<React.SetStateAction<string>>;
-}
 
+//로그인 페이지
 const Login: React.FC<any> = ({ navigation }) => {
   return (
     <View style={styles.container}>
@@ -30,8 +26,8 @@ const Login: React.FC<any> = ({ navigation }) => {
         />
       </View>
       <View style={styles.btnContainer}>
-        <LoginButton navigation={navigation} />
-        <AppleLoginButton navigation={navigation} />
+        <GoogleLoginButton navigation={navigation} />
+        {Platform.OS === 'ios' ? <AppleLoginButton navigation={navigation} /> : null}
       </View>
     </View>
   );

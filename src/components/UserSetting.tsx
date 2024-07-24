@@ -93,7 +93,7 @@ const UserSetting: React.FC<any> = ({ navigation, showModal }) => {
       </TouchableOpacity>
       <TouchableOpacity onPress={handleOpenSource}>
         <View style={styles.titleContainer}>
-          <Text style={styles.text}>앱 버전 정보</Text>
+          <Text style={styles.text}>앱 정보</Text>
           <Text>{APP_VERSION}</Text>
         </View>
       </TouchableOpacity>
