@@ -2,13 +2,13 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, Linking, Button } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
-import StartButton from '../components/StartButton';
+import StartButton from '../../components/StartButton';
 import Chat from './Chat';
-import Setting from './SettingPage/Setting';
+import Setting from '../SettingPage/Setting';
 import { useEffect } from 'react';
-import useNoticeState from '../store/notice';
+import useNoticeState from '../../store/notice';
 import { PaperProvider, Portal, Modal } from 'react-native-paper';
-import requestPermission from '../components/NotificationToken';
+import requestPermission from '../../utils/NotificationToken';
 import { useNavigation } from '@react-navigation/native';
 
 interface Option {
@@ -32,13 +32,11 @@ const Home: React.FC<any> = ({ navigation }) => {
       <View style={styles.header}>
         <Text style={styles.txt1}>🐾오늘 몸 상태는 어때?૮ ・ﻌ・ა</Text>
         <StartButton navigation={navigation} />
-        {
-          <Image
-            source={require('../../assets/cookieSplash.png')}
-            style={styles.image}
-            resizeMode="contain"
-          />
-        }
+        <Image
+          source={require('../../../assets/cookieSplash.png')}
+          style={styles.image}
+          resizeMode="contain"
+        />
       </View>
       <View style={styles.footer}>
         <Text style={styles.txt1}>오늘의 감정 기록</Text>

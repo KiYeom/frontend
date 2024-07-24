@@ -1,17 +1,17 @@
-import React from "react";
-import { Text, View, Image } from "react-native";
-import { StyleSheet } from "react-native";
+import React from 'react';
+import { Text, View, Image } from 'react-native';
+import { StyleSheet } from 'react-native';
 //import Icon from "react-native-vector-icons/MaterialIcons";
-import { useEffect, useState } from "react";
-import { USER } from "../constants/Constants";
-import { Button } from "react-native-paper";
+import { useEffect, useState } from 'react';
+import { USER } from '../constants/Constants';
+import { Button } from 'react-native-paper';
 import { IconButton, MD3Colors } from 'react-native-paper';
 import { Modal, Portal, PaperProvider } from 'react-native-paper';
-import useNicknameState from "../store/nicknameState";
+import useNicknameState from '../store/nicknameState';
 
-const UserInfo: React.FC<any> = ({showModal}) => {
-  const {nickname, setNickname} = useNicknameState();
-  const containerStyle = {backgroundColor: 'white', padding: 50};
+const UserInfo: React.FC<any> = ({ showModal, navigation }) => {
+  const { nickname, setNickname } = useNicknameState();
+  const containerStyle = { backgroundColor: 'white', padding: 50 };
   return (
     <View style={styles.container}>
       <Text>닉네임</Text>
@@ -21,7 +21,7 @@ const UserInfo: React.FC<any> = ({showModal}) => {
           icon="pencil"
           iconColor="black"
           size={20}
-          onPress={showModal}
+          //onPress={()=>navigation.navigate("Setting")}
         />
       </View>
     </View>
@@ -31,29 +31,29 @@ const UserInfo: React.FC<any> = ({showModal}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 0.3,
-    width : "100%",
+    width: '100%',
     //backgroundColor: "#F8FCEC",
-    alignItems: "flex-start",
-    justifyContent: "center",
-    padding : 16,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    padding: 16,
   },
   imgContainer: {
     flex: 1,
     //backgroundColor: "yellow",
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   userInfoContainer: {
     flex: 1,
     //backgroundColor: "blue",
-    width : "100%",
-    flexDirection : "row",
-    height: "100%",
-    justifyContent: "flex-start",
-    alignItems:"center",
+    width: '100%',
+    flexDirection: 'row',
+    height: '100%',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   userInfoText: {
-    color: "black",
+    color: 'black',
     fontSize: 20,
   },
   image: {
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 24,
-    color: "#333",
+    color: '#333',
   },
 });
 

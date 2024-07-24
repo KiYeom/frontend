@@ -8,7 +8,7 @@ import {
 } from '@react-native-google-signin/google-signin';
 import * as Device from 'expo-device';
 import axios from 'axios';
-import { storage } from '../../utils/storageUtils';
+import { storage } from '../utils/storageUtils';
 import {
   ACCESSTOKEN,
   APP_VERSION,

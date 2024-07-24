@@ -10,10 +10,10 @@ import {
   GoogleSigninButton,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
-import LoginButton from '../components/LoginButton';
+import LoginButton from '../../components/LoginButton';
 import { StyleSheet } from 'react-native';
 import { GOOGLE_KEY } from '../../utils/storageUtils';
-import AppleLoginButton from '../components/AppleLoginButton';
+import AppleLoginButton from '../../components/AppleLoginButton';
 interface UserInfo {
   email: string;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
@@ -24,7 +24,7 @@ const Login: React.FC<any> = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <Image
-          source={require('../../assets/cookieSplash.png')}
+          source={require('../../../assets/cookieSplash.png')}
           style={styles.image}
           resizeMode="contain"
         />

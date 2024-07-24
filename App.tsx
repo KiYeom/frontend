@@ -1,9 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import Login from './src/screen/Login'; // 슬래시 확인
-import Chat from './src/screen/Chat';
-import Home from './src/screen/Home';
+import Login from './src/screen/SignInPage/Login'; // 슬래시 확인
+import Chat from './src/screen/HomePage/Chat';
+import Home from './src/screen/HomePage/Home';
 import BottomTabNavigator from './src/navigations/BottomTabNavigator';
 import InfoName from './src/screen/SignUpPage/InfoName';
 import InfoAge from './src/screen/SignUpPage/InfoAge';
@@ -14,9 +14,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useFonts } from 'expo-font';
 import * as Device from 'expo-device';
-import { GOOGLE_KEY } from './utils/storageUtils';
+import { GOOGLE_KEY } from './src/utils/storageUtils';
 import axios from 'axios';
-import { storage } from './utils/storageUtils';
+import { storage } from './src/utils/storageUtils';
 import { USER, ACCESSTOKEN, REFRESHTOKEN, CHATLOG } from './src/constants/Constants';
 import useIsSignInState from './src/store/signInStatus';
 import useNoticeState from './src/store/notice';

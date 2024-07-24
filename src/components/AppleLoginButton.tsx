@@ -3,7 +3,7 @@ import * as AppleAuthentication from 'expo-apple-authentication';
 import { View, Text, StyleSheet } from 'react-native';
 import { USER, ACCESSTOKEN, REFRESHTOKEN, APP_VERSION } from '../constants/Constants';
 import axios from 'axios';
-import { storage } from '../../utils/storageUtils';
+import { storage } from '../utils/storageUtils';
 import useIsSignInState from '../store/signInStatus';
 import * as Device from 'expo-device';
 import { PaperProvider } from 'react-native-paper';

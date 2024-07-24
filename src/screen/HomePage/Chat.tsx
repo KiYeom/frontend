@@ -11,20 +11,20 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import { Button, TextInput, IconButton } from 'react-native-paper';
-import ChatBubble from '../components/ChatBubble';
+import ChatBubble from '../../components/ChatBubble';
 import { Image } from 'react-native';
 import axios from 'axios';
-import { USER } from '../constants/Constants';
+import { USER } from '../../constants/Constants';
 import { storage } from '../../utils/storageUtils';
-import axiosInstance from '../model/Chatting';
-import { CHATLOG } from '../constants/Constants';
+import axiosInstance from '../../utils/Api';
+import { CHATLOG } from '../../constants/Constants';
 import { useFocusEffect } from '@react-navigation/native';
-import { ERRORMESSAGE } from '../constants/Constants';
+import { ERRORMESSAGE } from '../../constants/Constants';
 import { InputAccessoryView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view';
-import useChatBtnState from '../store/chatBtnState';
+import useChatBtnState from '../../store/chatBtnState';
 
 interface Message {
   sender: string;
