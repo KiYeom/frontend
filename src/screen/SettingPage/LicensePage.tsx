@@ -1,11 +1,11 @@
-import { SafeAreaView } from "react-native-safe-area-context";
-import { FlatList } from "react-native";
-import { StyleSheet } from "react-native";
-import { View, Text, TouchableOpacity } from "react-native";
-import { Icon } from "react-native-paper";
-import React from "react";
-import { useState, useEffect } from "react";
-import OpenSourceLicense from "../constants/OpenSourceLicense.json"
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { FlatList } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { Icon } from 'react-native-paper';
+import React from 'react';
+import { useState, useEffect } from 'react';
+import OpenSourceLicense from '../../constants/OpenSourceLicense.json';
 
 type Author = {
   name: string;
@@ -38,7 +38,7 @@ type License = {
   _licenseContent?: string;
 };
 
-const LicensePage: React.FC<any> = ({navigation}) => {
+const LicensePage: React.FC<any> = ({ navigation }) => {
   const [data, setData] = useState<License[]>([]);
   const [selectedLicense, setSelectedLicense] = useState<string | null>(null);
 
@@ -46,19 +46,14 @@ const LicensePage: React.FC<any> = ({navigation}) => {
     <View style={styles.renderItems}>
       <TouchableOpacity
         onPress={() => {
-          setSelectedLicense(item.libraryName)
-          navigation.navigate('LicenseDetailPage', {item});
+          setSelectedLicense(item.libraryName);
+          navigation.navigate('LicenseDetailPage', { item });
           //console.log("hihihi",item.libraryName);
           //console.log("byebyebye", item);
         }}
-        style={styles.touchable}
-      >
+        style={styles.touchable}>
         <Text>{item.libraryName}</Text>
-        <Icon
-          source="chevron-right"
-          size={32}
-          color="#3B506B"
-        />
+        <Icon source="chevron-right" size={32} color="#3B506B" />
       </TouchableOpacity>
     </View>
   );
@@ -71,7 +66,7 @@ const LicensePage: React.FC<any> = ({navigation}) => {
     <FlatList
       data={data}
       renderItem={renderItem}
-      keyExtractor={(item) => item.libraryName}
+      keyExtractor={item => item.libraryName}
       contentContainerStyle={styles.flatlist}
     />
   );
@@ -91,14 +86,14 @@ const styles = StyleSheet.create({
   renderItems: {
     //backgroundColor: "blue",
     margin: 3,
-    textAlign: "center",
-    justifyContent: "center",
+    textAlign: 'center',
+    justifyContent: 'center',
   },
   touchable: {
     //backgroundColor: "yellow",
     padding: 10,
-    alignItems : "center",
-    justifyContent: "space-between",
-    flexDirection : "row",
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
   },
 });

@@ -4,11 +4,12 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import StartButton from '../components/StartButton';
 import Chat from './Chat';
-import Setting from './Setting';
+import Setting from './SettingPage/Setting';
 import { useEffect } from 'react';
 import useNoticeState from '../store/notice';
 import { PaperProvider, Portal, Modal } from 'react-native-paper';
 import requestPermission from '../components/NotificationToken';
+import { useNavigation } from '@react-navigation/native';
 
 interface Option {
   link: string;
@@ -16,13 +17,12 @@ interface Option {
 }
 
 const Home: React.FC<any> = ({ navigation }) => {
-  const { notice, setNotice } = useNoticeState();
-  console.log('---------home notice---------', notice);
-  const [visible, setVisible] = React.useState(false);
-  const title = notice ? notice.title : null;
-  const content = notice ? notice.content : null;
-  const btns = notice ? notice.options : null;
-
+  //const { notice, setNotice } = useNoticeState();
+  //console.log('---------home notice---------', notice);
+  //const [visible, setVisible] = React.useState(false);
+  //const title = notice ? notice.title : null;
+  //const content = notice ? notice.content : null;
+  //const btns = notice ? notice.options : null;
   useEffect(() => {
     requestPermission();
   }, []);

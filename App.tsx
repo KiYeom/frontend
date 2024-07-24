@@ -4,11 +4,10 @@ import React, { useState, useEffect } from 'react';
 import Login from './src/screen/Login'; // 슬래시 확인
 import Chat from './src/screen/Chat';
 import Home from './src/screen/Home';
-import InfoScreen from './src/screen/InfoScreen';
-import Tabbar from './src/screen/Tabbar';
-import InfoName from './src/screen/InfoName';
-import InfoAge from './src/screen/InfoAge';
-import InfoGender from './src/screen/InfoGender';
+import Tabbar from './src/navigations/BottomTabNavigator';
+import InfoName from './src/screen/SignUpPage/InfoName';
+import InfoAge from './src/screen/SignUpPage/InfoAge';
+import InfoGender from './src/screen/SignUpPage/InfoGender';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -21,13 +20,14 @@ import { storage } from './utils/storageUtils';
 import { USER, ACCESSTOKEN, REFRESHTOKEN, CHATLOG } from './src/constants/Constants';
 import useIsSignInState from './src/store/signInStatus';
 import useNoticeState from './src/store/notice';
-import LicenseDetailPage from './src/screen/LicenseDetailPage';
-import LicensePage from './src/screen/LicensePage';
+import LicenseDetailPage from './src/screen/SettingPage/LicenseDetailPage';
+import LicensePage from './src/screen/SettingPage/LicensePage';
 import { Platform } from 'react-native';
 import * as Application from 'expo-application';
 import { Portal, Modal, PaperProvider } from 'react-native-paper';
 import * as amplitude from '@amplitude/analytics-react-native';
-
+import SettingStackNavigator from './src/navigations/SettingStackNavigator';
+import SignUpStackNavigator from './src/navigations/SignUpStackNavigator';
 amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE);
 amplitude.track('Sign Up');
 
@@ -155,46 +155,13 @@ const App: React.FC = () => {
                   headerShown: true,
                 }}
               />
-              <Stack.Screen
-                name="LicensePage"
-                component={LicensePage}
-                options={{
-                  title: 'License',
-                  headerTitleAlign: 'center',
-                  headerStyle: {
-                    backgroundColor: '#58C3A5',
-                  },
-                  headerTintColor: '#fff',
-                  headerTitleStyle: {
-                    fontFamily: 'Pretendard-Bold',
-                    fontSize: 17,
-                  },
-                  headerShown: true,
-                }}
-              />
-              <Stack.Screen
-                name="LicenseDetailPage"
-                component={LicenseDetailPage}
-                options={{
-                  title: 'Detail',
-                  headerTitleAlign: 'center',
-                  headerStyle: {
-                    backgroundColor: '#58C3A5',
-                  },
-                  headerTintColor: '#fff',
-                  headerTitleStyle: {
-                    fontFamily: 'Pretendard-Bold',
-                    fontSize: 17,
-                  },
-                  headerShown: true,
-                }}
-              />
+              <Stack.Screen name="SettingStackNavigator" component={SettingStackNavigator} />
             </>
           ) : (
             //로그인이 안 되어있을 때 보여줄 페이지 : 소셜 로그인 페이지 (Login), 회원가입 페이지 (InfoScreen)
             <>
               <Stack.Screen name="Login" component={Login} />
-              <Stack.Screen name="InfoScreen" component={InfoScreen} />
+              <Stack.Screen name="SignUpStackNavigator" component={SignUpStackNavigator} />
             </>
           )}
         </Stack.Navigator>

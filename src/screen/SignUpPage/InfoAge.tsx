@@ -1,14 +1,14 @@
-import React from "react";
-import { useState } from "react";
-import { View, Text, Image, StyleSheet, SafeAreaView } from "react-native";
-import { Button, TextInput } from "react-native-paper";
-import { GOOGLE_KEY } from "../../utils/storageUtils";
-import { storage } from "../../utils/storageUtils";
-import { USER } from "../constants/Constants";
-import DatePicker from "react-native-date-picker";
+import React from 'react';
+import { useState } from 'react';
+import { View, Text, Image, StyleSheet, SafeAreaView } from 'react-native';
+import { Button, TextInput } from 'react-native-paper';
+import { GOOGLE_KEY } from '../../../utils/storageUtils';
+import { storage } from '../../../utils/storageUtils';
+import { USER } from '../../constants/Constants';
+import DatePicker from 'react-native-date-picker';
 
 const InfoAge: React.FC<any> = ({ navigation }) => {
-  const [text, setText] = React.useState("");
+  const [text, setText] = React.useState('');
   const [date, setDate] = useState(new Date('2000-01-01'));
   const saveInfoAge = async () => {
     //const event = new Date('text');
@@ -16,14 +16,14 @@ const InfoAge: React.FC<any> = ({ navigation }) => {
     USER.BIRTHDATE = date.toISOString().split('T')[0];
     //console.log("날짜 확인하기 : ", USER.BIRTHDATE);
     //console.log("날짜 타입 확인하기 : ", typeof(USER.BIRTHDATE));
-    navigation.navigate("InfoGender");   
+    navigation.navigate('InfoGender');
   };
 
   return (
     <View style={styles.container}>
       <View>
         <Image
-          source={require("../../assets/cookieSplash.png")}
+          source={require('../../assets/cookieSplash.png')}
           style={styles.image}
           resizeMode="contain"
         />
@@ -41,17 +41,16 @@ const InfoAge: React.FC<any> = ({ navigation }) => {
         maxLength={15}
         style={styles.input}
       />*/}
-      <View style = {styles.datePicker}>
-        <DatePicker date={date} onDateChange={setDate} mode = "date" locale = "ko"/>
-        </View>
+      <View style={styles.datePicker}>
+        <DatePicker date={date} onDateChange={setDate} mode="date" locale="ko" />
+      </View>
       <View>
         <Button
           icon="check"
           mode="contained"
           onPress={saveInfoAge}
           textColor="#000"
-          style={styles.btn}
-        >
+          style={styles.btn}>
           완료!
         </Button>
       </View>
@@ -61,11 +60,11 @@ const InfoAge: React.FC<any> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#fff",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
     padding: 20, // 추가된 패딩으로 컨테이너의 여백 확보
-    width : "100%",
+    width: '100%',
   },
   image: {
     width: 200,
@@ -73,41 +72,40 @@ const styles = StyleSheet.create({
     marginVertical: 20, // 이미지 상하 여백 추가
   },
   btn: {
-    width: "30%",
-    backgroundColor: "#58C3A5",
-    color: "#000",
+    width: '30%',
+    backgroundColor: '#58C3A5',
+    color: '#000',
     marginTop: 20, // 버튼 상단 여백 추가
   },
   input: {
-    width: "100%",
+    width: '100%',
     marginVertical: 20, // 입력 상자 상하 여백 추가
   },
   textArea: {
-    width: "100%",
+    width: '100%',
     padding: 10, // 텍스트 영역의 내부 패딩 추가
     marginBottom: 20, // 텍스트 영역의 하단 여백 추가
   },
   txt: {
     fontSize: 20,
-    textAlign: "center",
-    color: "#000", // 텍스트 색상 설정
+    textAlign: 'center',
+    color: '#000', // 텍스트 색상 설정
     marginBottom: 10, // 텍스트 간의 간격 추가
-    fontFamily: "Pretendard-Medium",
+    fontFamily: 'Pretendard-Medium',
   },
   txt1: {
     fontSize: 20,
     // fontWeight: "bold",
-    textAlign: "center",
-    color: "#000", // 텍스트 색상 설정
+    textAlign: 'center',
+    color: '#000', // 텍스트 색상 설정
     marginBottom: 10, // 텍스트 간의 간격 추가
     // fontFamily: "Pretendard-Medium",
-    fontFamily: "Pretendard-Medium",
+    fontFamily: 'Pretendard-Medium',
   },
-  datePicker : {
-    width : "100%",
-    justifyContent : "center",
-    alignItems : "center",
+  datePicker: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  
 });
 export default InfoAge;
