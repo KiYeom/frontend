@@ -22,7 +22,7 @@ const handleLoginError = (error: any, navigation: any) => {
   console.log('handleLoginError 함수 실행');
   if (error.response.status === 404) {
     //새로운 유저이므로 회원가입 진행
-    navigation.navigate('SignUp');
+    navigation.navigate('SignUpStackNavigator', { screen: 'InfoName' });
   } else {
     //그 외의 에러 발생한 경우
     console.log('로그인 실패');

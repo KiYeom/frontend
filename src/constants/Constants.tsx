@@ -14,7 +14,7 @@ export const ERRORMESSAGE = '멍멍!🐶 쿠키 조금 아픈데 잠시 후에 �
 export interface User {
   EMAIL: string | null;
   NICKNAME: string;
-  BIRTHDATE: string;
+  BIRTHDATE: string | null;
   GENDER: number | null;
   DEVICEID: string | null;
   APPVERSION: string;
@@ -32,7 +32,7 @@ export interface User {
 export const USER: User = {
   EMAIL: 'email',
   NICKNAME: 'nickname',
-  BIRTHDATE: 'birthdate',
+  BIRTHDATE: null,
   GENDER: null,
   DEVICEID: 'deviceId',
   APPVERSION: '1.0.0',

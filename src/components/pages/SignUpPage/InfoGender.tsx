@@ -10,6 +10,7 @@ import { USER, MALE, FEMALE, REFRESHTOKEN, ACCESSTOKEN } from '../../../constant
 import useIsSignInState from '../../../store/signInStatus';
 //console.log(axios.isCancel("something"));
 import { Portal, Modal, PaperProvider } from 'react-native-paper';
+import { googleSignUp, signUpSuccess, signUpFail, appleSignUp } from '../../../utils/SignUpHandle';
 
 const InfoGender: React.FC<any> = ({ navigation }) => {
   const [selectedGender, setSelectedGender] = useState('');
@@ -40,60 +41,31 @@ const InfoGender: React.FC<any> = ({ navigation }) => {
     console.log('======= ', isButtonDisabled);
 
     //회원가입을 성공했을 때 함수
-    const signUpSuccess = (response: any) => {
+    /*const signUpSuccess = (response: any) => {
       console.log('회원가입 성공', response);
       storage.set(ACCESSTOKEN, response.data.data.accessToken);
       storage.set(REFRESHTOKEN, response.data.data.refreshToken);
       console.log('회원가입 refreshtoken : ', response.data.data.refreshToken);
       setIsSignIn(true); //tabbar로 이동
       console.log('======= ', isButtonDisabled);
-    };
+    };*/
 
     //회원가입을 실패했을 때 함수
-    const signUpFail = (error: any) => {
+    /*const signUpFail = (error: any) => {
       //오류 발생 시 실행
       console.log('InfoGender error(data): ', error.response.data);
       console.log('InfoGender error(stats)', error.response.status);
       console.log('InfoGender error(headers)', error.response.headers);
       console.log('======= ', isButtonDisabled);
       showModal();
-    };
+    };*/
 
+    //구글 회원가입
     if (USER.PROVIDERNAME === 'google') {
-      axios
-        .post('https://api.remind4u.co.kr/v1/auth/google-signup', {
-          nickname: USER.NICKNAME,
-          gender: USER.GENDER,
-          accessToken: USER.GOOGLEACCTOKEN,
-          birthdate: USER.BIRTHDATE,
-          deviceId: USER.DEVICEID,
-          appVersion: USER.APPVERSION,
-          deviceOs: USER.DEVICEOS,
-        })
-        .then(function (response) {
-          signUpSuccess(response);
-        })
-        .catch(function (error) {
-          signUpFail(error);
-        });
+      googleSignUp(setIsSignIn);
     } else if (USER.PROVIDERNAME === 'apple') {
-      axios
-        .post('https://api.remind4u.co.kr/v1/auth/apple-signup', {
-          nickname: USER.NICKNAME,
-          gender: USER.GENDER,
-          authCode: USER.AUTHCODE,
-          idToken: USER.IDTOKEN,
-          birthdate: USER.BIRTHDATE,
-          deviceId: USER.DEVICEID,
-          appVersion: USER.APPVERSION,
-          deviceOs: USER.DEVICEOS,
-        })
-        .then(function (response) {
-          signUpSuccess(response);
-        })
-        .catch(function (error) {
-          signUpFail(error);
-        });
+      //애플 회원가입
+      appleSignUp(setIsSignIn);
     }
   };
   return (

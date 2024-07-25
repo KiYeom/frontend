@@ -11,36 +11,17 @@ const InfoAge: React.FC<any> = ({ navigation }) => {
   const [text, setText] = React.useState('');
   const [date, setDate] = useState(new Date('2000-01-01'));
   const saveInfoAge = async () => {
-    //const event = new Date('text');
-    //DATA.birthdate = event.toISOString();
     USER.BIRTHDATE = date.toISOString().split('T')[0];
-    //console.log("날짜 확인하기 : ", USER.BIRTHDATE);
-    //console.log("날짜 타입 확인하기 : ", typeof(USER.BIRTHDATE));
     navigation.navigate('InfoGender');
   };
 
   return (
     <View style={styles.container}>
-      <View>
-        {/*<Image
-          source={require('../../assets/cookieSplash.png')}
-          style={styles.image}
-          resizeMode="contain"
-        />*/}
-      </View>
       <View style={styles.textArea}>
         <Text style={styles.txt}>당신의 생일을 축하해주고 싶어요!</Text>
         <Text style={styles.txt1}>생년월일을 알려주세요!</Text>
         {/* <Text style={styles.txt1}>쿠키는 당신의 이름을 알고 싶어요:)</Text> */}
       </View>
-
-      {/*<TextInput
-        label="0000/00/00"
-        value={text}
-        onChangeText={(text) => setText(text)}
-        maxLength={15}
-        style={styles.input}
-      />*/}
       <View style={styles.datePicker}>
         <DatePicker date={date} onDateChange={setDate} mode="date" locale="ko" />
       </View>

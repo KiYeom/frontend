@@ -30,63 +30,66 @@ const GoogleLoginButton: React.FC<any> = ({ navigation }) => {
   const { isSignIn, setIsSignIn } = useIsSignInState();
   //console.log('구글 로그인 버튼 그려짐');
   return (
-    <View style={styles.container}>
-      <GoogleSigninButton
-        size={GoogleSigninButton.Size.Wide}
-        color={GoogleSigninButton.Color.Light}
-        onPress={async () => {
-          //console.log("구글 버튼 눌림");
-          GoogleSignin.configure({
-            iosClientId: '94079762653-arcgeib4l0hbg6snh81cjimd9iuuoun3.apps.googleusercontent.com',
-          });
+    <GoogleSigninButton
+      size={GoogleSigninButton.Size.Wide}
+      color={GoogleSigninButton.Color.Light}
+      style={styles.button}
+      onPress={async () => {
+        //console.log("구글 버튼 눌림");
+        GoogleSignin.configure({
+          iosClientId: '94079762653-arcgeib4l0hbg6snh81cjimd9iuuoun3.apps.googleusercontent.com',
+        });
 
-          try {
-            //const hasPreviousSignIn = await GoogleSignin.hasPlayServices();
-            const userInfo = await GoogleSignin.signIn();
-            const googleAccessToken = await (await GoogleSignin.getTokens()).accessToken;
-            console.log('구글 로그인', userInfo);
+        try {
+          //const hasPreviousSignIn = await GoogleSignin.hasPlayServices();
+          const userInfo = await GoogleSignin.signIn();
+          const googleAccessToken = await (await GoogleSignin.getTokens()).accessToken;
+          console.log('구글 로그인', userInfo);
 
-            USER.PROVIDERNAME = 'google';
-            USER.EMAIL = userInfo.user.email;
-            USER.GOOGLEACCTOKEN = googleAccessToken;
-            USER.DEVICEOS = '' + Device.osName + Device.osVersion; //기기가 안드로이드인지 ios인지
-            //console.log("로그인 하는 기기의 OS", Device.osName); //기기의 운영체제
-            //USER.DEVICEID = GOOGLE;
-            USER.APPVERSION = APP_VERSION;
+          USER.PROVIDERNAME = 'google';
+          USER.EMAIL = userInfo.user.email;
+          USER.GOOGLEACCTOKEN = googleAccessToken;
+          USER.DEVICEOS = '' + Device.osName + Device.osVersion; //기기가 안드로이드인지 ios인지
+          //console.log("로그인 하는 기기의 OS", Device.osName); //기기의 운영체제
+          //USER.DEVICEID = GOOGLE;
+          USER.APPVERSION = APP_VERSION;
 
-            //console.log("로그인을 위해 전달하려는 데이터", USER);
-            // 로그인에 성공하면 JWT 토큰을 부여받는다.
-            axios
-              .post('https://api.remind4u.co.kr/v1/auth/google-login', {
-                accessToken: USER.GOOGLEACCTOKEN,
-                deviceId: USER.DEVICEID,
-                appVersion: USER.APPVERSION,
-                deviceOs: USER.DEVICEOS,
-              })
-              .then(function (response) {
-                handleLoginResponse(response);
-                setIsSignIn(true);
-              })
-              .catch(function (error) {
-                setIsSignIn(false);
-                handleLoginError(error, navigation);
-              });
-          } catch (error) {
-            setIsSignIn(false);
-            console.log('구글 로그인 한 적이 없는 경우', error);
-          }
-          //navigation.navigate("InfoScreen");
-        }}
-        disabled={false} // Set to true to disable the button
-      />
-    </View>
+          //console.log("로그인을 위해 전달하려는 데이터", USER);
+          // 로그인에 성공하면 JWT 토큰을 부여받는다.
+          axios
+            .post('https://api.remind4u.co.kr/v1/auth/google-login', {
+              accessToken: USER.GOOGLEACCTOKEN,
+              deviceId: USER.DEVICEID,
+              appVersion: USER.APPVERSION,
+              deviceOs: USER.DEVICEOS,
+            })
+            .then(function (response) {
+              handleLoginResponse(response);
+              setIsSignIn(true);
+            })
+            .catch(function (error) {
+              setIsSignIn(false);
+              handleLoginError(error, navigation);
+            });
+        } catch (error) {
+          setIsSignIn(false);
+          console.log('구글 로그인 한 적이 없는 경우', error);
+        }
+        //navigation.navigate("InfoScreen");
+      }}
+      disabled={false} // Set to true to disable the button
+    />
   );
 };
 
 export default GoogleLoginButton;
 
 const styles = StyleSheet.create({
-  container: {
-    margin: 7,
+  button: {
+    width: '100%',
+    padding: 0,
+    margin: 0,
+    marginBottom: 10,
+    //backgroundColor: 'pink',
   },
 });

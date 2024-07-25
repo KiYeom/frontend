@@ -58,27 +58,21 @@ const AppleLoginButton: React.FC<any> = ({ navigation }) => {
     }
   };
   return (
-    <View style={styles.container}>
-      <AppleAuthentication.AppleAuthenticationButton //애플 로그인 버튼 생긴거 설정
-        buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
-        buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
-        cornerRadius={5}
-        style={styles.button}
-        onPress={handleAppleSignIn}
-      />
-    </View>
+    <AppleAuthentication.AppleAuthenticationButton //애플 로그인 버튼 생긴거 설정
+      buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+      buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+      cornerRadius={5}
+      style={styles.button}
+      onPress={handleAppleSignIn}
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   button: {
-    width: 200,
+    width: '100%',
     height: 44,
+    marginBottom: 10,
   },
 });
 export default AppleLoginButton;

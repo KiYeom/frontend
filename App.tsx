@@ -15,8 +15,6 @@ import { storage } from './src/utils/storageUtils';
 import { USER, ACCESSTOKEN, REFRESHTOKEN, CHATLOG } from './src/constants/Constants';
 import useIsSignInState from './src/store/signInStatus';
 import useNoticeState from './src/store/notice';
-import LicenseDetailPage from './src/screen/SettingPage/LicenseDetailPage';
-import LicensePage from './src/screen/SettingPage/LicensePage';
 import { Platform } from 'react-native';
 import * as Application from 'expo-application';
 import { Portal, Modal, PaperProvider } from 'react-native-paper';
@@ -38,6 +36,8 @@ const App: React.FC = () => {
 
   //앱이 처음 실행이 될 때 현재 우리 앱의 유저인지 파악
   useEffect(() => {
+    //storage.delete(ACCESSTOKEN);
+    //storage.delete(REFRESHTOKEN);
     console.log('========== 앱 실행 ==========');
 
     const bootstrapAsync = async () => {

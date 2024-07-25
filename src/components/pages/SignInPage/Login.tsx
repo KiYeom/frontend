@@ -53,7 +53,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     marginTop: 10,
-    color: '#333',
+    width: '100%',
+    //backgroundColor: 'red',
+    paddingLeft: 20,
+    paddingRight: 20,
   },
 });
 

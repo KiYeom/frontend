@@ -30,27 +30,23 @@ const InfoName: React.FC<any> = ({ navigation }) => {
       <SafeAreaView edges={['bottom', 'top']} style={styles.block}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <KeyboardAvoidingView behavior={'padding'} style={styles.container}>
-            <View style={styles.imgArea}>
-              <Image
-                source={require('../../../assets/images/cookieSplash.png')}
-                style={styles.image}
-                resizeMode="contain"
-              />
-            </View>
+            <Image
+              source={require('../../../assets/images/cookieSplash.png')}
+              style={{ width: 200, height: 200 }}
+            />
             <View style={styles.textArea}>
               <Text style={styles.txt}>만나서 반가워요, 멍!🐶</Text>
-              <Text style={styles.txt}>쿠키에게 당신의 이름을 알려주세요 :)</Text>
+              <Text style={styles.txt}>쿠키가 당신을 부를 별명을 알려주세요</Text>
             </View>
 
             <View style={styles.formArea}>
               <TextInput
-                label="이름 (15자 이내)"
+                label="별명 (15자 이내)"
                 value={text}
                 onChangeText={text => handleText(text)}
                 maxLength={15}
                 style={styles.input}
               />
-
               <Button
                 icon="check"
                 mode="contained"
@@ -58,7 +54,7 @@ const InfoName: React.FC<any> = ({ navigation }) => {
                 textColor="#000"
                 disabled={isButtonDisabled}
                 style={styles.btn}>
-                완료!
+                저장
               </Button>
             </View>
           </KeyboardAvoidingView>
