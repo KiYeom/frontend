@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   },
   flatList: {
     flexGrow: 1,
-    backgroundColor: 'yellow',
+    //backgroundColor: 'yellow',
     //padding : 16,
     //backgroundColor: 'yellow',
     //height : 200,
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: 'red',
+    //backgroundColor: 'red',
     marginTop: 16,
     //flexGrow: 1,
     //height: 80,
@@ -261,20 +261,20 @@ const styles = StyleSheet.create({
   botMessageContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    maxWidth: '60%',
     backgroundColor: 'pink',
   },
   userMessageContainer: {
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'flex-end',
+    //maxWidth: '60%',
   },
   bubble: {
     padding: 10,
     //marginVertical: 10,
     marginTop: 10,
     borderRadius: 10,
-    maxWidth: '70%',
+    maxWidth: '50%',
   },
   userBubble: {
     backgroundColor: '#58C3A5',
