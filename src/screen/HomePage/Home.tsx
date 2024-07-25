@@ -10,19 +10,9 @@ import useNoticeState from '../../store/notice';
 import { PaperProvider, Portal, Modal } from 'react-native-paper';
 import requestPermission from '../../utils/NotificationToken';
 import { useNavigation } from '@react-navigation/native';
-
-interface Option {
-  link: string;
-  text: string;
-}
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Home: React.FC<any> = ({ navigation }) => {
-  //const { notice, setNotice } = useNoticeState();
-  //console.log('---------home notice---------', notice);
-  //const [visible, setVisible] = React.useState(false);
-  //const title = notice ? notice.title : null;
-  //const content = notice ? notice.content : null;
-  //const btns = notice ? notice.options : null;
   useEffect(() => {
     requestPermission();
   }, []);
@@ -33,7 +23,7 @@ const Home: React.FC<any> = ({ navigation }) => {
         <Text style={styles.txt1}>🐾오늘 몸 상태는 어때?૮ ・ﻌ・ა</Text>
         <StartButton navigation={navigation} />
         <Image
-          source={require('../../../assets/cookieSplash.png')}
+          source={require('../../assets/images/cookieSplash.png')}
           style={styles.image}
           resizeMode="contain"
         />

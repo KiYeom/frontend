@@ -128,31 +128,33 @@ const App: React.FC = () => {
   }
 
   return (
-    <PaperProvider>
-      <NavigationContainer>
-        <RootStack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Main">
-          {isSignIn ? ( //로그인이 되어있을 경우 보여줄 페이지 : 홈 화면(Tabbar), 채팅화면 (Chat), 설정화면들
-            <>
-              <RootStack.Screen
-                name="BottomTabNavigator"
-                component={BottomTabNavigator}
-                options={{
-                  title: 'Home',
-                }}
-              />
-              <RootStack.Screen name="HomeStackNavigator" component={HomeStackNavigator} />
-              <RootStack.Screen name="SettingStackNavigator" component={SettingStackNavigator} />
-            </>
-          ) : (
-            //로그인이 안 되어있을 때 보여줄 페이지 : 소셜 로그인 페이지 (Login), 회원가입 페이지 (InfoScreen)
-            <>
-              <RootStack.Screen name="Login" component={Login} />
-              <RootStack.Screen name="SignUpStackNavigator" component={SignUpStackNavigator} />
-            </>
-          )}
-        </RootStack.Navigator>
-      </NavigationContainer>
-    </PaperProvider>
+    <SafeAreaProvider>
+      <PaperProvider>
+        <NavigationContainer>
+          <RootStack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Main">
+            {isSignIn ? ( //로그인이 되어있을 경우 보여줄 페이지 : 홈 화면(Tabbar), 채팅화면 (Chat), 설정화면들
+              <>
+                <RootStack.Screen
+                  name="BottomTabNavigator"
+                  component={BottomTabNavigator}
+                  options={{
+                    title: 'Home',
+                  }}
+                />
+                <RootStack.Screen name="HomeStackNavigator" component={HomeStackNavigator} />
+                <RootStack.Screen name="SettingStackNavigator" component={SettingStackNavigator} />
+              </>
+            ) : (
+              //로그인이 안 되어있을 때 보여줄 페이지 : 소셜 로그인 페이지 (Login), 회원가입 페이지 (InfoScreen)
+              <>
+                <RootStack.Screen name="Login" component={Login} />
+                <RootStack.Screen name="SignUpStackNavigator" component={SignUpStackNavigator} />
+              </>
+            )}
+          </RootStack.Navigator>
+        </NavigationContainer>
+      </PaperProvider>
+    </SafeAreaProvider>
   );
 };
 

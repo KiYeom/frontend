@@ -21,10 +21,13 @@ import { CHATLOG } from '../../constants/Constants';
 import { useFocusEffect } from '@react-navigation/native';
 import { ERRORMESSAGE } from '../../constants/Constants';
 import { InputAccessoryView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view';
 import useChatBtnState from '../../store/chatBtnState';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useHeaderHeight } from '@react-navigation/elements';
 
 interface Message {
   sender: string;
@@ -138,10 +141,10 @@ const Chat: React.FC = () => {
 
   const renderItem = ({ item }: any) => (
     <View style={{ padding: 16 }}>
-      {item.sender != 'user' ? (
+      {item.sender !== 'user' ? ( //쿠키
         <View style={styles.botMessageContainer}>
           <View style={{ flexDirection: 'row' }}>
-            {/*<Image source={require('../../assets/cookieSplash.png')} style={styles.img} />*/}
+            <Image source={require('../../assets/images/cookieSplash.png')} style={styles.img} />
             <View style={{ width: '100%' }}>
               <Text style={styles.ai}>쿠키</Text>
               <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
@@ -154,6 +157,7 @@ const Chat: React.FC = () => {
           </View>
         </View>
       ) : (
+        //유저
         <View style={styles.userMessageContainer}>
           <Text style={{ fontSize: 13 }}>{item.date}</Text>
           <View style={[styles.bubble, styles.userBubble]}>
@@ -163,48 +167,28 @@ const Chat: React.FC = () => {
       )}
     </View>
   );
+  const statusBarHeight = getStatusBarHeight();
+  const headerHeight = useHeaderHeight();
 
+  const insets = useSafeAreaInsets();
+  console.log('----------------insets----------', insets);
+  console.log('----------------headerHeight----------', headerHeight);
+  console.log('-------statusbarheight-----', statusBarHeight);
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={'padding'}>
-      <FlatList
-        ref={flatListRef}
-        inverted
-        data={data}
-        renderItem={renderItem}
-        style={styles.flatList} //flatlist 컴포넌트 자체에 스타일을 적용 -> flatlist의 크기, 배경색, 테두리 등의 스타일 지정
-        contentContainerStyle={styles.contentContainerStyle}
-        //flatlist의 "콘텐츠 컨테이너"에 스타일을 적용 -> 스크롤뷰 콘텐츠에 패딩을 추가하거나 정렬 설정, 아이템 감싸는 뷰에 스타일 적용할 때
-      />
-
-      {Platform.OS === 'ios' ? (
-        <InputAccessoryView>
-          <View style={styles.form}>
-            <TextInput
-              label="send message to cookie🐶"
-              value={text}
-              onChangeText={text => changeText(text)}
-              mode="outlined"
-              outlineColor="#3B506B"
-              activeOutlineColor="#3B506B"
-              style={styles.textInput}
-              outlineStyle={{ borderRadius: 20 }}
-              //onFocus = {scrollToTop}
-              multiline={true}
-            />
-            <IconButton
-              icon="arrow-up"
-              iconColor="white"
-              containerColor="#FF6B6B"
-              size={25}
-              onPress={() => {
-                userSend();
-                scrollToTop();
-              }}
-              disabled={btnDisable}
-            />
-          </View>
-        </InputAccessoryView>
-      ) : (
+    <SafeAreaView style={{ flex: 1 }} edges={['bottom']}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={headerHeight}>
+        <FlatList
+          ref={flatListRef}
+          inverted
+          data={data}
+          renderItem={renderItem}
+          style={styles.flatList} //flatlist 컴포넌트 자체에 스타일을 적용 -> flatlist의 크기, 배경색, 테두리 등의 스타일 지정
+          contentContainerStyle={styles.contentContainerStyle}
+          //flatlist의 "콘텐츠 컨테이너"에 스타일을 적용 -> 스크롤뷰 콘텐츠에 패딩을 추가하거나 정렬 설정, 아이템 감싸는 뷰에 스타일 적용할 때
+        />
         <View style={styles.form}>
           <TextInput
             label="send message to cookie🐶"
@@ -230,8 +214,8 @@ const Chat: React.FC = () => {
             disabled={btnDisable}
           />
         </View>
-      )}
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
@@ -243,15 +227,15 @@ const styles = StyleSheet.create({
   },
   flatList: {
     flexGrow: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: 'yellow',
     //padding : 16,
-    //backgroundColor : "yellow",
+    //backgroundColor: 'yellow',
     //height : 200,
   },
   contentContainerStyle: {
     //backgroundColor : "white",
     flexGrow: 1,
-    //minHeight : "100%",
+    minHeight: '100%',
     justifyContent: 'flex-end',
   },
   form: {
@@ -260,10 +244,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#ffffff',
+    backgroundColor: 'red',
     marginTop: 16,
     //flexGrow: 1,
-    //height : 100,
     //height: 80,
   },
   textInput: {
@@ -282,8 +265,8 @@ const styles = StyleSheet.create({
   botMessageContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    maxWidth: '80%',
-    //backgroundColor : "pink",
+    maxWidth: '60%',
+    backgroundColor: 'pink',
   },
   userMessageContainer: {
     flexDirection: 'row',
@@ -317,7 +300,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    margin: 5,
+    marginRight: 5,
     //borderColor : "gray",
     //borderWidth : 1,
   },

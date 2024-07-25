@@ -1,7 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Icon } from 'react-native-paper';
 import React from 'react';
+import { Image } from 'react-native';
 import Chat from '../screen/HomePage/Chat';
 import Home from '../screen/HomePage/Home';
 import Setting from '../screen/SettingPage/Setting';
@@ -10,6 +12,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import palette from '../assets/styles/theme';
 
 const Tab = createBottomTabNavigator();
 const color = '#58C3A5';
@@ -46,7 +49,7 @@ const BottomTabNavigator: React.FC<any> = ({ isSignIn, setIsSignIn }) => {
             fontFamily: 'Pretendard-Bold', // 사용할 폰트 패밀리
             fontSize: 17, // 폰트 크기
           },
-          tabBarLabel: 'Home',
+          tabBarLabel: '홈', //탭 바 아래에 보일 이름
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="home" color={color} size={size} />
           ),

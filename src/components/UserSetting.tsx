@@ -18,6 +18,7 @@ import requestPermission from '../utils/NotificationToken';
 import OpenSourceLicense from '../constants/OpenSourceLicense.json';
 import { FlatList } from 'react-native';
 import LicensePage from '../screen/SettingPage/LicensePage';
+import palette from '../assets/styles/theme';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -128,6 +129,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 17,
     //padding : 16,
+    //color: palette.primary[500], 테스트
   },
 });
 

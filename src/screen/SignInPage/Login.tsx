@@ -20,7 +20,7 @@ const Login: React.FC<any> = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <Image
-          source={require('../../../assets/cookieSplash.png')}
+          source={require('../../assets/images/cookieSplash.png')}
           style={styles.image}
           resizeMode="contain"
         />
