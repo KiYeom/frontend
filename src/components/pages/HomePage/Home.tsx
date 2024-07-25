@@ -20,15 +20,15 @@ const Home: React.FC<any> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.txt1}>🐾오늘 몸 상태는 어때?૮ ・ﻌ・ა</Text>
-        <StartButton navigation={navigation} />
+        <Text style={styles.txt1}>🐾오늘도 와줘서 고마워멍!૮ ・ﻌ・ა</Text>
         <Image
           source={require('../../../assets/images/cookieSplash.png')}
           style={styles.image}
           resizeMode="contain"
         />
+        <StartButton navigation={navigation} />
       </View>
-      <View style={styles.footer}>
+      {/*<View style={styles.footer}>
         <Text style={styles.txt1}>오늘의 감정 기록</Text>
         <View style={styles.footerContainer}>
           <Text>감정기록박스</Text>
@@ -37,7 +37,7 @@ const Home: React.FC<any> = ({ navigation }) => {
             onPress={() => navigation.navigate('HomeStackNavigator', { screen: 'MoodChart' })}
           />
         </View>
-      </View>
+      </View>*/}
     </View>
   );
 };
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
     marginTop: 50, // 상단에 약간의 여백 추가
-    backgroundColor: 'yellow',
+    //backgroundColor: 'yellow',
     height: '50%',
     width: '100%',
   },
