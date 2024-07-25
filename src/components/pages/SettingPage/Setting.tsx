@@ -210,9 +210,9 @@ const Setting: React.FC<any> = ({ navigation }) => {
 
       <View style={styles.container}>
         <View style={styles.userInfo}>
-          <UserInfomation />
+          <UserInfomation navigation={navigation} />
         </View>
-        <SettingMenus navigation={navigation} showModal={showModal} />
+        <SettingMenus navigation={navigation} logoutRequest={logoutRequest} />
       </View>
     </PaperProvider>
   );

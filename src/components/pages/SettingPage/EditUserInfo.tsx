@@ -1,7 +1,12 @@
 import React from 'react';
-import { Text } from 'react-native';
-
+import { Text, View } from 'react-native';
+import NameInput from '../../molecules/NameInput';
+//설정 - 프로필 수정 화면
 const EditUserInfo: React.FC = () => {
-  return <Text>닉네임 수정 페이지</Text>;
+  return (
+    <View style={{ flex: 1 }}>
+      <NameInput />
+    </View>
+  );
 };
 export default EditUserInfo;

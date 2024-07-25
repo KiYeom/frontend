@@ -21,6 +21,7 @@ import palette from '../../assets/styles/theme';
 import { MenuItemProps } from '../../constants/Constants';
 import { ListRenderItemInfo } from 'react-native';
 import MenuItem from '../molecules/MenuItem';
+import { Alert } from 'react-native';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -30,7 +31,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
-const SettingMenus: React.FC<any> = ({ navigation, showModal }) => {
+const SettingMenus: React.FC<any> = ({ navigation, logoutRequest }) => {
   let token;
   //개인정보 처리방침 클릭 시, 처리방침 페이지로 이동
   const handlePrivacyPolicyPress = () => {
@@ -78,8 +79,25 @@ const SettingMenus: React.FC<any> = ({ navigation, showModal }) => {
   ];
 
   const MenuUserItems: MenuItemProps[] = [
-    { title: '로그아웃', onPress: () => showModal('logout') },
-    { title: '회원탈퇴', onPress: () => showModal('deactivate') },
+    {
+      title: '로그아웃',
+      onPress: () =>
+        Alert.alert(
+          '로그아웃 하시겠습니까?', // 첫번째 text: 타이틀 큰 제목
+          '로그인 화면으로 이동합니다', // 두번째 text: 작은 제목
+          [
+            // 버튼 배열
+            {
+              text: '아니오', // 버튼 제목
+              onPress: () => console.log('아니오 버튼 누름'),
+              style: 'cancel',
+            },
+            { text: '네', onPress: () => logoutRequest() },
+          ],
+          { cancelable: false } //alert 밖에 눌렀을 때 alert 안 없어지도록
+        ),
+    },
+    { title: '회원탈퇴', onPress: () => console.log('회원탈퇴 해야 함') },
   ];
 
   return (
