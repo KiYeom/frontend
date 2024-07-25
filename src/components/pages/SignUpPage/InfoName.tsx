@@ -4,14 +4,11 @@ import { TextInput, Button } from 'react-native-paper';
 import { useFonts } from 'expo-font';
 import { useState, useEffect } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
-import { useCallback } from 'react';
-import { GOOGLE_KEY } from '../../utils/storageUtils';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { storage } from '../../utils/storageUtils';
-import { USER } from '../../constants/Constants';
-import useNicknameState from '../../store/nicknameState';
-
+import { storage } from '../../../utils/storageUtils';
+import { USER } from '../../../constants/Constants';
+import useNicknameState from '../../../store/nicknameState';
 const InfoName: React.FC<any> = ({ navigation }) => {
   const [text, setText] = React.useState('');
   const { nickname, setNickname } = useNicknameState();
@@ -35,7 +32,7 @@ const InfoName: React.FC<any> = ({ navigation }) => {
           <KeyboardAvoidingView behavior={'padding'} style={styles.container}>
             <View style={styles.imgArea}>
               <Image
-                source={require('../../assets/images/cookieSplash.png')}
+                source={require('../../../assets/images/cookieSplash.png')}
                 style={styles.image}
                 resizeMode="contain"
               />

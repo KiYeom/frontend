@@ -2,13 +2,13 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, Linking, Button } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
-import StartButton from '../../components/StartButton';
+import StartButton from '../../atoms/StartButton';
 import Chat from './Chat';
 import Setting from '../SettingPage/Setting';
 import { useEffect } from 'react';
-import useNoticeState from '../../store/notice';
+import useNoticeState from '../../../store/notice';
 import { PaperProvider, Portal, Modal } from 'react-native-paper';
-import requestPermission from '../../utils/NotificationToken';
+import requestPermission from '../../../utils/NotificationToken';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -23,7 +23,7 @@ const Home: React.FC<any> = ({ navigation }) => {
         <Text style={styles.txt1}>🐾오늘 몸 상태는 어때?૮ ・ﻌ・ა</Text>
         <StartButton navigation={navigation} />
         <Image
-          source={require('../../assets/images/cookieSplash.png')}
+          source={require('../../../assets/images/cookieSplash.png')}
           style={styles.image}
           resizeMode="contain"
         />

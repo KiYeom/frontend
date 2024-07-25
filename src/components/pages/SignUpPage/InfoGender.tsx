@@ -1,15 +1,13 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { Button } from 'react-native-paper';
-import GenderButton from '../../components/GenderButton';
-import Tabbar from '../../navigators/BottomTabNavigator';
-import { GOOGLE_KEY } from '../../utils/storageUtils';
+import GenderButton from '../../atoms/GenderButton';
 import { useState } from 'react';
 import axios from 'axios';
 import { useEffect } from 'react';
-import { storage } from '../../utils/storageUtils';
-import { USER, MALE, FEMALE, REFRESHTOKEN, ACCESSTOKEN } from '../../constants/Constants';
-import useIsSignInState from '../../store/signInStatus';
+import { storage } from '../../../utils/storageUtils';
+import { USER, MALE, FEMALE, REFRESHTOKEN, ACCESSTOKEN } from '../../../constants/Constants';
+import useIsSignInState from '../../../store/signInStatus';
 //console.log(axios.isCancel("something"));
 import { Portal, Modal, PaperProvider } from 'react-native-paper';
 

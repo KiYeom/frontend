@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import Chat from '../screen/HomePage/Chat';
-import MoodChart from '../screen/HomePage/MoodChart';
+import Chat from '../components/pages/HomePage/Chat';
+import MoodChart from '../components/pages/HomePage/MoodChart';
 
 const HomeStackNavigator: React.FC = () => {
   const Stack = createNativeStackNavigator();

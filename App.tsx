@@ -1,13 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import Login from './src/screen/SignInPage/Login'; // 슬래시 확인
-import Chat from './src/screen/HomePage/Chat';
-import Home from './src/screen/HomePage/Home';
+import Login from './src/components/pages/SignInPage/Login';
 import BottomTabNavigator from './src/navigators/BottomTabNavigator';
-import InfoName from './src/screen/SignUpPage/InfoName';
-import InfoAge from './src/screen/SignUpPage/InfoAge';
-import InfoGender from './src/screen/SignUpPage/InfoGender';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';

@@ -11,47 +11,25 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import { Button, TextInput, IconButton } from 'react-native-paper';
-import ChatBubble from '../../components/ChatBubble';
+import ChatBubble from '../../atoms/ChatBubble';
 import { Image } from 'react-native';
 import axios from 'axios';
-import { USER } from '../../constants/Constants';
-import { storage } from '../../utils/storageUtils';
-import axiosInstance from '../../utils/Api';
-import { CHATLOG } from '../../constants/Constants';
+import { User } from '../../../constants/Constants';
+import { storage } from '../../../utils/storageUtils';
+import axiosInstance from '../../../utils/Api';
+import { CHATLOG } from '../../../constants/Constants';
 import { useFocusEffect } from '@react-navigation/native';
-import { ERRORMESSAGE } from '../../constants/Constants';
+import { ERRORMESSAGE } from '../../../constants/Constants';
 import { InputAccessoryView } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view';
-import useChatBtnState from '../../store/chatBtnState';
+import useChatBtnState from '../../../store/chatBtnState';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useHeaderHeight } from '@react-navigation/elements';
-
-interface Message {
-  sender: string;
-  text: string;
-}
-
-const getTime = (): number => {
-  const currentDate: number = Date.now();
-  console.log('현재 시간 : ', currentDate);
-  return currentDate;
-};
-
-const formatTime = (date: number): string => {
-  console.log('=======================', date);
-  console.log('---------------------------', typeof date);
-  const dateObject = new Date(date);
-  let hours = dateObject.getHours();
-  const minutes = dateObject.getMinutes();
-  const period = hours >= 12 ? '오후' : '오전';
-  hours = hours % 12;
-  hours = hours ? hours : 12;
-  const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
-  return `${period} ${hours}:${formattedMinutes}`;
-};
+import { getTime, formatTime } from '../../../utils/ChattingTime';
+import { Message } from '../../../constants/Constants';
 
 const Chat: React.FC = () => {
   const flatListRef = useRef<FlatList<any>>(null);
@@ -60,6 +38,7 @@ const Chat: React.FC = () => {
   const [btnDisable, setBtnDisable] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
+  //대화 로그를 저장
   const saveChatLogs = (logs: Message[]) => {
     try {
       storage.set(CHATLOG, JSON.stringify(logs));
@@ -68,6 +47,7 @@ const Chat: React.FC = () => {
     }
   };
 
+  //대화 로그를 화면에 출력
   const loadChatLogs = () => {
     try {
       const chatLogs = storage.getString(CHATLOG);
@@ -79,6 +59,7 @@ const Chat: React.FC = () => {
     }
   };
 
+  //스크롤 : 화면 맨 아래로 향하게
   const scrollToTop = () => {
     console.log('scroll to end 함수 동작');
     flatListRef.current?.scrollToOffset({ offset: 0, animated: true }); //커서 맨 끝으로
@@ -144,7 +125,7 @@ const Chat: React.FC = () => {
       {item.sender !== 'user' ? ( //쿠키
         <View style={styles.botMessageContainer}>
           <View style={{ flexDirection: 'row' }}>
-            <Image source={require('../../assets/images/cookieSplash.png')} style={styles.img} />
+            <Image source={require('../../../assets/images/cookieSplash.png')} style={styles.img} />
             <View style={{ width: '100%' }}>
               <Text style={styles.ai}>쿠키</Text>
               <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
@@ -241,7 +222,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     //backgroundColor: 'red',
-    marginTop: 16,
+    //marginTop: 16,
     //flexGrow: 1,
     //height: 80,
   },

@@ -8,7 +8,7 @@ import {
 } from '@react-native-google-signin/google-signin';
 import * as Device from 'expo-device';
 import axios from 'axios';
-import { storage } from '../utils/storageUtils';
+import { storage } from '../../utils/storageUtils';
 import {
   ACCESSTOKEN,
   APP_VERSION,
@@ -16,10 +16,10 @@ import {
   GOOGLE,
   REFRESHTOKEN,
   USER,
-} from '../constants/Constants';
-import SignUp from '../navigators/SignUpStackNavigator';
-import useIsSignInState from '../store/signInStatus';
-import { handleLoginResponse, handleLoginError } from '../utils/LoginHandle';
+} from '../../constants/Constants';
+import SignUp from '../../navigators/SignUpStackNavigator';
+import useIsSignInState from '../../store/signInStatus';
+import { handleLoginResponse, handleLoginError } from '../../utils/LoginHandle';
 //WebBrowser.maybeCompleteAuthSession();
 // 로그인 버튼 누르면 웹 브라우저가 열리고, 구글 로그인 페이지로 이동함.
 //web popup을 무시하기 위해 WebBrowser.maybeCompleteAuthSession()을 사용한다.

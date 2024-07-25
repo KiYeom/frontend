@@ -5,7 +5,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-paper';
 import React from 'react';
 import { useState, useEffect } from 'react';
-import OpenSourceLicense from '../../constants/OpenSourceLicense.json';
+import OpenSourceLicense from '../../../constants/OpenSourceLicense.json';
 
 type Author = {
   name: string;

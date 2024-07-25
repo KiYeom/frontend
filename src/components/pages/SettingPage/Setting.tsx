@@ -1,25 +1,26 @@
 import { StatusBar } from 'expo-status-bar';
+import { Image } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
 import React, { useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { GOOGLE_KEY } from '../../utils/storageUtils';
-import { ACCESSTOKEN, CHATLOG, REFRESHTOKEN, USER } from '../../constants/Constants';
+import { ACCESSTOKEN, CHATLOG, REFRESHTOKEN, USER } from '../../../constants/Constants';
 import { Provider, Button, TextInput } from 'react-native-paper';
-import { storage } from '../../utils/storageUtils';
+import { storage } from '../../../utils/storageUtils';
 import { Switch } from 'react-native-paper';
-import useNotificationState from '../../store/notificationState';
+import useNotificationState from '../../../store/notificationState';
 interface UserInfo {
   email: string;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
 }
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import UserSetting from '../../components/UserSetting';
+import SettingMenus from '../../organisms/SettingMenus';
 import { PaperProvider, Portal, Modal, IconButton, Dialog } from 'react-native-paper';
 import { useState } from 'react';
-import axiosInstance from '../../utils/Api';
-import useIsSignInState from '../../store/signInStatus';
-import useNicknameState from '../../store/nicknameState';
+import axiosInstance from '../../../utils/Api';
+import useIsSignInState from '../../../store/signInStatus';
+import useNicknameState from '../../../store/nicknameState';
 import * as Notifications from 'expo-notifications';
+import UserInfomation from '../../molecules/UserInfomation';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -209,21 +210,9 @@ const Setting: React.FC<any> = ({ navigation }) => {
 
       <View style={styles.container}>
         <View style={styles.userInfo}>
-          <Text>닉네임</Text>
-          <View style={styles.userName}>
-            <Text style={styles.userInfoText}>{USER.NICKNAME}</Text>
-            <IconButton
-              icon="pencil"
-              iconColor="black"
-              size={20}
-              onPress={() => {
-                //showModal('nickname')
-                navigation.navigate('SettingStackNavigator', { screen: 'EditUserInfo' });
-              }}
-            />
-          </View>
+          <UserInfomation />
         </View>
-        <UserSetting navigation={navigation} showModal={showModal} />
+        <SettingMenus navigation={navigation} showModal={showModal} />
       </View>
     </PaperProvider>
   );

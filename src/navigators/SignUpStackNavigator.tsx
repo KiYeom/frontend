@@ -1,8 +1,8 @@
 //처음 회원가입을 하면 infoscreen으로 가서... 이름, 나이, 성별 물어보기
 import React from 'react';
-import InfoName from '../screen/SignUpPage/InfoName';
-import InfoAge from '../screen/SignUpPage/InfoAge';
-import InfoGender from '../screen/SignUpPage/InfoGender';
+import InfoName from '../components/pages/SignUpPage/InfoName';
+import InfoAge from '../components/pages/SignUpPage/InfoAge';
+import InfoGender from '../components/pages/SignUpPage/InfoGender';
 import Tabbar from './BottomTabNavigator';
 import { View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';

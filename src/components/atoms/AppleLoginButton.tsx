@@ -1,15 +1,15 @@
 import React from 'react';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { View, Text, StyleSheet } from 'react-native';
-import { USER, ACCESSTOKEN, REFRESHTOKEN, APP_VERSION } from '../constants/Constants';
+import { USER, ACCESSTOKEN, REFRESHTOKEN, APP_VERSION } from '../../constants/Constants';
 import axios from 'axios';
-import { storage } from '../utils/storageUtils';
-import useIsSignInState from '../store/signInStatus';
+import { storage } from '../../utils/storageUtils';
+import useIsSignInState from '../../store/signInStatus';
 import * as Device from 'expo-device';
 import { PaperProvider } from 'react-native-paper';
 import { Portal, Modal, Button } from 'react-native-paper';
 import { useState } from 'react';
-import { handleLoginResponse, handleLoginError } from '../utils/LoginHandle';
+import { handleLoginResponse, handleLoginError } from '../../utils/LoginHandle';
 
 const AppleLoginButton: React.FC<any> = ({ navigation }) => {
   const { isSignIn, setIsSignIn } = useIsSignInState();

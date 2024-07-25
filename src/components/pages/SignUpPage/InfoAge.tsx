@@ -2,9 +2,9 @@ import React from 'react';
 import { useState } from 'react';
 import { View, Text, Image, StyleSheet, SafeAreaView } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
-import { GOOGLE_KEY } from '../../utils/storageUtils';
-import { storage } from '../../utils/storageUtils';
-import { USER } from '../../constants/Constants';
+import { storage } from '../../../utils/storageUtils';
+import { USER } from '../../../constants/Constants';
+
 import DatePicker from 'react-native-date-picker';
 
 const InfoAge: React.FC<any> = ({ navigation }) => {

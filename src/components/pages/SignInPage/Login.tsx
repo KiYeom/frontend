@@ -10,9 +10,9 @@ import {
   GoogleSigninButton,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
-import GoogleLoginButton from '../../components/GoogleLoginButton';
+import GoogleLoginButton from '../../atoms/GoogleLoginButton';
 import { StyleSheet } from 'react-native';
-import AppleLoginButton from '../../components/AppleLoginButton';
+import AppleLoginButton from '../../atoms/AppleLoginButton';
 
 //로그인 페이지
 const Login: React.FC<any> = ({ navigation }) => {
@@ -20,7 +20,7 @@ const Login: React.FC<any> = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <Image
-          source={require('../../assets/images/cookieSplash.png')}
+          source={require('../../../assets/images/cookieSplash.png')}
           style={styles.image}
           resizeMode="contain"
         />
