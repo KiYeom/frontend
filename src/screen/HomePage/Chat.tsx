@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
   botMessageContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    backgroundColor: 'pink',
+    //backgroundColor: 'pink',
   },
   userMessageContainer: {
     flexDirection: 'row',
