@@ -167,13 +167,9 @@ const Chat: React.FC = () => {
       )}
     </View>
   );
-  const statusBarHeight = getStatusBarHeight();
-  const headerHeight = useHeaderHeight();
 
-  const insets = useSafeAreaInsets();
-  console.log('----------------insets----------', insets);
-  console.log('----------------headerHeight----------', headerHeight);
-  console.log('-------statusbarheight-----', statusBarHeight);
+  const headerHeight = useHeaderHeight(); //stack navigation의 header 높이
+
   return (
     <SafeAreaView style={{ flex: 1 }} edges={['bottom']}>
       <KeyboardAvoidingView
@@ -235,7 +231,7 @@ const styles = StyleSheet.create({
   contentContainerStyle: {
     //backgroundColor : "white",
     flexGrow: 1,
-    minHeight: '100%',
+    //minHeight: '100%',
     justifyContent: 'flex-end',
   },
   form: {
