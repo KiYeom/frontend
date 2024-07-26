@@ -212,7 +212,11 @@ const Setting: React.FC<any> = ({ navigation }) => {
         <View style={styles.userInfo}>
           <UserInfomation navigation={navigation} />
         </View>
-        <SettingMenus navigation={navigation} logoutRequest={logoutRequest} />
+        <SettingMenus
+          navigation={navigation}
+          logoutRequest={logoutRequest}
+          deactivateRequest={deactivateRequest}
+        />
       </View>
     </PaperProvider>
   );

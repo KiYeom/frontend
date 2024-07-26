@@ -46,11 +46,9 @@ const SignUpStackNavigator: React.FC<any> = ({ navigation }) => {
               title="건너뛰기"
               onPress={async () => {
                 if (USER.PROVIDERNAME === 'google') {
-                  alert(`구글 ${USER.PROVIDERNAME}`);
                   googleSignUp(setIsSignIn);
                   //navigation.navigate('Home');
                 } else if (USER.PROVIDERNAME === 'apple') {
-                  alert(`얘플 ${USER.PROVIDERNAME}`);
                   appleSignUp(setIsSignIn);
                   //navigation.navigate('Home');
                 }
