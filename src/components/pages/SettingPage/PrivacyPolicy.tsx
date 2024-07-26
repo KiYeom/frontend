@@ -6,7 +6,7 @@ import { markdownContent } from '../../../constants/PrivacyPolicy';
 const PrivacyPolicy: React.FC = () => {
   return (
     <View style={styles.container}>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <Markdown>{markdownContent}</Markdown>
       </ScrollView>
     </View>

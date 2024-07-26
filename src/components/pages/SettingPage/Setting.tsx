@@ -8,10 +8,6 @@ import { Provider, Button, TextInput } from 'react-native-paper';
 import { storage } from '../../../utils/storageUtils';
 import { Switch } from 'react-native-paper';
 import useNotificationState from '../../../store/notificationState';
-interface UserInfo {
-  email: string;
-  setEmail: React.Dispatch<React.SetStateAction<string>>;
-}
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import SettingMenus from '../../organisms/SettingMenus';
 import { PaperProvider, Portal, Modal, IconButton, Dialog } from 'react-native-paper';

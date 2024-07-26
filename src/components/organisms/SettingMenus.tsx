@@ -41,8 +41,8 @@ const SettingMenus: React.FC<any> = ({ navigation, logoutRequest, deactivateRequ
 
   //문의하기 클릭 시, 채널톡 페이지로 이동하기
   const handleAskPress = () => {
-    //Linking.openURL('https://forms.gle/f92DzjUBNnU51vET6'); 구글폼 딥링크 삭제
-    navigation.navigate('SettingStackNavigator', { screen: 'ChannelTalk' });
+    Linking.openURL('https://forms.gle/f92DzjUBNnU51vET6'); //심사중일 때
+    //navigation.navigate('SettingStackNavigator', { screen: 'ChannelTalk' });
   };
   //알림설정 토글 상태
   const { isSwitchOn, setIsSwitchOn } = useNotificationState();
