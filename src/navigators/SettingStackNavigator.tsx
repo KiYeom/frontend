@@ -7,15 +7,11 @@ import ChannelTalk from '../components/pages/SettingPage/ChannelTalk'; //채널�
 import Deactivate from '../components/pages/SettingPage/Deactivate'; //회원탈퇴 고지
 import LicensePage from '../components/pages/SettingPage/LicensePage'; //오픈소스 라이센스 페이지
 import LicenseDetailPage from '../components/pages/SettingPage/LicenseDetailPage'; //오픈소스 라이센스 상세 페이지
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 const Stack = createNativeStackNavigator();
 
-const HeaderTitle: React.FC<any> = ({ title }) => (
-  <Text numberOfLines={1} ellipsizeMode="tail" style={{ maxWidth: 250, fontSize: 18 }}>
-    {title}
-  </Text>
-);
+const HeaderTitle: React.FC<any> = ({ title }) => <Text style={{ fontSize: 18 }}>{title}</Text>;
 
 const SettingStackNavigator: React.FC = () => {
   return (
@@ -28,7 +24,9 @@ const SettingStackNavigator: React.FC = () => {
       <Stack.Screen
         name="PrivacyPolicy"
         component={PrivacyPolicy}
-        options={{ headerTitle: () => <HeaderTitle title="개인정보 처리방침" /> }}
+        options={{
+          headerTitle: () => <HeaderTitle title="개인정보 처리방침" />,
+        }}
       />
       <Stack.Screen
         name="UserNotification"
@@ -55,9 +53,7 @@ const SettingStackNavigator: React.FC = () => {
       <Stack.Screen
         name="LicenseDetailPage"
         component={LicenseDetailPage}
-        options={{
-          headerTitle: () => <HeaderTitle title="오픈 라이센스" />,
-        }}
+        options={{ headerBackVisible: false }}
       />
     </Stack.Navigator>
   );
