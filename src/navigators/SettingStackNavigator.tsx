@@ -29,7 +29,7 @@ const SettingStackNavigator: React.FC = () => {
         }}
       />
       <Stack.Screen
-        name="UserNotification"
+        name="UserNotifications"
         component={UserNotifications}
         options={{ headerTitle: () => <HeaderTitle title="알림 설정" /> }}
       />

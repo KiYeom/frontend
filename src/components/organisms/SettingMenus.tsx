@@ -55,7 +55,8 @@ const SettingMenus: React.FC<any> = ({ navigation, logoutRequest, deactivateRequ
 
   //알림설정 클릭 시, 앱 내의 설정 페이지로
   const handleOpenNotification = () => {
-    Linking.openSettings();
+    //Linking.openSettings();
+    navigation.navigate('SettingStackNavigator', { screen: 'UserNotifications' });
   };
 
   const onToggleSwitch = async () => {

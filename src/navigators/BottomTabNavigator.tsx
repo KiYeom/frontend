@@ -13,6 +13,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import palette from '../assets/styles/theme';
+//import SettingIcon from '../../../assets/icons/Setting.svg';
+//import AnalyzeIcon from '../../../assets/icons/Analyze.svg';
+import HomeIcon from '../assets/icons/Home.svg';
+import SettingIcon from '../assets/icons/Setting.svg';
 
 const Tab = createBottomTabNavigator();
 const color = '#58C3A5';
@@ -34,8 +38,9 @@ const BottomTabNavigator: React.FC<any> = ({ isSignIn, setIsSignIn }) => {
         headerTitleStyle: {
           fontFamily: 'Pretendard-Bold', // 사용할 폰트 패밀리
           fontSize: 17, // 폰트 크기
+          color: '#fff', //헤더 폰트 색상
         },
-        tabBarActiveTintColor: '#58C3A5',
+        tabBarActiveTintColor: palette.primary[500], //tab bar focuse 색상
       }}>
       <Tab.Screen
         name="Home"
@@ -50,8 +55,8 @@ const BottomTabNavigator: React.FC<any> = ({ isSignIn, setIsSignIn }) => {
             fontSize: 17, // 폰트 크기
           },
           tabBarLabel: '홈', //탭 바 아래에 보일 이름
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="home" color={color} size={size} />
+          tabBarIcon: ({ focused }) => (
+            <HomeIcon style={{ color: focused ? palette.primary[500] : palette.neutral[300] }} />
           ),
         }}
       />
@@ -60,11 +65,11 @@ const BottomTabNavigator: React.FC<any> = ({ isSignIn, setIsSignIn }) => {
         component={Setting}
         options={{
           headerShown: true,
-          tabBarLabel: 'Setting',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="cog" color={color} size={size} />
+          tabBarLabel: '설정',
+          headerTintColor: '#fff',
+          tabBarIcon: ({ focused }) => (
+            <SettingIcon style={{ color: focused ? palette.primary[500] : palette.neutral[300] }} />
           ),
-          title: 'Setting',
         }}
       />
     </Tab.Navigator>
