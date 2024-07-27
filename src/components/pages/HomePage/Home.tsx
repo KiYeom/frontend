@@ -11,6 +11,7 @@ import { PaperProvider, Portal, Modal } from 'react-native-paper';
 import requestPermission from '../../../utils/NotificationToken';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { SPLASH_PATH } from '../../../constants/Constants';
 
 const Home: React.FC<any> = ({ navigation }) => {
   useEffect(() => {
@@ -22,7 +23,7 @@ const Home: React.FC<any> = ({ navigation }) => {
       <View style={styles.header}>
         <Text style={styles.txt1}>🐾오늘도 와줘서 고마워멍!૮ ・ﻌ・ა</Text>
         <Image
-          source={require('../../../assets/images/cookieSplash.png')}
+          source={{uri: SPLASH_PATH}}
           style={styles.image}
           resizeMode="contain"
         />

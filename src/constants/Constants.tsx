@@ -1,6 +1,5 @@
 export const MALE = 1;
 export const FEMALE = 2;
-
 export const APP_VERSION = '1.0.0';
 export const ACCESSTOKEN = 'ACCESSTOKEN';
 export const REFRESHTOKEN = 'REFRESHTOKEN';
@@ -10,6 +9,8 @@ export const GOOGLE = 'google';
 export const APPLE = 'apple';
 
 export const ERRORMESSAGE = '멍멍!🐶 쿠키 조금 아픈데 잠시 후에 다시 얘기해도 될까요?😣';
+
+export const SPLASH_PATH = '/src/assets/images/splash.png'
 
 export interface User {
   EMAIL: string | null;

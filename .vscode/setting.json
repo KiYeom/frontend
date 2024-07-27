@@ -1,0 +1,22 @@
+{
+    "todohightlight.keywords": [
+        {
+            "text":"DEPRECATED",
+            "color":"#FF0000",
+            "background": "black"
+        },
+        {
+            "text":"TODO",
+            "color": "yellow",
+            "background":"black"
+        }, {
+            "text":"FIXME",
+            "color": "white",
+            "background":"#3885FF"
+        }, {
+            "text":"NOTE",
+            "color": "white",
+            "background":"#6E7781"
+        }
+    ]
+}

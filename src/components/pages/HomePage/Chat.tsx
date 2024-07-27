@@ -14,7 +14,7 @@ import { Button, TextInput, IconButton } from 'react-native-paper';
 import ChatBubble from '../../atoms/ChatBubble';
 import { Image } from 'react-native';
 import axios from 'axios';
-import { User } from '../../../constants/Constants';
+import { SPLASH_PATH, User } from '../../../constants/Constants';
 import { storage } from '../../../utils/storageUtils';
 import axiosInstance from '../../../utils/Api';
 import { CHATLOG } from '../../../constants/Constants';
@@ -125,7 +125,7 @@ const Chat: React.FC = () => {
       {item.sender !== 'user' ? ( //쿠키
         <View style={styles.botMessageContainer}>
           <View style={{ flexDirection: 'row' }}>
-            <Image source={require('../../../assets/images/cookieSplash.png')} style={styles.img} />
+            <Image source={{uri: SPLASH_PATH}} style={styles.img} />
             <View style={{ width: '100%' }}>
               <Text style={styles.ai}>쿠키</Text>
               <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>

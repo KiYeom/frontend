@@ -1,13 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import Login from './src/components/pages/SignInPage/Login';
+import Login from './src/components/pages/sign-in/sign-in';
 import BottomTabNavigator from './src/navigators/BottomTabNavigator';
-import { NavigationContainer } from '@react-navigation/native';
+import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { useFonts } from 'expo-font';
 import * as Device from 'expo-device';
 import { GOOGLE_KEY } from './src/utils/storageUtils';
 import axios from 'axios';
@@ -16,6 +15,7 @@ import { USER, ACCESSTOKEN, REFRESHTOKEN, CHATLOG } from './src/constants/Consta
 import useIsSignInState from './src/store/signInStatus';
 import useNoticeState from './src/store/notice';
 import { Platform } from 'react-native';
+import { useFonts } from 'expo-font';
 import * as Application from 'expo-application';
 import { Portal, Modal, PaperProvider } from 'react-native-paper';
 import * as amplitude from '@amplitude/analytics-react-native';
@@ -34,19 +34,31 @@ const App: React.FC = () => {
   //회원인데 로그인이 안 되어있거나 회원이 아니라면 isSignIn == false, 회원이고 로그인도 됐다면 isSignIns == true
   const { notice, setNotice } = useNoticeState(); //store 폴더에서 가지고 온 전역 state
 
-  //앱이 처음 실행이 될 때 현재 우리 앱의 유저인지 파악
-  useEffect(() => {
-    //storage.delete(ACCESSTOKEN);
-    //storage.delete(REFRESHTOKEN);
-    console.log('========== 앱 실행 ==========');
+  const [loaded, error] = useFonts({
+    "Pretendard-SemiBold": require("./src/assets/fonts/Pretendard-SemiBold.ttf"),
+    "Pretendard-Bold": require("./src/assets/fonts/Pretendard-Bold.ttf"),
+    "Pretendard-Regular": require("./src/assets/fonts/Pretendard-Regular.ttf"),
+    "Pretendard-Light": require("./src/assets/fonts/Pretendard-Light.ttf"),
+    "Pretendard-ExtraLight": require("./src/assets/fonts/Pretendard-ExtraLight.ttf"),
+    "Pretnedard-Thin": require("./src/assets/fonts/Pretendard-Thin.ttf"),
+    "Pretendard-Black": require("./src/assets/fonts/Pretendard-Black.ttf"),
+    "Pretendard-Medium": require("./src/assets/fonts/Pretendard-Medium.ttf"),
+  })
+  
+    //앱이 처음 실행이 될 때 현재 우리 앱의 유저인지 파악
+    useEffect(() => {
+      //storage.delete(ACCESSTOKEN);
+      //storage.delete(REFRESHTOKEN);
+      bootstrap();
+    }, [loaded]);
 
-    const bootstrapAsync = async () => {
+   const bootstrap = async (): Promise<void> => {
       try {
         const accessToken = storage.getString(ACCESSTOKEN);
         const refreshToken = storage.getString(REFRESHTOKEN);
-        //console.log("access token : ", accessToken);
-        //console.log("refresh token : ", refreshToken);
-        //setIsSignIn(!!accessToken);  //access Token이 없으면 signin = true, 있으면 false..?
+
+
+        //FIXME: 해당 코드 삭제 예정
         USER.DEVICEOS = '' + Device.osName + Device.osVersion;
         if (Device.osName == 'iOS' || Device.osName == 'iPadOS') {
           const deviceIdCode = await Application.getIosIdForVendorAsync();
@@ -82,7 +94,7 @@ const App: React.FC = () => {
               }
             })
             .catch(function (error) {
-              //요청에 실패한 경우 = access token 재발급 실패 (refresh token도 만료되어 재발급 불가한 상황)
+              //FIXME: console.log 삭제 예정
               console.log('access token 재발급 안 됨 됨 json', error);
               console.log('==============app.tsx==========', USER.PROVIDERCODE);
               console.log('토큰 발급 실패, access token : ', accessToken);
@@ -111,8 +123,12 @@ const App: React.FC = () => {
       }
       setLoading(false); //로딩 완료
     };
-    bootstrapAsync();
-  }, []);
+
+
+
+  // if(!loaded && !error) {
+  //   return null;
+  // }
 
   if (loading) {
     return (
@@ -125,7 +141,7 @@ const App: React.FC = () => {
   return (
     <SafeAreaProvider>
       <PaperProvider>
-        <NavigationContainer>
+        <NavigationContainer theme={navTheme}>
           <RootStack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Main">
             {isSignIn ? ( //로그인이 되어있을 경우 보여줄 페이지 : 홈 화면(Tabbar), 채팅화면 (Chat), 설정화면들
               <>
@@ -170,4 +186,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
+const navTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: 'white',
+  },
+};
 export default App;
