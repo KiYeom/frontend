@@ -3,7 +3,7 @@ import { rsFont, rsHeight, rsWidth } from "../../utils/responsive-size";
 import palette from "../../assets/styles/theme";
 
 
-export const InputContainer = styled.View`
+export const InputContainer = styled.TouchableOpacity`
 display: flex;
 flex-dircetion: column;
 gap: ${rsHeight * 4 + 'px'};
@@ -37,42 +37,3 @@ top: ${rsHeight * 18 + 'px'};
 background-color: ${palette.neutral[50]};
 `;
 
-/* Auto layout */
-// display: flex;
-// flex-direction: row;
-// align-items: flex-start;
-// padding: 18px;
-// gap: 10px;
-
-// width: 321px;
-// height: 52px;
-
-// background: #F6F6F6;
-// border-radius: 10px;
-
-/* Inside auto layout */
-// flex: none;
-// order: 0;
-// align-self: stretch;
-// flex-grow: 0;
-
-
-/* 내용을 입력해주세요. */
-
-// width: 133px;
-// height: 16px;
-
-// font-family: 'Pretendard';
-// font-style: normal;
-// font-weight: 400;
-// font-size: 16px;
-// line-height: 100%;
-/* identical to box height, or 16px */
-
-// color: #B6BDC6;
-
-
-/* Inside auto layout */
-// flex: none;
-// order: 0;
-// flex-grow: 0;

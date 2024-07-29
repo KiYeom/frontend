@@ -1,5 +1,5 @@
 import { css } from "@emotion/native"
-import { TouchableOpacity, View } from "react-native"
+import { Platform, TouchableOpacity, View } from "react-native"
 import { rsHeight, rsWidth } from "../../utils/responsive-size"
 import { useNavigation } from "@react-navigation/native";
 import palette from "../../assets/styles/theme";
@@ -9,6 +9,7 @@ const Header = () => {
     const navigation = useNavigation();
     return (
         <View style={css`
+            margin-top:${rsHeight * 40 + 'px'};
             height: ${rsHeight * 56 + 'px'};
             padding-left: ${rsWidth * 24 + 'px'};
             display: flex;
