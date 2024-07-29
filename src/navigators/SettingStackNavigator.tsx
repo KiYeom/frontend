@@ -7,6 +7,8 @@ import ChannelTalk from '../components/pages/SettingPage/ChannelTalk'; //채널�
 import Deactivate from '../components/pages/SettingPage/Deactivate'; //회원탈퇴 고지
 import LicensePage from '../components/pages/SettingPage/LicensePage'; //오픈소스 라이센스 페이지
 import LicenseDetailPage from '../components/pages/SettingPage/LicenseDetailPage'; //오픈소스 라이센스 상세 페이지
+import DeactivateReason from '../components/pages/SettingPage/DeactivateReason';
+import DeactivateAlert from '../components/pages/SettingPage/DeactivateAlert';
 import { Text, View } from 'react-native';
 
 const Stack = createNativeStackNavigator();
@@ -53,6 +55,16 @@ const SettingStackNavigator: React.FC = () => {
       <Stack.Screen
         name="LicenseDetailPage"
         component={LicenseDetailPage}
+        options={{ headerBackVisible: false }}
+      />
+      <Stack.Screen
+        name="DeactivateReason"
+        component={DeactivateReason}
+        options={{ headerBackVisible: false }}
+      />
+      <Stack.Screen
+        name="DeactivateAlert"
+        component={DeactivateAlert}
         options={{ headerBackVisible: false }}
       />
     </Stack.Navigator>
