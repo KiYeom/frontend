@@ -66,7 +66,7 @@ const LicensePage: React.FC<any> = ({ navigation }) => {
     <FlatList
       data={data}
       renderItem={renderItem}
-      keyExtractor={item => item.libraryName}
+      keyExtractor={(item) => item.libraryName}
       contentContainerStyle={styles.flatlist}
     />
   );

@@ -67,7 +67,7 @@ const requestPermission = async () => {
       deviceId: USER.DEVICEID,
       notificationToken: token,
     })
-    .then(response => {
+    .then((response) => {
       console.log('success: ' + response.data);
     })
     .catch(function (error) {
