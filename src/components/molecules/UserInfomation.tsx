@@ -8,7 +8,7 @@ const UserInfomation: React.FC<any> = ({ navigation }) => {
     <View style={styles.userName}>
       <Image source={require('../../assets/icons/profileImage.png')} />
       <Text style={styles.userInfoText}>{USER.NICKNAME}</Text>
-      {/*<IconButton
+      <IconButton
         icon="chevron-right"
         iconColor="black"
         size={20}
@@ -16,7 +16,7 @@ const UserInfomation: React.FC<any> = ({ navigation }) => {
           //showModal('nickname')
           navigation.navigate('SettingStackNavigator', { screen: 'EditUserInfo' });
         }}
-      />*/}
+      />
     </View>
   );
 };

@@ -15,7 +15,7 @@ const NameInput: React.FC<any> = () => {
         style={{ backgroundColor: palette.primary[50] }}
         theme={{ dark: false }}
       />
-      <Text>{text.length}/15</Text>
+      <Text style={{ alignSelf: 'flex-end' }}>{text.length}/15</Text>
     </View>
   );
 };

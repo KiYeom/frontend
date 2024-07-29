@@ -36,8 +36,8 @@ const App: React.FC = () => {
 
   //앱이 처음 실행이 될 때 현재 우리 앱의 유저인지 파악
   useEffect(() => {
-    //storage.delete(ACCESSTOKEN);
-    //storage.delete(REFRESHTOKEN);
+    storage.delete(ACCESSTOKEN);
+    storage.delete(REFRESHTOKEN);
     console.log('========== 앱 실행 ==========');
 
     const bootstrapAsync = async () => {

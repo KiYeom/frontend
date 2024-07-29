@@ -17,7 +17,7 @@ const DeactivateAlert: React.FC = ({ route, navigation }) => {
   const chatCount = chatArray ? chatArray.length : 0;
   console.log('chats ========', chatCount);
   return (
-    <View style={{ justifyContent: 'center' }}>
+    <View style={{ justifyContent: 'center', backgroundColor: 'white' }}>
       <Text style={styles.txt}>
         reMIND에서 쿠키와 {'\n'}
         {chatCount}번의 대화를 나누었어요!
