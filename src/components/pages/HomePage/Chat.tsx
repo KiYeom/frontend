@@ -91,7 +91,7 @@ const Chat: React.FC = () => {
       id: `${today}`,
       date: `${formatTime(today)}`,
     };
-    setData(prevData => {
+    setData((prevData) => {
       const newData = [aiData, ...prevData];
       saveChatLogs(newData);
       return newData;
@@ -109,7 +109,7 @@ const Chat: React.FC = () => {
       id: `${today}`,
       date: `${formatTime(today)}`,
     };
-    setData(prevData => [userData, ...prevData]);
+    setData((prevData) => [userData, ...prevData]);
     setText('');
     aiSend();
   };
@@ -125,7 +125,7 @@ const Chat: React.FC = () => {
       {item.sender !== 'user' ? ( //쿠키
         <View style={styles.botMessageContainer}>
           <View style={{ flexDirection: 'row' }}>
-            <Image source={{uri: SPLASH_PATH}} style={styles.img} />
+            <Image source={{ uri: SPLASH_PATH }} style={styles.img} />
             <View style={{ width: '100%' }}>
               <Text style={styles.ai}>쿠키</Text>
               <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
@@ -170,7 +170,7 @@ const Chat: React.FC = () => {
           <TextInput
             label="send message to cookie🐶"
             value={text}
-            onChangeText={text => changeText(text)}
+            onChangeText={(text) => changeText(text)}
             mode="outlined"
             outlineColor="#3B506B"
             activeOutlineColor="#3B506B"

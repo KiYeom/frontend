@@ -22,11 +22,7 @@ const Home: React.FC<any> = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.txt1}>🐾오늘도 와줘서 고마워멍!૮ ・ﻌ・ა</Text>
-        <Image
-          source={{uri: SPLASH_PATH}}
-          style={styles.image}
-          resizeMode="contain"
-        />
+        <Image source={{ uri: SPLASH_PATH }} style={styles.image} resizeMode="contain" />
         <StartButton navigation={navigation} />
       </View>
       {/*<View style={styles.footer}>

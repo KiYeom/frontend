@@ -27,7 +27,7 @@ axiosInstance.interceptors.request.use(
     console.log('요청 인터셉터 오류: ', error);
     console.log('요청 인터셉터 오류남 json', JSON.parse(error.toString()));
     return Promise.reject(error); // 오류를 그대로 반환
-  }
+  },
 );
 
 // 응답 인터셉터 추가
@@ -98,7 +98,7 @@ axiosInstance.interceptors.response.use(
     }
 
     return Promise.reject(error); // 오류를 그대로 반환
-  }
+  },
 );
 
 export default axiosInstance;

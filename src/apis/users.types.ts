@@ -1,5 +1,5 @@
 export type TUser = {
-    nickname: string;
-    birthdate: string;
-    gender: string;
-}
+  nickname: string;
+  birthdate: string;
+  gender: string;
+};

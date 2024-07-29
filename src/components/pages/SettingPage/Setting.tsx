@@ -8,10 +8,6 @@ import { Provider, Button, TextInput } from 'react-native-paper';
 import { storage } from '../../../utils/storageUtils';
 import { Switch } from 'react-native-paper';
 import useNotificationState from '../../../store/notificationState';
-interface UserInfo {
-  email: string;
-  setEmail: React.Dispatch<React.SetStateAction<string>>;
-}
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import SettingMenus from '../../organisms/SettingMenus';
 import { PaperProvider, Portal, Modal, IconButton, Dialog } from 'react-native-paper';
@@ -21,6 +17,10 @@ import useIsSignInState from '../../../store/signInStatus';
 import useNicknameState from '../../../store/nicknameState';
 import * as Notifications from 'expo-notifications';
 import UserInfomation from '../../molecules/UserInfomation';
+interface UserInfo {
+  email: string;
+  setEmail: React.Dispatch<React.SetStateAction<string>>;
+}
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -192,7 +192,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
               <TextInput
                 label="닉네임"
                 defaultValue={USER.NICKNAME}
-                onChangeText={inputText => setInputText(inputText)}
+                onChangeText={(inputText) => setInputText(inputText)}
                 style={styles.inputText}
               />
             </View>

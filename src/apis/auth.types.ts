@@ -1,5 +1,4 @@
 export type TAuth = {
-    accessToken: string;
-    refreshToken: string;
-}
-
+  accessToken: string;
+  refreshToken: string;
+};

@@ -45,7 +45,7 @@
         "expo-font",
         {
           "fonts": [
-            "./src/assets/fonts/Pretendard-Black.ttf", 
+            "./src/assets/fonts/Pretendard-Black.ttf",
             "./src/assets/fonts/Pretendard-Bold.ttf",
             "./src/assets/fonts/Pretendard-ExtraBold.ttf",
             "./src/assets/fonts/Pretendard-ExtraLight.ttf",
@@ -54,7 +54,6 @@
             "./src/assets/fonts/Pretendard-Regular.ttf",
             "./src/assets/fonts/Pretendard-SemiBold.ttf",
             "./src/assets/fonts/Pretendard-Thin.ttf"
-
           ]
         }
       ],

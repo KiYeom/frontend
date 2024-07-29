@@ -25,16 +25,16 @@ const SignUpStackNavigator: React.FC<any> = ({ navigation }) => {
         name="input-name"
         component={InputName}
         options={{
-          title: "",
-          header: () =>  <Header/>
+          title: '',
+          header: () => <Header />,
         }}
       />
       <Stack.Screen
         name="input-profile"
         component={InputProfile}
         options={{
-          title: "",
-          header: () =>  <Header/>
+          title: '',
+          header: () => <Header />,
         }}
       />
       <Stack.Screen

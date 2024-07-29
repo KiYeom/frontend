@@ -30,10 +30,7 @@ const InfoName: React.FC<any> = ({ navigation }) => {
       <SafeAreaView edges={['bottom', 'top']} style={styles.block}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <KeyboardAvoidingView behavior={'padding'} style={styles.container}>
-            <Image
-              source={{uri: SPLASH_PATH}}
-              style={{ width: 200, height: 200 }}
-            />
+            <Image source={{ uri: SPLASH_PATH }} style={{ width: 200, height: 200 }} />
             <View style={styles.textArea}>
               <Text style={styles.txt}>만나서 반가워요, 멍!🐶</Text>
               <Text style={styles.txt}>쿠키가 당신을 부를 별명을 알려주세요</Text>
@@ -43,7 +40,7 @@ const InfoName: React.FC<any> = ({ navigation }) => {
               <TextInput
                 label="별명 (15자 이내)"
                 value={text}
-                onChangeText={text => handleText(text)}
+                onChangeText={(text) => handleText(text)}
                 maxLength={15}
                 style={styles.input}
               />
