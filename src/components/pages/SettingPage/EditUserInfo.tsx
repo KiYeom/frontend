@@ -6,26 +6,21 @@ import GenderInput from '../../molecules/GenderInput';
 import Button from '../../button/button';
 import palette from '../../../assets/styles/theme';
 import { getUserInfo } from '../../../apis/userInfo';
-import useNicknameState from '../../../store/nicknameState';
+import { Label } from '../sign-up/input-profile/input-profile.styles';
+import Input from '../../input/input';
 import { useEffect } from 'react';
+import { validateName } from '../../../utils/ValidateName';
 //설정 - 프로필 수정 화면
 
 const EditUserInfo: React.FC = () => {
   const [name, setName] = React.useState('');
-  const [gender, setGender] = React.useState('');
-  const [birthDate, setBirthdate] = React.useState<Date>();
-  const validateName = (name: string): 'error' | 'default' | 'correct' => {
-    if (name.length !== 0 && (name.length < 2 || name.length > 15)) return 'error';
-    else if (name.length >= 2 && name.length <= 15) return 'correct';
-    else return 'default';
-  };
   useEffect(() => {
     const saveUserInfo = async () => {
       try {
         const data = await getUserInfo(); //유저의 정보를 api로 가지고 와서
         if (data !== false) {
           setName(data.nickname);
-          setGender(data.gender);
+          //setGender(data.gender);
           //setBirthdate(data.birthdate);
         } else {
           console.log('유저 정보를 가지고 올 수가 없다.');
@@ -42,8 +37,8 @@ const EditUserInfo: React.FC = () => {
       <BirthInput />
       <GenderInput />
       <Button
-        title="저장"
-        disabled={!name}
+        title="저장?"
+        disabled={!(validateName(name) === 'correct')}
         primary={true}
         onPress={() => console.log('버튼 눌림')}
       />
