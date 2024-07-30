@@ -1,36 +1,29 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Icon } from 'react-native-paper';
 import React from 'react';
-import { Image } from 'react-native';
-import Chat from '../components/pages/HomePage/Chat';
 import Home from '../components/pages/HomePage/Home';
 import Setting from '../components/pages/SettingPage/Setting';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import palette from '../assets/styles/theme';
 //import SettingIcon from '../../../assets/icons/Setting.svg';
 //import AnalyzeIcon from '../../../assets/icons/Analyze.svg';
 import HomeIcon from '../assets/icons/Home.svg';
 import SettingIcon from '../assets/icons/Setting.svg';
+import MyTabBar from '../components/bottom/bottom';
 
 const Tab = createBottomTabNavigator();
 const color = '#58C3A5';
 
 const BottomTabNavigator: React.FC<any> = ({ isSignIn, setIsSignIn }) => {
-  console.log('채팅 화면 새로 그려짐..');
+  //console.log('채팅 화면 새로 그려짐..');
   const click = () => {
     //console.log("클릭함");
   };
   return (
     <Tab.Navigator
       initialRouteName="Home"
+      tabBar={(props) => <MyTabBar {...props} />}
       screenOptions={{
-        //headerShown : false,
+        headerShown: false,
         headerTitleAlign: 'center',
         headerStyle: { backgroundColor: '#58C3A5' }, //상단 탭 바
         tabBarStyle: { backgroundColor: '#F0F3F8' }, //하단 탭 바

@@ -2,20 +2,39 @@ import React from 'react';
 import { TextInput } from 'react-native-paper';
 import { View, Text } from 'react-native';
 import palette from '../../assets/styles/theme';
+import Input from '../input/input';
+import { USER } from '../../constants/Constants';
+import { Label } from '../pages/sign-up/input-profile/input-profile.styles';
 //설정 - 프로필 수정 화면에서 이름을 입력하는 창
-const NameInput: React.FC<any> = () => {
+
+interface NameInputProps {
+  name: string;
+  setName: (name: string) => void;
+}
+
+//validateName 함수
+//매개변수로 전달된 문자열 (name)의 길이에 따라 error, default, correct 값을 반환한다.
+const validateName = (name: string): 'error' | 'default' | 'correct' => {
+  if (name.length !== 0 && (name.length < 2 || name.length > 15)) return 'error';
+  else if (name.length >= 2 && name.length <= 15) return 'correct';
+  else return 'default';
+};
+
+const NameInput: React.FC<NameInputProps> = ({ name, setName }) => {
   const [text, setText] = React.useState('');
   return (
     <View>
-      <Text>닉네임</Text>
-      <TextInput
-        value={text}
-        onChangeText={text => setText(text)}
-        maxLength={15}
-        style={{ backgroundColor: palette.primary[50] }}
-        theme={{ dark: false }}
+      <Label>닉네임</Label>
+      <Input
+        placeholder="이름"
+        status={validateName(name)}
+        message="2~15 글자 사이의 이름을 지어주세요!"
+        withMessage={true}
+        onChange={(text) => {
+          if (text.length <= 15) setName(text);
+        }}
+        value={name}
       />
-      <Text style={{ alignSelf: 'flex-end' }}>{text.length}/15</Text>
     </View>
   );
 };

@@ -1,27 +1,52 @@
 import React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import NameInput from '../../molecules/NameInput';
+import BirthInput from '../../molecules/BirthInput';
 import GenderInput from '../../molecules/GenderInput';
-import { Button } from 'react-native-paper';
+import Button from '../../button/button';
 import palette from '../../../assets/styles/theme';
+import { getUserInfo } from '../../../apis/userInfo';
+import useNicknameState from '../../../store/nicknameState';
+import { useEffect } from 'react';
 //설정 - 프로필 수정 화면
+
 const EditUserInfo: React.FC = () => {
-  const editInfo = () => {
-    console.log('유저 정보 수정하기 함수 실행');
+  const [name, setName] = React.useState('');
+  const [gender, setGender] = React.useState('');
+  const [birthDate, setBirthdate] = React.useState<Date>();
+  const validateName = (name: string): 'error' | 'default' | 'correct' => {
+    if (name.length !== 0 && (name.length < 2 || name.length > 15)) return 'error';
+    else if (name.length >= 2 && name.length <= 15) return 'correct';
+    else return 'default';
   };
+  useEffect(() => {
+    const saveUserInfo = async () => {
+      try {
+        const data = await getUserInfo(); //유저의 정보를 api로 가지고 와서
+        if (data !== false) {
+          setName(data.nickname);
+          setGender(data.gender);
+          //setBirthdate(data.birthdate);
+        } else {
+          console.log('유저 정보를 가지고 올 수가 없다.');
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    saveUserInfo();
+  }, []);
   return (
     <View style={styles.container}>
-      <NameInput />
+      <NameInput name={name} setName={setName} />
+      <BirthInput />
       <GenderInput />
       <Button
-        style={{ backgroundColor: palette.primary[400] }}
-        textColor="white"
-        onPress={() => {
-          console.log('저장 버튼이 눌림');
-          console.log('유저 정보 수정하기');
-        }}>
-        저장
-      </Button>
+        title="저장"
+        disabled={!name}
+        primary={true}
+        onPress={() => console.log('버튼 눌림')}
+      />
     </View>
   );
 };

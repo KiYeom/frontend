@@ -1,5 +1,6 @@
+/* eslint-env node */
 const { getDefaultConfig } = require('expo/metro-config');
-
+//FIXME: __dirname is not working
 module.exports = (() => {
   const config = getDefaultConfig(__dirname);
 
@@ -11,7 +12,7 @@ module.exports = (() => {
   };
   config.resolver = {
     ...resolver,
-    assetExts: resolver.assetExts.filter(ext => ext !== 'svg'),
+    assetExts: resolver.assetExts.filter((ext) => ext !== 'svg'),
     sourceExts: [...resolver.sourceExts, 'svg'],
   };
 
