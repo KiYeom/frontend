@@ -28,6 +28,7 @@ export interface User {
   GOOGLEACCTOKEN: string;
   AUTHCODE: string | null;
   IDTOKEN: string | null;
+  IS_NEW_USER: boolean;
 }
 
 export const USER: User = {
@@ -46,6 +47,7 @@ export const USER: User = {
   GOOGLEACCTOKEN: '',
   AUTHCODE: '',
   IDTOKEN: '',
+  IS_NEW_USER: false,
 };
 
 //채팅 로그 저장 타입

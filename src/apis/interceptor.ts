@@ -42,7 +42,7 @@ function setInterceptor(instance: any) {
 
 function createInstance() {
   const instance = axios.create({
-    baseURL: `https://api.remind4u.co.kr/v1`,
+    baseURL: `https://api.remind4u.co.kr/`,
   });
 
   return setInterceptor(instance);
