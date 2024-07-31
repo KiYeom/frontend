@@ -271,5 +271,5 @@ google-services.json
 .nfs*
 
 # build file
-./Android/*
-./ios/*
+android/
+ios/
