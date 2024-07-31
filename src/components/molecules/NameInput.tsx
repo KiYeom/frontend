@@ -5,6 +5,7 @@ import palette from '../../assets/styles/theme';
 import Input from '../input/input';
 import { USER } from '../../constants/Constants';
 import { Label } from '../pages/sign-up/input-profile/input-profile.styles';
+import { FormContainer } from '../pages/sign-up/input-profile/input-profile.styles';
 //설정 - 프로필 수정 화면에서 이름을 입력하는 창
 
 interface NameInputProps {
@@ -23,7 +24,7 @@ const validateName = (name: string): 'error' | 'default' | 'correct' => {
 const NameInput: React.FC<NameInputProps> = ({ name, setName }) => {
   const [text, setText] = React.useState('');
   return (
-    <View>
+    <FormContainer>
       <Label>닉네임</Label>
       <Input
         placeholder="이름"
@@ -35,7 +36,7 @@ const NameInput: React.FC<NameInputProps> = ({ name, setName }) => {
         }}
         value={name}
       />
-    </View>
+    </FormContainer>
   );
 };
 export default NameInput;

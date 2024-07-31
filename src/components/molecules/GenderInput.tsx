@@ -8,10 +8,11 @@ import {
   GenderButton,
   BtnLabel,
 } from '../pages/sign-up/input-profile/input-profile.styles';
+import { FormContainer } from '../pages/sign-up/input-profile/input-profile.styles';
 const GenderInput: React.FC<any> = () => {
   const [gender, setGender] = React.useState<'여성' | '남성'>();
   return (
-    <View style={styles.container}>
+    <FormContainer>
       <Label>성별</Label>
       <ButtonGroup>
         <GenderButton
@@ -27,7 +28,7 @@ const GenderInput: React.FC<any> = () => {
           <BtnLabel selected={gender === '남성'}>남성</BtnLabel>
         </GenderButton>
       </ButtonGroup>
-    </View>
+    </FormContainer>
   );
 };
 const styles = StyleSheet.create({

@@ -39,7 +39,7 @@ const BottomTabNavigator: React.FC<any> = ({ isSignIn, setIsSignIn }) => {
         name="Home"
         component={Home}
         options={{
-          headerShown: true,
+          headerShown: false,
           headerTitleAlign: 'center',
           headerStyle: { backgroundColor: '#58C3A5' }, //상단 탭 바
           headerTintColor: '#fff', // 헤더 텍스트 색상

@@ -7,9 +7,12 @@ import Button from '../../button/button';
 import palette from '../../../assets/styles/theme';
 import { getUserInfo } from '../../../apis/userInfo';
 import { Label } from '../sign-up/input-profile/input-profile.styles';
-import Input from '../../input/input';
+import { USER } from '../../../constants/Constants';
 import { useEffect } from 'react';
+import { ContentContainer } from '../sign-up/input-name/input-name.styles';
 import { validateName } from '../../../utils/ValidateName';
+import { CTAContainer } from '../sign-up/input-name/input-name.styles';
+import { userEditInfo } from '../../../apis/userEditInfo'; //api 수정해야 함
 //설정 - 프로필 수정 화면
 
 const EditUserInfo: React.FC = () => {
@@ -20,8 +23,6 @@ const EditUserInfo: React.FC = () => {
         const data = await getUserInfo(); //유저의 정보를 api로 가지고 와서
         if (data !== false) {
           setName(data.nickname);
-          //setGender(data.gender);
-          //setBirthdate(data.birthdate);
         } else {
           console.log('유저 정보를 가지고 올 수가 없다.');
         }
@@ -32,17 +33,23 @@ const EditUserInfo: React.FC = () => {
     saveUserInfo();
   }, []);
   return (
-    <View style={styles.container}>
-      <NameInput name={name} setName={setName} />
-      <BirthInput />
-      <GenderInput />
-      <Button
-        title="저장?"
-        disabled={!(validateName(name) === 'correct')}
-        primary={true}
-        onPress={() => console.log('버튼 눌림')}
-      />
-    </View>
+    <>
+      <ContentContainer style={styles.container}>
+        <NameInput name={name} setName={setName} />
+        <BirthInput />
+        <GenderInput />
+      </ContentContainer>
+      <CTAContainer>
+        <Button
+          title="저장"
+          disabled={!(validateName(name) === 'correct')}
+          primary={true}
+          onPress={() =>
+            userEditInfo({ nickname: name, birthdate: USER.BIRTHDATE, gender: USER.GENDER })
+          }
+        />
+      </CTAContainer>
+    </>
   );
 };
 export default EditUserInfo;
