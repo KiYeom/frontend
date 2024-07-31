@@ -21,12 +21,7 @@ const Home: React.FC<any> = ({ navigation }) => {
 
   return (
     <HomeContainer>
-      {/*<View style={styles.header}>
-        <Text style={styles.txt1}>🐾오늘도 와줘서 고마워멍!૮ ・ﻌ・ა</Text>
-        <Image source={{ uri: SPLASH_PATH }} style={styles.image} resizeMode="contain" />
-        <StartButton navigation={navigation} />
-      </View>*/}
-      <HomeChatBtn />
+      <HomeChatBtn navigation={navigation} />
     </HomeContainer>
   );
 };
