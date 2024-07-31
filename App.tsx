@@ -1,23 +1,19 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import Login from './src/components/pages/sign-in/sign-in';
 import BottomTabNavigator from './src/navigators/BottomTabNavigator';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as Device from 'expo-device';
-import { GOOGLE_KEY } from './src/utils/storageUtils';
 import axios from 'axios';
 import { storage } from './src/utils/storageUtils';
 import { USER, ACCESSTOKEN, REFRESHTOKEN, CHATLOG } from './src/constants/Constants';
 import useIsSignInState from './src/store/signInStatus';
 import useNoticeState from './src/store/notice';
-import { Platform } from 'react-native';
 import { useFonts } from 'expo-font';
 import * as Application from 'expo-application';
-import { Portal, Modal, PaperProvider } from 'react-native-paper';
+import { PaperProvider } from 'react-native-paper';
 import * as amplitude from '@amplitude/analytics-react-native';
 import SettingStackNavigator from './src/navigators/SettingStackNavigator';
 import SignUpStackNavigator from './src/navigators/SignUpStackNavigator';
@@ -55,14 +51,12 @@ const App: React.FC = () => {
   const bootstrap = async (): Promise<void> => {
     try {
       const accessToken = storage.getString(ACCESSTOKEN);
-      const refreshToken = storage.getString(REFRESHTOKEN);
 
-      //FIXME: 해당 코드 삭제 예정
       USER.DEVICEOS = '' + Device.osName + Device.osVersion;
-      if (Device.osName == 'iOS' || Device.osName == 'iPadOS') {
+      if (Device.osName === 'iOS' || Device.osName == 'iPadOS') {
         const deviceIdCode = await Application.getIosIdForVendorAsync();
         USER.DEVICEID = deviceIdCode;
-      } else if (Device.osName == 'Android') {
+      } else if (Device.osName === 'Android') {
         const deviceIdCode = await Application.getAndroidId();
         USER.DEVICEID = deviceIdCode;
       }
@@ -86,7 +80,7 @@ const App: React.FC = () => {
                 setNotice(response.data.data.notice);
               }
               setIsSignIn(true); //로그인에 성공했으므로 signIn = true
-            } catch (error: any) {
+            } catch (error) {
               setIsSignIn(false);
               //console.log("로그인 완료, isSignIn : ", isSignIn);
               //console.log("로그인 안 됨 json", error)

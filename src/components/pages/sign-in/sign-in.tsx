@@ -15,27 +15,36 @@ import * as AppleAuthentication from 'expo-apple-authentication';
 import SignUpStackNavigator from '../../../navigators/SignUpStackNavigator';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { ssoLogin } from '../../../apis/auth';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { storage } from '../../../utils/storageUtils';
-import { ACCESSTOKEN, REFRESHTOKEN } from '../../../constants/Constants';
+import { ACCESSTOKEN, REFRESHTOKEN, USER } from '../../../constants/Constants';
+import HomeStackNavigator from '../../../navigators/HomeStackNavigator';
 
 const windowDimensions = require('react-native').Dimensions.get('window');
 const screenDimensions = require('react-native').Dimensions.get('screen');
 
 const googleLogin = async () => {
   GoogleSignin.configure({
-    iosClientId: '94079762653-arcgeib4l0hbg6snh81cjimd9iuuoun3.apps.googleusercontent.com',
+    iosClientId: process.env.EXPO_PUBLIC_IOS_CLIENT_ID,
   });
 
   try {
-    const userInfo = await GoogleSignin.signIn();
-    const googleAccessToken = await (await GoogleSignin.getTokens()).accessToken;
+    //TODO: 사용자가 로그인을 취소할 때의 처리 필요
+    const googleUserInfo = await GoogleSignin.signIn();
+    console.log(googleUserInfo);
+    const googleTokens = await await GoogleSignin.getTokens();
+    console.log(googleTokens);
+    const googleAccessToken = googleTokens.accessToken;
     const res = await ssoLogin(googleAccessToken, 'google');
 
     if (res) {
-      console.log('accessToken', res.accessToken);
       storage.set(ACCESSTOKEN, res.accessToken);
       storage.set(REFRESHTOKEN, res.refreshToken);
+      console.log(res);
+      USER.IS_NEW_USER = res.isNewUser;
+      if (res.isNewUser === true && res.nickname) {
+        console.log(res.nickname);
+        USER.NICKNAME = res.nickname;
+      }
     }
   } catch (error: any) {
     console.error(`[ERROR] ${error}`);
@@ -44,6 +53,7 @@ const googleLogin = async () => {
 
 const appleLogin = async () => {
   try {
+    //TODO: 사용자가 로그인을 취소할 때의 처리 필요
     const credential = await AppleAuthentication.signInAsync();
     if (credential.identityToken) {
       const res = await ssoLogin(credential.identityToken, 'apple');
@@ -52,6 +62,10 @@ const appleLogin = async () => {
         console.log(res.accessToken);
         storage.set(ACCESSTOKEN, res.accessToken);
         storage.set(REFRESHTOKEN, res.refreshToken);
+        USER.IS_NEW_USER = res.isNewUser;
+        if (res.isNewUser === true && res.nickname) {
+          USER.NICKNAME = res.nickname;
+        }
       }
     }
   } catch (error) {
@@ -73,7 +87,14 @@ const Login: React.FC<any> = ({ navigation }) => {
         case 'kakao':
           break;
       }
-      navigation.navigate(SignUpStackNavigator);
+      if (USER.IS_NEW_USER === true) {
+        //새로운 유저
+        navigation.navigate(SignUpStackNavigator);
+      } else if (USER.IS_NEW_USER === false) {
+        alert('기존 유저, 정보 저장 필요' + USER.NICKNAME);
+      } else {
+        alert('로그인 실패');
+      }
     } catch (error) {
       console.error(`[ERROR] ${error}`);
     }

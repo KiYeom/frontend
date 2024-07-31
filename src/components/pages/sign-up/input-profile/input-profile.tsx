@@ -16,7 +16,7 @@ import { BtnLabel, ButtonGroup, FormContainer, GenderButton, Label } from './inp
 import Input from '../../../input/input';
 import DatePickerModal from '../../../modals/date-picker-modal';
 import palette from '../../../../assets/styles/theme';
-import { updateUserProfile } from '../../../../apis/users';
+import { updateUserProfile } from '../../../../apis/auth';
 
 const InputProfile: React.FC<any> = ({ navigation }) => {
   const [name, setName] = React.useState('');
