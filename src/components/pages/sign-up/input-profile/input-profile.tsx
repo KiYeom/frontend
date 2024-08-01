@@ -16,18 +16,18 @@ import { BtnLabel, ButtonGroup, FormContainer, GenderButton, Label } from './inp
 import Input from '../../../input/input';
 import DatePickerModal from '../../../modals/date-picker-modal';
 import palette from '../../../../assets/styles/theme';
-import { updateUserProfile } from '../../../../apis/users';
-import useIsSignInState from '../../../../store/signInStatus';
-
+import { updateUserProfile } from '../../../../apis/auth';
+import { storage } from '../../../../utils/storageUtils';
+import { NICKNAME, GENDER, BIRTHDATE } from '../../../../constants/Constants';
 const InputProfile: React.FC<any> = ({ navigation }) => {
   const [name, setName] = React.useState('');
   const [gender, setGender] = React.useState<'여성' | '남성'>();
   const [openModal, setOpenModal] = React.useState(false);
   const [birthDate, setBirthdate] = React.useState<Date>();
-  const { isSignIn, setIsSignIn } = useIsSignInState();
 
   const getName = async () => {
-    const username = await AsyncStorage.getItem('name');
+    //const username = await AsyncStorage.getItem('name');
+    const username = storage.getString(NICKNAME); //유저 이름 가져옴
     if (username) setName(username);
   };
 
@@ -47,12 +47,16 @@ const InputProfile: React.FC<any> = ({ navigation }) => {
       if (res) {
         //navigation.navigate('SettingStackNavigator', { screen: 'EditUserInfo' });
         //navigation.navigate('BottomTabNavigator', { screen: 'Home' });
-        await AsyncStorage.setItem('gender', gender);
-        await AsyncStorage.setItem(
+        //await AsyncStorage.setItem('gender', gender);
+        storage.set(GENDER, gender);
+        /*await AsyncStorage.setItem(
           'birthdate',
           `${birthDate.getFullYear()}-${String(birthDate.getMonth() + 1).padStart(2, '0')}-${String(birthDate.getDate()).padStart(2, '0')}`,
+        );*/
+        storage.set(
+          BIRTHDATE,
+          `${birthDate.getFullYear()}-${String(birthDate.getMonth() + 1).padStart(2, '0')}-${String(birthDate.getDate()).padStart(2, '0')}`,
         );
-        setIsSignIn(true);
       } else {
         alert('프로필 저장에 실패했습니다.');
       }

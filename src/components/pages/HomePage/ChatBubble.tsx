@@ -16,9 +16,10 @@ type ChatBubbleProps = {
   showImage?: boolean;
   status?: 'user' | 'bot';
   text?: string;
+  time?: string;
 };
 const ChatBubble = (props: ChatBubbleProps) => {
-  const { showImage = false, status = 'user', text = 'default' } = props;
+  const { showImage = false, status = 'user', text = 'default', time = '오전 12:00' } = props;
   return (
     <Container status={status}>
       {status === 'bot' && (
@@ -31,11 +32,11 @@ const ChatBubble = (props: ChatBubbleProps) => {
           <Bubble status={status}>
             <BubbleText status={status}>{text}</BubbleText>
           </Bubble>
-          <TimeText>오후 쿠키:쿠키</TimeText>
+          <BubbleText status="time">{time}</BubbleText>
         </ChatBubbleContainer>
       ) : (
         <ChatBubbleContainer status={status}>
-          <TimeText>오전 은서:은서</TimeText>
+          <BubbleText status="time">{time}</BubbleText>
           <Bubble status={status}>
             <BubbleText status={status}>{text}</BubbleText>
           </Bubble>

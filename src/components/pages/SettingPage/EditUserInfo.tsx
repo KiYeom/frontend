@@ -13,11 +13,13 @@ import { ContentContainer } from '../sign-up/input-name/input-name.styles';
 import { validateName } from '../../../utils/ValidateName';
 import { CTAContainer } from '../sign-up/input-name/input-name.styles';
 import { userEditInfo } from '../../../apis/userEditInfo'; //api 수정해야 함
+import { storage } from '../../../utils/storageUtils';
+import { NICKNAME } from '../../../constants/Constants';
 //설정 - 프로필 수정 화면
 
 const EditUserInfo: React.FC = () => {
   const [name, setName] = React.useState('');
-  useEffect(() => {
+  /*useEffect(() => {
     const saveUserInfo = async () => {
       try {
         const data = await getUserInfo(); //유저의 정보를 api로 가지고 와서
@@ -31,11 +33,11 @@ const EditUserInfo: React.FC = () => {
       }
     };
     saveUserInfo();
-  }, []);
+  }, []);*/
   return (
     <>
       <ContentContainer style={styles.container}>
-        <NameInput name={name} setName={setName} />
+        <NameInput name={storage.getString(NICKNAME)} setName={setName} />
         <BirthInput />
         <GenderInput />
       </ContentContainer>

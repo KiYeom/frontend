@@ -10,7 +10,7 @@ const DeactivateReasonCheckBoxs = () => {
   ];
   return (
     <View style={styles.container}>
-      {reasons.map(item => (
+      {reasons.map((item) => (
         <CustomCheckBox key={item} title={item} />
       ))}
     </View>

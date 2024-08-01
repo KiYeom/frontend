@@ -1,23 +1,27 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import Login from './src/components/pages/sign-in/sign-in';
 import BottomTabNavigator from './src/navigators/BottomTabNavigator';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as Device from 'expo-device';
-import { GOOGLE_KEY } from './src/utils/storageUtils';
 import axios from 'axios';
 import { storage } from './src/utils/storageUtils';
-import { USER, ACCESSTOKEN, REFRESHTOKEN, CHATLOG } from './src/constants/Constants';
+import {
+  USER,
+  ACCESSTOKEN,
+  REFRESHTOKEN,
+  CHATLOG,
+  NICKNAME,
+  GENDER,
+  BIRTHDATE,
+} from './src/constants/Constants';
 import useIsSignInState from './src/store/signInStatus';
 import useNoticeState from './src/store/notice';
-import { Platform } from 'react-native';
 import { useFonts } from 'expo-font';
 import * as Application from 'expo-application';
-import { Portal, Modal, PaperProvider } from 'react-native-paper';
+import { PaperProvider } from 'react-native-paper';
 import * as amplitude from '@amplitude/analytics-react-native';
 import SettingStackNavigator from './src/navigators/SettingStackNavigator';
 import SignUpStackNavigator from './src/navigators/SignUpStackNavigator';
@@ -47,23 +51,21 @@ const App: React.FC = () => {
 
   //앱이 처음 실행이 될 때 현재 우리 앱의 유저인지 파악
   useEffect(() => {
-    storage.delete(ACCESSTOKEN);
-    storage.delete(REFRESHTOKEN);
-    setIsSignIn(true);
+    //storage.delete(ACCESSTOKEN);
+    //storage.delete(REFRESHTOKEN);
+    //setIsSignIn(true);
     bootstrap();
   }, [loaded]);
 
   const bootstrap = async (): Promise<void> => {
     try {
       const accessToken = storage.getString(ACCESSTOKEN);
-      const refreshToken = storage.getString(REFRESHTOKEN);
 
-      //FIXME: 해당 코드 삭제 예정
       USER.DEVICEOS = '' + Device.osName + Device.osVersion;
-      if (Device.osName == 'iOS' || Device.osName == 'iPadOS') {
+      if (Device.osName === 'iOS' || Device.osName == 'iPadOS') {
         const deviceIdCode = await Application.getIosIdForVendorAsync();
         USER.DEVICEID = deviceIdCode;
-      } else if (Device.osName == 'Android') {
+      } else if (Device.osName === 'Android') {
         const deviceIdCode = await Application.getAndroidId();
         USER.DEVICEID = deviceIdCode;
       }
@@ -82,16 +84,15 @@ const App: React.FC = () => {
             try {
               //요청에 성공한 경우 = access token을 재발급 완료
               storage.set(ACCESSTOKEN, response.data.data.accessToken); //새로 발급된 access token 저장
-              USER.NICKNAME = response.data.data.nickname; //전달받은 정보를 저장
+              storage.set(NICKNAME, response.data.data.nickname); //닉네임, 생년월일, 성별 정보 저장
+              storage.set(GENDER, response.data.data.birthDate);
+              storage.set(BIRTHDATE, response.data.data.birthDate);
               if (response.data.data.notice != null) {
                 setNotice(response.data.data.notice);
               }
               setIsSignIn(true); //로그인에 성공했으므로 signIn = true
-            } catch (error: any) {
-              //setIsSignIn(false);
-              setIsSignIn(true);
-              //console.log("로그인 완료, isSignIn : ", isSignIn);
-              //console.log("로그인 안 됨 json", error)
+            } catch (error) {
+              setIsSignIn(false);
             }
           })
           .catch(function (error) {
@@ -108,13 +109,10 @@ const App: React.FC = () => {
             console.log('refreshToken error(headers)', error.response.headers);
             setIsSignIn(false); //로그인 실패
             console.log('요청 실패 isSignIn : ', isSignIn);
-            setIsSignIn(true); //디버깅을 위한 true (구글 키)
-            storage.delete(CHATLOG); //디버깅을 위한 초기화
           });
       } else {
         //토큰이 없으면, 다른 기기에서 접근한 것이거나 우리의 회원이 아니다. 로그인 화면을 보여준다.
-        //setIsSignIn(false); //로그인 실패
-        setIsSignIn(true);
+        setIsSignIn(false);
         console.log('토큰이 없는 경우 isSignIn : ', isSignIn);
         console.log(
           '토큰이 없다 = 다른 기기에 접근한 유저이거나 새로운 유저이다. 로그인 화면을 보여준다',
@@ -125,10 +123,6 @@ const App: React.FC = () => {
     }
     setLoading(false); //로딩 완료
   };
-
-  // if(!loaded && !error) {
-  //   return null;
-  // }
 
   if (loading) {
     return (

@@ -10,7 +10,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from 'react-native';
-import { ChatBubbleContainer } from './ChatBubble.style';
+import { BubbleText, ChatBubbleContainer } from './ChatBubble.style';
 import ChatBubble from './ChatBubble';
 import Input from '../../input/input';
 import { ContentContainer } from '../sign-up/input-name/input-name.styles';
@@ -32,10 +32,11 @@ import useChatBtnState from '../../../store/chatBtnState';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useHeaderHeight } from '@react-navigation/elements';
-import { getTime, formatTime } from '../../../utils/ChattingTime';
+import { getTime, formatTime, formatDate } from '../../../utils/ChattingTime';
 import { Message } from '../../../constants/Constants';
 import { TextInputContainer } from './Chat.style';
 import { ChatContainer } from './Chat.style';
+import { DateLine } from './Chat.style';
 //채팅 페이지
 const Chat: React.FC = () => {
   const flatListRef = useRef<FlatList<any>>(null);
@@ -43,6 +44,7 @@ const Chat: React.FC = () => {
   const [data, setData] = useState<Message[]>([]);
   const [btnDisable, setBtnDisable] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const previousDateRef = useRef(null);
 
   //대화 로그를 저장
   const saveChatLogs = (logs: Message[]) => {
@@ -95,15 +97,20 @@ const Chat: React.FC = () => {
       sender: 'bot',
       text: `${cookieAnswer}`,
       id: `${today}`,
-      date: `${formatTime(today)}`,
+      time: `${formatTime(today)}`,
+      date: `${formatDate(today)}`,
     };
-    setData((prevData) => {
-      const newData = [aiData, ...prevData];
-      saveChatLogs(newData);
-      return newData;
-    });
-    scrollToTop();
-    setIsLoading(false);
+    console.log('2초 지연하기');
+    // 2초 후에 데이터를 업데이트
+    setTimeout(() => {
+      setData((prevData) => {
+        const newData = [aiData, ...prevData];
+        saveChatLogs(newData);
+        return newData;
+      });
+      scrollToTop();
+      setIsLoading(false);
+    }, 2000); // 2초 지연
   };
 
   const userSend = () => {
@@ -113,7 +120,8 @@ const Chat: React.FC = () => {
       sender: 'user',
       text: `${text}`,
       id: `${today}`,
-      date: `${formatTime(today)}`,
+      time: `${formatTime(today)}`,
+      date: `${formatDate(today)}`,
     };
     setData((prevData) => [userData, ...prevData]);
     setText('');
@@ -127,13 +135,32 @@ const Chat: React.FC = () => {
   };
 
   //item.sender, item.text
-  const renderItem = ({ item }: any) => (
-    <ChatBubble
-      showImage={item.sender === 'bot' ? true : false}
-      status={item.sender}
-      text={item.text}
-    />
-  );
+  const renderItem = ({ item }: any) => {
+    const currentDate = item.date;
+    let showDateLine = false;
+    console.log('==========renderItem========', item.text);
+    if (currentDate !== previousDateRef.current) {
+      console.log('----------');
+      console.log(currentDate, item.text);
+      console.log(previousDateRef);
+      showDateLine = true;
+      previousDateRef.current = currentDate;
+    }
+
+    return (
+      <>
+        <ChatBubble
+          showImage={item.sender === 'bot' ? true : false}
+          status={item.sender}
+          text={item.text}
+          time={item.time}
+        />
+        <DateLine>
+          <BubbleText status="date">{item.date}</BubbleText>
+        </DateLine>
+      </>
+    );
+  };
 
   const headerHeight = useHeaderHeight(); //stack navigation의 header 높이
 

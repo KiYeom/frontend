@@ -4,6 +4,9 @@ export const APP_VERSION = '1.0.0';
 export const ACCESSTOKEN = 'ACCESSTOKEN';
 export const REFRESHTOKEN = 'REFRESHTOKEN';
 export const CHATLOG = 'CHATLOG';
+export const NICKNAME = 'NICKNAME';
+export const GENDER = 'GENDER';
+export const BIRTHDATE = 'BIRTHDATE';
 
 export const GOOGLE = 'google';
 export const APPLE = 'apple';
@@ -28,6 +31,7 @@ export interface User {
   GOOGLEACCTOKEN: string;
   AUTHCODE: string | null;
   IDTOKEN: string | null;
+  IS_NEW_USER: boolean;
 }
 
 export const USER: User = {
@@ -46,6 +50,7 @@ export const USER: User = {
   GOOGLEACCTOKEN: '',
   AUTHCODE: '',
   IDTOKEN: '',
+  IS_NEW_USER: false,
 };
 
 //채팅 로그 저장 타입

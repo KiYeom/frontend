@@ -19,11 +19,18 @@ export const Bubble = styled.View<{ status: 'bot' | 'user' }>`
 `;
 
 //채팅 말풍선 안에 글자
-export const BubbleText = styled.Text<{ status: 'bot' | 'user' }>`
-  font-size: ${rsFont * 12 + 'px'};
+export const BubbleText = styled.Text<{
+  status: 'bot' | 'user' | 'time' | 'date';
+}>`
+  font-size : ${(props) => (props.status === 'time' ? rsFont * 10 + 'px' : rsFont * 12 + 'px')}
   font-family: Pretendard-Regular;
-  color: ${(props) => (props.status === 'bot' ? palette.neutral[500] : '#fff')};
-  text-align: 'left';
+  color: ${(props) =>
+    props.status === 'bot'
+      ? palette.neutral[500]
+      : props.status === 'user'
+        ? '#fff'
+        : palette.neutral[400]};
+  text-align: ${(props) => (props.status === 'date' ? 'center' : 'left')}
 `;
 
 //채팅 말풍선 옆에 시간
