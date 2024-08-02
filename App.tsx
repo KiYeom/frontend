@@ -8,7 +8,6 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as Device from 'expo-device';
 import axios from 'axios';
 import { storage } from './src/utils/storageUtils';
-import { initializeKakaoSDK } from '@react-native-kakao/core';
 import {
   USER,
   ACCESSTOKEN,
@@ -27,7 +26,6 @@ import * as amplitude from '@amplitude/analytics-react-native';
 import SettingStackNavigator from './src/navigators/SettingStackNavigator';
 import SignUpStackNavigator from './src/navigators/SignUpStackNavigator';
 import HomeStackNavigator from './src/navigators/HomeStackNavigator';
-import { login } from '@react-native-kakao/user';
 amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE);
 amplitude.track('Sign Up');
 
@@ -55,7 +53,6 @@ const App: React.FC = () => {
     //storage.delete(ACCESSTOKEN);
     //storage.delete(REFRESHTOKEN);
     //setIsSignIn(true);
-    initializeKakaoSDK('fde942b7bcfc473b13abe2aabd877806');
     bootstrap();
   }, [loaded]);
 
@@ -107,7 +104,7 @@ const App: React.FC = () => {
             console.log('config : ', error.code);
             console.log('request : ', error.request);
             console.log('refreshToken error(data): ', error.response.data);
-            console.log('refreshToken error(stats)', error.response.status);
+            console.log('refreshToken error(stats)', error.response.status); //TODO : 500번 에러
             console.log('refreshToken error(headers)', error.response.headers);
             setIsSignIn(false); //로그인 실패
             console.log('요청 실패 isSignIn : ', isSignIn);

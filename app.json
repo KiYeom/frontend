@@ -69,7 +69,6 @@
         {
           "android": {
             "usesCleartextTraffic": true,
-            "extraMavenRepos": ["https://devrepo.kakao.com/nexus/content/groups/public/"],
             "newArchEnabled": true
           },
           "ios": {
@@ -77,14 +76,7 @@
           }
         }
       ],
-      [
-        "@react-native-kakao/core",
-        {
-          "nativeAppKey": "fde942b7bcfc473b13abe2aabd877806",
-          "android": {},
-          "ios": {}
-        }
-      ],
+
       "expo-apple-authentication",
       "expo-localization",
       "expo-build-properties"

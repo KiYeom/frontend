@@ -16,6 +16,5 @@ export const DateLine = styled.View`
   padding-horizontal: ${rsWidth * 10 + 'px'};
   padding-top: ${rsHeight * 20 + 'px'};
   padding-bottom: ${rsWidth * 8 + 'px'};
-  background-color: pink;
   justify-content: center;
 `;

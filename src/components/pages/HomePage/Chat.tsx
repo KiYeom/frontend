@@ -38,6 +38,7 @@ import { TextInputContainer } from './Chat.style';
 import { ChatContainer } from './Chat.style';
 import { DateLine } from './Chat.style';
 //채팅 페이지
+
 const Chat: React.FC = () => {
   const flatListRef = useRef<FlatList<any>>(null);
   const [text, setText] = useState(''); //유저가 작성한 말
@@ -135,30 +136,33 @@ const Chat: React.FC = () => {
   };
 
   //item.sender, item.text
-  const renderItem = ({ item }: any) => {
+  const renderItem = ({ item, index }: any) => {
     const currentDate = item.date;
     let showDateLine = false;
+
     console.log('==========renderItem========', item.text);
-    if (currentDate !== previousDateRef.current) {
-      console.log('----------');
-      console.log(currentDate, item.text);
-      console.log(previousDateRef);
+    console.log('==========currentDate========', currentDate);
+    console.log('==========previousDate=======', previousDateRef.current);
+    // 첫 번째 항목이거나, 이전 항목과 다른 날짜일 경우 날짜 표시
+    if (index === data.length - 1 || currentDate !== previousDateRef.current) {
       showDateLine = true;
       previousDateRef.current = currentDate;
     }
 
     return (
-      <>
+      <View style={{ flex: 1 }}>
+        {showDateLine && (
+          <DateLine>
+            <BubbleText status="date">{item.date}</BubbleText>
+          </DateLine>
+        )}
         <ChatBubble
           showImage={item.sender === 'bot' ? true : false}
           status={item.sender}
           text={item.text}
           time={item.time}
         />
-        <DateLine>
-          <BubbleText status="date">{item.date}</BubbleText>
-        </DateLine>
-      </>
+      </View>
     );
   };
 
@@ -208,7 +212,7 @@ const styles = StyleSheet.create({
     //padding : 16,
   },
   flatList: {
-    flexGrow: 1,
+    //flexGrow: 1,
     //backgroundColor: 'yellow',
     //padding : 16,
     //backgroundColor: 'yellow',

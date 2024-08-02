@@ -75,7 +75,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
       //const response = await axiosInstance.delete('/auth/deactivate');
       console.log(deactivateInfo);
       const response = await instance.delete('/v1/auth/deactivate', {
-        reasons: deactivateInfo,
+        params: { reasons: deactivateInfo },
       });
       console.log('서버 회원탈퇴 응답 : ');
       setIsSignIn(false);
