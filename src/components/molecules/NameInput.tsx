@@ -22,19 +22,19 @@ const validateName = (name: string): 'error' | 'default' | 'correct' => {
 };
 
 const NameInput: React.FC<NameInputProps> = ({ name, setName }) => {
-  const [text, setText] = React.useState('');
+  const [text, setText] = React.useState(name);
   return (
     <FormContainer>
       <Label>닉네임</Label>
       <Input
         placeholder="이름"
-        status={validateName(name)}
+        status={validateName(text)}
         message="2~15 글자 사이의 이름을 지어주세요!"
         withMessage={true}
         onChange={(text) => {
-          if (text.length <= 15) setName(text);
+          if (text.length <= 15) setText(text);
         }}
-        value={name}
+        value={text}
       />
     </FormContainer>
   );

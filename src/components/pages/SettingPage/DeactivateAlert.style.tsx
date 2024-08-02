@@ -12,7 +12,6 @@ export const Container = styled.View`
 
 export const SignOutTitleContainer = styled.View`
   align-items: center;
-  background-color: yellow;
 `;
 
 export const SignOutTitle = styled.Text<{ status: 'default' | 'number' }>`

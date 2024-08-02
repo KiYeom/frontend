@@ -47,7 +47,11 @@ const EditUserInfo: React.FC = () => {
           disabled={!(validateName(name) === 'correct')}
           primary={true}
           onPress={() =>
-            userEditInfo({ nickname: name, birthdate: USER.BIRTHDATE, gender: USER.GENDER })
+            userEditInfo({
+              nickname: name,
+              birthdate: USER.BIRTHDATE ?? null,
+              gender: USER.GENDER ?? null,
+            })
           }
         />
       </CTAContainer>

@@ -33,7 +33,7 @@ const DeactivateAlert: React.FC = ({ route, navigation }) => {
       <SignOutTitleContainer>
         <SignOutTitle status="default">
           reMIND에서 쿠키와{'\n'}
-          <SignOutTitle status="number">317</SignOutTitle>
+          <SignOutTitle status="number">{chatCount}</SignOutTitle>
           번의 대화를 나누었어요!
         </SignOutTitle>
       </SignOutTitleContainer>

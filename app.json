@@ -68,8 +68,21 @@
         "expo-build-properties",
         {
           "android": {
-            "usesCleartextTraffic": true
+            "usesCleartextTraffic": true,
+            "extraMavenRepos": ["https://devrepo.kakao.com/nexus/content/groups/public/"],
+            "newArchEnabled": true
+          },
+          "ios": {
+            "newArchEnabled": true
           }
+        }
+      ],
+      [
+        "@react-native-kakao/core",
+        {
+          "nativeAppKey": "fde942b7bcfc473b13abe2aabd877806",
+          "android": {},
+          "ios": {}
         }
       ],
       "expo-apple-authentication",

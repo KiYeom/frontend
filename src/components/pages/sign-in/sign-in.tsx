@@ -16,10 +16,10 @@ import SignUpStackNavigator from '../../../navigators/SignUpStackNavigator';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { ssoLogin } from '../../../apis/auth';
 import { storage } from '../../../utils/storageUtils';
-import { ACCESSTOKEN, NICKNAME, REFRESHTOKEN, USER } from '../../../constants/Constants';
+import { ACCESSTOKEN, REFRESHTOKEN, USER } from '../../../constants/Constants';
 import HomeStackNavigator from '../../../navigators/HomeStackNavigator';
 import useIsSignInState from '../../../store/signInStatus';
-
+import { NICKNAME, BIRTHDATE, GENDER } from '../../../constants/Constants';
 const windowDimensions = require('react-native').Dimensions.get('window');
 const screenDimensions = require('react-native').Dimensions.get('screen');
 
@@ -41,6 +41,9 @@ const googleLogin = async () => {
     if (res) {
       storage.set(ACCESSTOKEN, res.accessToken);
       storage.set(REFRESHTOKEN, res.refreshToken);
+      storage.set(NICKNAME, res.nickname!);
+      storage.set(BIRTHDATE, res.birthdate ?? 'unknown');
+      storage.set(GENDER, res.gender ?? 'unknown');
       //유저의 개인 정보 저장
 
       console.log(res);
@@ -59,8 +62,8 @@ const appleLogin = async () => {
   try {
     //TODO: 사용자가 로그인을 취소할 때의 처리 필요
     const credential = await AppleAuthentication.signInAsync();
-    if (credential.identityToken) {
-      const res = await ssoLogin(credential.identityToken, 'apple');
+    if (credential.authorizationCode) {
+      const res = await ssoLogin(credential.authorizationCode, 'apple');
 
       if (res) {
         console.log(res.accessToken);
@@ -117,7 +120,9 @@ const Login: React.FC<any> = ({ navigation }) => {
         <LoginBtn
           vendor="kakao"
           activeOpacity={1}
-          onPress={() => navigation.navigate(SignUpStackNavigator)}>
+          onPress={() => {
+            navigation.navigate(SignUpStackNavigator);
+          }}>
           <LoginBtnIcon source={require('../../../assets/images/kakao.png')} />
           <LoginBtnLabel vendor="kakao">카카오 로그인</LoginBtnLabel>
         </LoginBtn>

@@ -1,6 +1,6 @@
 import { storage } from './storageUtils';
 import { ACCESSTOKEN, REFRESHTOKEN, USER } from '../constants/Constants';
-
+import { NICKNAME, BIRTHDATE, GENDER } from '../constants/Constants';
 //로그인 성공 시 실행하는 함수
 //소셜로그인에 성공한 경우 (= 가입한 적이 있는 유저) 서버는 토큰을 클라이언트에게 발급
 //발급한 토큰을 클라이언트는 storage에 key-value로 저장
@@ -12,6 +12,9 @@ const handleLoginResponse = (response: any) => {
   USER.NICKNAME = response.data.data.nickname;
   USER.BIRTHDATE = response.data.data.birthdate;
   USER.GENDER = response.data.data.gender;
+  storage.set(NICKNAME, response.data.data.nickname);
+  storage.set(BIRTHDATE, response.data.data.birthDate);
+  storage.set(GENDER, response.data.data.gender);
   console.log('로그인 성공. 로그인을 위해 전달한 데이터 : ', response);
 };
 

@@ -1,25 +1,56 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Button from '../../button/button';
-import CustomTextArea from '../../atoms/CustomTextArea';
 import DeactivateReasonCheckBoxs from '../../molecules/DeactivateReasonCheckBoxs';
-import Calender from '../../../assets/images/calendar.svg';
 import { Alert } from 'react-native';
-import { USER } from '../../../constants/Constants';
 import { SignOutTitle, SignOutTitleContainer, Container } from './DeactivateAlert.style';
 import { storage } from '../../../utils/storageUtils';
 import { NICKNAME } from '../../../constants/Constants';
-import { CTAContainer } from '../sign-up/input-name/input-name.styles';
-import { CheckboxContainer, SignOutButtonContaier } from './DeactivateReason.style';
-import TextArea from '../../textarea/TextArea';
+import { CheckboxContainer } from './DeactivateReason.style';
 import { useState } from 'react';
-let deactivateReason = '';
+import { FormContainer } from './DeactivateReason.style';
+import { reasons } from '../../../constants/Constants';
+import { useEffect } from 'react';
 const DeactivateReason: React.FC = ({ route }) => {
-  const [text, setText] = useState('');
-  const onChangeText = () => {
-    setText(text);
-  };
   const { deactivateRequest } = route.params;
+  const [btnDisable, setBtnDisable] = useState<boolean>(true);
+  const [isChecked, setIsChecked] = useState<boolean[]>(Array(reasons.length).fill(false));
+  const [text, setText] = useState<string>('');
+  let deactivateInfo = '';
+
+  // useEffect를 사용하여 isChecked 변화에 따라 버튼의 비활성화 상태 변경
+  // 모두 체크가 안 되어있으면 btnDisable = true.
+  // 기타를 체크했지만 기타(idx 3)에 글자가 안적혀있으면 btnDisable = true
+
+  useEffect(() => {
+    const allUnchecked = isChecked.every((checked) => !checked);
+    const isEtcChecked = isChecked[3]; // "기타" 체크박스 상태
+    const isEtcTextEmpty = text === '';
+
+    // 조건: 모든 체크박스가 해제되었거나, "기타"가 선택되었지만 입력이 없을 경우 비활성화
+    if (allUnchecked || (isEtcChecked && isEtcTextEmpty)) {
+      setBtnDisable(true);
+    } else {
+      setBtnDisable(false);
+    }
+    console.log('text', text);
+  }, [isChecked, text]); // 의존성 배열에 etcText 추가
+
+  // 체크된 인덱스를 찾아 해당 이유를 추출
+  const saveReason = () => {
+    const selectedReasons = isChecked
+      .map((checked, index) => {
+        if (checked) {
+          return index === 3 ? text : reasons[index];
+        }
+        return null;
+      })
+      .filter((reason) => reason !== null);
+    deactivateInfo = JSON.stringify(selectedReasons);
+    //console.log('Selected reasons:', selectedReasons);
+    //console.log('selected...', JSON.stringify(selectedReasons));
+  };
+
   return (
     <Container>
       <SignOutTitleContainer>
@@ -27,57 +58,39 @@ const DeactivateReason: React.FC = ({ route }) => {
           {storage.getString(NICKNAME)}님,{'\n'}떠나시는 이유를 알려주세요
         </SignOutTitle>
       </SignOutTitleContainer>
-      <CheckboxContainer>
-        <DeactivateReasonCheckBoxs />
-        <TextArea
-          placeholder="떠나시는 이유를 작성해주세요"
-          value={text}
-          onChange={(text) => {
-            setText(text);
+      <FormContainer>
+        <CheckboxContainer>
+          <DeactivateReasonCheckBoxs
+            isChecked={isChecked}
+            setIsChecked={setIsChecked}
+            text={text}
+            setText={setText}
+          />
+        </CheckboxContainer>
+        <Button
+          title="탈퇴하기"
+          disabled={btnDisable}
+          primary={true}
+          onPress={() => {
+            saveReason();
+            console.log('탈퇴 버튼 누름');
+            Alert.alert(
+              '정말 탈퇴하시겠어요?', // 첫번째 text: 타이틀 큰 제목
+              '탈퇴 버튼 선택 시, 계정은 삭제되며 복구되지 않습니다', // 두번째 text: 작은 제목
+              [
+                { text: '취소', onPress: () => console.log('탈퇴 취소함') },
+                {
+                  text: '탈퇴', // 버튼 제목
+                  onPress: () => deactivateRequest(deactivateInfo),
+                },
+              ],
+              { cancelable: false }, //alert 밖에 눌렀을 때 alert 안 없어지도록
+            );
+            //deactivateRequest();
           }}
         />
-      </CheckboxContainer>
-      <Button
-        title="탈퇴하기"
-        disabled={false}
-        primary={true}
-        onPress={() => {
-          console.log('탈퇴 버튼 누름');
-          deactivateReason = text;
-          console.log('떠나는 이유 서술형 ', deactivateReason);
-          Alert.alert(
-            '정말 탈퇴하시겠어요?', // 첫번째 text: 타이틀 큰 제목
-            '탈퇴 버튼 선택 시, 계정은 삭제되며 복구되지 않습니다', // 두번째 text: 작은 제목
-            [
-              { text: '취소', onPress: () => console.log('탈퇴 취소함') },
-              {
-                text: '탈퇴', // 버튼 제목
-                onPress: () => deactivateRequest(),
-              },
-            ],
-            { cancelable: false }, //alert 밖에 눌렀을 때 alert 안 없어지도록
-          );
-          //deactivateRequest();
-        }}
-      />
+      </FormContainer>
     </Container>
   );
 };
 export default DeactivateReason;
-const styles = StyleSheet.create({
-  checkbox: {
-    marginBottom: 20,
-  },
-  row: {
-    alignItems: 'center',
-  },
-  txt: {
-    fontSize: 28,
-    marginTop: 40,
-  },
-  container: {
-    backgroundColor: 'white',
-    paddingHorizontal: 24,
-    flex: 1,
-  },
-});

@@ -14,6 +14,7 @@ import useIsSignInState from '../../../store/signInStatus';
 import useNicknameState from '../../../store/nicknameState';
 import * as Notifications from 'expo-notifications';
 import UserInfomation from '../../molecules/UserInfomation';
+import { instance } from '../../../apis/interceptor';
 interface UserInfo {
   email: string;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
@@ -68,10 +69,14 @@ const Setting: React.FC<any> = ({ navigation }) => {
     }
   };
   //회원 탈퇴
-  const deactivateRequest = async () => {
+  const deactivateRequest = async (deactivateInfo: string) => {
     console.log('deactivate Request 시작');
     try {
-      const response = await axiosInstance.delete('/auth/deactivate');
+      //const response = await axiosInstance.delete('/auth/deactivate');
+      console.log(deactivateInfo);
+      const response = await instance.delete('/v1/auth/deactivate', {
+        reasons: deactivateInfo,
+      });
       console.log('서버 회원탈퇴 응답 : ');
       setIsSignIn(false);
       navigation.navigate('Login');

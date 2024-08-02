@@ -8,6 +8,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as Device from 'expo-device';
 import axios from 'axios';
 import { storage } from './src/utils/storageUtils';
+import { initializeKakaoSDK } from '@react-native-kakao/core';
 import {
   USER,
   ACCESSTOKEN,
@@ -26,7 +27,7 @@ import * as amplitude from '@amplitude/analytics-react-native';
 import SettingStackNavigator from './src/navigators/SettingStackNavigator';
 import SignUpStackNavigator from './src/navigators/SignUpStackNavigator';
 import HomeStackNavigator from './src/navigators/HomeStackNavigator';
-
+import { login } from '@react-native-kakao/user';
 amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE);
 amplitude.track('Sign Up');
 
@@ -54,6 +55,7 @@ const App: React.FC = () => {
     //storage.delete(ACCESSTOKEN);
     //storage.delete(REFRESHTOKEN);
     //setIsSignIn(true);
+    initializeKakaoSDK('fde942b7bcfc473b13abe2aabd877806');
     bootstrap();
   }, [loaded]);
 
