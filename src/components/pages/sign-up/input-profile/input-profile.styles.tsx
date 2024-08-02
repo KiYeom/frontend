@@ -18,7 +18,6 @@ export const ButtonGroup = styled.View`
   display: flex;
   flex-direction: row;
   gap: ${rsWidth * 8 + 'px'};
-  background-color: red;
   flex: 1;
 `;
 

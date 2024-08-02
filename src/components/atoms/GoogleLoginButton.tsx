@@ -17,6 +17,7 @@ import {
   REFRESHTOKEN,
   USER,
 } from '../../constants/Constants';
+import { NICKNAME, BIRTHDATE, GENDER } from '../../constants/Constants';
 import SignUp from '../../navigators/SignUpStackNavigator';
 import useIsSignInState from '../../store/signInStatus';
 import { handleLoginResponse, handleLoginError } from '../../utils/LoginHandle';
@@ -64,6 +65,7 @@ const GoogleLoginButton: React.FC<any> = ({ navigation }) => {
               deviceOs: USER.DEVICEOS,
             })
             .then(function (response) {
+              //로그인 성공
               handleLoginResponse(response);
               setIsSignIn(true);
             })

@@ -13,6 +13,8 @@ import {
   Title,
   TitleContaienr,
 } from './input-name.styles';
+import { storage } from '../../../../utils/storageUtils';
+import { NICKNAME } from '../../../../constants/Constants';
 import React, { useCallback, useEffect } from 'react';
 import Button from '../../../button/button';
 import Input from '../../../input/input';
@@ -31,7 +33,8 @@ const InputName = ({ navigation }: { navigation: NavigationProp<any> }) => {
   const [name, setName] = React.useState('');
 
   const saveName = async (name: string) => {
-    await AsyncStorage.setItem('name', name);
+    //await AsyncStorage.setItem('name', name);
+    storage.set(NICKNAME, name);
     navigation.navigate('input-profile');
   };
 
@@ -51,7 +54,7 @@ const InputName = ({ navigation }: { navigation: NavigationProp<any> }) => {
             status={validateName(name)}
             message="2~15 글자 사이의 이름을 지어주세요!"
             withMessage={true}
-            onChagne={(text) => {
+            onChange={(text) => {
               if (text.length < 15) setName(text);
             }}
             value={name}

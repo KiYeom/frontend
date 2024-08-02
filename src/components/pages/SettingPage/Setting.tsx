@@ -1,12 +1,9 @@
-import { StatusBar } from 'expo-status-bar';
-import { Image } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
 import React, { useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { ACCESSTOKEN, CHATLOG, REFRESHTOKEN, USER } from '../../../constants/Constants';
 import { Provider, Button, TextInput } from 'react-native-paper';
 import { storage } from '../../../utils/storageUtils';
-import { Switch } from 'react-native-paper';
 import useNotificationState from '../../../store/notificationState';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import SettingMenus from '../../organisms/SettingMenus';
@@ -17,6 +14,7 @@ import useIsSignInState from '../../../store/signInStatus';
 import useNicknameState from '../../../store/nicknameState';
 import * as Notifications from 'expo-notifications';
 import UserInfomation from '../../molecules/UserInfomation';
+import { instance } from '../../../apis/interceptor';
 interface UserInfo {
   email: string;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
@@ -71,10 +69,14 @@ const Setting: React.FC<any> = ({ navigation }) => {
     }
   };
   //회원 탈퇴
-  const deactivateRequest = async () => {
+  const deactivateRequest = async (deactivateInfo: string) => {
     console.log('deactivate Request 시작');
     try {
-      const response = await axiosInstance.delete('/auth/deactivate');
+      //const response = await axiosInstance.delete('/auth/deactivate');
+      console.log(deactivateInfo);
+      const response = await instance.delete('/v1/auth/deactivate', {
+        params: { reasons: deactivateInfo },
+      });
       console.log('서버 회원탈퇴 응답 : ');
       setIsSignIn(false);
       navigation.navigate('Login');
@@ -177,6 +179,8 @@ const Setting: React.FC<any> = ({ navigation }) => {
     console.log('서버에 저장된 값 : ', isSwitchOn);
   }, []);
 
+  console.log('설정화면 클릭함');
+
   return (
     <PaperProvider>
       <Portal>
@@ -210,9 +214,13 @@ const Setting: React.FC<any> = ({ navigation }) => {
 
       <View style={styles.container}>
         <View style={styles.userInfo}>
-          <UserInfomation />
+          <UserInfomation navigation={navigation} />
         </View>
-        <SettingMenus navigation={navigation} showModal={showModal} />
+        <SettingMenus
+          navigation={navigation}
+          logoutRequest={logoutRequest}
+          deactivateRequest={deactivateRequest}
+        />
       </View>
     </PaperProvider>
   );

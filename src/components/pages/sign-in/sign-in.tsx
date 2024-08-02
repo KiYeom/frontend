@@ -18,7 +18,8 @@ import { ssoLogin } from '../../../apis/auth';
 import { storage } from '../../../utils/storageUtils';
 import { ACCESSTOKEN, REFRESHTOKEN, USER } from '../../../constants/Constants';
 import HomeStackNavigator from '../../../navigators/HomeStackNavigator';
-
+import useIsSignInState from '../../../store/signInStatus';
+import { NICKNAME, BIRTHDATE, GENDER } from '../../../constants/Constants';
 const windowDimensions = require('react-native').Dimensions.get('window');
 const screenDimensions = require('react-native').Dimensions.get('screen');
 
@@ -34,11 +35,17 @@ const googleLogin = async () => {
     const googleTokens = await await GoogleSignin.getTokens();
     console.log(googleTokens);
     const googleAccessToken = googleTokens.accessToken;
+    console.log('유정이짱', googleAccessToken);
     const res = await ssoLogin(googleAccessToken, 'google');
 
     if (res) {
       storage.set(ACCESSTOKEN, res.accessToken);
       storage.set(REFRESHTOKEN, res.refreshToken);
+      storage.set(NICKNAME, res.nickname!);
+      storage.set(BIRTHDATE, res.birthdate ?? 'unknown');
+      storage.set(GENDER, res.gender ?? 'unknown');
+      //유저의 개인 정보 저장
+
       console.log(res);
       USER.IS_NEW_USER = res.isNewUser;
       if (res.isNewUser === true && res.nickname) {
@@ -55,8 +62,8 @@ const appleLogin = async () => {
   try {
     //TODO: 사용자가 로그인을 취소할 때의 처리 필요
     const credential = await AppleAuthentication.signInAsync();
-    if (credential.identityToken) {
-      const res = await ssoLogin(credential.identityToken, 'apple');
+    if (credential.authorizationCode) {
+      const res = await ssoLogin(credential.authorizationCode, 'apple');
 
       if (res) {
         console.log(res.accessToken);
@@ -75,6 +82,7 @@ const appleLogin = async () => {
 
 //로그인 페이지
 const Login: React.FC<any> = ({ navigation }) => {
+  const { isSignIn, setIsSignIn } = useIsSignInState();
   const onHandleLogin = async (vendor: 'google' | 'apple' | 'kakao') => {
     try {
       switch (vendor) {
@@ -91,7 +99,8 @@ const Login: React.FC<any> = ({ navigation }) => {
         //새로운 유저
         navigation.navigate(SignUpStackNavigator);
       } else if (USER.IS_NEW_USER === false) {
-        alert('기존 유저, 정보 저장 필요' + USER.NICKNAME);
+        //기존 유저인 경우
+        setIsSignIn(true);
       } else {
         alert('로그인 실패');
       }
@@ -111,7 +120,9 @@ const Login: React.FC<any> = ({ navigation }) => {
         <LoginBtn
           vendor="kakao"
           activeOpacity={1}
-          onPress={() => navigation.navigate(SignUpStackNavigator)}>
+          onPress={() => {
+            navigation.navigate(SignUpStackNavigator);
+          }}>
           <LoginBtnIcon source={require('../../../assets/images/kakao.png')} />
           <LoginBtnLabel vendor="kakao">카카오 로그인</LoginBtnLabel>
         </LoginBtn>

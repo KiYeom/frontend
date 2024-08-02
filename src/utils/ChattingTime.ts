@@ -19,4 +19,13 @@ const formatTime = (date: number): string => {
   return `${period} ${hours}:${formattedMinutes}`;
 };
 
-export { getTime, formatTime };
+//현재 시간을 [yyyy년 mm월 dd일]으로 변경하는 함수
+const formatDate = (date: number): string => {
+  const dateObject = new Date(date);
+  const year = dateObject.getFullYear();
+  const month = String(dateObject.getMonth() + 1).padStart(2, '0');
+  const day = String(dateObject.getDate()).padStart(2, '0');
+  return `${year}년 ${month}월 ${day}일`;
+};
+
+export { getTime, formatTime, formatDate };

@@ -4,6 +4,9 @@ export const APP_VERSION = '1.0.0';
 export const ACCESSTOKEN = 'ACCESSTOKEN';
 export const REFRESHTOKEN = 'REFRESHTOKEN';
 export const CHATLOG = 'CHATLOG';
+export const NICKNAME = 'NICKNAME';
+export const GENDER = 'GENDER';
+export const BIRTHDATE = 'BIRTHDATE';
 
 export const GOOGLE = 'google';
 export const APPLE = 'apple';
@@ -11,6 +14,13 @@ export const APPLE = 'apple';
 export const ERRORMESSAGE = '멍멍!🐶 쿠키 조금 아픈데 잠시 후에 다시 얘기해도 될까요?😣';
 
 export const SPLASH_PATH = '/src/assets/images/splash.png';
+
+export const reasons = [
+  '쿠키가 나의 이야기를 잘 이해하지 못했다',
+  '쿠키가 나를 잘 공감해주지 못했다',
+  '쿠키가 나에게 상처가 되는 말을 했다',
+  '기타',
+];
 
 export interface User {
   EMAIL: string | null;

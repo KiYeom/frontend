@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { useState } from 'react';
+import { useState, useLayoutEffect } from 'react';
 import { useRoute } from '@react-navigation/native';
 type Author = {
   name: string;
@@ -33,11 +33,25 @@ type License = {
   _licenseContent?: string;
 };
 
-const LicenseDetailPage: React.FC<any> = () => {
+const LicenseDetailPage: React.FC<any> = ({ navigation }) => {
   //const [selectedLicense, setSelectedLicense] = useState<string | null>(null);
   const route = useRoute();
   const { item }: any = route.params;
+  //useRoute를 통해 넘겨온 데이터를 받을 수 있음, object 형태
   console.log('전달받은 데이터 : ', item);
+
+  const HeaderTitle: React.FC<any> = ({ title }) => (
+    <Text style={{ fontSize: 18, width: 250 }} ellipsizeMode="tail" numberOfLines={1}>
+      {title}
+    </Text>
+  );
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: () => <HeaderTitle title={item.libraryName} />,
+    });
+  }, [navigation, item.libraryName]);
+
   return (
     <ScrollView style={styles.details}>
       {item.version ? <Text>Version: {item.version}</Text> : null}

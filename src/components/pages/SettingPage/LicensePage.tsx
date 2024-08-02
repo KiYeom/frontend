@@ -48,8 +48,7 @@ const LicensePage: React.FC<any> = ({ navigation }) => {
         onPress={() => {
           setSelectedLicense(item.libraryName);
           navigation.navigate('LicenseDetailPage', { item });
-          //console.log("hihihi",item.libraryName);
-          //console.log("byebyebye", item);
+          //naviage('페이지', 넘겨줄 데이터)
         }}
         style={styles.touchable}>
         <Text>{item.libraryName}</Text>

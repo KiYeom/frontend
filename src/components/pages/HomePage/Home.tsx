@@ -12,41 +12,28 @@ import requestPermission from '../../../utils/NotificationToken';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SPLASH_PATH } from '../../../constants/Constants';
-
+import HomeChatBtn from '../../atoms/HomeBtn/HomeChatBtn';
+import { HomeContainer } from './Home.style';
 const Home: React.FC<any> = ({ navigation }) => {
   useEffect(() => {
     requestPermission();
   }, []);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.txt1}>🐾오늘도 와줘서 고마워멍!૮ ・ﻌ・ა</Text>
-        <Image source={{ uri: SPLASH_PATH }} style={styles.image} resizeMode="contain" />
-        <StartButton navigation={navigation} />
-      </View>
-      {/*<View style={styles.footer}>
-        <Text style={styles.txt1}>오늘의 감정 기록</Text>
-        <View style={styles.footerContainer}>
-          <Text>감정기록박스</Text>
-          <Button
-            title="감정기록하기"
-            onPress={() => navigation.navigate('HomeStackNavigator', { screen: 'MoodChart' })}
-          />
-        </View>
-      </View>*/}
-    </View>
+    <HomeContainer>
+      <HomeChatBtn navigation={navigation} />
+    </HomeContainer>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
+    backgroundColor: 'pink',
+    //alignItems: 'center',
+    alignContent: 'center',
     justifyContent: 'center',
-    paddingLeft: 16,
-    paddingRight: 16,
+    paddingHorizontal: 10,
   },
   header: {
     alignItems: 'center',
@@ -55,11 +42,7 @@ const styles = StyleSheet.create({
     height: '50%',
     width: '100%',
   },
-  //center: {
-  //flex: 1,
-  //justifyContent: 'center',
-  //alignItems: 'center',
-  //},
+
   footer: {
     alignItems: 'center',
     marginBottom: 30, // 하단에 약간의 여백 추가

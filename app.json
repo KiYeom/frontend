@@ -68,10 +68,15 @@
         "expo-build-properties",
         {
           "android": {
-            "usesCleartextTraffic": true
+            "usesCleartextTraffic": true,
+            "newArchEnabled": true
+          },
+          "ios": {
+            "newArchEnabled": true
           }
         }
       ],
+
       "expo-apple-authentication",
       "expo-localization",
       "expo-build-properties"
