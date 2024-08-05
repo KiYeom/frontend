@@ -21,6 +21,56 @@ const CHATTING = 'chatting';
 //Notice
 const NOTICE = 'notice';
 
+//setTokenInfo
+export const setTokenInfo = (accessToken: string, refreshToken: string): void => {
+  setAccessToken(accessToken);
+  setRefreshToken(refreshToken);
+};
+
+//clearTokenInfo
+export const clearTokenInfo = (): void => {
+  storage.delete(ACCESS_TOKEN);
+  storage.delete(REFRESH_TOKEN);
+};
+
+//setUserInfo
+export const setUserInfo = (
+  nickname: string | null,
+  birthdate: string | null,
+  gender: TGender | null,
+): void => {
+  if (nickname) setUserNickname(nickname);
+  if (birthdate) setUserBirthdate(birthdate);
+  if (gender) setUserGender(gender);
+};
+
+//clearUserInfo
+export const clearUserInfo = (): void => {
+  storage.delete(USER_NICKNAME);
+  storage.delete(USER_BIRTHDATE);
+  storage.delete(USER_GENDER);
+};
+
+export const setInfoWhenLogin = (
+  nickname: string | null,
+  birthdate: string | null,
+  gender: TGender | null,
+  accessToken: string,
+  refreshToken: string,
+  notice: TNotice | null,
+): void => {
+  setUserInfo(nickname, birthdate, gender);
+  setTokenInfo(accessToken, refreshToken);
+  if (notice) setNotice(notice);
+};
+
+export const clearInfoWhenLogout = (): void => {
+  clearUserInfo();
+  clearTokenInfo();
+  deleteNotice();
+  deleteChatting();
+};
+
 //AccessToken
 export const getAccessToken = (): string | undefined => {
   return storage.getString(ACCESS_TOKEN);
@@ -31,7 +81,6 @@ export const setAccessToken = (accessToken: string): void => {
 };
 
 export const deleteAccessToken = (): void => {
-  console.error('deleteAccessToken');
   storage.delete(ACCESS_TOKEN);
 };
 
@@ -128,54 +177,4 @@ export const setNotice = (notice: TNotice): void => {
 
 export const deleteNotice = (): void => {
   storage.delete(NOTICE);
-};
-
-//setTokenInfo
-export const setTokenInfo = (accessToken: string, refreshToken: string): void => {
-  setAccessToken(accessToken);
-  setRefreshToken(refreshToken);
-};
-
-//clearTokenInfo
-export const clearTokenInfo = (): void => {
-  storage.delete(ACCESS_TOKEN);
-  storage.delete(REFRESH_TOKEN);
-};
-
-//setUserInfo
-export const setUserInfo = (
-  nickname: string | null,
-  birthdate: string | null,
-  gender: TGender | null,
-): void => {
-  if (nickname) setUserNickname(nickname);
-  if (birthdate) setUserBirthdate(birthdate);
-  if (gender) setUserGender(gender);
-};
-
-//clearUserInfo
-export const clearUserInfo = (): void => {
-  storage.delete(USER_NICKNAME);
-  storage.delete(USER_BIRTHDATE);
-  storage.delete(USER_GENDER);
-};
-
-export const setInfoWhenLogin = (
-  nickname: string | null,
-  birthdate: string | null,
-  gender: TGender | null,
-  accessToken: string,
-  refreshToken: string,
-  notice: TNotice | null,
-): void => {
-  setUserInfo(nickname, birthdate, gender);
-  setTokenInfo(accessToken, refreshToken);
-  if (notice) setNotice(notice);
-};
-
-export const clearInfoWhenLogout = (): void => {
-  clearUserInfo();
-  clearTokenInfo();
-  deleteNotice();
-  deleteChatting();
 };

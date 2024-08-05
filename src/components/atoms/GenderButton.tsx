@@ -1,10 +1,9 @@
 import React from 'react';
-import { Text, View, Image } from 'react-native';
+import { Text, View } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native';
-import { useState } from 'react';
-import { Button } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+
 interface props {
   selectedGender: string;
   setSelectedGender: (gender: string) => void;

@@ -1,7 +1,4 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
-import { Button } from 'react-native-paper';
-import palette from '../../assets/styles/theme';
 import { Label } from '../pages/sign-up/input-profile/input-profile.styles';
 import {
   ButtonGroup,
@@ -9,6 +6,7 @@ import {
   BtnLabel,
 } from '../pages/sign-up/input-profile/input-profile.styles';
 import { FormContainer } from '../pages/sign-up/input-profile/input-profile.styles';
+
 const GenderInput: React.FC<any> = ({ gender, setGender }): any => {
   return (
     <FormContainer>

@@ -47,7 +47,7 @@ const App: React.FC = () => {
   //앱이 처음 실행이 될 때 현재 우리 앱의 유저인지 파악
   useEffect(() => {
     bootstrap();
-  }, []);
+  }, []); //여기의 빈 배열 삭제하면 큰일 나 ㅇㅅㅇ;;
 
   const bootstrap = async (): Promise<void> => {
     //디바이스 아이디 설정
@@ -66,7 +66,6 @@ const App: React.FC = () => {
     }
 
     //토큰 재발급
-
     await reissueAccessToken(refreshToken, true);
     const accessToken = getAccessToken();
     if (!accessToken) {

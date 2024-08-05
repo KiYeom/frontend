@@ -9,7 +9,6 @@ import LicensePage from '../components/pages/SettingPage/LicensePage'; //오픈�
 import LicenseDetailPage from '../components/pages/SettingPage/LicenseDetailPage'; //오픈소스 라이센스 상세 페이지
 import DeactivateReason from '../components/pages/SettingPage/DeactivateReason';
 import DeactivateAlert from '../components/pages/SettingPage/DeactivateAlert';
-import { Text, View } from 'react-native';
 import Header from '../components/header/header';
 
 const Stack = createNativeStackNavigator();

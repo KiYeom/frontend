@@ -1,34 +1,12 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import {
-  Text,
-  View,
-  StyleSheet,
-  FlatList,
-  KeyboardAvoidingView,
-  Platform,
-  Keyboard,
-  TouchableWithoutFeedback,
-} from 'react-native';
-import { BubbleText, ChatBubbleContainer } from './ChatBubble.style';
+import { View, StyleSheet, FlatList, KeyboardAvoidingView, Platform } from 'react-native';
+import { BubbleText } from './ChatBubble.style';
 import ChatBubble from './ChatBubble';
 import Input from '../../input/input';
-import { ContentContainer } from '../sign-up/input-name/input-name.styles';
-import { Button, TextInput, IconButton } from 'react-native-paper';
 //import ChatBubble from '../../atoms/ChatBubble';
-import { Image } from 'react-native';
-import axios from 'axios';
-import { SPLASH_PATH, User } from '../../../constants/Constants';
 import { CHATLOG } from '../../../constants/Constants';
-import { useFocusEffect } from '@react-navigation/native';
-import { ERRORMESSAGE } from '../../../constants/Constants';
-import { InputAccessoryView } from 'react-native';
 import { SafeAreaView } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import { KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view';
-import useChatBtnState from '../../../store/chatBtnState';
-import { getStatusBarHeight } from 'react-native-status-bar-height';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { getTime, formatTime, formatDate } from '../../../utils/ChattingTime';
 import { Message } from '../../../constants/Constants';

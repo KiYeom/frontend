@@ -13,12 +13,7 @@ import DatePickerModal from '../../../modals/date-picker-modal';
 import palette from '../../../../assets/styles/theme';
 import { updateUserProfile } from '../../../../apis/auth';
 import { TGender } from '../../../../constants/types';
-import {
-  getUserNickname,
-  setInfoWhenLogin,
-  setUserBirthdate,
-  setUserGender,
-} from '../../../../utils/storageUtils';
+import { getUserNickname, setInfoWhenLogin } from '../../../../utils/storageUtils';
 import useIsSignInState from '../../../../utils/signInStatus';
 
 const InputProfile: React.FC<any> = ({ navigation }) => {
@@ -46,6 +41,7 @@ const InputProfile: React.FC<any> = ({ navigation }) => {
         gender: `${gender}`,
         birthdate: `${birthDate.getFullYear()}-${String(birthDate.getMonth() + 1).padStart(2, '0')}-${String(birthDate.getDate()).padStart(2, '0')}`,
       });
+
       if (res) {
         setInfoWhenLogin(
           '' + res.nickname,
@@ -56,10 +52,11 @@ const InputProfile: React.FC<any> = ({ navigation }) => {
           res.notice,
         );
         setIsSignIn(true);
-      } else {
-        //TODO: 프로필 저장 실패
         return;
       }
+
+      alert('프로필 저장에 실패했습니다., 다시 시도해주세요.');
+      return;
     }
   };
 

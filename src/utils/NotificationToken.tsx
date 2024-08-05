@@ -1,12 +1,9 @@
-import React from 'react';
-import { View, StyleSheet, Text, Platform } from 'react-native';
+import { Platform } from 'react-native';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
-import axios from 'axios';
-import { USER } from '../constants/Constants';
-import { instance } from '../apis/interceptor';
 import { setNotificationToken } from '../apis/notification';
+import { getDeviceIdFromMMKV } from './storageUtils';
 
 function handleRegistrationError(errorMessage: string) {
   console.error(errorMessage);
@@ -19,7 +16,6 @@ const registerForPushNotificationsAsync = async () => {
       name: 'default',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#FF231F7C',
     });
   }
 
@@ -32,15 +28,18 @@ const registerForPushNotificationsAsync = async () => {
       const { status } = await Notifications.requestPermissionsAsync();
       finalStatus = status;
     }
+
     if (finalStatus !== 'granted') {
       //요청해도 없을 때
       return;
     }
+
     const projectId =
       Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
     if (!projectId) {
       handleRegistrationError('Project ID not found');
     }
+
     try {
       const pushTokenString = (
         await Notifications.getExpoPushTokenAsync({
@@ -58,10 +57,9 @@ const registerForPushNotificationsAsync = async () => {
 
 const requestPermission = async () => {
   const token = await registerForPushNotificationsAsync();
-  //TODO: 권한 예외사항 처리
-  if (!token || !USER.DEVICEID) {
-    return;
+  const deviceId = getDeviceIdFromMMKV();
+  if (token && deviceId) {
+    setNotificationToken(token, deviceId);
   }
-  setNotificationToken(token, USER.DEVICEID);
 };
 export default requestPermission;

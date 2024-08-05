@@ -1,4 +1,3 @@
-import palette from '../../assets/styles/theme';
 import { TextAreaContainer, TextAreaField } from './TextArea.style';
 type TextAreaProps = {
   value?: string;

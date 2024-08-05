@@ -1,4 +1,4 @@
-import { TextInput, View, Text, TextStyle, StyleProp } from 'react-native';
+import { TextStyle, StyleProp } from 'react-native';
 import { IconContainer, InputContainer, InputField, WithMessage } from './input.styles';
 import Icon, { TIconName } from '../icons/icons';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';

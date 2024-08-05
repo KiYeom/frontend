@@ -34,7 +34,7 @@ export const updateUserProfile = async (profile: TNewUser): Promise<TAuth | unde
   try {
     const res = await instance.patch('/v1/auth/update-new-user', {
       ...profile,
-      deviceId: getDeviceId(),
+      deviceId: getDeviceIdFromMMKV(),
       appVersion: getAppVersion(),
       deviceOs: getDeviceOS(),
     });
@@ -51,7 +51,6 @@ export const reissueAccessToken = async (
   isAppStart: boolean = false,
 ): Promise<void> => {
   try {
-    console.error('reissueAccessToken');
     deleteAccessToken();
     const res = await axios.patch('https://api.remind4u.co.kr/v1/auth/refresh', {
       deviceId: getDeviceIdFromMMKV(),

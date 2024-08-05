@@ -1,13 +1,9 @@
 import React from 'react';
-import { View, Text } from 'react-native';
 import { Label } from '../pages/sign-up/input-profile/input-profile.styles';
 import Input from '../input/input';
 import palette from '../../assets/styles/theme';
-import { USER } from '../../constants/Constants';
-import { BIRTHDATE } from '../../constants/Constants';
 import { FormContainer } from '../pages/sign-up/input-profile/input-profile.styles';
 import DatePickerModal from '../modals/date-picker-modal';
-import { storage } from '../../utils/storageUtils';
 
 const BirthInput: React.FC<any> = ({ birthDate, setBirthDate }): any => {
   const [openModal, setOpenModal] = React.useState(false);

@@ -1,7 +1,3 @@
-import axios from 'axios';
-import { TAuth, TNewUser } from './auth.types';
-import { storage } from '../utils/storageUtils';
-import { REFRESHTOKEN, USER } from '../constants/Constants';
 import { instance } from './interceptor';
 import { TCommonResult } from './common.types';
 import { TAllowedNotifications, TSetNotification } from './notification.types';

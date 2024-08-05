@@ -1,9 +1,5 @@
 import React from 'react';
-import { TextInput } from 'react-native-paper';
-import { View, Text } from 'react-native';
-import palette from '../../assets/styles/theme';
 import Input from '../input/input';
-import { USER } from '../../constants/Constants';
 import { Label } from '../pages/sign-up/input-profile/input-profile.styles';
 import { FormContainer } from '../pages/sign-up/input-profile/input-profile.styles';
 //설정 - 프로필 수정 화면에서 이름을 입력하는 창

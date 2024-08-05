@@ -1,4 +1,3 @@
-import { StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import Home from '../components/pages/HomePage/Home';
@@ -66,13 +65,4 @@ const BottomTabNavigator: React.FC<any> = ({ isSignIn, setIsSignIn }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  text: {
-    fontSize: 24,
-    color: '#333',
-  },
-});
 export default BottomTabNavigator;

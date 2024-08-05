@@ -1,7 +1,19 @@
 import { instance } from './interceptor';
 import { TCommonResult } from './common.types';
 import { TAllowedNotifications, TSetNotification } from './notification.types';
-import { TUserInfo } from './setting.types';
+import { TDisplayUserInfo, TUserInfo } from './setting.types';
+
+export const updateUserInfo = async (
+  profile: TDisplayUserInfo,
+): Promise<TDisplayUserInfo | undefined> => {
+  try {
+    const res = await instance.patch('/v1/users/update-user', profile);
+    return res.data;
+  } catch (error) {
+    console.log('[ERROR] user edit info', error);
+    return;
+  }
+};
 
 //INFO: 토큰 설정하기
 export const logout = async (deviceId: string): Promise<TCommonResult | undefined> => {

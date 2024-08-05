@@ -4,32 +4,13 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-paper';
 import React from 'react';
 import { useState, useEffect } from 'react';
-import OpenSourceLicense from '../../../constants/OpenSourceLicense.json';
-
-type License = {
-  libraryName: string;
-  version: string;
-  _license: string;
-  _description: string;
-  homepage: string;
-  author: {
-    name: string;
-    email: string;
-    url?: string;
-  };
-  repository: {
-    type: string;
-    url: string;
-    directory: string;
-  };
-  _licenseContent?: string;
-};
+import { TLicense } from '../../../constants/types';
 
 const LicensePage: React.FC<any> = ({ navigation }) => {
-  const [data, setData] = useState<License[]>([]);
+  const [data, setData] = useState<TLicense[]>([]);
   const [selectedLicense, setSelectedLicense] = useState<string | null>(null);
 
-  const renderItem = ({ item }: { item: License }) => (
+  const renderItem = ({ item }: { item: TLicense }) => (
     <View style={styles.renderItems}>
       <TouchableOpacity
         onPress={() => {
@@ -45,7 +26,8 @@ const LicensePage: React.FC<any> = ({ navigation }) => {
   );
 
   useEffect(() => {
-    setData(OpenSourceLicense);
+    const OpenLinceseObject = require('../../../constants/OpenSourceLicense.json');
+    setData(OpenLinceseObject);
   }, []);
 
   return (

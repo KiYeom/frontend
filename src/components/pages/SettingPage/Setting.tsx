@@ -1,18 +1,15 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import React, { useEffect } from 'react';
 import { CHATLOG } from '../../../constants/Constants';
-import { Button, TextInput } from 'react-native-paper';
 import SettingMenus from '../../organisms/SettingMenus';
-import { PaperProvider, Portal, Modal } from 'react-native-paper';
-import { useState } from 'react';
 import useIsSignInState from '../../../utils/signInStatus';
 import * as Notifications from 'expo-notifications';
 import UserInfomation from '../../molecules/UserInfomation';
-import { changeNickname, deavtivate, getUserInfo, logout } from '../../../apis/setting';
+import { deavtivate, getUserInfo, logout } from '../../../apis/setting';
 import {
   clearInfoWhenLogout,
   getDeviceIdFromMMKV,
-  getUserNickname,
+  setUserInfo,
   storage,
 } from '../../../utils/storageUtils';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -26,10 +23,6 @@ Notifications.setNotificationHandler({
 });
 
 const Setting: React.FC<any> = ({ navigation }) => {
-  const [visible, setVisible] = useState(false);
-  const [modaltext, setModaltext] = useState('');
-  const [modalMode, setModalMode] = useState('');
-  const [inputText, setInputText] = useState('');
   const { setIsSignIn } = useIsSignInState();
 
   //로그아웃
@@ -46,6 +39,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
       console.error('[ERROR] logoutRequest: ', error);
     }
   };
+
   //회원 탈퇴
   const deactivateRequest = async (reasons: string[]) => {
     const response = await deavtivate(reasons);
@@ -58,72 +52,19 @@ const Setting: React.FC<any> = ({ navigation }) => {
     setIsSignIn(false);
   };
 
-  //유저 별명 변경
-  const nicknameRequest = async () => {
-    const res = await changeNickname(inputText);
-    if (res?.result) {
-      USER.NICKNAME = inputText;
-      setNickname(inputText);
-    }
-  };
-
   //유저 정보 가져오기
   const userInfo = async () => {
-    const response = await getUserInfo();
-    if (!response) {
+    const res = await getUserInfo();
+    if (!res) {
       console.log('유저 정보 가져오기 실패');
       return;
     }
-    USER.NICKNAME = response?.nickname || '';
-    USER.BIRTHDATE = response?.birthdate || '';
-    USER.GENDER = response?.gender === '남성' ? 1 : 2;
-    setNickname(USER.NICKNAME);
-  };
-
-  //모달창이 열리는 경우
-  const showModal = (text: string) => {
-    //setModaltext(text); //text : nickname, logout, deactivate
-    setModalMode(text); //어떤 모달이 열릴 것인지를 mode로
-    let message = '';
-    if (text === 'nickname') {
-      //console.log("유저는 닉네임을 변경하기를 원합니다.");
-      message = '새 닉네임을 입력해주세요.';
-      setModaltext(message);
-    } else if (text === 'logout') {
-      //console.log("유저는 로그아웃을 하기를 원합니다.");
-      message = '로그아웃하시겠어요?';
-      setModaltext(message);
-    } else if (text === 'deactivate') {
-      //console.log("유저는 회원 탈퇴를 하기를 원합니다.");
-      message = '탈퇴하시겠어요?\n모든 정보가 삭제되며 되돌릴 수 없습니다.';
-      setModaltext(message);
-    }
-    setVisible(true);
-  };
-
-  const hideModal = () => setVisible(false);
-  //모달창에서 완료 버튼을 클릭한 경우
-
-  const btnClick = () => {
-    console.log('모달의 완료 버튼 클릭함');
-    if (modalMode === 'nickname') {
-      console.log('유저는 닉네임을 변경하기를 원합니다.');
-      nicknameRequest();
-    } else if (modalMode === 'logout') {
-      console.log('유저는 로그아웃을 하기를 원합니다.');
-      logoutRequest();
-    } else if (modalMode === 'deactivate') {
-      console.log('유저는 회원 탈퇴를 하기를 원합니다.');
-      deactivateRequest();
-    }
-    hideModal();
+    setUserInfo(res.nickname, res.birthdate, res.gender);
   };
 
   useEffect(() => {
     userInfo();
   }, []);
-
-  console.log('설정화면 클릭함');
 
   return (
     <SafeAreaView style={styles.container}>

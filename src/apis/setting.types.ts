@@ -1,3 +1,5 @@
+import { TGender } from '../constants/types';
+
 export type TAllowedNotifications = {
   allowedNotifications: TNotification[];
 };
@@ -13,6 +15,12 @@ export type TUserInfo = {
   id: number;
   nickname: string | null;
   birthdate: string | null;
-  gender: string | null;
+  gender: TGender | null;
   isUser: boolean;
+};
+
+export type TDisplayUserInfo = {
+  nickname: string | null;
+  birthdate: string | null;
+  gender: TGender | null;
 };

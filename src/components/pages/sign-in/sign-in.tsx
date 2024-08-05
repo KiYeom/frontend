@@ -24,9 +24,6 @@ import {
 import useIsSignInState from '../../../utils/signInStatus';
 import { TVender } from '../../../constants/types';
 
-const windowDimensions = require('react-native').Dimensions.get('window');
-const screenDimensions = require('react-native').Dimensions.get('screen');
-
 const googleLogin = async (): Promise<boolean> => {
   GoogleSignin.configure({
     iosClientId: process.env.EXPO_PUBLIC_IOS_CLIENT_ID,
@@ -41,14 +38,17 @@ const googleLogin = async (): Promise<boolean> => {
     console.error(`[ERROR] GoogleSignin.signIn(): ${error}`);
     return false;
   }
+
   const res = await ssoLogin(googleToken, 'google');
   if (!res) {
     return false;
   }
+
   if (res.isNewUser) {
     setTokenInfo(res.accessToken, res.refreshToken);
     return false;
   }
+
   if (!res.isNewUser) {
     setInfoWhenLogin(
       res.nickname,
@@ -58,42 +58,49 @@ const googleLogin = async (): Promise<boolean> => {
       res.refreshToken,
       res.notice,
     );
-    console.log('token: ', getAccessToken(), getRefreshToken());
     return true;
   }
+
   return false;
 };
 
 const appleLogin = async (): Promise<boolean> => {
+  let credential;
   try {
-    const credential = await AppleAuthentication.signInAsync();
-    if (!credential.authorizationCode) {
-      return false;
-    }
-    const res = await ssoLogin(credential.authorizationCode, 'apple');
-    if (!res) {
-      return false;
-    }
-    if (res.isNewUser) {
-      setTokenInfo(res.accessToken, res.refreshToken);
-      return true;
-    }
-    if (!res.isNewUser) {
-      setInfoWhenLogin(
-        '' + res.nickname,
-        res.birthdate,
-        res.gender,
-        res.accessToken,
-        res.refreshToken,
-        res.notice,
-      );
-      return true;
-    }
-    return false;
+    credential = await AppleAuthentication.signInAsync();
   } catch (error) {
-    console.error(`[ERROR] appleLogin: ${error}`);
+    console.error(`[ERROR] appleLogin - signInAsync: ${error}`);
     return false;
   }
+
+  if (!credential.authorizationCode) {
+    return false;
+  }
+
+  const res = await ssoLogin(credential.authorizationCode, 'apple');
+
+  if (!res) {
+    return false;
+  }
+
+  if (res.isNewUser) {
+    setTokenInfo(res.accessToken, res.refreshToken);
+    return true;
+  }
+
+  if (!res.isNewUser) {
+    setInfoWhenLogin(
+      '' + res.nickname,
+      res.birthdate,
+      res.gender,
+      res.accessToken,
+      res.refreshToken,
+      res.notice,
+    );
+    return true;
+  }
+
+  return false;
 };
 
 //로그인 페이지

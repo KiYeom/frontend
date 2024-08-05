@@ -3,6 +3,7 @@ import { BottomCotainer } from './bottom.style';
 import palette from '../../assets/styles/theme';
 import HomeIcon from '../../assets/icons/Home.svg';
 import SettingIcon from '../../assets/icons/Setting.svg';
+
 function MyTabBar({ state, descriptors, navigation }) {
   return (
     //탭 바 메뉴들을 가로로 정렬해두는 View 컴포넌트
