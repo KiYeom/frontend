@@ -15,6 +15,7 @@ import {
   getUserNickname,
   storage,
 } from '../../../utils/storageUtils';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -125,55 +126,24 @@ const Setting: React.FC<any> = ({ navigation }) => {
   console.log('설정화면 클릭함');
 
   return (
-    <PaperProvider>
-      <Portal>
-        <Modal
-          visible={visible}
-          onDismiss={hideModal}
-          contentContainerStyle={styles.containerStyle}>
-          <View>
-            <Text style={styles.modalText}>{modaltext}</Text>
-          </View>
-          {modalMode === 'nickname' ? (
-            <View style={styles.nickNameInput}>
-              <TextInput
-                label="닉네임"
-                defaultValue={getUserNickname()}
-                onChangeText={(inputText) => setInputText(inputText)}
-                style={styles.inputText}
-              />
-            </View>
-          ) : null}
-          <View style={styles.modalBtnContainer}>
-            <Button mode="contained" onPress={btnClick}>
-              완료
-            </Button>
-            <Button mode="contained" onPress={hideModal}>
-              취소
-            </Button>
-          </View>
-        </Modal>
-      </Portal>
-
-      <View style={styles.container}>
-        <View style={styles.userInfo}>
-          <UserInfomation navigation={navigation} />
-        </View>
-        <SettingMenus
-          navigation={navigation}
-          logoutRequest={logoutRequest}
-          deactivateRequest={deactivateRequest}
-        />
+    <SafeAreaView style={styles.container}>
+      <View style={styles.userInfo}>
+        <UserInfomation navigation={navigation} />
       </View>
-    </PaperProvider>
+      <SettingMenus
+        navigation={navigation}
+        logoutRequest={logoutRequest}
+        deactivateRequest={deactivateRequest}
+      />
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    //    alignItems: 'center',
+    //  justifyContent: 'center',
   },
   userInfo: {
     ///backgroundColor : "yellow",

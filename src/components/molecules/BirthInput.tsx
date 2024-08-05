@@ -9,8 +9,7 @@ import { FormContainer } from '../pages/sign-up/input-profile/input-profile.styl
 import DatePickerModal from '../modals/date-picker-modal';
 import { storage } from '../../utils/storageUtils';
 
-const BirthInput: React.FC<any> = () => {
-  const [birthDate, setBirthdate] = React.useState<Date>();
+const BirthInput: React.FC<any> = ({ birthDate, setBirthDate }): any => {
   const [openModal, setOpenModal] = React.useState(false);
 
   return (
@@ -36,7 +35,7 @@ const BirthInput: React.FC<any> = () => {
       <DatePickerModal
         modalVisible={openModal}
         onClose={() => setOpenModal(false)}
-        onChange={setBirthdate}
+        onChange={setBirthDate}
       />
     </FormContainer>
   );

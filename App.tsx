@@ -30,7 +30,7 @@ if (process.env.EXPO_PUBLIC_AMPLITUDE) {
 const RootStack = createNativeStackNavigator();
 
 const App: React.FC = () => {
-  const [loading, setLoading] = useState(true); //로딩중이면 true, 로딩이 끝났으면 false
+  const [loading, setLoading] = useState(false); //로딩중이면 true, 로딩이 끝났으면 false
   const { isSignIn, setIsSignIn } = useIsSignInState(); //store에서 가지고 온 전역 state
 
   const [loaded, error] = useFonts({

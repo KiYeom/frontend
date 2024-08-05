@@ -9,8 +9,7 @@ import {
   BtnLabel,
 } from '../pages/sign-up/input-profile/input-profile.styles';
 import { FormContainer } from '../pages/sign-up/input-profile/input-profile.styles';
-const GenderInput: React.FC<any> = () => {
-  const [gender, setGender] = React.useState<'여성' | '남성'>();
+const GenderInput: React.FC<any> = ({ gender, setGender }): any => {
   return (
     <FormContainer>
       <Label>성별</Label>
@@ -31,21 +30,5 @@ const GenderInput: React.FC<any> = () => {
     </FormContainer>
   );
 };
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: 'white',
-    height: 100,
-  },
-  btnContainer: {
-    flexDirection: 'row',
-    //backgroundColor: 'blue',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
-  btns: {
-    borderRadius: 10,
-    width: '45%',
-    backgroundColor: '#F6F6F6',
-  },
-});
+
 export default GenderInput;
