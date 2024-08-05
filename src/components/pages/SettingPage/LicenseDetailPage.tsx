@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useState, useLayoutEffect } from 'react';
 import { useRoute } from '@react-navigation/native';
+import Header from '../../header/header';
 type Author = {
   name: string;
   email: string;
@@ -40,15 +41,9 @@ const LicenseDetailPage: React.FC<any> = ({ navigation }) => {
   //useRoute를 통해 넘겨온 데이터를 받을 수 있음, object 형태
   console.log('전달받은 데이터 : ', item);
 
-  const HeaderTitle: React.FC<any> = ({ title }) => (
-    <Text style={{ fontSize: 18, width: 250 }} ellipsizeMode="tail" numberOfLines={1}>
-      {title}
-    </Text>
-  );
-
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => <HeaderTitle title={item.libraryName} />,
+      header: () => <Header title={item.libraryName} />,
     });
   }, [navigation, item.libraryName]);
 

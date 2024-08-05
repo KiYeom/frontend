@@ -26,7 +26,7 @@ export interface User {
   EMAIL: string | null;
   NICKNAME: string;
   BIRTHDATE: string | null;
-  GENDER: number | null;
+  GENDER: string | null;
   DEVICEID: string | null;
   APPVERSION: string;
   DEVICEOS: string | null;
@@ -44,8 +44,8 @@ export interface User {
 export const USER: User = {
   EMAIL: 'email',
   NICKNAME: 'nickname',
-  BIRTHDATE: null,
-  GENDER: null,
+  BIRTHDATE: 'unknown',
+  GENDER: 'unknown',
   DEVICEID: 'deviceId',
   APPVERSION: '1.0.0',
   DEVICEOS: 'deviceOs',
