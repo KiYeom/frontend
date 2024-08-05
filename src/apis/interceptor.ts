@@ -17,8 +17,8 @@ function setInterceptor(instance: any) {
       return response.data;
     },
     async function (error: any) {
-      if (error.response && error.response.status === 401) {
-        console.log('interseptor: 401 에러 발생');
+      if (error.response && error.response.status === 419) {
+        console.log('interseptor: 419 에러 발생');
         const accessToken = await getGenerateAccessToken();
         if (accessToken) {
           instance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;

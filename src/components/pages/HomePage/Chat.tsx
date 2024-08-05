@@ -25,7 +25,7 @@ import { CHATLOG } from '../../../constants/Constants';
 import { useFocusEffect } from '@react-navigation/native';
 import { ERRORMESSAGE } from '../../../constants/Constants';
 import { InputAccessoryView } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view';
 import useChatBtnState from '../../../store/chatBtnState';
@@ -169,7 +169,7 @@ const Chat: React.FC = () => {
   const headerHeight = useHeaderHeight(); //stack navigation의 header 높이
 
   return (
-    <SafeAreaView style={{ flex: 1 }} edges={['bottom']}>
+    <SafeAreaView style={{ flex: 1 }}>
       <KeyboardAvoidingView
         style={styles.container}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}

@@ -39,9 +39,10 @@ const googleLogin = async () => {
     const res = await ssoLogin(googleAccessToken, 'google');
 
     if (res) {
+      console.log('res=======', res);
       storage.set(ACCESSTOKEN, res.accessToken);
       storage.set(REFRESHTOKEN, res.refreshToken);
-      storage.set(NICKNAME, res.nickname!);
+      storage.set(NICKNAME, res.nickname ?? 'unkwnon');
       storage.set(BIRTHDATE, res.birthdate ?? 'unknown');
       storage.set(GENDER, res.gender ?? 'unknown');
       //유저의 개인 정보 저장
@@ -49,7 +50,7 @@ const googleLogin = async () => {
       console.log(res);
       USER.IS_NEW_USER = res.isNewUser;
       if (res.isNewUser === true && res.nickname) {
-        console.log(res.nickname);
+        console.log('res.isNewUser === true && res.nickname', res.nickname);
         USER.NICKNAME = res.nickname;
       }
     }
@@ -70,6 +71,7 @@ const appleLogin = async () => {
         storage.set(ACCESSTOKEN, res.accessToken);
         storage.set(REFRESHTOKEN, res.refreshToken);
         USER.IS_NEW_USER = res.isNewUser;
+        console.log('is new user 변경 완', USER.IS_NEW_USER);
         if (res.isNewUser === true && res.nickname) {
           USER.NICKNAME = res.nickname;
         }
@@ -95,16 +97,21 @@ const Login: React.FC<any> = ({ navigation }) => {
         case 'kakao':
           break;
       }
+      console.log('switch문 통과');
       if (USER.IS_NEW_USER === true) {
         //새로운 유저
+        console.log('새로운 유저', USER.IS_NEW_USER);
         navigation.navigate(SignUpStackNavigator);
       } else if (USER.IS_NEW_USER === false) {
         //기존 유저인 경우
+        console.log('기존 유저', USER.IS_NEW_USER);
         setIsSignIn(true);
       } else {
+        console.log('로그인 실패', USER.IS_NEW_USER);
         alert('로그인 실패');
       }
     } catch (error) {
+      console.log('로그인 실패 error');
       console.error(`[ERROR] ${error}`);
     }
   };

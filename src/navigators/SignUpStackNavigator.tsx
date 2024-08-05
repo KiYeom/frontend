@@ -37,42 +37,6 @@ const SignUpStackNavigator: React.FC<any> = ({ navigation }) => {
           header: () => <Header />,
         }}
       />
-      <Stack.Screen
-        name="InfoAge"
-        component={InfoAge}
-        options={{
-          title: '나이',
-          headerRight: () => (
-            <Button
-              title="건너뛰기"
-              onPress={() => navigation.navigate('InfoGender')}
-              color={palette.neutral[300]}
-            />
-          ),
-        }}
-      />
-      <Stack.Screen
-        name="InfoGender"
-        component={InfoGender}
-        options={{
-          title: '성별',
-          headerRight: () => (
-            <Button
-              title="건너뛰기"
-              onPress={async () => {
-                if (USER.PROVIDERNAME === 'google') {
-                  googleSignUp(setIsSignIn);
-                  //navigation.navigate('Home');
-                } else if (USER.PROVIDERNAME === 'apple') {
-                  appleSignUp(setIsSignIn);
-                  //navigation.navigate('Home');
-                }
-              }}
-              color={palette.neutral[300]}
-            />
-          ),
-        }}
-      />
     </Stack.Navigator>
   );
 };

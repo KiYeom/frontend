@@ -2,7 +2,6 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, Linking, Button } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
-import StartButton from '../../atoms/StartButton';
 import Chat from './Chat';
 import Setting from '../SettingPage/Setting';
 import { useEffect } from 'react';

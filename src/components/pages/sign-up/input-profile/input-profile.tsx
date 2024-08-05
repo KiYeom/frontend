@@ -19,11 +19,13 @@ import palette from '../../../../assets/styles/theme';
 import { updateUserProfile } from '../../../../apis/auth';
 import { storage } from '../../../../utils/storageUtils';
 import { NICKNAME, GENDER, BIRTHDATE } from '../../../../constants/Constants';
+import useIsSignInState from '../../../../store/signInStatus';
 const InputProfile: React.FC<any> = ({ navigation }) => {
   const [name, setName] = React.useState('');
   const [gender, setGender] = React.useState<'여성' | '남성'>();
   const [openModal, setOpenModal] = React.useState(false);
   const [birthDate, setBirthdate] = React.useState<Date>();
+  const { isSignIn, setIsSignIn } = useIsSignInState();
 
   const getName = async () => {
     //const username = await AsyncStorage.getItem('name');
@@ -45,18 +47,13 @@ const InputProfile: React.FC<any> = ({ navigation }) => {
         birthdate: `${birthDate.getFullYear()}-${String(birthDate.getMonth() + 1).padStart(2, '0')}-${String(birthDate.getDate()).padStart(2, '0')}`,
       });
       if (res) {
-        //navigation.navigate('SettingStackNavigator', { screen: 'EditUserInfo' });
-        //navigation.navigate('BottomTabNavigator', { screen: 'Home' });
-        //await AsyncStorage.setItem('gender', gender);
+        //console.log('회원가입 완료');
         storage.set(GENDER, gender);
-        /*await AsyncStorage.setItem(
-          'birthdate',
-          `${birthDate.getFullYear()}-${String(birthDate.getMonth() + 1).padStart(2, '0')}-${String(birthDate.getDate()).padStart(2, '0')}`,
-        );*/
         storage.set(
           BIRTHDATE,
           `${birthDate.getFullYear()}-${String(birthDate.getMonth() + 1).padStart(2, '0')}-${String(birthDate.getDate()).padStart(2, '0')}`,
         );
+        setIsSignIn(true); //회원가입에 성공한 경우 signin 상태를 true로
       } else {
         alert('프로필 저장에 실패했습니다.');
       }

@@ -1,7 +1,15 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React, { useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { ACCESSTOKEN, CHATLOG, REFRESHTOKEN, USER } from '../../../constants/Constants';
+import {
+  ACCESSTOKEN,
+  BIRTHDATE,
+  CHATLOG,
+  NICKNAME,
+  REFRESHTOKEN,
+  USER,
+  GENDER,
+} from '../../../constants/Constants';
 import { Provider, Button, TextInput } from 'react-native-paper';
 import { storage } from '../../../utils/storageUtils';
 import useNotificationState from '../../../store/notificationState';
@@ -15,6 +23,7 @@ import useNicknameState from '../../../store/nicknameState';
 import * as Notifications from 'expo-notifications';
 import UserInfomation from '../../molecules/UserInfomation';
 import { instance } from '../../../apis/interceptor';
+import { SafeAreaView } from 'react-native';
 interface UserInfo {
   email: string;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
@@ -72,17 +81,21 @@ const Setting: React.FC<any> = ({ navigation }) => {
   const deactivateRequest = async (deactivateInfo: string) => {
     console.log('deactivate Request 시작');
     try {
-      //const response = await axiosInstance.delete('/auth/deactivate');
       console.log(deactivateInfo);
+      console.log('============회원탈퇴=============');
       const response = await instance.delete('/v1/auth/deactivate', {
         params: { reasons: deactivateInfo },
       });
-      console.log('서버 회원탈퇴 응답 : ');
+      console.log('서버 회원탈퇴 응답 response', response);
       setIsSignIn(false);
       navigation.navigate('Login');
       storage.delete(ACCESSTOKEN);
       storage.delete(REFRESHTOKEN);
+      storage.delete(NICKNAME);
+      storage.delete(BIRTHDATE);
+      storage.delete(GENDER);
       storage.delete(CHATLOG);
+      console.log('탈퇴 완료');
     } catch (error: any) {
       console.log('deactivateRequest 요청 실패', error);
       console.log('회원탈퇴 안 됨 json', error);
@@ -182,55 +195,24 @@ const Setting: React.FC<any> = ({ navigation }) => {
   console.log('설정화면 클릭함');
 
   return (
-    <PaperProvider>
-      <Portal>
-        <Modal
-          visible={visible}
-          onDismiss={hideModal}
-          contentContainerStyle={styles.containerStyle}>
-          <View>
-            <Text style={styles.modalText}>{modaltext}</Text>
-          </View>
-          {modalMode === 'nickname' ? (
-            <View style={styles.nickNameInput}>
-              <TextInput
-                label="닉네임"
-                defaultValue={USER.NICKNAME}
-                onChangeText={(inputText) => setInputText(inputText)}
-                style={styles.inputText}
-              />
-            </View>
-          ) : null}
-          <View style={styles.modalBtnContainer}>
-            <Button mode="contained" onPress={btnClick}>
-              완료
-            </Button>
-            <Button mode="contained" onPress={hideModal}>
-              취소
-            </Button>
-          </View>
-        </Modal>
-      </Portal>
-
-      <View style={styles.container}>
-        <View style={styles.userInfo}>
-          <UserInfomation navigation={navigation} />
-        </View>
-        <SettingMenus
-          navigation={navigation}
-          logoutRequest={logoutRequest}
-          deactivateRequest={deactivateRequest}
-        />
+    <SafeAreaView style={styles.container}>
+      <View style={styles.userInfo}>
+        <UserInfomation navigation={navigation} />
       </View>
-    </PaperProvider>
+      <SettingMenus
+        navigation={navigation}
+        logoutRequest={logoutRequest}
+        deactivateRequest={deactivateRequest}
+      />
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    //    alignItems: 'center',
+    //  justifyContent: 'center',
   },
   userInfo: {
     ///backgroundColor : "yellow",

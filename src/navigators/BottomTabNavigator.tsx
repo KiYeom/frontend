@@ -14,7 +14,6 @@ const Tab = createBottomTabNavigator();
 const color = '#58C3A5';
 
 const BottomTabNavigator: React.FC<any> = ({ isSignIn, setIsSignIn }) => {
-  
   //console.log('채팅 화면 새로 그려짐..');
   const click = () => {
     //console.log("클릭함");
@@ -58,7 +57,7 @@ const BottomTabNavigator: React.FC<any> = ({ isSignIn, setIsSignIn }) => {
         name="Setting"
         component={Setting}
         options={{
-          headerShown: true,
+          headerShown: false,
           tabBarLabel: '설정',
           headerTintColor: '#fff',
           tabBarIcon: ({ focused }) => (

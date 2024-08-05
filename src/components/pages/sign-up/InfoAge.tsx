@@ -4,7 +4,6 @@ import { View, Text, Image, StyleSheet, SafeAreaView } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import { storage } from '../../../utils/storageUtils';
 import { USER } from '../../../constants/Constants';
-
 import DatePicker from 'react-native-date-picker';
 
 const InfoAge: React.FC<any> = ({ navigation }) => {
