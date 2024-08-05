@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { useState, useLayoutEffect } from 'react';
+import { useState, useLayoutEffect, useEffect } from 'react';
 import { useRoute } from '@react-navigation/native';
 import Header from '../../header/header';
 type Author = {
@@ -45,7 +45,7 @@ const LicenseDetailPage: React.FC<any> = ({ navigation }) => {
     navigation.setOptions({
       header: () => <Header title={item.libraryName} />,
     });
-  }, [navigation, item.libraryName]);
+  }, [item.libraryName]);
 
   return (
     <ScrollView style={styles.details}>

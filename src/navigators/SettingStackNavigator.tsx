@@ -14,8 +14,6 @@ import Header from '../components/header/header';
 
 const Stack = createNativeStackNavigator();
 
-const HeaderTitle: React.FC<any> = ({ title }) => <Text style={{ fontSize: 18 }}>{title}</Text>;
-
 const SettingStackNavigator: React.FC = () => {
   return (
     <Stack.Navigator>
@@ -53,11 +51,7 @@ const SettingStackNavigator: React.FC = () => {
         component={LicensePage}
         options={{ header: () => <Header title="오픈 라이센스" /> }}
       />
-      <Stack.Screen
-        name="LicenseDetailPage"
-        component={LicenseDetailPage}
-        options={{ header: () => <Header /> }}
-      />
+      <Stack.Screen name="LicenseDetailPage" component={LicenseDetailPage} />
       <Stack.Screen
         name="DeactivateReason"
         component={DeactivateReason}

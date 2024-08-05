@@ -39,8 +39,8 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
           style={css`
             text-align: center;
             font-size: ${rsFont * 18 + 'px'};
-            width: 250;
             font-family: Pretendard-SemiBold;
+            width: ${rsWidth * 250 + 'px'};
           `}
           ellipsizeMode="tail"
           numberOfLines={1}>

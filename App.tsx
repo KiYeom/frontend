@@ -32,7 +32,7 @@ amplitude.track('Sign Up');
 const RootStack = createNativeStackNavigator();
 
 const App: React.FC = () => {
-  const [loading, setLoading] = useState(true); //로딩중이면 true, 로딩이 끝났으면 false
+  const [loading, setLoading] = useState(false); //로딩중이면 true, 로딩이 끝났으면 false
   const { isSignIn, setIsSignIn } = useIsSignInState(); //store에서 가지고 온 전역 state
   //회원인데 로그인이 안 되어있거나 회원이 아니라면 isSignIn == false, 회원이고 로그인도 됐다면 isSignIns == true
   const { notice, setNotice } = useNoticeState(); //store 폴더에서 가지고 온 전역 state
@@ -54,7 +54,7 @@ const App: React.FC = () => {
     //storage.delete(REFRESHTOKEN);
     //setIsSignIn(true);
     bootstrap();
-  }, [loaded]);
+  }, []);
 
   const bootstrap = async (): Promise<void> => {
     try {
