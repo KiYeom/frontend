@@ -5,18 +5,18 @@ export type TAuth = {
   isNewUser: boolean;
   accessToken: string;
   refreshToken: string;
-  notice: TNotice | null;
+  notice: Notice | null;
 };
 
-type TNotice = {
+type Notice = {
   title: string;
   content: string;
-  options: TOptionButton[];
+  options: OptionButton[];
   description: string;
   required: boolean;
 };
 
-type TOptionButton = {
+type OptionButton = {
   text: string;
   link: string;
 };
@@ -25,4 +25,12 @@ export type TNewUser = {
   nickname: string;
   birthdate: string;
   gender: string;
+};
+
+export type TNewAccessToken = {
+  nickname: string;
+  gender: '여성' | '남성';
+  birthdate: string;
+  accessToken: string;
+  notice: Notice | null;
 };

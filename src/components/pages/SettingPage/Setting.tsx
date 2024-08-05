@@ -1,24 +1,20 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React, { useEffect } from 'react';
-import { useNavigation } from '@react-navigation/native';
-import { ACCESSTOKEN, CHATLOG, REFRESHTOKEN, USER } from '../../../constants/Constants';
-import { Provider, Button, TextInput } from 'react-native-paper';
-import { storage } from '../../../utils/storageUtils';
-import useNotificationState from '../../../store/notificationState';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { CHATLOG } from '../../../constants/Constants';
+import { Button, TextInput } from 'react-native-paper';
 import SettingMenus from '../../organisms/SettingMenus';
-import { PaperProvider, Portal, Modal, IconButton, Dialog } from 'react-native-paper';
+import { PaperProvider, Portal, Modal } from 'react-native-paper';
 import { useState } from 'react';
-import axiosInstance from '../../../utils/Api';
-import useIsSignInState from '../../../store/signInStatus';
-import useNicknameState from '../../../store/nicknameState';
+import useIsSignInState from '../../../utils/signInStatus';
 import * as Notifications from 'expo-notifications';
 import UserInfomation from '../../molecules/UserInfomation';
-import { instance } from '../../../apis/interceptor';
-interface UserInfo {
-  email: string;
-  setEmail: React.Dispatch<React.SetStateAction<string>>;
-}
+import { changeNickname, deavtivate, getUserInfo, logout } from '../../../apis/setting';
+import {
+  clearInfoWhenLogout,
+  getDeviceIdFromMMKV,
+  getUserNickname,
+  storage,
+} from '../../../utils/storageUtils';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -29,108 +25,58 @@ Notifications.setNotificationHandler({
 });
 
 const Setting: React.FC<any> = ({ navigation }) => {
-  const { navigate } = useNavigation();
   const [visible, setVisible] = useState(false);
   const [modaltext, setModaltext] = useState('');
   const [modalMode, setModalMode] = useState('');
   const [inputText, setInputText] = useState('');
-  const { isSignIn, setIsSignIn } = useIsSignInState();
-  const { nickname, setNickname } = useNicknameState();
-  const { isSwitchOn, setIsSwitchOn } = useNotificationState();
+  const { setIsSignIn } = useIsSignInState();
 
   //로그아웃
   const logoutRequest = async () => {
     console.log('logout Request 시작'); // 로그 추가
-    //Google객체를 사용하려면 반드시 configure 메서드를 호출해야 한다.
-    GoogleSignin.configure({
-      iosClientId: '94079762653-arcgeib4l0hbg6snh81cjimd9iuuoun3.apps.googleusercontent.com',
-    });
     try {
-      console.log('Google 로그아웃 시도'); // 로그 추가
-      await GoogleSignin.signOut(); //계정 로그아웃
-      console.log('계정 로그아웃 완료'); // 로그 추가
-
-      console.log('서버 로그아웃 시도'); // 로그 추가
-      const response = await axiosInstance.delete('/auth/logout', {
-        data: {
-          deviceId: USER.DEVICEID,
-        },
-      });
-      setIsSignIn(false);
-      console.log('서버 로그아웃 응답: '); // 로그 추가
-      storage.delete(ACCESSTOKEN);
-      storage.delete(REFRESHTOKEN);
+      const deviceId = getDeviceIdFromMMKV();
+      if (deviceId) await logout(deviceId);
+      else await logout('');
+      clearInfoWhenLogout();
       storage.delete(CHATLOG);
-      navigation.navigate('Login');
+      setIsSignIn(false);
     } catch (error: any) {
-      console.log('logoutRequest 요청 실패', error);
-      setIsSignIn(true);
-      console.log('로그아웃 실패 json', error);
+      console.error('[ERROR] logoutRequest: ', error);
     }
   };
   //회원 탈퇴
-  const deactivateRequest = async (deactivateInfo: string) => {
-    console.log('deactivate Request 시작');
-    try {
-      //const response = await axiosInstance.delete('/auth/deactivate');
-      console.log(deactivateInfo);
-      const response = await instance.delete('/v1/auth/deactivate', {
-        params: { reasons: deactivateInfo },
-      });
-      console.log('서버 회원탈퇴 응답 : ');
-      setIsSignIn(false);
-      navigation.navigate('Login');
-      storage.delete(ACCESSTOKEN);
-      storage.delete(REFRESHTOKEN);
-      storage.delete(CHATLOG);
-    } catch (error: any) {
-      console.log('deactivateRequest 요청 실패', error);
-      console.log('회원탈퇴 안 됨 json', error);
-      setIsSignIn(true);
+  const deactivateRequest = async (reasons: string[]) => {
+    const response = await deavtivate(reasons);
+    if (!response || !response.result) {
+      alert('회원 탈퇴가 실패했습니다. 다시 시도해주세요.');
+      return;
     }
+    clearInfoWhenLogout();
+    storage.delete(CHATLOG);
+    setIsSignIn(false);
   };
+
   //유저 별명 변경
   const nicknameRequest = async () => {
-    console.log('nickname Request 시작');
-    USER.NICKNAME = inputText;
-    setNickname(inputText);
-    console.log('USER의 nickname (USER.NICKNAME) : ', USER.NICKNAME);
-    console.log('USER의 nickname (inputText) : ', inputText);
-    try {
-      const response = await axiosInstance.patch('/users/nickname', {
-        nickname: inputText,
-      });
-      console.log('서버 닉네임 응답');
+    const res = await changeNickname(inputText);
+    if (res?.result) {
       USER.NICKNAME = inputText;
-    } catch (error) {
-      console.log('nicknameRequest 요청 실패', error);
+      setNickname(inputText);
     }
   };
 
   //유저 정보 가져오기
   const userInfo = async () => {
-    try {
-      const response = await axiosInstance.get('/users/me');
-      console.log('유저 정보 가져오기 성공', response);
-      USER.NICKNAME = response.data.data.nickname;
-      setNickname(response.data.data.nickname);
-    } catch (error) {
-      console.log('유저 정보 가져오기 실패', error);
-    }
-  };
-
-  //알림 설정 확인하기 -> 서버에서 유저의 알림 정보를 가져오고
-  //가져온 대로 토글의 위치를 바꾼다.
-  const setNotification = async () => {
-    try {
-      const response = await axiosInstance.get('/notifications');
-      setIsSwitchOn(response.data.data.isAllow);
-      console.log('서버에서 알림 설정 가져오기', response.data.data.isAllow);
+    const response = await getUserInfo();
+    if (!response) {
+      console.log('유저 정보 가져오기 실패');
       return;
-    } catch (error) {
-      console.log('알림 설정 확인하기 실패');
-      return false;
     }
+    USER.NICKNAME = response?.nickname || '';
+    USER.BIRTHDATE = response?.birthdate || '';
+    USER.GENDER = response?.gender === '남성' ? 1 : 2;
+    setNickname(USER.NICKNAME);
   };
 
   //모달창이 열리는 경우
@@ -174,9 +120,6 @@ const Setting: React.FC<any> = ({ navigation }) => {
 
   useEffect(() => {
     userInfo();
-    console.log('설정화면');
-    setNotification();
-    console.log('서버에 저장된 값 : ', isSwitchOn);
   }, []);
 
   console.log('설정화면 클릭함');
@@ -195,7 +138,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
             <View style={styles.nickNameInput}>
               <TextInput
                 label="닉네임"
-                defaultValue={USER.NICKNAME}
+                defaultValue={getUserNickname()}
                 onChangeText={(inputText) => setInputText(inputText)}
                 style={styles.inputText}
               />

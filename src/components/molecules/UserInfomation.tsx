@@ -1,14 +1,13 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { IconButton } from 'react-native-paper';
-import { USER } from '../../constants/Constants';
-import { storage } from '../../utils/storageUtils';
-import { NICKNAME } from '../../constants/Constants';
+import { getUserNickname } from '../../utils/storageUtils';
+
 const UserInfomation: React.FC<any> = ({ navigation }) => {
   return (
     <View style={styles.userName}>
       <Image source={require('../../assets/icons/profileImage.png')} />
-      <Text style={styles.userInfoText}>{storage.getString(NICKNAME)}</Text>
+      <Text style={styles.userInfoText}>{getUserNickname()}</Text>
       <IconButton
         icon="chevron-right"
         iconColor="black"

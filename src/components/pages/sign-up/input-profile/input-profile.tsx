@@ -1,10 +1,5 @@
-import { View, Text } from 'react-native';
-
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import Button from '../../../button/button';
-import { useNavigation } from '@react-navigation/native';
-import { NavigationProp } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   Annotation,
   ContentContainer,
@@ -17,17 +12,24 @@ import Input from '../../../input/input';
 import DatePickerModal from '../../../modals/date-picker-modal';
 import palette from '../../../../assets/styles/theme';
 import { updateUserProfile } from '../../../../apis/auth';
-import { storage } from '../../../../utils/storageUtils';
-import { NICKNAME, GENDER, BIRTHDATE } from '../../../../constants/Constants';
+import { TGender } from '../../../../constants/types';
+import {
+  getUserNickname,
+  setInfoWhenLogin,
+  setUserBirthdate,
+  setUserGender,
+} from '../../../../utils/storageUtils';
+import useIsSignInState from '../../../../utils/signInStatus';
+
 const InputProfile: React.FC<any> = ({ navigation }) => {
   const [name, setName] = React.useState('');
-  const [gender, setGender] = React.useState<'여성' | '남성'>();
+  const [gender, setGender] = React.useState<TGender>();
   const [openModal, setOpenModal] = React.useState(false);
   const [birthDate, setBirthdate] = React.useState<Date>();
+  const { setIsSignIn } = useIsSignInState();
 
   const getName = async () => {
-    //const username = await AsyncStorage.getItem('name');
-    const username = storage.getString(NICKNAME); //유저 이름 가져옴
+    const username = getUserNickname(); //유저 이름 가져옴
     if (username) setName(username);
   };
 
@@ -45,20 +47,18 @@ const InputProfile: React.FC<any> = ({ navigation }) => {
         birthdate: `${birthDate.getFullYear()}-${String(birthDate.getMonth() + 1).padStart(2, '0')}-${String(birthDate.getDate()).padStart(2, '0')}`,
       });
       if (res) {
-        //navigation.navigate('SettingStackNavigator', { screen: 'EditUserInfo' });
-        //navigation.navigate('BottomTabNavigator', { screen: 'Home' });
-        //await AsyncStorage.setItem('gender', gender);
-        storage.set(GENDER, gender);
-        /*await AsyncStorage.setItem(
-          'birthdate',
-          `${birthDate.getFullYear()}-${String(birthDate.getMonth() + 1).padStart(2, '0')}-${String(birthDate.getDate()).padStart(2, '0')}`,
-        );*/
-        storage.set(
-          BIRTHDATE,
-          `${birthDate.getFullYear()}-${String(birthDate.getMonth() + 1).padStart(2, '0')}-${String(birthDate.getDate()).padStart(2, '0')}`,
+        setInfoWhenLogin(
+          '' + res.nickname,
+          res.birthdate,
+          res.gender,
+          res.accessToken,
+          res.refreshToken,
+          res.notice,
         );
+        setIsSignIn(true);
       } else {
-        alert('프로필 저장에 실패했습니다.');
+        //TODO: 프로필 저장 실패
+        return;
       }
     }
   };

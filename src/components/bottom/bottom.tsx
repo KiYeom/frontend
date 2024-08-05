@@ -1,7 +1,6 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity } from 'react-native';
 import { BottomCotainer } from './bottom.style';
 import palette from '../../assets/styles/theme';
-import { Image } from 'react-native';
 import HomeIcon from '../../assets/icons/Home.svg';
 import SettingIcon from '../../assets/icons/Setting.svg';
 function MyTabBar({ state, descriptors, navigation }) {
@@ -33,13 +32,6 @@ function MyTabBar({ state, descriptors, navigation }) {
             navigation.navigate(route.name, route.params);
           }
         };
-
-        /*const onLongPress = () => {
-          navigation.emit({
-            type: 'tabLongPress',
-            target: route.key,
-          });
-        };*/
 
         return (
           <>

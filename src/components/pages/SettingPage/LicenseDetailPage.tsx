@@ -1,37 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { useState, useLayoutEffect } from 'react';
+import { Text, StyleSheet, ScrollView } from 'react-native';
+import { useLayoutEffect } from 'react';
 import { useRoute } from '@react-navigation/native';
-type Author = {
-  name: string;
-  email: string;
-  url?: string;
-};
-
-type Repository = {
-  type: string;
-  url: string;
-  directory?: string;
-};
-
-type License = {
-  libraryName: string;
-  version: string;
-  _license: string;
-  _description: string;
-  homepage: string;
-  author: {
-    name: string;
-    email: string;
-    url?: string;
-  };
-  repository: {
-    type: string;
-    url: string;
-    directory: string;
-  };
-  _licenseContent?: string;
-};
 
 const LicenseDetailPage: React.FC<any> = ({ navigation }) => {
   //const [selectedLicense, setSelectedLicense] = useState<string | null>(null);

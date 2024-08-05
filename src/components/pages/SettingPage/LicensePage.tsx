@@ -1,4 +1,3 @@
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { FlatList } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { View, Text, TouchableOpacity } from 'react-native';
@@ -6,18 +5,6 @@ import { Icon } from 'react-native-paper';
 import React from 'react';
 import { useState, useEffect } from 'react';
 import OpenSourceLicense from '../../../constants/OpenSourceLicense.json';
-
-type Author = {
-  name: string;
-  email: string;
-  url?: string;
-};
-
-type Repository = {
-  type: string;
-  url: string;
-  directory?: string;
-};
 
 type License = {
   libraryName: string;

@@ -19,8 +19,6 @@ import { Button, TextInput, IconButton } from 'react-native-paper';
 import { Image } from 'react-native';
 import axios from 'axios';
 import { SPLASH_PATH, User } from '../../../constants/Constants';
-import { storage } from '../../../utils/storageUtils';
-import axiosInstance from '../../../utils/Api';
 import { CHATLOG } from '../../../constants/Constants';
 import { useFocusEffect } from '@react-navigation/native';
 import { ERRORMESSAGE } from '../../../constants/Constants';
@@ -37,6 +35,8 @@ import { Message } from '../../../constants/Constants';
 import { TextInputContainer } from './Chat.style';
 import { ChatContainer } from './Chat.style';
 import { DateLine } from './Chat.style';
+import { chatting } from '../../../apis/chatting';
+import { storage } from '../../../utils/storageUtils';
 //채팅 페이지
 
 const Chat: React.FC = () => {
@@ -79,16 +79,9 @@ const Chat: React.FC = () => {
   }, []);
 
   const sendChatRequest = async (characterId: number, question: string) => {
-    try {
-      setIsLoading(true); //비활성화 (챗봇이 할 말 생각중)
-      const response = await axiosInstance.post('/chat', {
-        characterId: characterId,
-        question: question,
-      });
-      return response.data.data.answer; //쿠키의 답장을 리턴
-    } catch (error) {
-      return ERRORMESSAGE; //api 연결이 실패한 경우 실패 메세지가 뜸
-    }
+    setIsLoading(true); //비활성화 (챗봇이 할 말 생각중)
+    const response = await chatting(characterId, question); //챗봇에게 질문을 보냄
+    return response.answer;
   };
 
   const aiSend = async () => {

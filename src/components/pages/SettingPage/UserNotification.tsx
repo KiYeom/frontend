@@ -1,20 +1,11 @@
 import React, { Component } from 'react';
 import { StyleSheet } from 'react-native';
-import {
-  ChipsInput,
-  Assets,
-  Colors,
-  Button,
-  Checkbox,
-  CheckboxRef,
-  TextField,
-} from 'react-native-ui-lib'; //eslint-disable-line
+import { Assets, Colors, Button, Checkbox, CheckboxRef, TextField } from 'react-native-ui-lib'; //eslint-disable-line
 import { View, Text } from 'react-native-ui-lib';
 import CustomTextArea from '../../atoms/CustomTextArea';
 import CustomCheckBox from '../../atoms/CustomCheckBox';
 import DeactivateReasonCheckBoxs from '../../molecules/DeactivateReasonCheckBoxs';
-import palette from '../../../assets/styles/theme';
-import { useState } from 'react';
+
 export default class UserNotifications extends Component {
   state = {
     value1: false,
@@ -58,10 +49,13 @@ export default class UserNotifications extends Component {
         <Text marginV-s4>Customizable UI</Text>
 
         <View row marginB-s5 centerV>
-          <Checkbox value={this.state.value1} onValueChange={value1 => this.setState({ value1 })} />
+          <Checkbox
+            value={this.state.value1}
+            onValueChange={(value1) => this.setState({ value1 })}
+          />
           <Checkbox
             value={this.state.value2}
-            onValueChange={value2 => this.setState({ value2 })}
+            onValueChange={(value2) => this.setState({ value2 })}
             borderRadius={2}
             size={30}
             color={Colors.purple30}
@@ -71,7 +65,7 @@ export default class UserNotifications extends Component {
 
           <Checkbox
             value={this.state.value3}
-            onValueChange={value3 => this.setState({ value3 })}
+            onValueChange={(value3) => this.setState({ value3 })}
             borderRadius={5}
             size={18}
             color={Colors.grey10}
@@ -84,13 +78,13 @@ export default class UserNotifications extends Component {
           value={this.state.value6}
           label={'With label'}
           color={Colors.green20}
-          onValueChange={value6 => this.setState({ value6 })}
+          onValueChange={(value6) => this.setState({ value6 })}
           containerStyle={styles.checkbox}
         />
 
         <Checkbox
           value={this.state.value7}
-          onValueChange={value7 => this.setState({ value7 })}
+          onValueChange={(value7) => this.setState({ value7 })}
           indeterminate
           label={'Indeterminate state'}
           color={Colors.green20}
@@ -105,13 +99,13 @@ export default class UserNotifications extends Component {
           <Checkbox
             disabled
             value={this.state.value5}
-            onValueChange={value5 => this.setState({ value5 })}
+            onValueChange={(value5) => this.setState({ value5 })}
             style={{ marginRight: 10 }}
           />
           <Checkbox
             disabled
             value={!this.state.value5}
-            onValueChange={value5 => this.setState({ value5 })}
+            onValueChange={(value5) => this.setState({ value5 })}
             iconColor={Colors.green10}
           />
         </View>
