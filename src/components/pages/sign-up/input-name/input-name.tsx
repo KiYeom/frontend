@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  Keyboard,
-  KeyboardAvoidingView,
-  TouchableWithoutFeedback,
-  Platform,
-} from 'react-native';
+import { View, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import {
   Annotation,
   ContentContainer,
@@ -13,15 +6,12 @@ import {
   Title,
   TitleContaienr,
 } from './input-name.styles';
-import { storage } from '../../../../utils/storageUtils';
-import { NICKNAME } from '../../../../constants/Constants';
-import React, { useCallback, useEffect } from 'react';
+import React from 'react';
 import Button from '../../../button/button';
 import Input from '../../../input/input';
-import { useNavigation } from '@react-navigation/native';
 import { NavigationProp } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { css } from '@emotion/native';
+import { setUserNickname } from '../../../../utils/storageUtils';
 
 const validateName = (name: string): 'error' | 'default' | 'correct' => {
   if (name.length !== 0 && (name.length < 2 || name.length > 15)) return 'error';
@@ -32,9 +22,8 @@ const validateName = (name: string): 'error' | 'default' | 'correct' => {
 const InputName = ({ navigation }: { navigation: NavigationProp<any> }) => {
   const [name, setName] = React.useState('');
 
-  const saveName = async (name: string) => {
-    //await AsyncStorage.setItem('name', name);
-    storage.set(NICKNAME, name);
+  const saveNickName = async (nickname: string) => {
+    setUserNickname(nickname);
     navigation.navigate('input-profile');
   };
 
@@ -65,7 +54,7 @@ const InputName = ({ navigation }: { navigation: NavigationProp<any> }) => {
             title="저장"
             disabled={!(validateName(name) === 'correct')}
             primary={true}
-            onPress={() => saveName(name)}
+            onPress={() => saveNickName(name)}
           />
         </CTAContainer>
       </View>

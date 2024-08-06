@@ -1,25 +1,9 @@
 import React from 'react';
-import { Text, View, Image, TouchableOpacity, Button } from 'react-native';
+import { Text, View } from 'react-native';
 import { StyleSheet } from 'react-native';
-//import Icon from "react-native-vector-icons/MaterialIcons";
-import { Switch, Icon, PaperProvider, Portal, Modal } from 'react-native-paper';
-import { APP_VERSION } from '../../constants/Constants';
-import { Provider } from 'react-native-paper';
-import * as Linking from 'expo-linking';
-import { NavigationContainer } from '@react-navigation/native';
-import useNicknameState from '../../store/nicknameState';
-import useNotificationState from '../../store/notificationState';
-import axiosInstance from '../../utils/Api';
 import * as Notifications from 'expo-notifications';
-import { Platform } from 'react-native';
-import * as Device from 'expo-device';
-import Constants from 'expo-constants';
-import requestPermission from '../../utils/NotificationToken';
-import OpenSourceLicense from '../../constants/OpenSourceLicense.json';
-import { FlatList } from 'react-native';
 import palette from '../../assets/styles/theme';
 import { MenuItemProps } from '../../constants/Constants';
-import { ListRenderItemInfo } from 'react-native';
 import MenuItem from '../molecules/MenuItem';
 import { Alert } from 'react-native';
 
@@ -45,7 +29,6 @@ const SettingMenus: React.FC<any> = ({ navigation, logoutRequest, deactivateRequ
     navigation.navigate('SettingStackNavigator', { screen: 'ChannelTalk' });
   };
   //알림설정 토글 상태
-  const { isSwitchOn, setIsSwitchOn } = useNotificationState();
 
   //앱 버전 클릭 시 오픈소스 라이센스로 이동
   const handleOpenSource = () => {
@@ -57,19 +40,6 @@ const SettingMenus: React.FC<any> = ({ navigation, logoutRequest, deactivateRequ
   const handleOpenNotification = () => {
     //Linking.openSettings();
     navigation.navigate('SettingStackNavigator', { screen: 'UserNotifications' });
-  };
-
-  const onToggleSwitch = async () => {
-    const response = await axiosInstance.patch('/notifications', {
-      isAllow: !isSwitchOn,
-    });
-    if (response) {
-      //반환값이 true이면 원하는대로 스위치 값 바꾸기
-      setIsSwitchOn(!isSwitchOn);
-      console.log('토글 바꾸기 성공');
-    } else {
-      console.log('토글 바꾸기 실패');
-    }
   };
 
   const MenuItems: MenuItemProps[] = [
@@ -95,7 +65,7 @@ const SettingMenus: React.FC<any> = ({ navigation, logoutRequest, deactivateRequ
             },
             { text: '네', onPress: () => logoutRequest() },
           ],
-          { cancelable: false } //alert 밖에 눌렀을 때 alert 안 없어지도록
+          { cancelable: false }, //alert 밖에 눌렀을 때 alert 안 없어지도록
         ),
     },
     {

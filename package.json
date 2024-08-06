@@ -58,7 +58,7 @@
     "react-native-typing-animation": "^0.1.7",
     "react-native-ui-lib": "^7.27.0",
     "react-native-web": "~0.19.10",
-    "react-native-webview": "^13.8.6",
+    "react-native-webview": "13.8.6",
     "zustand": "^4.5.4"
   },
   "devDependencies": {

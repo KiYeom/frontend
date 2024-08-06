@@ -1,11 +1,4 @@
-import React, { Component } from 'react';
-import { StyleSheet } from 'react-native';
-import { View, Text } from 'react-native-ui-lib';
-import CustomTextArea from '../../atoms/CustomTextArea';
-import CustomCheckBox from '../../atoms/CustomCheckBox';
-import DeactivateReasonCheckBoxs from '../../molecules/DeactivateReasonCheckBoxs';
-import palette from '../../../assets/styles/theme';
-import { storage } from '../../../utils/storageUtils';
+import React from 'react';
 import { Image } from 'react-native';
 import HeartMessage from '../../../assets/images/heartMessage.svg';
 import { CHATLOG } from '../../../constants/Constants';
@@ -17,7 +10,8 @@ import {
   AlertText,
 } from './DeactivateAlert.style';
 import Button from '../../button/button';
-import { CTAContainer } from '../sign-up/input-name/input-name.styles';
+import { storage } from '../../../utils/storageUtils';
+
 const DeactivateAlert: React.FC = ({ route, navigation }) => {
   const { deactivateRequest } = route.params;
   const chats = storage.getString(CHATLOG);
@@ -58,15 +52,3 @@ const DeactivateAlert: React.FC = ({ route, navigation }) => {
   );
 };
 export default DeactivateAlert;
-
-const styles = StyleSheet.create({
-  checkbox: {
-    marginBottom: 20,
-  },
-  row: {
-    alignItems: 'center',
-  },
-  txt: {
-    fontSize: 28,
-  },
-});

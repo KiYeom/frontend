@@ -1,14 +1,6 @@
-import styled, { css } from '@emotion/native';
+import styled from '@emotion/native';
 import React, { useState } from 'react';
-import {
-  Alert,
-  Modal,
-  StyleSheet,
-  Text,
-  Pressable,
-  View,
-  TouchableWithoutFeedback,
-} from 'react-native';
+import { Modal, TouchableWithoutFeedback } from 'react-native';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import Button from '../button/button';
 import DatePicker from 'react-native-date-picker';

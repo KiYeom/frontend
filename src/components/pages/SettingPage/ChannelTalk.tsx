@@ -1,6 +1,5 @@
 import React from 'react';
 import { WebView } from 'react-native-webview';
-import { useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 
 const ChannelTalk: React.FC = () => {

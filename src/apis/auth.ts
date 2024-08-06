@@ -1,27 +1,27 @@
 import axios from 'axios';
 import { TAuth, TNewUser } from './auth.types';
-import { storage } from '../utils/storageUtils';
-import { REFRESHTOKEN, USER } from '../constants/Constants';
 import { instance } from './interceptor';
+import { getAppVersion, getDeviceId, getDeviceOS } from '../utils/device-info';
+import {
+  deleteAccessToken,
+  getDeviceIdFromMMKV,
+  setAccessToken,
+  setNotice,
+  setUserInfo,
+} from '../utils/storageUtils';
+import { TVender } from '../constants/types';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 //INFO: SSO 로그인
-export const ssoLogin = async (
-  code: string,
-  vender: 'google' | 'apple' | 'kakao',
-): Promise<TAuth | undefined> => {
+export const ssoLogin = async (code: string, vender: TVender): Promise<TAuth | undefined> => {
   try {
     const res = await instance.post('/v1/auth/sso-login', {
       providerName: vender,
       providerCode: code,
-      deviceId: USER.DEVICEID,
-      appVersion: USER.APPVERSION,
-      deviceOs: USER.DEVICEOS,
+      deviceId: getDeviceIdFromMMKV(),
+      appVersion: getAppVersion(),
+      deviceOs: getDeviceOS(),
     });
-
-    //TODO: isNewUser가 true일 경우 회원가입 페이지로 이동
-
-    //TODO: isNewUser가 false일 경우 로그인 성공 -> 메인 페이지로 이동
-
     return res.data;
   } catch (error) {
     console.error('[ERROR] ssoLogin', error);
@@ -34,35 +34,44 @@ export const updateUserProfile = async (profile: TNewUser): Promise<TAuth | unde
   try {
     const res = await instance.patch('/v1/auth/update-new-user', {
       ...profile,
-      deviceId: USER.DEVICEID,
-      appVersion: USER.APPVERSION,
-      deviceOs: USER.DEVICEOS,
+      deviceId: getDeviceIdFromMMKV(),
+      appVersion: getAppVersion(),
+      deviceOs: getDeviceOS(),
     });
     return res.data;
   } catch (error) {
-    console.error('[ERROR] updateUserProfile', error);
+    console.error('[ERROR] updateUserProfile: ', error);
     return;
   }
 };
 
 //INFO: refreshToken으로 accessToken 재발급
-export const getGenerateAccessToken = async (): Promise<string | undefined> => {
-  const refreshToken = storage.getString(REFRESHTOKEN);
-  console.log('리프레시 토큰: ', refreshToken);
+export const reissueAccessToken = async (
+  refreshToken: string,
+  isAppStart: boolean = false,
+): Promise<void> => {
   try {
-    const res = await axios.patch('/auth/refresh', {
-      deviceId: USER.DEVICEID,
-      appVersion: USER.APPVERSION,
-      deviceOs: USER.DEVICEOS,
+    deleteAccessToken();
+    const res = await axios.patch('https://api.remind4u.co.kr/v1/auth/refresh', {
+      deviceId: getDeviceIdFromMMKV(),
+      appVersion: getAppVersion(),
+      deviceOs: getDeviceOS(),
       refreshToken: refreshToken,
-      isAppStart: false,
+      isAppStart,
     });
 
-    if (res.status === 200) {
-      return res.data.data.accessToken;
-    } else return;
+    if (res.data.data) {
+      const resDate = res.data.data;
+      setAccessToken(resDate.accessToken);
+      if (isAppStart) {
+        setUserInfo(resDate.nickname, resDate.birthdate, resDate.gender);
+      }
+      if (resDate.notice) {
+        setNotice(resDate.notice);
+      }
+    }
   } catch (error) {
-    console.error('[ERROR] getGenerateAccessToken ', error);
+    console.error('[ERROR] reissueAccessToken ', error);
     return;
   }
 };

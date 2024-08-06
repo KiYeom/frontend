@@ -1,5 +1,5 @@
 import { css } from '@emotion/native';
-import { Platform, TouchableOpacity, View, Text } from 'react-native';
+import { TouchableOpacity, View, Text } from 'react-native';
 import { rsHeight, rsWidth, rsFont } from '../../utils/responsive-size';
 import { useNavigation } from '@react-navigation/native';
 import palette from '../../assets/styles/theme';

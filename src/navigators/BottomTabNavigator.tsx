@@ -1,17 +1,13 @@
-import { StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import Home from '../components/pages/HomePage/Home';
 import Setting from '../components/pages/SettingPage/Setting';
 import palette from '../assets/styles/theme';
-//import SettingIcon from '../../../assets/icons/Setting.svg';
-//import AnalyzeIcon from '../../../assets/icons/Analyze.svg';
 import HomeIcon from '../assets/icons/Home.svg';
 import SettingIcon from '../assets/icons/Setting.svg';
 import MyTabBar from '../components/bottom/bottom';
 
 const Tab = createBottomTabNavigator();
-const color = '#58C3A5';
 
 const BottomTabNavigator: React.FC<any> = ({ isSignIn, setIsSignIn }) => {
   //console.log('채팅 화면 새로 그려짐..');
@@ -69,13 +65,4 @@ const BottomTabNavigator: React.FC<any> = ({ isSignIn, setIsSignIn }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  text: {
-    fontSize: 24,
-    color: '#333',
-  },
-});
 export default BottomTabNavigator;

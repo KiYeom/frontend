@@ -1,11 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, Keyboard } from 'react-native';
+import { Keyboard } from 'react-native';
 import Button from '../../button/button';
 import DeactivateReasonCheckBoxs from '../../molecules/DeactivateReasonCheckBoxs';
 import { Alert } from 'react-native';
 import { SignOutTitle, SignOutTitleContainer, Container } from './DeactivateAlert.style';
-import { storage } from '../../../utils/storageUtils';
-import { NICKNAME } from '../../../constants/Constants';
+import { getUserNickname } from '../../../utils/storageUtils';
 import { CheckboxContainer } from './DeactivateReason.style';
 import { useState } from 'react';
 import { FormContainer } from './DeactivateReason.style';
@@ -57,7 +56,7 @@ const DeactivateReason: React.FC = ({ route }) => {
       <Container>
         <SignOutTitleContainer>
           <SignOutTitle status="default">
-            {storage.getString(NICKNAME)}님,{'\n'}떠나시는 이유를 알려주세요
+            {getUserNickname()}님,{'\n'}떠나시는 이유를 알려주세요
           </SignOutTitle>
         </SignOutTitleContainer>
         <FormContainer>

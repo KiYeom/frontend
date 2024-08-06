@@ -1,7 +1,5 @@
-import { StyleSheet } from 'react-native';
-import theme from '../../../assets/styles/theme';
 import palette from '../../../assets/styles/theme';
-import styled, { css } from '@emotion/native'; // Add this import
+import styled from '@emotion/native'; // Add this import
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 
 export const LoginBtn = styled.TouchableOpacity<{ vendor: 'kakao' | 'google' | 'apple' }>`

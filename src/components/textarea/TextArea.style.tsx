@@ -1,5 +1,5 @@
 import styled from '@emotion/native';
-import { rsHeight, rsWidth, rsFont } from '../../utils/responsive-size';
+import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import palette from '../../assets/styles/theme';
 
 export const TextAreaField = styled.TextInput`

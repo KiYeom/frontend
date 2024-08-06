@@ -1,33 +1,24 @@
-import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
-import NameInput from '../../molecules/NameInput';
-import BirthInput from '../../molecules/BirthInput';
-import GenderInput from '../../molecules/GenderInput';
+import React, { useEffect } from 'react';
 import Button from '../../button/button';
 import palette from '../../../assets/styles/theme';
-import { getUserInfo } from '../../../apis/userInfo';
 import { Label } from '../sign-up/input-profile/input-profile.styles';
-import { USER } from '../../../constants/Constants';
 import Input from '../../input/input';
 import { FormContainer } from '../sign-up/input-profile/input-profile.styles';
-import { useEffect } from 'react';
 import { ContentContainer } from '../sign-up/input-name/input-name.styles';
 import { validateName } from '../../../utils/ValidateName';
 import { CTAContainer } from '../sign-up/input-name/input-name.styles';
 import { userEditInfo } from '../../../apis/userEditInfo'; //api 수정해야 함
-import { storage } from '../../../utils/storageUtils';
-import { NICKNAME, GENDER, BIRTHDATE } from '../../../constants/Constants';
+import { getUserBirthdate, getUserGender, getUserNickname } from '../../../utils/storageUtils';
 import { ButtonGroup } from '../sign-up/input-profile/input-profile.styles';
 import { GenderButton } from '../sign-up/input-profile/input-profile.styles';
 import { BtnLabel } from '../sign-up/input-profile/input-profile.styles';
 import DatePickerModal from '../../modals/date-picker-modal';
+import { TGender } from '../../../constants/types';
 //설정 - 프로필 수정 화면
 
 //date가 존재할 경우 Date 형태로 바꾸는 함수
-const formatBirth = (dateString: string): Date | undefined => {
-  console.log(dateString);
-  if (dateString === 'unknown') {
-    //storage에 unknown이 저장되어있을 경우
+const formatBirthDate = (dateString: string | undefined): Date | undefined => {
+  if (!dateString) {
     return undefined;
   }
   const [year, month, day] = dateString.split('-').map(Number);
@@ -36,12 +27,16 @@ const formatBirth = (dateString: string): Date | undefined => {
 };
 
 const EditUserInfo: React.FC = ({ navigation }: any) => {
-  const [name, setName] = React.useState<string>(storage.getString(NICKNAME));
-  const [gender, setGender] = React.useState<'여성' | '남성'>(storage.getString(GENDER));
+  const [name, setName] = React.useState<string>();
+  const [gender, setGender] = React.useState<TGender>();
+  const [birthDate, setBirthdate] = React.useState<Date | undefined>();
   const [openModal, setOpenModal] = React.useState<boolean>(false);
-  const [birthDate, setBirthdate] = React.useState<Date | undefined>(
-    formatBirth(storage.getString(BIRTHDATE)),
-  );
+
+  useEffect(() => {
+    setName(getUserNickname() + '');
+    setGender(getUserGender());
+    setBirthdate(formatBirthDate(getUserBirthdate()));
+  }, []);
   return (
     <>
       <ContentContainer>
@@ -49,7 +44,7 @@ const EditUserInfo: React.FC = ({ navigation }: any) => {
           <Label>이름</Label>
           <Input
             placeholder="내용을 입력해주세요."
-            status={validateName(name)}
+            status={validateName(name + '')}
             message="2~15 글자 사이의 이름을 지어주세요!"
             withMessage={true}
             onChange={(text) => {
@@ -100,11 +95,11 @@ const EditUserInfo: React.FC = ({ navigation }: any) => {
       <CTAContainer>
         <Button
           title="저장"
-          disabled={!(validateName(name) === 'correct')}
+          disabled={!(validateName(name + '') === 'correct')}
           primary={true}
           onPress={async () => {
             const res = await userEditInfo({
-              nickname: name,
+              nickname: name + '',
               birthdate: birthDate
                 ? `${birthDate.getFullYear()}-${String(birthDate.getMonth() + 1).padStart(2, '0')}-${String(birthDate.getDate()).padStart(2, '0')}`
                 : 'unknown',

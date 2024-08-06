@@ -1,6 +1,5 @@
 import styled from '@emotion/native';
-import palette from '../../assets/styles/theme';
-import { rsFont, rsHeight, rsWidth } from '../../utils/responsive-size';
+import { rsHeight } from '../../utils/responsive-size';
 
 export const BottomCotainer = styled.View`
   height: ${rsHeight * 90 + 'px'};

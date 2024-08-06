@@ -5,37 +5,33 @@ import BottomTabNavigator from './src/navigators/BottomTabNavigator';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import * as Device from 'expo-device';
-import axios from 'axios';
-import { storage } from './src/utils/storageUtils';
 import {
-  USER,
-  ACCESSTOKEN,
-  REFRESHTOKEN,
-  CHATLOG,
-  NICKNAME,
-  GENDER,
-  BIRTHDATE,
-} from './src/constants/Constants';
-import useIsSignInState from './src/store/signInStatus';
-import useNoticeState from './src/store/notice';
+  clearInfoWhenLogout,
+  getAccessToken,
+  getRefreshToken,
+  setDeviceId,
+} from './src/utils/storageUtils';
+import useIsSignInState from './src/utils/signInStatus';
 import { useFonts } from 'expo-font';
-import * as Application from 'expo-application';
 import { PaperProvider } from 'react-native-paper';
 import * as amplitude from '@amplitude/analytics-react-native';
 import SettingStackNavigator from './src/navigators/SettingStackNavigator';
 import SignUpStackNavigator from './src/navigators/SignUpStackNavigator';
 import HomeStackNavigator from './src/navigators/HomeStackNavigator';
-amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE);
-amplitude.track('Sign Up');
+import palette from './src/assets/styles/theme';
+import { getDeviceId } from './src/utils/device-info';
+import { reissueAccessToken } from './src/apis/auth';
+
+if (process.env.EXPO_PUBLIC_AMPLITUDE) {
+  amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE);
+  amplitude.track('Sign Up');
+}
 
 const RootStack = createNativeStackNavigator();
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(false); //로딩중이면 true, 로딩이 끝났으면 false
   const { isSignIn, setIsSignIn } = useIsSignInState(); //store에서 가지고 온 전역 state
-  //회원인데 로그인이 안 되어있거나 회원이 아니라면 isSignIn == false, 회원이고 로그인도 됐다면 isSignIns == true
-  const { notice, setNotice } = useNoticeState(); //store 폴더에서 가지고 온 전역 state
 
   const [loaded, error] = useFonts({
     'Pretendard-SemiBold': require('./src/assets/fonts/Pretendard-SemiBold.ttf'),
@@ -50,83 +46,43 @@ const App: React.FC = () => {
 
   //앱이 처음 실행이 될 때 현재 우리 앱의 유저인지 파악
   useEffect(() => {
-    //storage.delete(ACCESSTOKEN);
-    //storage.delete(REFRESHTOKEN);
-    //setIsSignIn(true);
     bootstrap();
-  }, []);
+  }, []); //여기의 빈 배열 삭제하면 큰일 나 ㅇㅅㅇ;;
 
   const bootstrap = async (): Promise<void> => {
-    try {
-      const accessToken = storage.getString(ACCESSTOKEN);
+    //디바이스 아이디 설정
+    const deviceId = await getDeviceId();
+    setDeviceId(deviceId);
 
-      USER.DEVICEOS = '' + Device.osName + Device.osVersion;
-      if (Device.osName === 'iOS' || Device.osName == 'iPadOS') {
-        const deviceIdCode = await Application.getIosIdForVendorAsync();
-        USER.DEVICEID = deviceIdCode;
-      } else if (Device.osName === 'Android') {
-        const deviceIdCode = await Application.getAndroidId();
-        USER.DEVICEID = deviceIdCode;
-      }
-
-      //토큰이 있으면 우리 회원 -> refresh token으로 access token 재발급하기
-      if (accessToken) {
-        axios
-          .patch('https://api.remind4u.co.kr/v1/auth/refresh', {
-            deviceId: USER.DEVICEID,
-            appVersion: USER.APPVERSION,
-            deviceOs: USER.DEVICEOS,
-            refreshToken: storage.getString(REFRESHTOKEN),
-            isAppStart: true,
-          })
-          .then(function (response) {
-            try {
-              //요청에 성공한 경우 = access token을 재발급 완료
-              storage.set(ACCESSTOKEN, response.data.data.accessToken); //새로 발급된 access token 저장
-              storage.set(NICKNAME, response.data.data.nickname); //닉네임, 생년월일, 성별 정보 저장
-              storage.set(GENDER, response.data.data.birthDate);
-              storage.set(BIRTHDATE, response.data.data.birthDate);
-              if (response.data.data.notice != null) {
-                setNotice(response.data.data.notice);
-              }
-              setIsSignIn(true); //로그인에 성공했으므로 signIn = true
-            } catch (error) {
-              setIsSignIn(false);
-            }
-          })
-          .catch(function (error) {
-            //FIXME: console.log 삭제 예정
-            console.log('access token 재발급 안 됨 됨 json', error);
-            console.log('==============app.tsx==========', USER.PROVIDERCODE);
-            console.log('토큰 발급 실패, access token : ', accessToken);
-            console.error('토큰 갱신 실패 - 상세 정보: ', error.message);
-            console.log('config : ', error.config);
-            console.log('config : ', error.code);
-            console.log('request : ', error.request);
-            console.log('refreshToken error(data): ', error.response.data);
-            console.log('refreshToken error(stats)', error.response.status); //TODO : 500번 에러
-            console.log('refreshToken error(headers)', error.response.headers);
-            setIsSignIn(false); //로그인 실패
-            console.log('요청 실패 isSignIn : ', isSignIn);
-          });
-      } else {
-        //토큰이 없으면, 다른 기기에서 접근한 것이거나 우리의 회원이 아니다. 로그인 화면을 보여준다.
-        setIsSignIn(false);
-        console.log('토큰이 없는 경우 isSignIn : ', isSignIn);
-        console.log(
-          '토큰이 없다 = 다른 기기에 접근한 유저이거나 새로운 유저이다. 로그인 화면을 보여준다',
-        );
-      }
-    } catch (error) {
-      console.log(error);
+    //자동 로그인 판단
+    const refreshToken = getRefreshToken();
+    if (!refreshToken) {
+      //토큰이 없으면, 다른 기기에서 접근한 것이거나 우리의 회원이 아니다. 로그인 화면을 보여준다.
+      //유저 정보 삭제하기
+      clearInfoWhenLogout();
+      setIsSignIn(false);
+      setLoading(false);
+      return;
     }
-    setLoading(false); //로딩 완료
+
+    //토큰 재발급
+    await reissueAccessToken(refreshToken, true);
+    const accessToken = getAccessToken();
+    if (!accessToken) {
+      clearInfoWhenLogout();
+      setIsSignIn(false);
+      setLoading(false);
+      return;
+    }
+    setIsSignIn(true);
+    setLoading(false);
+    return;
   };
 
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#58C3A5" />
+        <ActivityIndicator size="large" color={palette.primary[500]} />
       </View>
     );
   }
