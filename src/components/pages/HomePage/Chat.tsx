@@ -127,12 +127,7 @@ const Chat: React.FC = () => {
             <BubbleText status="date">{item.date}</BubbleText>
           </DateLine>
         )}
-        <ChatBubble
-          showImage={item.sender === 'bot' ? true : false}
-          status={item.sender}
-          text={item.text}
-          time={item.time}
-        />
+        <ChatBubble status={item.sender} text={item.text} time={item.time} />
       </View>
     );
   };
