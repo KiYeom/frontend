@@ -2,23 +2,30 @@ import {
   Bubble,
   BubbleText,
   ProfileImageContainer,
-  ProfileImage,
   Container,
   ChatBubbleContainer,
 } from './ChatBubble.style';
+import { useAssets } from 'expo-asset';
+import { Image } from 'expo-image';
+import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 
 type ChatBubbleProps = {
   status: 'user' | 'bot';
   text: string;
   time: string;
 };
+
 const ChatBubble = (props: ChatBubbleProps) => {
   const { status, text, time } = props;
+  //const [assets, error] = useAssets([require('../../../assets/images/CookieProfile.png')]);
   return (
     <Container status={status}>
       {status === 'bot' && (
         <ProfileImageContainer>
-          <ProfileImage source={require('../../../assets/images/CookieProfile.png')} />
+          <Image
+            source={require('../../../assets/images/CookieProfile.png')}
+            style={{ objectFit: 'contain', width: 35 * rsWidth, height: 35 * rsHeight }}
+          />
         </ProfileImageContainer>
       )}
       {status === 'bot' ? (

@@ -1,4 +1,5 @@
 import styled from '@emotion/native';
+
 import palette from '../../../assets/styles/theme';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 
@@ -6,6 +7,7 @@ import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 export const Container = styled.View<{ status: 'bot' | 'user' }>`
   flex-direction: row;
   gap: ${rsHeight * 8 + 'px'};
+  margin-bottom: ${rsHeight * 20 + 'px'};
   justify-content: ${(props) => (props.status === 'bot' ? 'flex-end' : 'flex-start')};
 `;
 
@@ -53,11 +55,4 @@ export const ChatBubbleContainer = styled.View<{ status: 'bot' | 'user' }>`
 export const ProfileImageContainer = styled.View`
   flex : 1,
   width : ${rsWidth * 35 + 'px'};
-`;
-
-//챗봇 프사
-export const ProfileImage = styled.Image`
-  width: ${rsWidth * 35 + 'px'};
-  height: ${rsHeight * 35 + 'px'};
-  object-fit: contain;
 `;

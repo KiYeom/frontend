@@ -76,10 +76,15 @@
           }
         }
       ],
-
       "expo-apple-authentication",
       "expo-localization",
-      "expo-build-properties"
+      "expo-build-properties",
+      [
+        "expo-asset",
+        {
+          "assets": ["./src/assets/images/"]
+        }
+      ]
     ],
     "runtimeVersion": "1.0.0",
     "updates": {

@@ -2,6 +2,7 @@ import React from 'react';
 import { Text, StyleSheet, ScrollView } from 'react-native';
 import { useLayoutEffect } from 'react';
 import { useRoute } from '@react-navigation/native';
+import Header from '../../header/header';
 
 const LicenseDetailPage: React.FC<any> = ({ navigation }) => {
   //const [selectedLicense, setSelectedLicense] = useState<string | null>(null);
