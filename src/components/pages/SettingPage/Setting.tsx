@@ -12,7 +12,7 @@ import {
   setUserInfo,
   storage,
 } from '../../../utils/storageUtils';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
