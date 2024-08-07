@@ -3,11 +3,10 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import { setNotificationToken } from '../apis/notification';
-import { getDeviceIdFromMMKV } from './storageUtils';
+import { getDeviceIdFromMMKV, getNotificationSent, setNotificationSent } from './storageUtils';
 
 function handleRegistrationError(errorMessage: string) {
   console.error(errorMessage);
-  throw new Error(errorMessage);
 }
 
 const registerForPushNotificationsAsync = async () => {
@@ -55,11 +54,18 @@ const registerForPushNotificationsAsync = async () => {
   }
 };
 
-const requestPermission = async () => {
+const requestNotificationPermission = async () => {
+  const isSent = getNotificationSent();
+  if (isSent && isSent === true) {
+    return;
+  }
   const token = await registerForPushNotificationsAsync();
   const deviceId = getDeviceIdFromMMKV();
   if (token && deviceId) {
-    setNotificationToken(token, deviceId);
+    const result = await setNotificationToken(token, deviceId);
+    if (result) {
+      setNotificationSent(true);
+    }
   }
 };
-export default requestPermission;
+export default requestNotificationPermission;

@@ -11,6 +11,7 @@ const REFRESH_TOKEN = 'refresh_token';
 const USER_NICKNAME = 'user_nickname';
 const USER_BIRTHDATE = 'user_birthdate';
 const USER_GENDER = 'user_gender';
+const NOTIFICATION_SENT = 'notification_sent';
 
 //DeviceInfo
 const DEVICE_ID = 'device_id';
@@ -49,6 +50,7 @@ export const clearUserInfo = (): void => {
   storage.delete(USER_NICKNAME);
   storage.delete(USER_BIRTHDATE);
   storage.delete(USER_GENDER);
+  storage.delete(NOTIFICATION_SENT);
 };
 
 export const setInfoWhenLogin = (
@@ -71,6 +73,7 @@ export const clearInfoWhenLogout = (): void => {
   deleteChatting();
 };
 
+//Tokens
 //AccessToken
 export const getAccessToken = (): string | undefined => {
   return storage.getString(ACCESS_TOKEN);
@@ -97,6 +100,7 @@ export const deleteRefreshToken = (): void => {
   storage.delete(REFRESH_TOKEN);
 };
 
+//User
 //UserNickname
 export const getUserNickname = (): string | undefined => {
   return storage.getString(USER_NICKNAME);
@@ -134,6 +138,19 @@ export const setUserGender = (userGender: TGender): void => {
 
 export const deleteUserGender = (): void => {
   storage.delete(USER_GENDER);
+};
+
+//NotificationSent
+export const getNotificationSent = (): boolean | undefined => {
+  return storage.getBoolean(NOTIFICATION_SENT);
+};
+
+export const setNotificationSent = (notificationSent: boolean): void => {
+  storage.set(NOTIFICATION_SENT, notificationSent);
+};
+
+export const deleteNotificationSent = (): void => {
+  storage.delete(NOTIFICATION_SENT);
 };
 
 //DeviceId
