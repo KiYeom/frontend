@@ -14,12 +14,11 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
       style={css`
         margin-top: ${rsHeight * 40 + 'px'};
         height: ${rsHeight * 56 + 'px'};
-        padding-left: ${rsWidth * 24 + 'px'};
-        padding-right: ${rsWidth * 24 + 'px'};
+        padding-left: ${title === undefined ? rsWidth * 24 + 'px' : rsWidth * 20 + 'px'};
         display: flex;
         flex-direction: row;
-        justify-content: center;
         align-items: center;
+        justify-content: space-between;
       `}>
       <TouchableOpacity
         onPress={() => navigation.goBack()}
@@ -29,24 +28,18 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
         `}>
         <Icon name="arrow-left" width={rsWidth * 9 + 'px'} color={palette.neutral[900]} />
       </TouchableOpacity>
-      <View
+      <Text
         style={css`
-          flex: 1;
-          justify-content: center;
-          align-items: center;
-        `}>
-        <Text
-          style={css`
-            text-align: center;
-            font-size: ${rsFont * 18 + 'px'};
-            font-family: Pretendard-SemiBold;
-            width: ${rsWidth * 250 + 'px'};
-          `}
-          ellipsizeMode="tail"
-          numberOfLines={1}>
-          {title}
-        </Text>
-      </View>
+          text-align: center;
+          font-size: ${rsFont * 18 + 'px'};
+          font-family: Pretendard-SemiBold;
+          width: ${rsWidth * 250 + 'px'};
+          margin-right: ${rsWidth * 70 + 'px'};
+        `}
+        ellipsizeMode="tail"
+        numberOfLines={1}>
+        {title}
+      </Text>
     </View>
   );
 };
