@@ -6,10 +6,8 @@ import { reissueAccessToken } from './auth';
 
 function setInterceptor(instance: any) {
   instance.interceptors.request.use(async function (config: any) {
-    console.log('tokenInInterceptor: ', getAccessToken());
     const tokenValue = getAccessToken();
     config.headers.Authorization = `Bearer ${tokenValue}`;
-    console.log('config: ', config.headers);
     return config;
   });
 
@@ -21,6 +19,7 @@ function setInterceptor(instance: any) {
       console.error('instance Error: ', error.response);
       if (error.response && error.response.status === 419) {
         console.log('interseptor: 419 에러 발생');
+        console.log('accessToken: ', getAccessToken());
         const refreshToken = getRefreshToken();
         if (!refreshToken) {
           // refreshToken이 없으면 로그인이 안되어있는 상태

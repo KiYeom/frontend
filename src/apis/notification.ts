@@ -8,7 +8,7 @@ export const setNotificationToken = async (
   deviceId: string,
 ): Promise<TCommonResult | undefined> => {
   try {
-    const res = await instance.patch('/v1/notification/token', {
+    const res = await instance.patch('/v1/notifications/token', {
       deviceId,
       notificationToken,
     });
@@ -22,7 +22,7 @@ export const setNotificationToken = async (
 //INFO: 토큰 권한 정보 받기
 export const getNotificationStatus = async (): Promise<TAllowedNotifications | undefined> => {
   try {
-    const res = await instance.get('/v1/notification/allowed-notifications');
+    const res = await instance.get('/v1/notifications/allowed-notifications');
     return res.data;
   } catch (error) {
     console.error('[ERROR] get allowed Token', error);
@@ -36,7 +36,7 @@ export const setNotificationStatus = async (
   isAllow: boolean,
 ): Promise<TSetNotification | undefined> => {
   try {
-    const res = await instance.patch('/v1/notification', {
+    const res = await instance.patch('/v1/notifications', {
       notificationName,
       isAllow,
     });

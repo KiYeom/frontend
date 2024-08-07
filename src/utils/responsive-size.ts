@@ -4,7 +4,7 @@ export const basicDimensions = {
   width: 390,
 }; //기준이 되는 화면 크기 (디자인 할 때 화면 크기)
 
-const ratio = Platform.OS === 'android' ? 0.9 : 1;
+export const ratio = Platform.OS === 'android' ? 0.9 : 1;
 //비율 : 안드로이드는 0.9, 아이폰은 1
 
 //반응형 크기 비율 계산하기 (reHeight = 실기기 높이 / 디자인 높이 [비율])
