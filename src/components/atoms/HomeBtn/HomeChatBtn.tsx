@@ -3,6 +3,8 @@ import './HomeChatBtn.style';
 import { Leaf, Cookie } from './HomeChatBtn.style';
 import { HomeBtnTitle, HomeBtnText, HomeBtn, ImageContainer } from './HomeChatBtn.style';
 import { getUserNickname } from '../../../utils/storageUtils';
+import { Image } from 'expo-image';
+import { rsWidth, rsHeight } from '../../../utils/responsive-size';
 
 const HomeChatBtn = ({ navigation }) => {
   return (

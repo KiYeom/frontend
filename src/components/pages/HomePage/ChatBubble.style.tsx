@@ -13,8 +13,13 @@ export const Container = styled.View<{ status: 'bot' | 'user' }>`
 
 //채팅 말풍선
 export const Bubble = styled.View<{ status: 'bot' | 'user' }>`
-  padding: ${rsWidth * 12 + 'px'} ${rsHeight * 8 + 'px'};
+  padding-horizontal: ${rsWidth * 12 + 'px'};
+  padding-vertical: ${rsHeight * 8 + 'px'};
   flex-shrink: 1;
+  min-width: ${(props) =>
+    props.status === 'bot' ? rsWidth * 55 + 'px' : undefined}; //봇이 아무말도 안할 때
+  min-height: ${(props) =>
+    props.status === 'bot' ? rsHeight * 40 + 'px' : undefined}; //봇이 아무말도 안할 때
   border-radius: 10px;
   background-color: ${(props) =>
     props.status === 'bot' ? palette.neutral[100] : palette.primary[500]};

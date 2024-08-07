@@ -32,7 +32,7 @@ export const ImageContainer = styled.View`
   margin-top: ${rsHeight * 13 + 'px'};
   width: 100%;
   flex: 1 0 auto;
-  position: position;
+  position: relative;
 `;
 
 export const Cookie = styled.Image`

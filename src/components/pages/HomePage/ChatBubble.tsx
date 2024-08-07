@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { Image } from 'expo-image';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { TypingAnimation } from 'react-native-typing-animation';
+import palette from '../../../assets/styles/theme';
 import { chatting } from '../../../apis/chatting';
 type ChatBubbleProps = {
   status: 'user' | 'bot';
@@ -21,8 +22,6 @@ type ChatBubbleProps = {
 
 const ChatBubble = (props: ChatBubbleProps) => {
   const { status, text, time } = props;
-  //const [assets, error] = useAssets([require('../../../assets/images/CookieProfile.png')]);
-  //console.log('출력ㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱ', isLoading);
   return (
     <Container status={status}>
       {status === 'bot' && (
@@ -36,7 +35,17 @@ const ChatBubble = (props: ChatBubbleProps) => {
       {status === 'bot' ? (
         <ChatBubbleContainer status={status}>
           <Bubble status={status}>
-            {text === '' ? <TypingAnimation /> : <BubbleText status={status}>{text}</BubbleText>}
+            {text === '' ? (
+              <TypingAnimation
+                dotColor={palette.neutral[400]} // 점 색상
+                dotMargin={8 * rsWidth} // 점 사이 간격
+                dotAmplitude={5} // 점 이동 크기
+                dotSpeed={0.15} // 애니메이션 속도
+                dotRadius={3 * rsHeight} // 점 크기
+              />
+            ) : (
+              <BubbleText status={status}>{text}</BubbleText>
+            )}
           </Bubble>
           <BubbleText status="time">{time}</BubbleText>
         </ChatBubbleContainer>

@@ -3,23 +3,14 @@ import { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, FlatList, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { BubbleText } from './ChatBubble.style';
 import ChatBubble from './ChatBubble';
-import Input from '../../input/input';
-//import ChatBubble from '../../atoms/ChatBubble';
-import { deleteChatting } from '../../../utils/storageUtils';
 import ChatInput from './ChatInput';
 import { SafeAreaView } from 'react-native';
 import { useHeaderHeight } from '@react-navigation/elements';
-import { getTime, formatTime, formatDate } from '../../../utils/Chatting';
-import { TextInputContainer } from './Chat.style';
 import { ChatContainer } from './Chat.style';
 import { DateLine } from './Chat.style';
-import { chatting } from '../../../apis/chatting';
-import { storage, setChatting, getChatting } from '../../../utils/storageUtils';
 import { Message } from '../../../constants/Constants';
 import { rsHeight } from '../../../utils/responsive-size';
-import { css } from '@emotion/react';
 import { loadChatLogs, saveChatLogs } from '../../../utils/Chatting';
-import { TypingAnimation } from 'react-native-typing-animation';
 
 const Chat: React.FC = () => {
   const flatListRef = useRef<FlatList<any>>(null);
@@ -47,8 +38,8 @@ const Chat: React.FC = () => {
     const nextDate = index + 1 < data.length ? data[index + 1].date : undefined; //다음 날짜
     let showDateLine = false;
 
-    console.log('==========renderItem========', item.text);
-    console.log('&&&&&&&&&&currentDate&&&&&&&&&&&', currentDate);
+    //console.log('==========renderItem========', item.text, item.time);
+    //console.log('&&&&&&&&&&currentDate&&&&&&&&&&&', currentDate);
     if (currentDate !== nextDate || nextDate === undefined) {
       //날짜구분선을 그어주는 조건
       showDateLine = true;
@@ -61,7 +52,7 @@ const Chat: React.FC = () => {
             <BubbleText status="date">{item.date}</BubbleText>
           </DateLine>
         )}
-        <ChatBubble status={item.sender} text={item.text} />
+        <ChatBubble status={item.sender} text={item.text} time={item.time} />
       </View>
     );
   };
