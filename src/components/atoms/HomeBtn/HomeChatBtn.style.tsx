@@ -3,7 +3,6 @@ import palette from '../../../assets/styles/theme';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 
 export const HomeBtn = styled.TouchableOpacity`
-  flex : 1,
   height: ${rsHeight * 400 + 'px'};
   background-color: ${palette.primary[50]};
   border-radius: 20px;
@@ -30,6 +29,7 @@ export const HomeBtnText = styled.Text`
 
 export const ImageContainer = styled.View`
   margin-top: ${rsHeight * 13 + 'px'};
+  padding-left: ${rsWidth * 53 + 'px'};
   width: 100%;
   flex: 1 0 auto;
   position: relative;
@@ -48,4 +48,10 @@ export const Leaf = styled.Image`
   object-fit: contain;
   position: absolute;
   margin-top: ${rsHeight * 92 + 'px'};
+`;
+
+export const LeafTest = styled.Image`
+  height: ${rsHeight * 155 + 'px'};
+  object-fit: contain;
+  background-color: pink;
 `;
