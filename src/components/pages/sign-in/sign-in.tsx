@@ -21,8 +21,8 @@ import {
   setInfoWhenLogin,
   setTokenInfo,
 } from '../../../utils/storageUtils';
-import useIsSignInState from '../../../utils/signInStatus';
 import { TVender } from '../../../constants/types';
+import { UseSigninStatus } from '../../../utils/signin-status';
 
 const googleLogin = async (): Promise<boolean> => {
   GoogleSignin.configure({
@@ -105,7 +105,7 @@ const appleLogin = async (): Promise<boolean> => {
 
 //로그인 페이지
 const Login: React.FC<any> = ({ navigation }) => {
-  const { setIsSignIn } = useIsSignInState();
+  const { setSigninStatus } = UseSigninStatus();
   const onHandleLogin = async (vendor: TVender) => {
     let isSsoLoginSuccess = false;
     try {
@@ -121,7 +121,7 @@ const Login: React.FC<any> = ({ navigation }) => {
       }
       if (isSsoLoginSuccess) {
         //로그인 성공
-        setIsSignIn(true);
+        setSigninStatus(true);
         return;
       }
       if (getAccessToken()) {

@@ -14,14 +14,14 @@ import palette from '../../../../assets/styles/theme';
 import { updateUserProfile } from '../../../../apis/auth';
 import { TGender } from '../../../../constants/types';
 import { getUserNickname, setInfoWhenLogin } from '../../../../utils/storageUtils';
-import useIsSignInState from '../../../../utils/signInStatus';
+import { UseSigninStatus } from '../../../../utils/signin-status';
 
 const InputProfile: React.FC<any> = ({ navigation }) => {
   const [name, setName] = React.useState('');
   const [gender, setGender] = React.useState<TGender>();
   const [openModal, setOpenModal] = React.useState(false);
   const [birthDate, setBirthdate] = React.useState<Date>();
-  const { setIsSignIn } = useIsSignInState();
+  const { setSigninStatus } = UseSigninStatus();
 
   const getName = async () => {
     const username = getUserNickname(); //유저 이름 가져옴
@@ -51,7 +51,7 @@ const InputProfile: React.FC<any> = ({ navigation }) => {
           res.refreshToken,
           res.notice,
         );
-        setIsSignIn(true);
+        setSigninStatus(true);
         return;
       }
 
