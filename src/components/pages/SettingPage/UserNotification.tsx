@@ -4,7 +4,7 @@ import { View, Text } from 'react-native';
 const UserNotification = () => {
   return (
     <View>
-      <Text>알림설정 페이지</Text>
+      <Text>버튼 디바운싱 예제</Text>
     </View>
   );
 };
