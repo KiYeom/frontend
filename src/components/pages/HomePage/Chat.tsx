@@ -19,11 +19,12 @@ import { Message } from '../../../constants/Constants';
 import { rsHeight } from '../../../utils/responsive-size';
 import { css } from '@emotion/react';
 import { loadChatLogs, saveChatLogs } from '../../../utils/Chatting';
+import { TypingAnimation } from 'react-native-typing-animation';
 
 const Chat: React.FC = () => {
   const flatListRef = useRef<FlatList<any>>(null);
   const [data, setData] = useState<Message[]>([]); //전체 대화 로그
-
+  //const [isLoading, setIsLoading] = useState<boolean>(true);
   //화면 맨 아래로 향하도록 스크롤을 조정하는 scrollToTop 함수
   const scrollToTop = () => {
     console.log('scroll to end 함수 동작'); //TODO : 왜 또 렌더링되는 것 같지
@@ -33,6 +34,7 @@ const Chat: React.FC = () => {
   //처음에 실행할 때는 모든 log를 렌더링한다.
   useEffect(() => {
     loadChatLogs({ data, setData });
+    console.log('useEffect', data);
   }, []);
 
   //유저 데이터가 바뀔 때마다 스토리지에 누적하여 저장한다.
@@ -59,7 +61,7 @@ const Chat: React.FC = () => {
             <BubbleText status="date">{item.date}</BubbleText>
           </DateLine>
         )}
-        <ChatBubble status={item.sender} text={item.text} time={item.time} />
+        <ChatBubble status={item.sender} text={item.text} />
       </View>
     );
   };
@@ -77,7 +79,7 @@ const Chat: React.FC = () => {
             ref={flatListRef}
             inverted
             data={data}
-            keyExtractor={(data) => data.id}
+            keyExtractor={(data) => data.text + '.' + data.id}
             renderItem={renderItem}
             contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end', gap: rsHeight * 20 }}
             showsVerticalScrollIndicator={false}

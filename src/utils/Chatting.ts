@@ -41,6 +41,18 @@ export const userSend = (userText: string): any => {
   return userData;
 };
 
+export const botAnswer = () => {
+  const today = getTime();
+  const botData = {
+    sender: 'bot',
+    text: ``,
+    id: `${today}`,
+    time: `${formatTime(today)}`,
+    date: `${formatDate(today)}`,
+  };
+  return botData;
+};
+
 //ai가 한 말을 여러 정보를 가진 ojbect로 리턴해주는 함수
 export const aiSend = async (userQuestion: string) => {
   const cookieAnswer = (await chatting(1, userQuestion)).answer; //1번 챗봇(=쿠키)에게 질문을 보냄
@@ -60,18 +72,21 @@ export const saveChatLogs = (logs: any) => {
   try {
     setChatting(JSON.stringify(logs));
   } catch (error) {
+    console.log('saveChatLogs error', error);
     return;
   }
 };
 
 //앱을 처음 실행할 때 스토리지에 저장된 대화를 꺼내오는 함수
 export const loadChatLogs = ({ data, setData }: any) => {
+  console.log('loadChatLogs 실행');
   try {
     const chatLogs = getChatting();
     if (chatLogs) {
       setData(JSON.parse(chatLogs));
     }
   } catch (error) {
+    console.log('loadChatLogs error', error);
     return;
   }
 };
