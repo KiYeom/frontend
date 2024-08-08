@@ -1,4 +1,5 @@
 import styled from '@emotion/native';
+
 import palette from '../../../assets/styles/theme';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 
@@ -6,13 +7,19 @@ import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 export const Container = styled.View<{ status: 'bot' | 'user' }>`
   flex-direction: row;
   gap: ${rsHeight * 8 + 'px'};
+  margin-bottom: ${rsHeight * 20 + 'px'};
   justify-content: ${(props) => (props.status === 'bot' ? 'flex-end' : 'flex-start')};
 `;
 
 //채팅 말풍선
 export const Bubble = styled.View<{ status: 'bot' | 'user' }>`
-  padding: ${rsWidth * 12 + 'px'} ${rsHeight * 8 + 'px'};
+  padding-horizontal: ${rsWidth * 12 + 'px'};
+  padding-vertical: ${rsHeight * 8 + 'px'};
   flex-shrink: 1;
+  min-width: ${(props) =>
+    props.status === 'bot' ? rsWidth * 55 + 'px' : undefined}; //봇이 아무말도 안할 때
+  min-height: ${(props) =>
+    props.status === 'bot' ? rsHeight * 40 + 'px' : undefined}; //봇이 아무말도 안할 때
   border-radius: 10px;
   background-color: ${(props) =>
     props.status === 'bot' ? palette.neutral[100] : palette.primary[500]};
@@ -53,11 +60,4 @@ export const ChatBubbleContainer = styled.View<{ status: 'bot' | 'user' }>`
 export const ProfileImageContainer = styled.View`
   flex : 1,
   width : ${rsWidth * 35 + 'px'};
-`;
-
-//챗봇 프사
-export const ProfileImage = styled.Image`
-  width: ${rsWidth * 35 + 'px'};
-  height: ${rsHeight * 35 + 'px'};
-  object-fit: contain;
 `;

@@ -19,6 +19,9 @@ export const reasons = [
 export interface Message {
   sender: string;
   text: string;
+  id: string;
+  time: string;
+  date?: string;
 }
 
 //설정에 메뉴목록들

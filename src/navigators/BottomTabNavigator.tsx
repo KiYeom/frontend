@@ -2,9 +2,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import Home from '../components/pages/HomePage/Home';
 import Setting from '../components/pages/SettingPage/Setting';
+import StatisticMain from '../components/pages/StatisticPage/StatisticMain';
 import palette from '../assets/styles/theme';
 import HomeIcon from '../assets/icons/Home.svg';
 import SettingIcon from '../assets/icons/Setting.svg';
+import StatisticIcon from '../assets/icons/test.svg';
 import MyTabBar from '../components/bottom/bottom';
 
 const Tab = createBottomTabNavigator();
@@ -31,6 +33,20 @@ const BottomTabNavigator: React.FC<any> = ({ isSignIn, setIsSignIn }) => {
         },
         tabBarActiveTintColor: palette.primary[500], //tab bar focuse 색상
       }}>
+      <Tab.Screen
+        name="Statistic"
+        component={StatisticMain}
+        options={{
+          headerShown: false,
+          tabBarLabel: '통계',
+          headerTintColor: '#fff',
+          tabBarIcon: ({ focused }) => (
+            <StatisticIcon
+              style={{ color: focused ? palette.primary[500] : palette.neutral[300] }}
+            />
+          ),
+        }}
+      />
       <Tab.Screen
         name="Home"
         component={Home}

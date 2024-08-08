@@ -11,17 +11,19 @@ import {
 } from './DeactivateAlert.style';
 import Button from '../../button/button';
 import { storage } from '../../../utils/storageUtils';
+import { getChatting } from '../../../utils/storageUtils';
 
 const DeactivateAlert: React.FC = ({ route, navigation }) => {
   const { deactivateRequest } = route.params;
-  const chats = storage.getString(CHATLOG);
+  const chats = getChatting();
+  //console.log(chats);
   let chatCount = 0;
   if (chats) {
     const chatArray = JSON.parse(chats);
     chatCount = chatArray.length;
   }
 
-  console.log('chats ========', chatCount);
+  //console.log('chats ========', chatCount);
   return (
     <Container>
       <SignOutTitleContainer>

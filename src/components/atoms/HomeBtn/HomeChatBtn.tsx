@@ -1,8 +1,9 @@
 import React from 'react';
 import './HomeChatBtn.style';
-import { Leaf, Cookie } from './HomeChatBtn.style';
 import { HomeBtnTitle, HomeBtnText, HomeBtn, ImageContainer } from './HomeChatBtn.style';
 import { getUserNickname } from '../../../utils/storageUtils';
+import { rsHeight } from '../../../utils/responsive-size';
+import { Image } from 'expo-image';
 
 const HomeChatBtn = ({ navigation }) => {
   return (
@@ -12,8 +13,13 @@ const HomeChatBtn = ({ navigation }) => {
       </HomeBtnTitle>
       <HomeBtnText>쿠키와 대화하러 가기</HomeBtnText>
       <ImageContainer>
-        <Leaf source={require('../../../assets/images/HomeLeaf.png')} />
-        <Cookie source={require('../../../assets/images/HomeCookie.png')} />
+        <Image
+          source={require('../../../assets/images/HomeButtonImage.png')}
+          style={{
+            height: rsHeight * 247,
+            objectFit: 'contain',
+          }}
+        />
       </ImageContainer>
     </HomeBtn>
   );

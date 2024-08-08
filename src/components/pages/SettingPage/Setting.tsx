@@ -69,7 +69,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.userInfo}>
         <UserInfomation navigation={navigation} />
       </View>
@@ -83,11 +83,6 @@ const Setting: React.FC<any> = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    //    alignItems: 'center',
-    //  justifyContent: 'center',
-  },
   userInfo: {
     ///backgroundColor : "yellow",
     width: '100%',
