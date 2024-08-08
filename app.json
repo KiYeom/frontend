@@ -38,7 +38,7 @@
       [
         "@react-native-google-signin/google-signin",
         {
-          "iosUrlScheme": "com.googleusercontent.apps.94079762653-arcgeib4l0hbg6snh81cjimd9iuuoun3"
+          "iosUrlScheme": "com.googleusercontent.apps.904877172956-cennubj8mifvsai09ppg5o9d2bgg0tst"
         }
       ],
       [
@@ -76,10 +76,15 @@
           }
         }
       ],
-
       "expo-apple-authentication",
       "expo-localization",
-      "expo-build-properties"
+      "expo-build-properties",
+      [
+        "expo-asset",
+        {
+          "assets": ["./src/assets/images/"]
+        }
+      ]
     ],
     "runtimeVersion": "1.0.0",
     "updates": {

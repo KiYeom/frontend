@@ -1,16 +1,20 @@
 import React from 'react';
 import { Keyboard } from 'react-native';
-import Button from '../../button/button';
-import DeactivateReasonCheckBoxs from '../../molecules/DeactivateReasonCheckBoxs';
+import Button from '../../../../button/button';
+import DeactivateReasonCheckBoxs from '../../../../molecules/DeactivateReasonCheckBoxs';
 import { Alert } from 'react-native';
-import { SignOutTitle, SignOutTitleContainer, Container } from './DeactivateAlert.style';
-import { getUserNickname } from '../../../utils/storageUtils';
+import { getUserNickname } from '../../../../../utils/storageUtils';
 import { CheckboxContainer } from './DeactivateReason.style';
 import { useState } from 'react';
 import { FormContainer } from './DeactivateReason.style';
-import { reasons } from '../../../constants/Constants';
+import { reasons } from '../../../../../constants/Constants';
 import { useEffect } from 'react';
 import { TouchableWithoutFeedback } from 'react-native';
+import {
+  Container,
+  SignOutTitle,
+  SignOutTitleContainer,
+} from '../dedactivate-alert/DeactivateAlert.style';
 const DeactivateReason: React.FC = ({ route }) => {
   const { deactivateRequest } = route.params;
   const [btnDisable, setBtnDisable] = useState<boolean>(true);

@@ -1,6 +1,5 @@
 /* eslint-env node */
 const { getDefaultConfig } = require('expo/metro-config');
-//FIXME: __dirname is not working
 module.exports = (() => {
   const config = getDefaultConfig(__dirname);
 

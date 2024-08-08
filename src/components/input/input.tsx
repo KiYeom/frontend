@@ -18,6 +18,7 @@ type InputProps = {
   styles?: {
     text?: StyleProp<TextStyle>;
   };
+  disabled?: boolean;
 };
 const Input = (props: InputProps) => {
   const {
@@ -32,9 +33,10 @@ const Input = (props: InputProps) => {
     textAlign = 'left', //텍스트는 왼쪽부터 보임
     onPress, //컨테이너가 눌렸을 때
     styles, //적용될 스타일
+    disabled,
   } = props; //props 객체를 변수로 선언하여 기본값 설정
   return (
-    <InputContainer onPress={onPress} activeOpacity={1}>
+    <InputContainer onPress={onPress} activeOpacity={1} disabled={disabled}>
       <InputField
         placeholder={placeholder}
         status={status}
