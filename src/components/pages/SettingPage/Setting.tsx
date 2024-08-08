@@ -2,7 +2,6 @@ import { StyleSheet, View } from 'react-native';
 import React, { useEffect } from 'react';
 import { CHATLOG } from '../../../constants/Constants';
 import SettingMenus from '../../organisms/SettingMenus';
-import useIsSignInState from '../../../utils/signInStatus';
 import * as Notifications from 'expo-notifications';
 import UserInfomation from '../../molecules/UserInfomation';
 import { deavtivate, getUserInfo, logout } from '../../../apis/setting';
@@ -12,7 +11,8 @@ import {
   setUserInfo,
   storage,
 } from '../../../utils/storageUtils';
-import { SafeAreaView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { UseSigninStatus } from '../../../utils/signin-status';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -23,7 +23,7 @@ Notifications.setNotificationHandler({
 });
 
 const Setting: React.FC<any> = ({ navigation }) => {
-  const { setIsSignIn } = useIsSignInState();
+  const { SigninStatus, setSigninStatus } = UseSigninStatus();
 
   //로그아웃
   const logoutRequest = async () => {
@@ -34,7 +34,8 @@ const Setting: React.FC<any> = ({ navigation }) => {
       else await logout('');
       clearInfoWhenLogout();
       storage.delete(CHATLOG);
-      setIsSignIn(false);
+      console.log('[Setting - Logout Button] LogOut: 1, SigninStatus: ', SigninStatus);
+      setSigninStatus(false);
     } catch (error: any) {
       console.error('[ERROR] logoutRequest: ', error);
     }
@@ -49,7 +50,8 @@ const Setting: React.FC<any> = ({ navigation }) => {
     }
     clearInfoWhenLogout();
     storage.delete(CHATLOG);
-    setIsSignIn(false);
+    console.log('[Setting -DDeactivate Button] LogOut: 2, SigninStatus: ', SigninStatus);
+    setSigninStatus(false);
   };
 
   //유저 정보 가져오기

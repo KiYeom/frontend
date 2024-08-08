@@ -14,11 +14,6 @@ const MyTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation 
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const label: string = options.tabBarLabel as string;
-        console.log('클릭');
-        console.log('options.tabBarLabel', options.tabBarLabel);
-        console.log('options.title', options.title);
-        console.log('route.name', route.name);
-        console.log('label', label);
         //탭의 라벨 설정 (tabBarLabel, title, route 이름 순으로 라벨 설정)
         const isFocused = state.index === index;
         //현재의 탭이 포커스 되어있는지
@@ -26,7 +21,7 @@ const MyTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation 
         //탭 버튼 클릭 시 호출되는 함수
         const onPress = () => {
           //console.log('눌림!');
-          console.log(route.name); //route.name을 통해 setting 클릭 시 api 호출하도록
+          //console.log(route.name); //route.name을 통해 setting 클릭 시 api 호출하도록
           const event = navigation.emit({
             type: 'tabPress',
             target: route.key,

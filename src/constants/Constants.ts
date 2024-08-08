@@ -1,3 +1,5 @@
+import { TNotificationType } from './types';
+
 export const CHATLOG = 'CHATLOG';
 
 export const ERRORMESSAGE = '멍멍!🐶 쿠키 조금 아픈데 잠시 후에 다시 얘기해도 될까요?😣';
@@ -27,3 +29,5 @@ export interface MenuItemProps {
   title: string;
   onPress: () => void;
 }
+
+export const NotificationTypes: TNotificationType[] = ['system', 'chat_cookie'];

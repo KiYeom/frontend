@@ -1,15 +1,22 @@
 import axios from 'axios';
 import { Alert } from 'react-native';
-import { clearInfoWhenLogout, getAccessToken, getRefreshToken } from '../utils/storageUtils';
-import useIsSignInState from '../utils/signInStatus';
-import { reissueAccessToken } from './auth';
+import {
+  clearInfoWhenLogout,
+  deleteAccessToken,
+  getAccessToken,
+  getDeviceIdFromMMKV,
+  getRefreshToken,
+  setAccessToken,
+  setNotice,
+  setUserInfo,
+} from '../utils/storageUtils';
+import { UseSigninStatus } from '../utils/signin-status';
+import { getAppVersion, getDeviceOS } from '../utils/device-info';
 
 function setInterceptor(instance: any) {
   instance.interceptors.request.use(async function (config: any) {
-    console.log('tokenInInterceptor: ', getAccessToken());
     const tokenValue = getAccessToken();
     config.headers.Authorization = `Bearer ${tokenValue}`;
-    console.log('config: ', config.headers);
     return config;
   });
 
@@ -21,12 +28,14 @@ function setInterceptor(instance: any) {
       console.error('instance Error: ', error.response);
       if (error.response && error.response.status === 419) {
         console.log('interseptor: 419 에러 발생');
+        console.log('accessToken: ', getAccessToken());
         const refreshToken = getRefreshToken();
         if (!refreshToken) {
           // refreshToken이 없으면 로그인이 안되어있는 상태
           clearInfoWhenLogout();
-          const { setIsSignIn } = useIsSignInState();
-          setIsSignIn(false);
+          const { SigninStatus, setSigninStatus } = UseSigninStatus();
+          console.log('[Interceptor - NoRefresh] LogOut: 1, SigninStatus: ', SigninStatus);
+          setSigninStatus(false);
           return;
         }
 
@@ -36,8 +45,9 @@ function setInterceptor(instance: any) {
         if (!accessToken) {
           // refreshToken이 없으면 로그인이 안되어있는 상태
           clearInfoWhenLogout();
-          const { setIsSignIn } = useIsSignInState();
-          setIsSignIn(false);
+          const { SigninStatus, setSigninStatus } = UseSigninStatus();
+          console.log('[Interceptor - Reissue Wrong] LogOut: 2, SigninStatus: ', SigninStatus);
+          setSigninStatus(false);
           return;
         }
 
@@ -60,5 +70,36 @@ function createInstance() {
 
   return setInterceptor(instance);
 }
+
+//INFO: refreshToken으로 accessToken 재발급
+export const reissueAccessToken = async (
+  refreshToken: string,
+  isAppStart: boolean = false,
+): Promise<void> => {
+  try {
+    deleteAccessToken();
+    const res = await axios.patch('https://api.remind4u.co.kr/v1/auth/refresh', {
+      deviceId: getDeviceIdFromMMKV(),
+      appVersion: getAppVersion(),
+      deviceOs: getDeviceOS(),
+      refreshToken: refreshToken,
+      isAppStart,
+    });
+
+    if (res.data.data) {
+      const resDate = res.data.data;
+      setAccessToken(resDate.accessToken);
+      if (isAppStart) {
+        setUserInfo(resDate.nickname, resDate.birthdate, resDate.gender);
+      }
+      if (resDate.notice) {
+        setNotice(resDate.notice);
+      }
+    }
+  } catch (error) {
+    console.error('[ERROR] reissueAccessToken ', error);
+    return;
+  }
+};
 
 export const instance = createInstance();

@@ -15,6 +15,8 @@ export type TGender = '여성' | '남성';
 
 export type TVender = 'kakao' | 'google' | 'apple';
 
+export type TNotificationType = 'system' | 'chat_cookie';
+
 export type TLicense = {
   libraryName: string;
   version: string;

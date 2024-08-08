@@ -11,7 +11,6 @@ import {
   getRefreshToken,
   setDeviceId,
 } from './src/utils/storageUtils';
-import useIsSignInState from './src/utils/signInStatus';
 import { useFonts } from 'expo-font';
 import { PaperProvider } from 'react-native-paper';
 import * as amplitude from '@amplitude/analytics-react-native';
@@ -21,7 +20,8 @@ import HomeStackNavigator from './src/navigators/HomeStackNavigator';
 import StatisticStackNavigator from './src/navigators/StatisticStackNavigator';
 import palette from './src/assets/styles/theme';
 import { getDeviceId } from './src/utils/device-info';
-import { reissueAccessToken } from './src/apis/auth';
+import { UseSigninStatus } from './src/utils/signin-status';
+import { reissueAccessToken } from './src/apis/interceptor';
 
 if (process.env.EXPO_PUBLIC_AMPLITUDE) {
   amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE);
@@ -31,8 +31,8 @@ if (process.env.EXPO_PUBLIC_AMPLITUDE) {
 const RootStack = createNativeStackNavigator();
 
 const App: React.FC = () => {
-  const [loading, setLoading] = useState(false); //로딩중이면 true, 로딩이 끝났으면 false
-  const { isSignIn, setIsSignIn } = useIsSignInState(); //store에서 가지고 온 전역 state
+  const [loading, setLoading] = useState(true); //로딩중이면 true, 로딩이 끝났으면 false
+  const { SigninStatus, setSigninStatus } = UseSigninStatus(); //store에서 가지고 온 전역 state
 
   const [loaded, error] = useFonts({
     'Pretendard-SemiBold': require('./src/assets/fonts/Pretendard-SemiBold.ttf'),
@@ -45,40 +45,47 @@ const App: React.FC = () => {
     'Pretendard-Medium': require('./src/assets/fonts/Pretendard-Medium.ttf'),
   });
 
-  //앱이 처음 실행이 될 때 현재 우리 앱의 유저인지 파악
-  useEffect(() => {
-    bootstrap();
-  }, []); //여기의 빈 배열 삭제하면 큰일 나 ㅇㅅㅇ;;
-
-  const bootstrap = async (): Promise<void> => {
-    //디바이스 아이디 설정
-    const deviceId = await getDeviceId();
-    setDeviceId(deviceId);
-
+  const checkSignIn = async (): Promise<boolean> => {
     //자동 로그인 판단
     const refreshToken = getRefreshToken();
     if (!refreshToken) {
       //토큰이 없으면, 다른 기기에서 접근한 것이거나 우리의 회원이 아니다. 로그인 화면을 보여준다.
-      //유저 정보 삭제하기
-      clearInfoWhenLogout();
-      setIsSignIn(false);
-      setLoading(false);
-      return;
+      console.log('[APP START] LogOut: 1, SigninStatus: ', SigninStatus);
+      return false;
     }
 
     //토큰 재발급
     await reissueAccessToken(refreshToken, true);
     const accessToken = getAccessToken();
     if (!accessToken) {
-      clearInfoWhenLogout();
-      setIsSignIn(false);
-      setLoading(false);
+      console.log('[APP START] LogOut: 2, SigninStatus: ', SigninStatus);
+      return false;
+    }
+
+    return true;
+  };
+
+  const bootstrap = async (): Promise<void> => {
+    const deviceId = await getDeviceId();
+    if (deviceId === undefined) {
+      console.error('DeviceId is undefined');
+      //TODO: deviceId 없으면 alert 띄우고 앱 종료
       return;
     }
-    setIsSignIn(true);
-    setLoading(false);
-    return;
+    setDeviceId(deviceId);
+    const signinResult = await checkSignIn();
+    if (!signinResult) {
+      clearInfoWhenLogout();
+    }
+    setSigninStatus(signinResult);
   };
+
+  //앱이 처음 실행이 될 때 현재 우리 앱의 유저인지 파악
+  useEffect(() => {
+    bootstrap().then(() => {
+      setLoading(false);
+    });
+  }, []); //여기의 빈 배열 삭제하면 큰일 나 ㅇㅅㅇ;;
 
   if (loading) {
     return (
@@ -93,7 +100,7 @@ const App: React.FC = () => {
       <PaperProvider>
         <NavigationContainer theme={navTheme}>
           <RootStack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Main">
-            {isSignIn ? ( //로그인이 되어있을 경우 보여줄 페이지 : 홈 화면(Tabbar), 채팅화면 (Chat), 설정화면들
+            {SigninStatus ? ( //로그인이 되어있을 경우 보여줄 페이지 : 홈 화면(Tabbar), 채팅화면 (Chat), 설정화면들
               <>
                 <RootStack.Screen
                   name="BottomTabNavigator"
