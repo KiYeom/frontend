@@ -34,7 +34,7 @@ const Input = (props: InputProps) => {
     styles, //적용될 스타일
   } = props; //props 객체를 변수로 선언하여 기본값 설정
   return (
-    <InputContainer onPress={onPress}>
+    <InputContainer onPress={onPress} activeOpacity={1}>
       <InputField
         placeholder={placeholder}
         status={status}
@@ -42,6 +42,7 @@ const Input = (props: InputProps) => {
         onChangeText={onChange}
         editable={status !== 'disabled'}
         style={styles?.text}
+        pointerEvents={onPress ? 'none' : 'auto'}
       />
       {showRightIcon && (
         <IconContainer>
