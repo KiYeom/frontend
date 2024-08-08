@@ -18,6 +18,7 @@ import * as amplitude from '@amplitude/analytics-react-native';
 import SettingStackNavigator from './src/navigators/SettingStackNavigator';
 import SignUpStackNavigator from './src/navigators/SignUpStackNavigator';
 import HomeStackNavigator from './src/navigators/HomeStackNavigator';
+import StatisticStackNavigator from './src/navigators/StatisticStackNavigator';
 import palette from './src/assets/styles/theme';
 import { getDeviceId } from './src/utils/device-info';
 import { reissueAccessToken } from './src/apis/auth';
@@ -103,6 +104,10 @@ const App: React.FC = () => {
                 />
                 <RootStack.Screen name="HomeStackNavigator" component={HomeStackNavigator} />
                 <RootStack.Screen name="SettingStackNavigator" component={SettingStackNavigator} />
+                <RootStack.Screen
+                  name="StatisticStackNavigator"
+                  component={StatisticStackNavigator}
+                />
               </>
             ) : (
               //로그인이 안 되어있을 때 보여줄 페이지 : 소셜 로그인 페이지 (Login), 회원가입 페이지 (InfoScreen)
