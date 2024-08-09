@@ -14,10 +14,11 @@ type PieChartData = {
 };
 type LabelClassification = {
   label: string;
-  value: number;
+  percent: number;
 };
 
-const DailyEmotionClassification: React.FC<any> = () => {
+const DailyEmotionClassification: React.FC<any> = (props: any) => {
+  const { value } = props;
   const [labelsClassification, setLabelsClassification] = useState<LabelClassification[]>([]);
   //pieData를 만들어주는 함수
   const generatePieData = (labelsClassification: LabelClassification[]) => {
@@ -33,18 +34,24 @@ const DailyEmotionClassification: React.FC<any> = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await dailyAnalyze('2024-06-17');
-      //console.log('fetchData 함수 실행', res);
+      const res = await dailyAnalyze(value);
+      console.log('res', res);
       const isNullClassification = res.classification.isNULL; //true = 데이터 없음, false = 데이터 있음
       const labelsClassification = res.classification.labels; //[], [{label : "감사한", percent : 53}, ...]
       if (!isNullClassification) {
+        //감정 분류 데이터 존재하면
         setLabelsClassification(labelsClassification);
+      } else {
+        //감정 분류 데이터 없으면
+        setLabelsClassification([]);
       }
     };
     fetchData();
   }, []);
 
   const testPieData = generatePieData(labelsClassification);
+  //데이터가 있으면 [{"value" : "화나는", "percent" : 29}, ...]
+  //데이터가 없으면 []
 
   //범례의 점 그리기
   const renderDot = (color: any) => {
@@ -129,45 +136,57 @@ const DailyEmotionClassification: React.FC<any> = () => {
             padding-vertical: ${rsHeight * 32 + 'px'};
             padding-horizontal: ${rsWidth * 10 + 'px'};
           `}>
-          <PieChart
-            data={testPieData} //파이차트 데이터
-            donut //파이차트 형태 (도넛)
-            showGradient={false} //도넛에 생기는 그림자
-            sectionAutoFocus
-            radius={(200 * rsWidth) / 2} //도넛 차트 반지름 (큰 원)
-            innerRadius={(125 * rsWidth) / 2} //도넛 차트 반지름 (작은=뚫려있는 원)
-            innerCircleColor={'white'} //작은 원(=뚫려있는 원) 반지름 색상
-            centerLabelComponent={() => {
-              //작은 원 (=뚫려있는 원) 안에 label (47% Excellent)
-              return (
-                <View
-                  style={css`
-                    display: flex; //label 글자 칸
-                    justify-content: center;
-                    align-items: center;
-                    gap: ${4 * rsHeight + 'px'};
-                  `}>
-                  <Text
-                    style={css`
-                      font-size: ${rsFont * 28 + 'px'}; //퍼센트 작성 글자 크기
-                      font-family: Pretendard-Bold;
-                      color: black;
-                    `}>
-                    {testPieData[0].value}%
-                  </Text>
-                  <Text
-                    style={css`
-                      font-size: ${rsFont * 16 + 'px'};
-                      font-family: Pretendard-SemiBold;
-                      color: ${palette.neutral[300]};
-                    `}>
-                    {testPieData[0].label}
-                  </Text>
-                </View>
-              );
-            }}
-          />
-          {renderLegendComponent(testPieData) /* 범례 표 작성하는 컴포넌트 호출 */}
+          {testPieData.length !== 0 ? (
+            <>
+              <PieChart
+                data={testPieData} //파이차트 데이터
+                donut //파이차트 형태 (도넛)
+                showGradient={false} //도넛에 생기는 그림자
+                sectionAutoFocus
+                radius={(200 * rsWidth) / 2} //도넛 차트 반지름 (큰 원)
+                innerRadius={(125 * rsWidth) / 2} //도넛 차트 반지름 (작은=뚫려있는 원)
+                innerCircleColor={'white'} //작은 원(=뚫려있는 원) 반지름 색상
+                centerLabelComponent={() => {
+                  //작은 원 (=뚫려있는 원) 안에 label (47% Excellent)
+                  return (
+                    <View
+                      style={css`
+                        display: flex; //label 글자 칸
+                        justify-content: center;
+                        align-items: center;
+                        gap: ${4 * rsHeight + 'px'};
+                      `}>
+                      <Text
+                        style={css`
+                          font-size: ${rsFont * 28 + 'px'}; //퍼센트 작성 글자 크기
+                          font-family: Pretendard-Bold;
+                          color: black;
+                        `}>
+                        {testPieData[0].value}%
+                      </Text>
+                      <Text
+                        style={css`
+                          font-size: ${rsFont * 16 + 'px'};
+                          font-family: Pretendard-SemiBold;
+                          color: ${palette.neutral[300]};
+                        `}>
+                        {testPieData[0].label}
+                      </Text>
+                    </View>
+                  );
+                }}
+              />
+              {renderLegendComponent(testPieData)}
+            </>
+          ) : (
+            <Text
+              style={css`
+                font-family: Pretendard-SemiBold;
+                font-size: ${rsFont * 16 + 'px'};
+              `}>
+              쿠키와 더 많은 대화를 나누어주세요
+            </Text>
+          )}
         </View>
       </View>
     </View>

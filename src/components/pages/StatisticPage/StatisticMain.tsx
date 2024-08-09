@@ -11,23 +11,8 @@ import DateLine from '../../atoms/DateLine/DateLine';
 
 //전체 통계 화면
 const StatisticMain: React.FC<any> = () => {
-  const [now, setNow] = useState<string>('');
-  const [date, setDate] = useState<Date>();
+  const [date, setDate] = useState<Date>(new Date()); //현재 날짜
   const [openModal, setOpenModal] = React.useState(false);
-  const changeDate = () => {
-    console.log('changeDate 함수 실행');
-    const currentTime = getTime();
-    setNow(formatDate(currentTime));
-  }; //현재 시간을 가져와서 "yyyy월 mm월 dd일"로 변경하는 함수
-
-  const saveDate = () => {
-    setOpenModal(false); //모달을 닫고
-    setNow(formatDate(date));
-  };
-
-  useEffect(() => {
-    changeDate();
-  }, []);
 
   return (
     <>
@@ -40,17 +25,35 @@ const StatisticMain: React.FC<any> = () => {
             padding-top: ${20 * rsHeight + 'px'};
             padding-bottom: ${40 * rsHeight + 'px'};
           `}>
-          <DateLine today={now} onPress={() => setOpenModal(true)} />
-          <DailyEmotionClassification />
+          <DateLine
+            value={
+              date?.getFullYear() +
+              '년 ' +
+              String(date.getMonth() + 1).padStart(2, '0') +
+              '월 ' +
+              String(date.getDate()).padStart(2, '0') +
+              '일'
+            }
+            onPress={() => setOpenModal(true)}
+          />
+          <DailyEmotionClassification
+            value={
+              date?.getFullYear() +
+              '-' +
+              String(date.getMonth() + 1).padStart(2, '0') +
+              '-' +
+              String(date.getDate()).padStart(2, '0')
+            }
+          />
         </ScrollView>
-        <DatePickerModal
-          modalVisible={openModal}
-          onClose={() => {
-            saveDate();
-          }}
-          onChange={setDate}
-        />
       </SafeAreaView>
+      <DatePickerModal
+        modalVisible={openModal}
+        onClose={() => {
+          setOpenModal(false);
+        }}
+        onChange={setDate}
+      />
     </>
   );
 };

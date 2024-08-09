@@ -5,11 +5,11 @@ import { css } from '@emotion/native';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { getTime, formatDate } from '../../../utils/Chatting';
 type DateProps = {
-  today: string;
-  onPress: () => void;
+  value: string; //오늘의 날짜
+  onPress: () => void; //date를 클릭했을 때의 함수
 };
 const DateLine = (props: DateProps) => {
-  const { today, onPress } = props;
+  const { value, onPress } = props;
   return (
     <View
       style={css`
@@ -22,7 +22,7 @@ const DateLine = (props: DateProps) => {
       `}>
       <TouchableDateLine onPress={onPress}>
         <Icon name="dateIcon" width={rsWidth * 14} height={rsHeight * 16} color="black" />
-        <DateLineText>{today}</DateLineText>
+        <DateLineText>{value}</DateLineText>
       </TouchableDateLine>
     </View>
   );
