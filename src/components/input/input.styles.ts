@@ -46,9 +46,13 @@ export const WithMessage = styled.Text<{
   text-align: ${(props) => (props.textAlign ? props.textAlign : 'left')};
 `;
 
-export const IconContainer = styled.View`
+export const IconContainer = styled.TouchableOpacity`
   position: absolute;
-  right: ${rsWidth * 18 + 'px'};
-  top: ${rsHeight * 18 + 'px'};
+  right: ${rsWidth * 4 + 'px'};
+  top: ${rsHeight * 4 + 'px'};
+  width: ${rsWidth * 44 + 'px'};
+  height: ${rsHeight * 44 + 'px'};
+  justify-content: center;
+  align-items: center;
   background-color: ${palette.neutral[50]};
 `;

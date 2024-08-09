@@ -1,17 +1,15 @@
 import React from 'react';
 import { Image } from 'react-native';
-import HeartMessage from '../../../assets/images/heartMessage.svg';
-import { CHATLOG } from '../../../constants/Constants';
+import { getChatting } from '../../../../../utils/storageUtils';
 import {
+  AlertText,
   Container,
+  ImageContainer,
   SignOutTitle,
   SignOutTitleContainer,
-  ImageContainer,
-  AlertText,
 } from './DeactivateAlert.style';
-import Button from '../../button/button';
-import { storage } from '../../../utils/storageUtils';
-import { getChatting } from '../../../utils/storageUtils';
+import Button from '../../../../button/button';
+import HeartMessage from '../../../../../assets/images/heartMessage.svg';
 
 const DeactivateAlert: React.FC = ({ route, navigation }) => {
   const { deactivateRequest } = route.params;
@@ -36,7 +34,7 @@ const DeactivateAlert: React.FC = ({ route, navigation }) => {
       <ImageContainer>
         <HeartMessage width={100} style={{ padding: 0, margin: 0 }} />
         <Image
-          source={require('../../../assets/images/cal.jpg')}
+          source={require('../../../../../assets/images/cal.jpg')}
           style={{ width: 150, height: 150, resizeMode: 'contain' }}
         />
       </ImageContainer>

@@ -1,4 +1,5 @@
 import { TextAreaContainer, TextAreaField } from './TextArea.style';
+
 type TextAreaProps = {
   value?: string;
   onChange?: (text: string) => void;

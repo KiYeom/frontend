@@ -15,13 +15,17 @@ import { updateUserProfile } from '../../../../apis/auth';
 import { TGender } from '../../../../constants/types';
 import { getUserNickname, setInfoWhenLogin } from '../../../../utils/storageUtils';
 import { UseSigninStatus } from '../../../../utils/signin-status';
+import { UseRightStatus } from '../../../../utils/right-status';
 
 const InputProfile: React.FC<any> = ({ navigation }) => {
   const [name, setName] = React.useState('');
   const [gender, setGender] = React.useState<TGender>();
   const [openModal, setOpenModal] = React.useState(false);
   const [birthDate, setBirthdate] = React.useState<Date>();
+  const [loading, setLoading] = React.useState(false);
+  const [firstLoaded, setFirstLoaded] = React.useState(false);
   const { setSigninStatus } = UseSigninStatus();
+  const { RightStatus, setRightStatus } = UseRightStatus();
 
   const getName = async () => {
     const username = getUserNickname(); //유저 이름 가져옴
@@ -34,12 +38,14 @@ const InputProfile: React.FC<any> = ({ navigation }) => {
     } else return false;
   };
 
-  const saveProfile = async () => {
-    if (name && birthDate && gender) {
+  const saveProfile = async (): Promise<boolean> => {
+    if (name) {
       const res = await updateUserProfile({
         nickname: name,
-        gender: `${gender}`,
-        birthdate: `${birthDate.getFullYear()}-${String(birthDate.getMonth() + 1).padStart(2, '0')}-${String(birthDate.getDate()).padStart(2, '0')}`,
+        gender: gender ?? null,
+        birthdate: birthDate
+          ? `${birthDate.getFullYear()}-${String(birthDate.getMonth() + 1).padStart(2, '0')}-${String(birthDate.getDate()).padStart(2, '0')}`
+          : null,
       });
 
       if (res) {
@@ -52,17 +58,41 @@ const InputProfile: React.FC<any> = ({ navigation }) => {
           res.notice,
         );
         setSigninStatus(true);
-        return;
+        return true;
       }
-
-      alert('프로필 저장에 실패했습니다., 다시 시도해주세요.');
-      return;
+      return false;
     }
+    return false;
   };
 
   useEffect(() => {
-    getName();
-  }, []);
+    setLoading(true);
+    if (firstLoaded) {
+      saveProfile()
+        .then((res) => {
+          if (!res) {
+            alert('회원가입에 실패했습니다. 다시 시도해주세요.');
+          }
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error(err);
+          setLoading(false);
+        });
+    } else {
+      getName()
+        .then((res) => {
+          setLoading(false);
+          setFirstLoaded(true);
+        })
+        .catch((err) => {
+          alert('이름을 가져오는데 실패했습니다. 다시 시도해주세요.');
+          navigation.goBack();
+          setLoading(false);
+          setFirstLoaded(true);
+        });
+    }
+  }, [RightStatus]);
 
   return (
     <>
@@ -78,7 +108,7 @@ const InputProfile: React.FC<any> = ({ navigation }) => {
             showRightIcon={true}
             status="disabled"
             rightIcon="arrow-down"
-            onPress={() => setOpenModal(true)}
+            onPressContainer={() => setOpenModal(true)}
             value={
               birthDate
                 ? birthDate?.getFullYear() +
@@ -110,7 +140,12 @@ const InputProfile: React.FC<any> = ({ navigation }) => {
         </FormContainer>
       </ContentContainer>
       <CTAContainer>
-        <Button title="다음" disabled={!availableBtn()} primary={true} onPress={saveProfile} />
+        <Button
+          title="다음"
+          disabled={!availableBtn() || loading}
+          primary={true}
+          onPress={saveProfile}
+        />
       </CTAContainer>
       <DatePickerModal
         modalVisible={openModal}

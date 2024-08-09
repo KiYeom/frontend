@@ -15,12 +15,7 @@ import * as AppleAuthentication from 'expo-apple-authentication';
 import SignUpStackNavigator from '../../../navigators/SignUpStackNavigator';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { ssoLogin } from '../../../apis/auth';
-import {
-  getAccessToken,
-  getRefreshToken,
-  setInfoWhenLogin,
-  setTokenInfo,
-} from '../../../utils/storageUtils';
+import { getAccessToken, setInfoWhenLogin, setTokenInfo } from '../../../utils/storageUtils';
 import { TVender } from '../../../constants/types';
 import { UseSigninStatus } from '../../../utils/signin-status';
 
@@ -140,7 +135,7 @@ const Login: React.FC<any> = ({ navigation }) => {
       <WelcomeTitle>쿠키와 함께하는 {'\n'}힐링 채팅</WelcomeTitle>
 
       <ImageContainer>
-        <CookieImage source={require('../../../assets/images/cookieLogin.png')} />
+        <CookieImage source={require('../../../assets/images/cookielogin.png')} />
       </ImageContainer>
       <ButtonContainer style={css``}>
         <LoginBtn vendor="kakao" activeOpacity={1} onPress={() => {}}>

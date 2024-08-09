@@ -11,9 +11,9 @@ import {
   getRefreshToken,
   setDeviceId,
 } from './src/utils/storageUtils';
+import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 import { PaperProvider } from 'react-native-paper';
-import * as amplitude from '@amplitude/analytics-react-native';
 import SettingStackNavigator from './src/navigators/SettingStackNavigator';
 import SignUpStackNavigator from './src/navigators/SignUpStackNavigator';
 import HomeStackNavigator from './src/navigators/HomeStackNavigator';
@@ -22,12 +22,14 @@ import palette from './src/assets/styles/theme';
 import { getDeviceId } from './src/utils/device-info';
 import { UseSigninStatus } from './src/utils/signin-status';
 import { reissueAccessToken } from './src/apis/interceptor';
+import * as amplitude from '@amplitude/analytics-react-native';
 
 if (process.env.EXPO_PUBLIC_AMPLITUDE) {
   amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE);
   amplitude.track('Sign Up');
 }
 
+SplashScreen.preventAutoHideAsync();
 const RootStack = createNativeStackNavigator();
 
 const App: React.FC = () => {
@@ -67,9 +69,9 @@ const App: React.FC = () => {
 
   const bootstrap = async (): Promise<void> => {
     const deviceId = await getDeviceId();
-    if (deviceId === undefined) {
+    if (deviceId === null) {
       console.error('DeviceId is undefined');
-      //TODO: deviceId 없으면 alert 띄우고 앱 종료
+      alert('디바이스 정보를 가져오는데 실패했습니다. 앱을 다시 실행해주세요.');
       return;
     }
     setDeviceId(deviceId);
@@ -80,12 +82,20 @@ const App: React.FC = () => {
     setSigninStatus(signinResult);
   };
 
-  //앱이 처음 실행이 될 때 현재 우리 앱의 유저인지 파악
   useEffect(() => {
-    bootstrap().then(() => {
-      setLoading(false);
-    });
-  }, []); //여기의 빈 배열 삭제하면 큰일 나 ㅇㅅㅇ;;
+    if (loaded || error) {
+      SplashScreen.hideAsync();
+    }
+    if (loaded) {
+      bootstrap().then(() => {
+        setLoading(false);
+      });
+    }
+  }, [loaded, error]);
+
+  if (!loaded && !error) {
+    return null;
+  }
 
   if (loading) {
     return (
@@ -96,37 +106,30 @@ const App: React.FC = () => {
   }
 
   return (
-    <SafeAreaProvider>
-      <PaperProvider>
-        <NavigationContainer theme={navTheme}>
-          <RootStack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Main">
-            {SigninStatus ? ( //로그인이 되어있을 경우 보여줄 페이지 : 홈 화면(Tabbar), 채팅화면 (Chat), 설정화면들
-              <>
-                <RootStack.Screen
-                  name="BottomTabNavigator"
-                  component={BottomTabNavigator}
-                  options={{
-                    title: 'Home',
-                  }}
-                />
-                <RootStack.Screen name="HomeStackNavigator" component={HomeStackNavigator} />
-                <RootStack.Screen name="SettingStackNavigator" component={SettingStackNavigator} />
-                <RootStack.Screen
-                  name="StatisticStackNavigator"
-                  component={StatisticStackNavigator}
-                />
-              </>
-            ) : (
-              //로그인이 안 되어있을 때 보여줄 페이지 : 소셜 로그인 페이지 (Login), 회원가입 페이지 (InfoScreen)
-              <>
-                <RootStack.Screen name="Login" component={Login} />
-                <RootStack.Screen name="SignUpStackNavigator" component={SignUpStackNavigator} />
-              </>
-            )}
-          </RootStack.Navigator>
-        </NavigationContainer>
-      </PaperProvider>
-    </SafeAreaProvider>
+    <NavigationContainer theme={navTheme}>
+      <RootStack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Main">
+        {SigninStatus ? ( //로그인이 되어있을 경우 보여줄 페이지 : 홈 화면(Tabbar), 채팅화면 (Chat), 설정화면들
+          <>
+            <RootStack.Screen
+              name="BottomTabNavigator"
+              component={BottomTabNavigator}
+              options={{
+                title: 'Home',
+              }}
+            />
+            <RootStack.Screen name="HomeStackNavigator" component={HomeStackNavigator} />
+            <RootStack.Screen name="SettingStackNavigator" component={SettingStackNavigator} />
+            <RootStack.Screen name="StatisticStackNavigator" component={StatisticStackNavigator} />
+          </>
+        ) : (
+          //로그인이 안 되어있을 때 보여줄 페이지 : 소셜 로그인 페이지 (Login), 회원가입 페이지 (InfoScreen)
+          <>
+            <RootStack.Screen name="Login" component={Login} />
+            <RootStack.Screen name="SignUpStackNavigator" component={SignUpStackNavigator} />
+          </>
+        )}
+      </RootStack.Navigator>
+    </NavigationContainer>
   );
 };
 

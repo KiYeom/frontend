@@ -1,6 +1,6 @@
-import palette from '../../../assets/styles/theme';
 import styled from '@emotion/native';
-import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
+import { rsFont, rsHeight, rsWidth } from '../../../../../utils/responsive-size';
+import palette from '../../../../../assets/styles/theme';
 
 export const Container = styled.View`
   flex: 1;

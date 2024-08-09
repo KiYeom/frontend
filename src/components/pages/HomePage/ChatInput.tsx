@@ -55,7 +55,7 @@ const ChatInput = ({ data, setData }: any) => {
         rightIcon="airplane"
         value={text}
         onChange={(newText) => changeText(newText)}
-        onPress={onPressHandle}
+        onPressIcon={onPressHandle}
         disabled={isLoading}
       />
     </TextInputContainer>

@@ -27,7 +27,7 @@ const ChatBubble = (props: ChatBubbleProps) => {
       {status === 'bot' && (
         <ProfileImageContainer>
           <Image
-            source={require('../../../assets/images/CookieProfile.png')}
+            source={require('../../../assets/images/cookieprofile.png')}
             style={{ objectFit: 'contain', width: 35 * rsWidth, height: 35 * rsHeight }}
           />
         </ProfileImageContainer>

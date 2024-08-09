@@ -23,8 +23,8 @@ type OptionButton = {
 
 export type TNewUser = {
   nickname: string;
-  birthdate: string;
-  gender: string;
+  birthdate: string | null;
+  gender: string | null;
 };
 
 export type TNewAccessToken = {

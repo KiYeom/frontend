@@ -14,7 +14,8 @@ type InputProps = {
   textAlign?: 'left' | 'center' | 'right';
   showRightIcon?: boolean;
   rightIcon?: TIconName;
-  onPress?: () => void;
+  onPressContainer?: () => void;
+  onPressIcon?: () => void;
   styles?: {
     text?: StyleProp<TextStyle>;
   };
@@ -31,12 +32,13 @@ const Input = (props: InputProps) => {
     onChange = () => {}, //입력 필드의 값이 변경될 때 호출될 함수
     placeholder, //입력 필드에 표시될 플레이스 홀더 텍스트
     textAlign = 'left', //텍스트는 왼쪽부터 보임
-    onPress, //컨테이너가 눌렸을 때
+    onPressContainer, //컨테이너가 눌렸을 때
+    onPressIcon, //아이콘이 눌렸을 때
     styles, //적용될 스타일
     disabled,
   } = props; //props 객체를 변수로 선언하여 기본값 설정
   return (
-    <InputContainer onPress={onPress} disabled={disabled}>
+    <InputContainer onPress={onPressContainer} activeOpacity={1} disabled={disabled}>
       <InputField
         placeholder={placeholder}
         status={status}
@@ -44,9 +46,10 @@ const Input = (props: InputProps) => {
         onChangeText={onChange}
         editable={status !== 'disabled'}
         style={styles?.text}
+        pointerEvents={onPressContainer ? 'none' : 'auto'}
       />
       {showRightIcon && (
-        <IconContainer>
+        <IconContainer onPress={onPressContainer ?? onPressIcon}>
           <Icon
             name={rightIcon}
             width={rsWidth * 16}

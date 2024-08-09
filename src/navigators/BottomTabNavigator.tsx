@@ -11,11 +11,8 @@ import MyTabBar from '../components/bottom/bottom';
 
 const Tab = createBottomTabNavigator();
 
-const BottomTabNavigator: React.FC<any> = ({ isSignIn, setIsSignIn }) => {
+const BottomTabNavigator: React.FC<any> = () => {
   //console.log('채팅 화면 새로 그려짐..');
-  const click = () => {
-    //console.log("클릭함");
-  };
   return (
     <Tab.Navigator
       initialRouteName="Home"

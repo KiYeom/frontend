@@ -1,46 +1,69 @@
-import { css } from '@emotion/native';
-import { TouchableOpacity, View, Text } from 'react-native';
-import { rsHeight, rsWidth, rsFont } from '../../utils/responsive-size';
+import { rsWidth } from '../../utils/responsive-size';
 import { useNavigation } from '@react-navigation/native';
 import palette from '../../assets/styles/theme';
-import Icon from '../icons/icons';
-interface HeaderProps {
+import Icon, { TIconName } from '../icons/icons';
+import {
+  HeaderLeft,
+  HeaderCenter,
+  HeaderContainer,
+  HeaderTitle,
+  OptionText,
+  HeaderRight,
+} from './header.styles';
+
+type HeaderProps = {
   title?: string;
-}
-const Header: React.FC<HeaderProps> = ({ title }) => {
+
+  isLeft?: boolean;
+  leftIcon?: TIconName;
+  leftText?: string;
+  leftFunction?: () => void;
+
+  isRight?: boolean;
+  rightIcon?: TIconName;
+  rightText?: string;
+  rightFunction?: () => void;
+};
+const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
   const navigation = useNavigation();
+  const {
+    title = undefined,
+    isLeft = true,
+    leftIcon = 'arrow-left',
+    leftText = undefined,
+    leftFunction = () => {
+      navigation.goBack();
+    },
+
+    isRight = false,
+    rightIcon,
+    rightText = undefined,
+    rightFunction = () => {},
+  } = props;
   return (
-    <View
-      style={css`
-        margin-top: ${rsHeight * 40 + 'px'};
-        height: ${rsHeight * 56 + 'px'};
-        padding-left: ${title === undefined ? rsWidth * 24 + 'px' : rsWidth * 20 + 'px'};
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-      `}>
-      <TouchableOpacity
-        onPress={() => navigation.goBack()}
-        activeOpacity={1}
-        style={css`
-          flex-direction: row;
-        `}>
-        <Icon name="arrow-left" width={rsWidth * 9 + 'px'} color={palette.neutral[900]} />
-      </TouchableOpacity>
-      <Text
-        style={css`
-          text-align: center;
-          font-size: ${rsFont * 18 + 'px'};
-          font-family: Pretendard-SemiBold;
-          width: ${rsWidth * 250 + 'px'};
-          margin-right: ${rsWidth * 70 + 'px'};
-        `}
-        ellipsizeMode="tail"
-        numberOfLines={1}>
-        {title}
-      </Text>
-    </View>
+    <HeaderContainer isTitle={title !== undefined}>
+      <HeaderCenter>
+        <HeaderTitle ellipsizeMode="tail" numberOfLines={1}>
+          {title}
+        </HeaderTitle>
+      </HeaderCenter>
+
+      {isLeft && (
+        <HeaderLeft onPress={leftFunction} activeOpacity={1} isTitle={title !== undefined}>
+          <Icon name={leftIcon} width={rsWidth * 9 + 'px'} color={palette.neutral[900]} />
+          {leftText !== undefined && <OptionText>{leftText}</OptionText>}
+        </HeaderLeft>
+      )}
+
+      {isRight && (
+        <HeaderRight onPress={rightFunction} activeOpacity={1} isTitle={title !== undefined}>
+          {rightText !== undefined && <OptionText>{rightText}</OptionText>}
+          {rightIcon !== undefined && (
+            <Icon name={rightIcon} width={rsWidth * 9 + 'px'} color={palette.neutral[900]} />
+          )}
+        </HeaderRight>
+      )}
+    </HeaderContainer>
   );
 };
 

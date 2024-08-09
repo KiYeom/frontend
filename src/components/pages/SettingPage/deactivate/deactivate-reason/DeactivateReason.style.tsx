@@ -1,6 +1,6 @@
 import styled from '@emotion/native';
-import { rsHeight } from '../../../utils/responsive-size';
 import { Checkbox } from 'react-native-ui-lib';
+import { rsHeight } from '../../../../../utils/responsive-size';
 
 //체크박스와 버튼을 감싸는 form container
 export const FormContainer = styled.View`

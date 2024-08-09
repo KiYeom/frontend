@@ -4,7 +4,7 @@
     "slug": "reMIND",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/images/cookieSplash.png",
+    "icon": "./src/assets/images/cookiesplash.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./src/assets/images/splash.png",
@@ -18,7 +18,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/images/cookieSplash.png",
+        "foregroundImage": "./src/assets/images/cookiesplash.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.ceunnseo.reMIND",
@@ -38,7 +38,7 @@
       [
         "@react-native-google-signin/google-signin",
         {
-          "iosUrlScheme": "com.googleusercontent.apps.94079762653-arcgeib4l0hbg6snh81cjimd9iuuoun3"
+          "iosUrlScheme": "com.googleusercontent.apps.904877172956-cennubj8mifvsai09ppg5o9d2bgg0tst"
         }
       ],
       [
