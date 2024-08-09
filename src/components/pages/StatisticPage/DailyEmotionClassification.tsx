@@ -22,7 +22,7 @@ const DailyEmotionClassification: React.FC<any> = () => {
   //pieData를 만들어주는 함수
   const generatePieData = (labelsClassification: LabelClassification[]) => {
     return labelsClassification.map((item, index) => {
-      console.log('generatePieData 함수 실행', item.value, item.label);
+      //console.log('generatePieData 함수 실행', item.value, item.label);
       return {
         label: item.label,
         value: Math.round(item.percent),
@@ -34,7 +34,7 @@ const DailyEmotionClassification: React.FC<any> = () => {
   useEffect(() => {
     const fetchData = async () => {
       const res = await dailyAnalyze('2024-06-17');
-      console.log('fetchData 함수 실행', res);
+      //console.log('fetchData 함수 실행', res);
       const isNullClassification = res.classification.isNULL; //true = 데이터 없음, false = 데이터 있음
       const labelsClassification = res.classification.labels; //[], [{label : "감사한", percent : 53}, ...]
       if (!isNullClassification) {
@@ -103,6 +103,7 @@ const DailyEmotionClassification: React.FC<any> = () => {
         padding-vertical: ${40 * rsHeight + 'px'};
         padding-horizontal: ${20 * rsWidth + 'px'};
         background-color: ${palette.neutral[50]};
+        margin-bottom: ${rsHeight * 16 + 'px'};
         flex: 1; //전체 배경
       `}>
       <View
