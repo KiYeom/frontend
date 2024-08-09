@@ -19,5 +19,12 @@ const palette = {
     error: '#FF3E3E',
     warning: '#FFB800',
   },
+  graph: {
+    100: '#58C3A5',
+    200: '#9AD1FF',
+    300: '#C8FCEA',
+    400: '#B3A8EF',
+    500: '#FBF5B9',
+  },
 };
 export default palette;

@@ -48,7 +48,7 @@ const ModalContainer = styled.View`
   flex: 1;
   justify-content: center;
   align-items: center;
-  backgroundcolor: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.5);
 `;
 
 const ModalInner = styled.View`

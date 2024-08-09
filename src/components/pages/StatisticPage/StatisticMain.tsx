@@ -1,13 +1,61 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { rsWidth, rsHeight, rsFont } from '../../../utils/responsive-size';
 import { SafeAreaView } from 'react-native';
+import { getTime, formatDate } from '../../../utils/Chatting';
+import DatePickerModal from '../../modals/date-picker-modal';
+import { useEffect, useState } from 'react';
+import { ScrollView } from 'react-native';
+import { css } from '@emotion/native';
+import DailyEmotionClassification from './DailyEmotionClassification';
+import DateLine from '../../atoms/DateLine/DateLine';
+
+//전체 통계 화면
 const StatisticMain: React.FC<any> = () => {
+  const [date, setDate] = useState<Date>(new Date()); //현재 날짜
+  const [openModal, setOpenModal] = React.useState(false);
+
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={{ backgroundColor: 'pink', flex: 1 }}>
-        <Text>통계 페이지</Text>
-      </View>
-    </SafeAreaView>
+    <>
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView
+          style={css`
+            flex: 1;
+            background-color: white;
+            //gap: ${rsHeight * 16 + 'px'};
+            padding-top: ${20 * rsHeight + 'px'};
+            padding-bottom: ${40 * rsHeight + 'px'};
+          `}>
+          <DateLine
+            value={
+              date?.getFullYear() +
+              '년 ' +
+              String(date.getMonth() + 1).padStart(2, '0') +
+              '월 ' +
+              String(date.getDate()).padStart(2, '0') +
+              '일'
+            }
+            onPress={() => setOpenModal(true)}
+          />
+          <DailyEmotionClassification
+            value={
+              date?.getFullYear() +
+              '-' +
+              String(date.getMonth() + 1).padStart(2, '0') +
+              '-' +
+              String(date.getDate()).padStart(2, '0')
+            }
+          />
+        </ScrollView>
+      </SafeAreaView>
+      <DatePickerModal
+        modalVisible={openModal}
+        onClose={() => {
+          setOpenModal(false);
+        }}
+        onChange={setDate}
+      />
+    </>
   );
 };
+
 export default StatisticMain;
