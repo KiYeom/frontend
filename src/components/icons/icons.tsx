@@ -1,9 +1,10 @@
 import ArrowDown from './svg/arrow-down';
 import ArrowLeft from './svg/arrow-left';
 import Airplane from './svg/airplane';
+import DateIcon from './svg/dateIcon';
 import ArrowRight from './svg/arrow-right';
 
-export type TIconName = 'arrow-left' | 'arrow-down' | 'airplane' | 'arrow-right';
+export type TIconName = 'arrow-left' | 'arrow-down' | 'airplane' | 'arrow-right' | 'dateIcon';
 
 export default function Icon({
   width,
@@ -25,5 +26,7 @@ export default function Icon({
       return <ArrowDown width={width} height={height} color={color} />;
     case 'airplane':
       return <Airplane width={width} height={height} color={color} />;
+    case 'dateIcon':
+      return <DateIcon width={width} height={height} color={color} />;
   }
 }
