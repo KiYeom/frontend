@@ -11,7 +11,7 @@ import { DateLine } from './Chat.style';
 import { Message } from '../../../constants/Constants';
 import { rsHeight } from '../../../utils/responsive-size';
 import { loadChatLogs, saveChatLogs } from '../../../utils/Chatting';
-
+import { css } from '@emotion/native';
 const Chat: React.FC = () => {
   const flatListRef = useRef<FlatList<any>>(null);
   const [data, setData] = useState<Message[]>([]); //전체 대화 로그
@@ -72,7 +72,11 @@ const Chat: React.FC = () => {
             data={data}
             keyExtractor={(data) => data.text + '.' + data.id}
             renderItem={renderItem}
-            contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end', gap: rsHeight * 20 }}
+            contentContainerStyle={{
+              flexGrow: 1,
+              justifyContent: 'flex-end',
+              gap: rsHeight * 20,
+            }}
             showsVerticalScrollIndicator={false}
           />
         </ChatContainer>

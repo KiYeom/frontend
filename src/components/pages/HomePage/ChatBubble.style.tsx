@@ -7,7 +7,6 @@ import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 export const Container = styled.View<{ status: 'bot' | 'user' }>`
   flex-direction: row;
   gap: ${rsHeight * 8 + 'px'};
-  margin-bottom: ${rsHeight * 20 + 'px'};
   justify-content: ${(props) => (props.status === 'bot' ? 'flex-end' : 'flex-start')};
 `;
 
@@ -21,6 +20,7 @@ export const Bubble = styled.View<{ status: 'bot' | 'user' }>`
   min-height: ${(props) =>
     props.status === 'bot' ? rsHeight * 40 + 'px' : undefined}; //봇이 아무말도 안할 때
   border-radius: 10px;
+  max-width: ${rsWidth * 200 + 'px'};
   background-color: ${(props) =>
     props.status === 'bot' ? palette.neutral[100] : palette.primary[500]};
 `;
