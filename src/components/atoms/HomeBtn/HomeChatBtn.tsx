@@ -14,7 +14,7 @@ const HomeChatBtn = ({ navigation }) => {
       <HomeBtnText>쿠키와 대화하러 가기</HomeBtnText>
       <ImageContainer>
         <Image
-          source={require('../../../assets/images/HomeButtonImage.png')}
+          source={require('../../../assets/images/homebuttonimage.png')}
           style={{
             height: rsHeight * 247,
             objectFit: 'contain',

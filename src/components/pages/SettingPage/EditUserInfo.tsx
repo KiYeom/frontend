@@ -60,7 +60,7 @@ const EditUserInfo: React.FC = ({ navigation }: any) => {
             showRightIcon={true}
             status="disabled"
             rightIcon="arrow-down"
-            onPress={() => setOpenModal(true)}
+            onPressContainer={() => setOpenModal(true)}
             value={
               birthDate
                 ? birthDate?.getFullYear() +

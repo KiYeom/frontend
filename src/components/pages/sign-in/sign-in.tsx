@@ -134,7 +134,7 @@ const Login: React.FC<any> = ({ navigation }) => {
       <WelcomeTitle>쿠키와 함께하는 {'\n'}힐링 채팅</WelcomeTitle>
 
       <ImageContainer>
-        <CookieImage source={require('../../../assets/images/cookieLogin.png')} />
+        <CookieImage source={require('../../../assets/images/cookielogin.png')} />
       </ImageContainer>
       <ButtonContainer style={css``}>
         <LoginBtn vendor="kakao" activeOpacity={1} onPress={() => {}}>

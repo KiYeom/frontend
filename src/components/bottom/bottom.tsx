@@ -42,6 +42,7 @@ const MyTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation 
               accessibilityLabel={options.tabBarAccessibilityLabel}
               onPress={onPress}
               style={css`
+                border: 5px;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
@@ -77,6 +78,7 @@ const MyTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation 
                   font-size: ${13 * rsFont + 'px'};
                   font-family: Pretendard-Medium;
                   margin-top: ${4 * rsHeight + 'px'};
+                  border: 5px;
                 `}>
                 {label}
               </Text>

@@ -13,6 +13,7 @@ import {
 
 type HeaderProps = {
   title?: string;
+
   isLeft?: boolean;
   leftIcon?: TIconName;
   leftText?: string;
@@ -35,7 +36,7 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
     },
 
     isRight = false,
-    rightIcon = 'arrow-right',
+    rightIcon,
     rightText = undefined,
     rightFunction = () => {},
   } = props;
@@ -56,8 +57,10 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
 
       {isRight && (
         <HeaderRight onPress={rightFunction} activeOpacity={1} isTitle={title !== undefined}>
-          {rightText !== undefined && <OptionText>{leftText}</OptionText>}
-          <Icon name={rightIcon} width={rsWidth * 9 + 'px'} color={palette.neutral[900]} />
+          {rightText !== undefined && <OptionText>{rightText}</OptionText>}
+          {rightIcon !== undefined && (
+            <Icon name={rightIcon} width={rsWidth * 9 + 'px'} color={palette.neutral[900]} />
+          )}
         </HeaderRight>
       )}
     </HeaderContainer>
