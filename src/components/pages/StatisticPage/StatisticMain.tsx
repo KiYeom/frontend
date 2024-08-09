@@ -20,7 +20,7 @@ const StatisticMain: React.FC<any> = () => {
         <ScrollView
           style={css`
             flex: 1;
-            background-color: pink;
+            background-color: white;
             //gap: ${rsHeight * 16 + 'px'};
             padding-top: ${20 * rsHeight + 'px'};
             padding-bottom: ${40 * rsHeight + 'px'};

@@ -47,7 +47,7 @@ const DailyEmotionClassification: React.FC<any> = (props: any) => {
       }
     };
     fetchData();
-  }, []);
+  }, [value]);
 
   const testPieData = generatePieData(labelsClassification);
   //데이터가 있으면 [{"value" : "화나는", "percent" : 29}, ...]
