@@ -1,5 +1,4 @@
-import { Svg, SvgXml } from 'react-native-svg';
-import palette from '../../../assets/styles/theme';
+import { SvgXml } from 'react-native-svg';
 
 export const CookieProfile = ({ width = 35, height = 35 }) => {
   const svg = `

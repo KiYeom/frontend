@@ -1,8 +1,9 @@
 import styled from '@emotion/native';
 import { rsFont, rsHeight, rsWidth } from '../../utils/responsive-size';
 import palette from '../../assets/styles/theme';
+import { EdgeInsets } from 'react-native-safe-area-context';
 
-export const HeaderContainer = styled.View<{ isTitle: boolean }>`
+export const HeaderContainer = styled.View<{ isTitle: boolean; insets: EdgeInsets }>`
   margin-top: ${rsHeight * 40 + 'px'};
   height: ${rsHeight * 56 + 'px'};
   display: flex;
@@ -10,6 +11,12 @@ export const HeaderContainer = styled.View<{ isTitle: boolean }>`
   justify-content: center;
   align-items: center;
   position: relative;
+
+  // Paddings to handle safe area
+  padding-top: ${(props) => props.insets.top};
+  padding-bottom: ${(props) => props.insets.bottom};
+  padding-left: ${(props) => props.insets.left};
+  padding-right: ${(props) => props.insets.right};
 
   border-color: ${palette.neutral[100]};
   border-bottom-width: ${(props) => (props.isTitle ? `${rsHeight * 1 + 'px'} ` : `none`)};

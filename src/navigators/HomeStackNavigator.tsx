@@ -3,17 +3,21 @@ import React from 'react';
 import Chat from '../components/pages/HomePage/Chat';
 import MoodChart from '../components/pages/HomePage/MoodChart';
 import Header from '../components/header/header';
+import { HomeStackName } from '../constants/Constants';
+import Home from '../components/pages/HomePage/Home';
+
+const HomeStack = createNativeStackNavigator();
+
 const HomeStackNavigator: React.FC = () => {
-  const Stack = createNativeStackNavigator();
   return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Chat"
+    <HomeStack.Navigator>
+      <HomeStack.Screen
+        name={HomeStackName.Chat}
         component={Chat}
-        options={{ header: () => <Header title="쿠키의 채팅방" /> }}
+        options={{ header: () => <Header title="쿠키" /> }}
       />
-      <Stack.Screen name="MoodChart" component={MoodChart} />
-    </Stack.Navigator>
+      <HomeStack.Screen name={HomeStackName.MoodChart} component={MoodChart} />
+    </HomeStack.Navigator>
   );
 };
 export default HomeStackNavigator;

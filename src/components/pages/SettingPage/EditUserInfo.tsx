@@ -8,7 +8,12 @@ import { ContentContainer } from '../sign-up/input-name/input-name.styles';
 import { validateName } from '../../../utils/ValidateName';
 import { CTAContainer } from '../sign-up/input-name/input-name.styles';
 import { userEditInfo } from '../../../apis/userEditInfo'; //api 수정해야 함
-import { getUserBirthdate, getUserGender, getUserNickname } from '../../../utils/storageUtils';
+import {
+  getUserBirthdate,
+  getUserGender,
+  getUserNickname,
+  setUserInfo,
+} from '../../../utils/storageUtils';
 import { ButtonGroup } from '../sign-up/input-profile/input-profile.styles';
 import { GenderButton } from '../sign-up/input-profile/input-profile.styles';
 import { BtnLabel } from '../sign-up/input-profile/input-profile.styles';
@@ -19,24 +24,51 @@ import { TGender } from '../../../constants/types';
 //date가 존재할 경우 Date 형태로 바꾸는 함수
 const formatBirthDate = (dateString: string | undefined): Date | undefined => {
   if (!dateString) {
+    console.log('dateString?', dateString);
     return undefined;
   }
+  console.log('dateString', dateString);
   const [year, month, day] = dateString.split('-').map(Number);
+  console.log('year, month, day', year, month, day);
   const dateObject = new Date(year, month - 1, day);
+  console.log('dateObject', dateObject);
   return dateObject;
 };
 
-const EditUserInfo: React.FC = ({ navigation }: any) => {
-  const [name, setName] = React.useState<string>();
-  const [gender, setGender] = React.useState<TGender>();
-  const [birthDate, setBirthdate] = React.useState<Date | undefined>();
+const EditUserInfo: React.FC = ({ navigation }) => {
+  //FIX: 생년월일 클릭 시 에러 발생
+  const [name, setName] = React.useState<string>(getUserNickname() + '');
+  const [gender, setGender] = React.useState<TGender | undefined>(getUserGender());
+  const [birthDate, setBirthDate] = React.useState<Date | undefined>(
+    formatBirthDate(getUserBirthdate()),
+  );
   const [openModal, setOpenModal] = React.useState<boolean>(false);
+  const [loading, setLoading] = React.useState<boolean>(false);
 
-  useEffect(() => {
-    setName(getUserNickname() + '');
-    setGender(getUserGender());
-    setBirthdate(formatBirthDate(getUserBirthdate()));
-  }, []);
+  const editUserInfo = () => {
+    setLoading(true);
+    userEditInfo({
+      nickname: name,
+      gender: gender ?? null,
+      birthdate: birthDate
+        ? `${birthDate.getFullYear()}-${String(birthDate.getMonth() + 1).padStart(2, '0')}-${String(birthDate.getDate()).padStart(2, '0')}`
+        : null,
+    })
+      .then((res) => {
+        if (!res) {
+          alert('변경 사항이 저장되지 않았습니다');
+        } else {
+          setUserInfo(res.nickname, res.birthdate, res.gender);
+          navigation.goBack();
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        alert('네트워크가 원활하지 않습니다. 잠시 후 다시 시도해주세요.');
+        setLoading(false);
+      });
+  };
+
   return (
     <>
       <ContentContainer>
@@ -95,28 +127,15 @@ const EditUserInfo: React.FC = ({ navigation }: any) => {
       <CTAContainer>
         <Button
           title="저장"
-          disabled={!(validateName(name + '') === 'correct')}
+          disabled={!(validateName(name + '') === 'correct') || loading}
           primary={true}
-          onPress={async () => {
-            const res = await userEditInfo({
-              nickname: name + '',
-              birthdate: birthDate
-                ? `${birthDate.getFullYear()}-${String(birthDate.getMonth() + 1).padStart(2, '0')}-${String(birthDate.getDate()).padStart(2, '0')}`
-                : 'unknown',
-              gender: gender ?? null,
-            });
-            if (res) {
-              navigation.navigate('BottomTabNavigator', { screen: 'Home' });
-            } else {
-              alert('변경 사항이 저장되지 않았습니다');
-            }
-          }}
+          onPress={() => editUserInfo()}
         />
       </CTAContainer>
       <DatePickerModal
         modalVisible={openModal}
         onClose={() => setOpenModal(false)}
-        onChange={setBirthdate}
+        onChange={setBirthDate}
       />
     </>
   );

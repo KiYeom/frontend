@@ -5,6 +5,7 @@ export const CHATLOG = 'CHATLOG';
 export const ERRORMESSAGE = '멍멍!🐶 쿠키 조금 아픈데 잠시 후에 다시 얘기해도 될까요?😣';
 
 export const SPLASH_PATH = '/src/assets/images/splash.png';
+export const COOKIE_PROFILE_PATH = './src/assets/images/setting_default_profile.png';
 
 export const reasons = [
   '쿠키가 나의 이야기를 잘 이해하지 못했다',
@@ -31,3 +32,48 @@ export interface MenuItemProps {
 }
 
 export const NotificationTypes: TNotificationType[] = ['system', 'chat_cookie'];
+
+//Navigator에 사용될 스크린 이름들
+export enum RootStackName {
+  BottomTabNavigator = 'BottomTabNavigator',
+  StatisStackNavigator = 'StatisStackNavigator',
+  HomeStackNavigator = 'HomeStackNavigator',
+  SettingStackNavigator = 'SettingStackNavigator',
+  AuthStackNavigator = 'AuthStackNavigator',
+}
+
+export enum TabScreenName {
+  Home = 'Home',
+  Setting = 'Setting',
+  Statistic = 'Statistic',
+}
+
+export enum TabBarLabel {
+  Home = '홈',
+  Setting = '설정',
+  Statistic = '통계',
+}
+
+export enum HomeStackName {
+  Chat = 'Chat',
+  MoodChart = 'MoodChart',
+}
+
+export enum SettingStackName {
+  EditUserInfo = 'EditUserInfo',
+  PrivacyPolicy = 'PrivacyPolicy',
+  UserNotifications = 'UserNotifications',
+  ChannelTalk = 'ChannelTalk',
+  DeactivateAlert = 'DeactivateAlert',
+  DeactivateReason = 'DeactivateReason',
+  LicensePage = 'LicensePage',
+  LicenseDetailPage = 'LicenseDetailPage',
+}
+
+export enum StatisticStackName {}
+
+export enum AuthStackName {
+  Login = 'Login',
+  InputName = 'InputName',
+  InputProfile = 'InputProfile',
+}
