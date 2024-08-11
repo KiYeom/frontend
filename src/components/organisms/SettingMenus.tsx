@@ -15,7 +15,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
-const SettingMenus: React.FC<any> = ({ navigation, logoutRequest, deactivateRequest }) => {
+const SettingMenus: React.FC<any> = ({ navigation, logoutRequest }) => {
   let token;
   //개인정보 처리방침 클릭 시, 처리방침 페이지로 이동
   const handlePrivacyPolicyPress = () => {
@@ -87,7 +87,7 @@ const SettingMenus: React.FC<any> = ({ navigation, logoutRequest, deactivateRequ
           console.log('회원탈퇴 누름');
           navigation.navigate('SettingStackNavigator', {
             screen: 'DeactivateAlert',
-            params: { deactivateRequest },
+            params: {},
           });
         },
     },

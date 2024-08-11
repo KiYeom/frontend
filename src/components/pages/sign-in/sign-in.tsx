@@ -12,7 +12,7 @@ import {
 } from './sing-in.styles';
 import { css } from '@emotion/native';
 import * as AppleAuthentication from 'expo-apple-authentication';
-import SignUpStackNavigator from '../../../navigators/SignUpStackNavigator';
+import AuthStackNavigator from '../../../navigators/AuthStackNavigator';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { ssoLogin } from '../../../apis/auth';
 import { getAccessToken, setInfoWhenLogin, setTokenInfo } from '../../../utils/storageUtils';
@@ -122,7 +122,7 @@ const Login: React.FC<any> = ({ navigation }) => {
       }
       if (getAccessToken()) {
         //새로운 유저
-        navigation.navigate(SignUpStackNavigator);
+        navigation.navigate(AuthStackNavigator);
         return;
       }
     } catch (error) {

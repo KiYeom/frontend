@@ -1,13 +1,14 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
+import palette from '../assets/styles/theme';
+import BottomTabBar from '../components/bottom/bottom-tab-bar';
+import { TabBarLabel, TabScreenName } from '../constants/Constants';
+import StatisticStackNavigator from './StatisticStackNavigator';
+import HomeStackNavigator from './HomeStackNavigator';
+import SettingStackNavigator from './SettingStackNavigator';
+import StatisticMain from '../components/pages/StatisticPage/StatisticMain';
 import Home from '../components/pages/HomePage/Home';
 import Setting from '../components/pages/SettingPage/Setting';
-import StatisticMain from '../components/pages/StatisticPage/StatisticMain';
-import palette from '../assets/styles/theme';
-import HomeIcon from '../assets/icons/Home.svg';
-import SettingIcon from '../assets/icons/Setting.svg';
-import StatisticIcon from '../assets/icons/test.svg';
-import MyTabBar from '../components/bottom/bottom';
 
 const Tab = createBottomTabNavigator();
 
@@ -15,63 +16,31 @@ const BottomTabNavigator: React.FC<any> = () => {
   //console.log('채팅 화면 새로 그려짐..');
   return (
     <Tab.Navigator
-      initialRouteName="Home"
-      tabBar={(props) => <MyTabBar {...props} />}
+      initialRouteName={TabScreenName.Home}
+      tabBar={(props) => <BottomTabBar {...props} />}
       screenOptions={{
         headerShown: false,
-        headerTitleAlign: 'center',
-        headerStyle: { backgroundColor: '#58C3A5' }, //상단 탭 바
-        tabBarStyle: { backgroundColor: '#F0F3F8' }, //하단 탭 바
-        headerTintColor: '#fff', // 헤더 텍스트 색상
-        headerTitleStyle: {
-          fontFamily: 'Pretendard-Bold', // 사용할 폰트 패밀리
-          fontSize: 17, // 폰트 크기
-          color: '#fff', //헤더 폰트 색상
-        },
         tabBarActiveTintColor: palette.primary[500], //tab bar focuse 색상
       }}>
       <Tab.Screen
-        name="Statistic"
+        name={TabScreenName.Statistic}
         component={StatisticMain}
         options={{
-          headerShown: false,
-          tabBarLabel: '통계',
-          headerTintColor: '#fff',
-          tabBarIcon: ({ focused }) => (
-            <StatisticIcon
-              style={{ color: focused ? palette.primary[500] : palette.neutral[300] }}
-            />
-          ),
+          tabBarLabel: TabBarLabel.Statistic,
         }}
       />
       <Tab.Screen
-        name="Home"
+        name={TabScreenName.Home}
         component={Home}
         options={{
-          headerShown: false,
-          headerTitleAlign: 'center',
-          headerStyle: { backgroundColor: '#58C3A5' }, //상단 탭 바
-          headerTintColor: '#fff', // 헤더 텍스트 색상
-          headerTitleStyle: {
-            fontFamily: 'Pretendard-Bold', // 사용할 폰트 패밀리
-            fontSize: 17, // 폰트 크기
-          },
-          tabBarLabel: '홈', //탭 바 아래에 보일 이름
-          tabBarIcon: ({ focused }) => (
-            <HomeIcon style={{ color: focused ? palette.primary[500] : palette.neutral[300] }} />
-          ),
+          tabBarLabel: TabBarLabel.Home, //탭 바 아래에 보일 이름
         }}
       />
       <Tab.Screen
-        name="Setting"
+        name={TabScreenName.Setting}
         component={Setting}
         options={{
-          headerShown: false,
-          tabBarLabel: '설정',
-          headerTintColor: '#fff',
-          tabBarIcon: ({ focused }) => (
-            <SettingIcon style={{ color: focused ? palette.primary[500] : palette.neutral[300] }} />
-          ),
+          tabBarLabel: TabBarLabel.Setting,
         }}
       />
     </Tab.Navigator>

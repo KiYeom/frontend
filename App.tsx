@@ -1,10 +1,7 @@
 import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import Login from './src/components/pages/sign-in/sign-in';
 import BottomTabNavigator from './src/navigators/BottomTabNavigator';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import {
   clearInfoWhenLogout,
   getAccessToken,
@@ -13,16 +10,18 @@ import {
 } from './src/utils/storageUtils';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
-import { PaperProvider } from 'react-native-paper';
-import SettingStackNavigator from './src/navigators/SettingStackNavigator';
-import SignUpStackNavigator from './src/navigators/SignUpStackNavigator';
-import HomeStackNavigator from './src/navigators/HomeStackNavigator';
-import StatisticStackNavigator from './src/navigators/StatisticStackNavigator';
+import AuthStackNavigator from './src/navigators/AuthStackNavigator';
 import palette from './src/assets/styles/theme';
 import { getDeviceId } from './src/utils/device-info';
 import { UseSigninStatus } from './src/utils/signin-status';
 import { reissueAccessToken } from './src/apis/interceptor';
 import * as amplitude from '@amplitude/analytics-react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import HomeStackNavigator from './src/navigators/HomeStackNavigator';
+import StatisticStackNavigator from './src/navigators/StatisticStackNavigator';
+import SettingStackNavigator from './src/navigators/SettingStackNavigator';
+import { RootStackName } from './src/constants/Constants';
 
 if (process.env.EXPO_PUBLIC_AMPLITUDE) {
   amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE);
@@ -106,30 +105,40 @@ const App: React.FC = () => {
   }
 
   return (
-    <NavigationContainer theme={navTheme}>
-      <RootStack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Main">
-        {SigninStatus ? ( //로그인이 되어있을 경우 보여줄 페이지 : 홈 화면(Tabbar), 채팅화면 (Chat), 설정화면들
-          <>
+    <SafeAreaProvider>
+      <NavigationContainer theme={navTheme}>
+        <RootStack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}>
+          {SigninStatus ? (
+            <>
+              <RootStack.Screen
+                name={RootStackName.BottomTabNavigator}
+                component={BottomTabNavigator}
+              />
+              <RootStack.Screen
+                name={RootStackName.StatisStackNavigator}
+                component={StatisticStackNavigator}
+              />
+              <RootStack.Screen
+                name={RootStackName.HomeStackNavigator}
+                component={HomeStackNavigator}
+              />
+              <RootStack.Screen
+                name={RootStackName.SettingStackNavigator}
+                component={SettingStackNavigator}
+              />
+            </>
+          ) : (
             <RootStack.Screen
-              name="BottomTabNavigator"
-              component={BottomTabNavigator}
-              options={{
-                title: 'Home',
-              }}
+              name={RootStackName.AuthStackNavigator}
+              component={AuthStackNavigator}
             />
-            <RootStack.Screen name="HomeStackNavigator" component={HomeStackNavigator} />
-            <RootStack.Screen name="SettingStackNavigator" component={SettingStackNavigator} />
-            <RootStack.Screen name="StatisticStackNavigator" component={StatisticStackNavigator} />
-          </>
-        ) : (
-          //로그인이 안 되어있을 때 보여줄 페이지 : 소셜 로그인 페이지 (Login), 회원가입 페이지 (InfoScreen)
-          <>
-            <RootStack.Screen name="Login" component={Login} />
-            <RootStack.Screen name="SignUpStackNavigator" component={SignUpStackNavigator} />
-          </>
-        )}
-      </RootStack.Navigator>
-    </NavigationContainer>
+          )}
+        </RootStack.Navigator>
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 };
 

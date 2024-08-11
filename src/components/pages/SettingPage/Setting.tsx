@@ -1,6 +1,6 @@
-import { StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import React, { useEffect } from 'react';
-import { CHATLOG } from '../../../constants/Constants';
+import { CHATLOG, RootStackName, SettingStackName } from '../../../constants/Constants';
 import SettingMenus from '../../organisms/SettingMenus';
 import * as Notifications from 'expo-notifications';
 import UserInfomation from '../../molecules/UserInfomation';
@@ -8,11 +8,26 @@ import { deavtivate, getUserInfo, logout } from '../../../apis/setting';
 import {
   clearInfoWhenLogout,
   getDeviceIdFromMMKV,
+  getUserNickname,
   setUserInfo,
   storage,
 } from '../../../utils/storageUtils';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { UseSigninStatus } from '../../../utils/signin-status';
+import {
+  AppSettingContainer,
+  ProfileImage,
+  SettingContainer,
+  SubjectText,
+  SubjectTextContainer,
+  UserInfoContainer,
+  UserNickname,
+  UserSettingContainer,
+} from './Setting.style';
+import Icon from '../../icons/icons';
+import { rsHeight, rsWidth } from '../../../utils/responsive-size';
+import palette from '../../../assets/styles/theme';
+import MenuRow from '../../menu-row/menu-row';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -23,7 +38,10 @@ Notifications.setNotificationHandler({
 });
 
 const Setting: React.FC<any> = ({ navigation }) => {
+  const [name, setName] = React.useState<string>('');
+  const [loading, setLoading] = React.useState<boolean>(false);
   const { SigninStatus, setSigninStatus } = UseSigninStatus();
+  const insets = useSafeAreaInsets();
 
   //로그아웃
   const logoutRequest = async () => {
@@ -41,98 +59,101 @@ const Setting: React.FC<any> = ({ navigation }) => {
     }
   };
 
-  //회원 탈퇴
-  const deactivateRequest = async (reasons: string[]) => {
-    const response = await deavtivate(reasons);
-    if (!response || !response.result) {
-      alert('회원 탈퇴가 실패했습니다. 다시 시도해주세요.');
-      return;
-    }
-    clearInfoWhenLogout();
-    storage.delete(CHATLOG);
-    console.log('[Setting -DDeactivate Button] LogOut: 2, SigninStatus: ', SigninStatus);
-    setSigninStatus(false);
-  };
-
-  //유저 정보 가져오기
-  const userInfo = async () => {
-    const res = await getUserInfo();
-    if (!res) {
-      console.log('유저 정보 가져오기 실패');
-      return;
-    }
-    setUserInfo(res.nickname, res.birthdate, res.gender);
+  const logoutAlert = () => {
+    Alert.alert(
+      '로그아웃 하시겠습니까?', // 첫번째 text: 타이틀 큰 제목
+      '로그인 화면으로 이동합니다', // 두번째 text: 작은 제목
+      [
+        // 버튼 배열
+        {
+          text: '아니오', // 버튼 제목
+          style: 'cancel',
+        },
+        { text: '네', onPress: () => logoutRequest() },
+      ],
+      { cancelable: false }, //alert 밖에 눌렀을 때 alert 안 없어지도록
+    );
   };
 
   useEffect(() => {
-    userInfo();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      setName(getUserNickname() + '');
+    });
+
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
+  }, [navigation]);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.userInfo}>
-        <UserInfomation navigation={navigation} />
-      </View>
-      <SettingMenus
-        navigation={navigation}
-        logoutRequest={logoutRequest}
-        deactivateRequest={deactivateRequest}
-      />
-    </SafeAreaView>
+    <SettingContainer>
+      <UserInfoContainer
+        insets={insets}
+        activeOpacity={1}
+        onPress={() =>
+          navigation.navigate(RootStackName.SettingStackNavigator, {
+            screen: SettingStackName.EditUserInfo,
+          })
+        }>
+        <ProfileImage source={require('../../../assets/icons/profileImage.png')} />
+        <UserNickname>{getUserNickname()}</UserNickname>
+        <Icon
+          name="arrow-right"
+          width={rsWidth * 9}
+          height={rsHeight * 18}
+          color={palette.neutral[300]}
+        />
+      </UserInfoContainer>
+      <AppSettingContainer>
+        <MenuRow
+          text="알림설정"
+          onPress={() =>
+            navigation.navigate(RootStackName.SettingStackNavigator, {
+              screen: SettingStackName.UserNotifications,
+            })
+          }
+        />
+        <MenuRow
+          text="문의하기"
+          onPress={() =>
+            navigation.navigate(RootStackName.SettingStackNavigator, {
+              screen: SettingStackName.ChannelTalk,
+            })
+          }
+        />
+        <MenuRow
+          text="개인정보 처리방침"
+          onPress={() =>
+            navigation.navigate(RootStackName.SettingStackNavigator, {
+              screen: SettingStackName.PrivacyPolicy,
+            })
+          }
+        />
+        <MenuRow
+          text="오픈 라이센스"
+          onPress={() =>
+            navigation.navigate(RootStackName.SettingStackNavigator, {
+              screen: SettingStackName.LicensePage,
+            })
+          }
+        />
+        <MenuRow text="앱 정보" showVersion={true} />
+      </AppSettingContainer>
+      <UserSettingContainer>
+        <SubjectTextContainer>
+          <SubjectText>계정 설정</SubjectText>
+        </SubjectTextContainer>
+        <MenuRow text="로그아옷" onPress={() => logoutAlert()} />
+        <MenuRow
+          text="회원탈퇴"
+          onPress={() =>
+            navigation.navigate(RootStackName.SettingStackNavigator, {
+              screen: SettingStackName.DeactivateAlert,
+            })
+          }
+        />
+      </UserSettingContainer>
+    </SettingContainer>
   );
 };
 
-const styles = StyleSheet.create({
-  userInfo: {
-    ///backgroundColor : "yellow",
-    width: '100%',
-    padding: 16,
-    borderColor: 'f0f3f8',
-    borderBottomWidth: 0.3,
-  },
-  userName: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
-  text: {
-    fontSize: 24,
-    color: 'blue',
-  },
-  userInfoText: {
-    color: 'black',
-    fontSize: 20,
-  },
-  modalTitle: {
-    fontSize: 20,
-    color: 'pink',
-  },
-  containerStyle: {
-    backgroundColor: 'white',
-    padding: 20,
-    width: '70%',
-    borderRadius: 30,
-    //height : "30%",
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
-  },
-  modalBtnContainer: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-around',
-  },
-  modalText: {
-    fontSize: 17,
-    //fontWeight : "bold",
-    padding: 15,
-  },
-  nickNameInput: {
-    width: '100%',
-    padding: 16,
-  },
-  inputText: {
-    fontWeight: 'normal',
-  },
-});
 export default Setting;

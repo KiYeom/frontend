@@ -10,9 +10,9 @@ import {
 } from './DeactivateAlert.style';
 import Button from '../../../../button/button';
 import HeartMessage from '../../../../../assets/images/heartMessage.svg';
+import { SettingStackName } from '../../../../../constants/Constants';
 
-const DeactivateAlert: React.FC = ({ route, navigation }) => {
-  const { deactivateRequest } = route.params;
+const DeactivateAlert: React.FC = ({ navigation }) => {
   const chats = getChatting();
   //console.log(chats);
   let chatCount = 0;
@@ -45,7 +45,7 @@ const DeactivateAlert: React.FC = ({ route, navigation }) => {
         primary={true}
         onPress={() => {
           console.log('탈퇴 버튼 누름');
-          navigation.navigate('DeactivateReason', { deactivateRequest });
+          navigation.navigate(SettingStackName.DeactivateReason);
         }}
       />
     </Container>

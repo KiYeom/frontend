@@ -10,6 +10,7 @@ import {
   OptionText,
   HeaderRight,
 } from './header.styles';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type HeaderProps = {
   title?: string;
@@ -25,7 +26,9 @@ type HeaderProps = {
   rightFunction?: () => void;
 };
 const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation();
+
   const {
     title = undefined,
     isLeft = true,
@@ -41,7 +44,7 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
     rightFunction = () => {},
   } = props;
   return (
-    <HeaderContainer isTitle={title !== undefined}>
+    <HeaderContainer isTitle={title !== undefined} insets={insets}>
       <HeaderCenter>
         <HeaderTitle ellipsizeMode="tail" numberOfLines={1}>
           {title}
