@@ -14,7 +14,7 @@ const HomeStackNavigator: React.FC = () => {
       <HomeStack.Screen
         name={HomeStackName.Chat}
         component={Chat}
-        options={{ header: () => <Header title="쿠키" /> }}
+        options={{ header: () => <Header title="쿠키의 채팅방" /> }}
       />
       <HomeStack.Screen name={HomeStackName.MoodChart} component={MoodChart} />
     </HomeStack.Navigator>
