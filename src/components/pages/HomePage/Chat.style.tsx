@@ -18,4 +18,12 @@ export const DateLine = styled.View`
   padding-bottom: ${rsHeight * 8 + 'px'};
   margin-bottom: ${rsHeight * 20 + 'px'};
   justify-content: center;
+  align-items: center;
+`;
+
+export const DateLineText = styled.Text`
+  text-align: center;
+  font-size: ${12 * rsFont + 'px'};
+  font-family: Pretendard-Regular;
+  color: ${palette.neutral[400]};
 `;

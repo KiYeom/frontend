@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Platform } from 'react-native';
+import { useEffect } from 'react';
 import {
   LoginBtnLabel,
   LoginBtn,
@@ -18,6 +19,7 @@ import { ssoLogin } from '../../../apis/auth';
 import { getAccessToken, setInfoWhenLogin, setTokenInfo } from '../../../utils/storageUtils';
 import { TVender } from '../../../constants/types';
 import { UseSigninStatus } from '../../../utils/signin-status';
+import { AuthStackName, RootStackName, SettingStackName } from '../../../constants/Constants';
 
 const googleLogin = async (): Promise<boolean> => {
   GoogleSignin.configure({
@@ -101,7 +103,7 @@ const appleLogin = async (): Promise<boolean> => {
 
 //로그인 페이지
 const Login: React.FC<any> = ({ navigation }) => {
-  const { setSigninStatus } = UseSigninStatus();
+  const { SigninStatus, setSigninStatus } = UseSigninStatus();
   const onHandleLogin = async (vendor: TVender) => {
     let isSsoLoginSuccess = false;
     try {
@@ -122,7 +124,8 @@ const Login: React.FC<any> = ({ navigation }) => {
       }
       if (getAccessToken()) {
         //새로운 유저
-        navigation.navigate(AuthStackNavigator);
+        console.log('새로운 유저', SigninStatus);
+        navigation.navigate(AuthStackName.InputName);
         return;
       }
     } catch (error) {

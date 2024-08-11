@@ -10,6 +10,7 @@ import { FormContainer } from './DeactivateReason.style';
 import { reasons } from '../../../../../constants/Constants';
 import { useEffect } from 'react';
 import { TouchableWithoutFeedback } from 'react-native';
+import { deactivate } from '../../../../../apis/setting';
 import {
   Container,
   SignOutTitle,
@@ -50,6 +51,7 @@ const DeactivateReason: React.FC = () => {
       })
       .filter((reason) => reason !== null);
     deactivateInfo = JSON.stringify(selectedReasons);
+    console.log('deactivateInfo', deactivateInfo);
     //console.log('Selected reasons:', selectedReasons);
     //console.log('selected...', JSON.stringify(selectedReasons));
   };
@@ -84,7 +86,10 @@ const DeactivateReason: React.FC = () => {
                   { text: '취소', onPress: () => console.log('탈퇴 취소함') },
                   {
                     text: '탈퇴', // 버튼 제목
-                    onPress: () => console.log('탈퇴 버튼 누름'),
+                    onPress: async () => {
+                      console.log('탈퇴 버튼 누름');
+                      await deactivate(deactivateInfo);
+                    },
                   },
                 ],
                 { cancelable: false }, //alert 밖에 눌렀을 때 alert 안 없어지도록
