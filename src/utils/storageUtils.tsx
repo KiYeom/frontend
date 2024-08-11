@@ -71,6 +71,7 @@ export const clearInfoWhenLogout = (): void => {
   clearTokenInfo();
   deleteNotice();
   deleteChatting();
+  deleteNotificationSent();
 };
 
 //Tokens

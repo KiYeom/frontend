@@ -55,7 +55,6 @@ function setInterceptor(instance: any) {
         return instance(error.config);
       } else {
         console.error(error, ' 네트워크 연결 문제');
-        Alert.alert('네트워크 연결 오류', '인터넷 연결을 확인해주세요.');
       }
       return Promise.reject(error);
     },

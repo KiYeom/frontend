@@ -4,7 +4,7 @@ import { CHATLOG, RootStackName, SettingStackName } from '../../../constants/Con
 import SettingMenus from '../../organisms/SettingMenus';
 import * as Notifications from 'expo-notifications';
 import UserInfomation from '../../molecules/UserInfomation';
-import { deavtivate, getUserInfo, logout } from '../../../apis/setting';
+import { deavtivate, getLatestVersion, getUserInfo, logout } from '../../../apis/setting';
 import {
   clearInfoWhenLogout,
   getDeviceIdFromMMKV,
@@ -28,6 +28,7 @@ import Icon from '../../icons/icons';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import palette from '../../../assets/styles/theme';
 import MenuRow from '../../menu-row/menu-row';
+import { getAppVersion } from '../../../utils/device-info';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -41,6 +42,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
   const [name, setName] = React.useState<string>('');
   const [loading, setLoading] = React.useState<boolean>(false);
   const { SigninStatus, setSigninStatus } = UseSigninStatus();
+  const [isLatest, setIsLatest] = React.useState<boolean>(true);
   const insets = useSafeAreaInsets();
 
   //로그아웃
@@ -76,6 +78,21 @@ const Setting: React.FC<any> = ({ navigation }) => {
   };
 
   useEffect(() => {
+    setLoading(true);
+    getLatestVersion()
+      .then((res) => {
+        if (res) {
+          if (res.latestVersion === getAppVersion()) {
+            setIsLatest(true);
+          } else {
+            setIsLatest(false);
+          }
+          setLoading(false);
+        } else {
+          setIsLatest(true);
+        }
+      })
+      .catch((error) => console.error(error));
     const unsubscribe = navigation.addListener('focus', () => {
       setName(getUserNickname() + '');
     });
@@ -136,7 +153,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
             })
           }
         />
-        <MenuRow text="앱 정보" showVersion={true} />
+        <MenuRow text="앱 정보" showVersion={!loading} isLatest={isLatest} />
       </AppSettingContainer>
       <UserSettingContainer>
         <SubjectTextContainer>

@@ -24,3 +24,7 @@ export type TDisplayUserInfo = {
   birthdate: string | null;
   gender: TGender | null;
 };
+
+export type TLatestVersion = {
+  latestVersion: string;
+};

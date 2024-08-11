@@ -165,7 +165,7 @@ const navTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    background: 'white',
+    background: 'rgb(255, 255, 255)',
   },
 };
 export default App;
