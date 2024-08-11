@@ -23,9 +23,9 @@ const NameInput: React.FC<NameInputProps> = ({ name, setName }) => {
     <FormContainer>
       <Label>닉네임</Label>
       <Input
-        placeholder="이름"
+        placeholder="닉네임"
         status={validateName(text)}
-        message="2~15 글자 사이의 이름을 지어주세요!"
+        message="2~15 글자 사이의 닉네임을 지어주세요!"
         withMessage={true}
         onChange={(text) => {
           if (text.length <= 15) setText(text);
