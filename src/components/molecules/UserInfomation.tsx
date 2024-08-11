@@ -1,42 +1,13 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { IconButton } from 'react-native-paper';
-import { getUserNickname } from '../../utils/storageUtils';
+import { clearInfoWhenLogout, getUserNickname } from '../../utils/storageUtils';
+import { ProfileImage, UserInfoContainer, UserNickname } from './UserInfomation.style';
+import { UseSigninStatus } from '../../utils/signin-status';
+import { rsHeight, rsWidth } from '../../utils/responsive-size';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Icon from '../icons/icons';
+import palette from '../../assets/styles/theme';
 
-const UserInfomation: React.FC<any> = ({ navigation }) => {
-  return (
-    <View style={styles.userName}>
-      <Image source={require('../../assets/icons/profileImage.png')} />
-      <Text style={styles.userInfoText}>{getUserNickname()}</Text>
-      <IconButton
-        icon="chevron-right"
-        iconColor="black"
-        size={20}
-        onPress={() => {
-          //showModal('nickname')
-          navigation.navigate('SettingStackNavigator', { screen: 'EditUserInfo' });
-        }}
-      />
-    </View>
-  );
-};
+const UserInfomation: React.FC<any> = ({ navigation }) => {};
 export default UserInfomation;
-
-const styles = StyleSheet.create({
-  userInfo: {
-    ///backgroundColor : "yellow",
-    width: '100%',
-    padding: 16,
-    borderColor: 'f0f3f8',
-    borderBottomWidth: 0.3,
-  },
-  userName: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
-  userInfoText: {
-    color: 'black',
-    fontSize: 20,
-  },
-});

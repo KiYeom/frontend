@@ -7,63 +7,62 @@ import ChannelTalk from '../components/pages/SettingPage/ChannelTalk'; //채널�
 import LicensePage from '../components/pages/SettingPage/LicensePage'; //오픈소스 라이센스 페이지
 import LicenseDetailPage from '../components/pages/SettingPage/LicenseDetailPage'; //오픈소스 라이센스 상세 페이지
 import Header from '../components/header/header';
-import Deactivate from '../components/pages/SettingPage/deactivate/Deactivate';
 import DeactivateReason from '../components/pages/SettingPage/deactivate/deactivate-reason/DeactivateReason';
 import DeactivateAlert from '../components/pages/SettingPage/deactivate/dedactivate-alert/DeactivateAlert';
+import Setting from '../components/pages/SettingPage/Setting';
+import { SettingStackName } from '../constants/Constants';
 
-const Stack = createNativeStackNavigator();
+const SettingStack = createNativeStackNavigator();
 
 const SettingStackNavigator: React.FC = () => {
   return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="EditUserInfo"
+    <SettingStack.Navigator>
+      <SettingStack.Screen
+        name={SettingStackName.EditUserInfo}
         component={EditUserInfo}
-        options={{ header: () => <Header /> }}
+        options={{ header: () => <Header title="" /> }}
       />
-      <Stack.Screen
-        name="PrivacyPolicy"
+      <SettingStack.Screen
+        name={SettingStackName.PrivacyPolicy}
         component={PrivacyPolicy}
         options={{
           header: () => <Header title="개인정보 처리방침" />,
         }}
       />
-      <Stack.Screen
-        name="UserNotifications"
+      <SettingStack.Screen
+        name={SettingStackName.UserNotifications}
         component={UserNotifications}
         options={{
           header: () => <Header title="알림 설정" />,
         }}
       />
-      <Stack.Screen
-        name="ChannelTalk"
+      <SettingStack.Screen
+        name={SettingStackName.ChannelTalk}
         component={ChannelTalk}
         options={{
           header: () => <Header title="문의하기" />,
         }}
       />
-      <Stack.Screen
-        name="Deactivate"
-        component={Deactivate}
-        options={{ header: () => <Header title="개인정보 처리방침" /> }}
-      />
-      <Stack.Screen
-        name="LicensePage"
+      <SettingStack.Screen
+        name={SettingStackName.LicensePage}
         component={LicensePage}
         options={{ header: () => <Header title="오픈 라이센스" /> }}
       />
-      <Stack.Screen name="LicenseDetailPage" component={LicenseDetailPage} />
-      <Stack.Screen
-        name="DeactivateReason"
-        component={DeactivateReason}
-        options={{ header: () => <Header /> }}
+      <SettingStack.Screen
+        name={SettingStackName.LicenseDetailPage}
+        component={LicenseDetailPage}
       />
-      <Stack.Screen
-        name="DeactivateAlert"
+      <SettingStack.Screen
+        name={SettingStackName.DeactivateAlert}
         component={DeactivateAlert}
         options={{ header: () => <Header /> }}
       />
-    </Stack.Navigator>
+      <SettingStack.Screen
+        name={SettingStackName.DeactivateReason}
+        component={DeactivateReason}
+        options={{ header: () => <Header /> }}
+      />
+    </SettingStack.Navigator>
   );
 };
 export default SettingStackNavigator;

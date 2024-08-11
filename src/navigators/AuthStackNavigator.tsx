@@ -5,33 +5,44 @@ import InputName from '../components/pages/sign-up/input-name/input-name';
 import Header from '../components/header/header';
 import InputProfile from '../components/pages/sign-up/input-profile/input-profile';
 import { UseRightStatus } from '../utils/right-status';
+import { AuthStackName } from '../constants/Constants';
+import Login from '../components/pages/sign-in/sign-in';
 
-const SignUpStackNavigator: React.FC<any> = ({ navigation }) => {
+const AuthStack = createNativeStackNavigator();
+
+const AuthStackNavigator: React.FC<any> = ({ navigation }) => {
   const { RightStatus, setRightStatus } = UseRightStatus();
   const clickRight = () => {
     console.log('clickRight', RightStatus);
     setRightStatus(!RightStatus);
   };
-  const Stack = createNativeStackNavigator();
+  console.log('auth stack navigator');
+  console.log('Login route name:', AuthStackName.Login);
+
   return (
-    <Stack.Navigator screenOptions={{ headerShown: true, gestureEnabled: true }}>
-      <Stack.Screen
-        name="input-name"
+    <AuthStack.Navigator>
+      <AuthStack.Screen
+        name={AuthStackName.Login}
+        component={Login}
+        options={{
+          header: () => <></>,
+        }}
+      />
+      <AuthStack.Screen
+        name={AuthStackName.InputName}
         component={InputName}
         options={{
-          title: '',
           header: () => <Header />,
         }}
       />
-      <Stack.Screen
-        name="input-profile"
+      <AuthStack.Screen
+        name={AuthStackName.InputProfile}
         component={InputProfile}
         options={{
-          title: '',
           header: () => <Header isRight={true} rightText="Skip" rightFunction={clickRight} />,
         }}
       />
-    </Stack.Navigator>
+    </AuthStack.Navigator>
   );
 };
-export default SignUpStackNavigator;
+export default AuthStackNavigator;

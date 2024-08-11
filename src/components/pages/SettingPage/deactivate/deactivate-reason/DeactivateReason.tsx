@@ -10,13 +10,13 @@ import { FormContainer } from './DeactivateReason.style';
 import { reasons } from '../../../../../constants/Constants';
 import { useEffect } from 'react';
 import { TouchableWithoutFeedback } from 'react-native';
+import { deactivate } from '../../../../../apis/setting';
 import {
   Container,
   SignOutTitle,
   SignOutTitleContainer,
 } from '../dedactivate-alert/DeactivateAlert.style';
-const DeactivateReason: React.FC = ({ route }) => {
-  const { deactivateRequest } = route.params;
+const DeactivateReason: React.FC = () => {
   const [btnDisable, setBtnDisable] = useState<boolean>(true);
   const [isChecked, setIsChecked] = useState<boolean[]>(Array(reasons.length).fill(false));
   const [text, setText] = useState<string>('');
@@ -51,6 +51,7 @@ const DeactivateReason: React.FC = ({ route }) => {
       })
       .filter((reason) => reason !== null);
     deactivateInfo = JSON.stringify(selectedReasons);
+    console.log('deactivateInfo', deactivateInfo);
     //console.log('Selected reasons:', selectedReasons);
     //console.log('selected...', JSON.stringify(selectedReasons));
   };
@@ -78,7 +79,6 @@ const DeactivateReason: React.FC = ({ route }) => {
             primary={true}
             onPress={() => {
               saveReason();
-              console.log('탈퇴 버튼 누름');
               Alert.alert(
                 '정말 탈퇴하시겠어요?', // 첫번째 text: 타이틀 큰 제목
                 '탈퇴 버튼 선택 시, 계정은 삭제되며 복구되지 않습니다', // 두번째 text: 작은 제목
@@ -86,7 +86,10 @@ const DeactivateReason: React.FC = ({ route }) => {
                   { text: '취소', onPress: () => console.log('탈퇴 취소함') },
                   {
                     text: '탈퇴', // 버튼 제목
-                    onPress: () => deactivateRequest(deactivateInfo),
+                    onPress: async () => {
+                      console.log('탈퇴 버튼 누름');
+                      await deactivate(deactivateInfo);
+                    },
                   },
                 ],
                 { cancelable: false }, //alert 밖에 눌렀을 때 alert 안 없어지도록

@@ -30,15 +30,14 @@ export const logout = async (deviceId: string): Promise<TCommonResult | undefine
   }
 };
 
-export const deavtivate = async (reasons: string[]): Promise<TCommonResult | undefined> => {
+export const deactivate = async (reasons: string): Promise<TCommonResult | undefined> => {
   try {
-    const reasonString = JSON.stringify(reasons);
     const res = await instance.delete('/v1/auth/deactivate', {
-      params: { reasons: reasonString },
+      params: { reasons: reasons },
     });
     return res.data;
   } catch (error) {
-    console.error('[ERROR] deavtivate: ', error);
+    console.error('[ERROR] deactivate: ', error);
     return;
   }
 };

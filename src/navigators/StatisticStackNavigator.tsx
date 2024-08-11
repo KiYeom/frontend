@@ -1,18 +1,18 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import StatisticMain from '../components/pages/StatisticPage/StatisticMain';
-import Header from '../components/header/header';
 
-const StatisticStackNavigator: React.FC = () => {
-  const Stack = createNativeStackNavigator();
+const StatisticStack = createNativeStackNavigator();
+
+const StatisticStackNavigator: React.FC = ({}) => {
   return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Statistic"
+    <StatisticStack.Navigator>
+      <StatisticStack.Screen
+        name={''}
         component={StatisticMain}
-        options={{ header: () => <Header title="통계" /> }}
+        options={{ header: () => <></> }}
       />
-    </Stack.Navigator>
+    </StatisticStack.Navigator>
   );
 };
 export default StatisticStackNavigator;

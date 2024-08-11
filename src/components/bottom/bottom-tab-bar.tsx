@@ -1,20 +1,25 @@
-import { Text, TouchableOpacity } from 'react-native';
-import { BottomCotainer } from './bottom.style';
+import { BottomTabBarCotainer, TabButtonContainer, TabLabel } from './bottom-tab-bar.style';
 import palette from '../../assets/styles/theme';
-import HomeIcon from '../../assets/icons/Home.svg';
-import SettingIcon from '../../assets/icons/Setting.svg';
-import StatisticIcon from '../../assets/icons/test.svg';
-import { rsFont, rsHeight, rsWidth } from '../../utils/responsive-size';
+import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { css } from '@emotion/native';
+import Icon from '../icons/icons';
+import { TabBarLabel } from '../../constants/Constants';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const MyTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
+const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
+  const insets = useSafeAreaInsets();
   return (
-    <BottomCotainer>
+    <BottomTabBarCotainer insets={insets}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
-        const label: string = options.tabBarLabel as string;
+
         //탭의 라벨 설정 (tabBarLabel, title, route 이름 순으로 라벨 설정)
+        const label =
+          options.tabBarLabel !== undefined
+            ? options.tabBarLabel
+            : options.title !== undefined
+              ? options.title
+              : route.name;
         const isFocused = state.index === index;
         //현재의 탭이 포커스 되어있는지
 
@@ -35,61 +40,42 @@ const MyTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation 
         };
 
         return (
-          <>
-            <TouchableOpacity
-              //accessibilityRole="button"
-              accessibilityState={isFocused ? { selected: true } : {}}
-              accessibilityLabel={options.tabBarAccessibilityLabel}
-              onPress={onPress}
-              style={css`
-                //border: 5px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: space-between;
-                height: ${rsHeight * 50 + 'px'};
-                //background-color: gray;
-              `}>
-              {label === '통계' && (
-                <StatisticIcon
-                  style={css`
-                    color: ${isFocused ? palette.primary[500] : palette.neutral[300]};
-                  `}
-                />
-              )}
-              {label === '홈' && (
-                <HomeIcon
-                  style={css`
-                    color: ${isFocused ? palette.primary[500] : palette.neutral[300]};
-                  `}
-                />
-              )}
-              {label === '설정' && (
-                <SettingIcon
-                  style={css`
-                    color: ${isFocused ? palette.primary[500] : palette.neutral[300]};
-                  `}
-                />
-              )}
-
-              <Text
-                style={css`
-                  color: ${isFocused ? palette.primary[500] : palette.neutral[300]};
-                  font-size: ${13 * rsFont + 'px'};
-                  font-family: Pretendard-Medium;
-                  margin-top: ${4 * rsHeight + 'px'};
-                  //border: 5px;
-                `}>
-                {label}
-              </Text>
-            </TouchableOpacity>
-          </>
+          <TabButtonContainer
+            accessibilityState={isFocused ? { selected: true } : {}}
+            accessibilityLabel={options.tabBarAccessibilityLabel}
+            onPress={onPress}>
+            {label === TabBarLabel.Statistic && (
+              <Icon
+                name={'statistic-icon'}
+                width={rsWidth * 32}
+                height={rsHeight * 30}
+                color={isFocused ? palette.primary[500] : palette.neutral[300]}
+              />
+            )}
+            {label === TabBarLabel.Home && (
+              <Icon
+                name={'home-icon'}
+                width={rsWidth * 34}
+                height={rsHeight * 30}
+                color={isFocused ? palette.primary[500] : palette.neutral[300]}
+              />
+            )}
+            {label === TabBarLabel.Setting && (
+              <Icon
+                name={'setting-icon'}
+                width={rsWidth * 30}
+                height={rsHeight * 32}
+                color={isFocused ? palette.primary[500] : palette.neutral[300]}
+              />
+            )}
+            <TabLabel isFocused={isFocused}>{label.toString()}</TabLabel>;
+          </TabButtonContainer>
         );
       })}
-    </BottomCotainer>
+    </BottomTabBarCotainer>
   );
 };
-export default MyTabBar;
+export default BottomTabBar;
 
 /*
 function MyTabBar({ state, descriptors, navigation }) {

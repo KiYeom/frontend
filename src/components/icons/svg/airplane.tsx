@@ -1,5 +1,4 @@
-import { Svg, SvgXml } from 'react-native-svg';
-import palette from '../../../assets/styles/theme';
+import { SvgXml } from 'react-native-svg';
 
 export const Airplane = ({ width = 16, height = 16, color = '#6E7781' }: IconProps) => {
   const svg = `

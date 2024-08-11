@@ -14,7 +14,7 @@ export const SwitchRowTextContainner = styled.View`
   flex: 1;
   justify-content: start;
   align-items: left;
-  gap: ${rsWidth * 6 + 'px'};
+  gap: ${rsHeight * 6 + 'px'};
 `;
 
 export const SwitchRowTitle = styled.Text`

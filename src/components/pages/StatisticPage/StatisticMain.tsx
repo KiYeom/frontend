@@ -21,7 +21,6 @@ const StatisticMain: React.FC<any> = () => {
           style={css`
             flex: 1;
             background-color: white;
-            //gap: ${rsHeight * 16 + 'px'};
             padding-top: ${20 * rsHeight + 'px'};
             padding-bottom: ${40 * rsHeight + 'px'};
           `}>
@@ -34,7 +33,9 @@ const StatisticMain: React.FC<any> = () => {
               String(date.getDate()).padStart(2, '0') +
               '일'
             }
-            onPress={() => setOpenModal(true)}
+            onPress={() => {
+              console.log(setOpenModal(true));
+            }}
           />
           <DailyEmotionClassification
             value={
@@ -52,7 +53,7 @@ const StatisticMain: React.FC<any> = () => {
         onClose={() => {
           setOpenModal(false);
         }}
-        onChange={setDate}
+        onChange={() => {}}
       />
     </>
   );
