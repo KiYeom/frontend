@@ -11,7 +11,6 @@ import { reasons } from '../../../../../constants/Constants';
 import { useEffect } from 'react';
 import { TouchableWithoutFeedback } from 'react-native';
 import { deactivate } from '../../../../../apis/setting';
-import { UseSigninStatus } from '../../../../../utils/signin-status';
 import {
   Container,
   SignOutTitle,
@@ -42,7 +41,6 @@ const DeactivateReason: React.FC = () => {
       });
     setBtnDisable(false);
   };
-
 
   // useEffect를 사용하여 isChecked 변화에 따라 버튼의 비활성화 상태 변경
   // 모두 체크가 안 되어있으면 btnDisable = true.
@@ -108,7 +106,6 @@ const DeactivateReason: React.FC = () => {
                     text: '탈퇴', // 버튼 제목
 
                     onPress: () => deactiveUser(),
-
                   },
                 ],
                 { cancelable: false }, //alert 밖에 눌렀을 때 alert 안 없어지도록

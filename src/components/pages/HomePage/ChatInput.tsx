@@ -42,7 +42,7 @@ const ChatInput = ({ data, setData }: any) => {
   };
 
   return (
-    <View style={{ paddingBottom: Platform.OS === 'ios' ? 20 : 0 }}>
+    <View>
       <TextInputContainer>
         <Input
           placeholder="메세지 입력"
