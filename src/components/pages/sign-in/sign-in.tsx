@@ -18,6 +18,7 @@ import { ssoLogin } from '../../../apis/auth';
 import { getAccessToken, setInfoWhenLogin, setTokenInfo } from '../../../utils/storageUtils';
 import { TVender } from '../../../constants/types';
 import { UseSigninStatus } from '../../../utils/signin-status';
+import { AuthStackName } from '../../../constants/Constants';
 
 const googleLogin = async (): Promise<boolean> => {
   GoogleSignin.configure({
@@ -122,7 +123,7 @@ const Login: React.FC<any> = ({ navigation }) => {
       }
       if (getAccessToken()) {
         //새로운 유저
-        navigation.navigate(AuthStackNavigator);
+        navigation.navigate(AuthStackName.InputName);
         return;
       }
     } catch (error) {

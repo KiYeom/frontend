@@ -17,12 +17,13 @@ import { getAppVersion } from '../../utils/device-info';
 export type MenuRowProps = {
   text: string;
   showVersion?: boolean;
+  isLatest?: boolean;
   onPress?: () => void;
+  latestVersion?: string;
 };
 
 const MenuRow = (props: MenuRowProps) => {
-  const { text, showVersion = false, onPress = () => {} } = props;
-  const isNew = false;
+  const { text, showVersion = false, isLatest = true, onPress = () => {} } = props;
 
   return (
     <MenuRowContainer onPress={onPress} activeOpacity={1}>
@@ -31,9 +32,7 @@ const MenuRow = (props: MenuRowProps) => {
         {showVersion && (
           <>
             <VersionText>{'v' + getAppVersion()}</VersionText>
-            <VersionStatus isNew={isNew}>
-              {isNew ? '최신' : '업데이트 필요 | 백엔드 일하자'}
-            </VersionStatus>
+            <VersionStatus isLatest={isLatest}>{isLatest ? '최신' : '업데이트 필요'}</VersionStatus>
           </>
         )}
       </MenuRowTextContainer>

@@ -20,14 +20,16 @@ export const HeaderContainer = styled.View<{ isTitle: boolean; insets: EdgeInset
 
   border-color: ${palette.neutral[100]};
   border-bottom-width: ${(props) => (props.isTitle ? `${rsHeight * 1 + 'px'} ` : `none`)};
+  background-color: #fff;
 `;
 
 export const HeaderLeft = styled.TouchableOpacity<{ isTitle: boolean }>`
   position: absolute;
   left: 0px;
-  margin-left: ${(props) =>
+  padding-left: ${(props) =>
     props.isTitle === undefined ? rsWidth * 24 + 'px' : rsWidth * 20 + 'px'};
-
+  padding-right: ${rsWidth * 16 + 'px'};
+  height: 75%;
   align-items: center;
   justify-content: left;
   flex-direction: row;

@@ -12,6 +12,7 @@ import Input from '../../../input/input';
 import { NavigationProp } from '@react-navigation/native';
 import { css } from '@emotion/native';
 import { setUserNickname } from '../../../../utils/storageUtils';
+import { AuthStackName } from '../../../../constants/Constants';
 
 const validateName = (name: string): 'error' | 'default' | 'correct' => {
   if (name.length !== 0 && (name.length < 2 || name.length > 15)) return 'error';
@@ -24,7 +25,7 @@ const InputName = ({ navigation }: { navigation: NavigationProp<any> }) => {
 
   const saveNickName = async (nickname: string) => {
     setUserNickname(nickname);
-    navigation.navigate('input-profile');
+    navigation.navigate(AuthStackName.InputProfile);
   };
 
   return (

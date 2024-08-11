@@ -1,7 +1,7 @@
 import { instance } from './interceptor';
 import { TCommonResult } from './common.types';
 import { TAllowedNotifications, TSetNotification } from './notification.types';
-import { TDisplayUserInfo, TUserInfo } from './setting.types';
+import { TDisplayUserInfo, TLatestVersion, TUserInfo } from './setting.types';
 
 export const updateUserInfo = async (
   profile: TDisplayUserInfo,
@@ -30,16 +30,15 @@ export const logout = async (deviceId: string): Promise<TCommonResult | undefine
   }
 };
 
-export const deavtivate = async (reasons: string[]): Promise<TCommonResult | undefined> => {
+export const deavtivate = async (reasons: string): Promise<TCommonResult> => {
   try {
-    const reasonString = JSON.stringify(reasons);
     const res = await instance.delete('/v1/auth/deactivate', {
-      params: { reasons: reasonString },
+      params: { reasons },
     });
     return res.data;
   } catch (error) {
     console.error('[ERROR] deavtivate: ', error);
-    return;
+    return { result: false };
   }
 };
 
@@ -89,6 +88,17 @@ export const setNotificationStatus = async (
     return res.data;
   } catch (error) {
     console.error('[ERROR] get allowed Token', error);
+    return;
+  }
+};
+
+//INFO: 최신 버전 받기
+export const getLatestVersion = async (): Promise<TLatestVersion | undefined> => {
+  try {
+    const res = await instance.get('/v1/users/check-version');
+    return res.data;
+  } catch (error) {
+    console.error('[ERROR] getlatest version', error);
     return;
   }
 };

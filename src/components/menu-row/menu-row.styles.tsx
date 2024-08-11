@@ -31,11 +31,11 @@ export const VersionText = styled.Text`
   margin-left: ${rsWidth * 8 + 'px'};
 `;
 
-export const VersionStatus = styled.Text<{ isNew: boolean }>`
+export const VersionStatus = styled.Text<{ isLatest: boolean }>`
   font-size: ${rsFont * 16 + 'px'};
   font-family: Pretendard-Medium;
   line-height: ${rsHeight * 22 + 'px'};
   margin-left: ${rsWidth * 4 + 'px'};
 
-  color: ${({ isNew }) => (isNew ? palette.primary[500] : palette.function.error)};
+  color: ${({ isLatest }) => (isLatest ? palette.primary[500] : palette.function.error)};
 `;
