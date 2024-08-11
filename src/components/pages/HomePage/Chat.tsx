@@ -19,10 +19,11 @@ import { getChatting } from '../../../utils/storageUtils';
 import { StatusBar } from 'expo-status-bar';
 import { useHeaderHeight } from '@react-navigation/elements';
 import palette from '../../../assets/styles/theme';
+import { DateLineText } from './Chat.style';
 
 const Chat: React.FC = () => {
   const flatListRef = useRef<FlatList<any>>(null);
-  const [data, setData] = useState<Message[]>(JSON.parse(getChatting()));
+  const [data, setData] = useState<Message[]>(getChatting() ? JSON.parse(getChatting()) : []);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const headerHeight = useHeaderHeight();
 
@@ -50,20 +51,13 @@ const Chat: React.FC = () => {
     const currentDate = item.date;
     const nextDate = index + 1 < data.length ? data[index + 1].date : undefined;
     let showDateLine = currentDate !== nextDate || nextDate === undefined;
+    console.log('currentDate', currentDate);
 
     return (
       <View>
         {showDateLine && (
           <DateLine>
-            <Text
-              style={css`
-                text-align: center;
-                color: ${palette.neutral[400]};
-                font-size: ${12 * rsFont + 'px'};
-                font-family: Pretendard-Reqular;
-              `}>
-              {item.date}
-            </Text>
+            <DateLineText>{item.date}</DateLineText>
           </DateLine>
         )}
         <ChatBubble status={item.sender} text={item.text} time={item.time} />
@@ -92,6 +86,7 @@ const Chat: React.FC = () => {
               gap: 20 * rsHeight,
             }}
             keyboardShouldPersistTaps="handled"
+            extraData={data}
           />
           <ChatInput data={data} setData={setData} />
         </View>

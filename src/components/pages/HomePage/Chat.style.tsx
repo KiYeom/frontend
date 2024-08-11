@@ -20,3 +20,10 @@ export const DateLine = styled.View`
   justify-content: center;
   align-items: center;
 `;
+
+export const DateLineText = styled.Text`
+  text-align: center;
+  font-size: ${12 * rsFont + 'px'};
+  font-family: Pretendard-Regular;
+  color: ${palette.neutral[400]};
+`;
