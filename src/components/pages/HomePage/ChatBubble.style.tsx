@@ -29,7 +29,8 @@ export const Bubble = styled.View<{ status: 'bot' | 'user' }>`
 export const BubbleText = styled.Text<{
   status: 'bot' | 'user' | 'time' | 'date';
 }>`
-  font-size : ${(props) => (props.status === 'time' ? rsFont * 10 + 'px' : rsFont * 12 + 'px')}
+  font-size: ${(props) =>
+    props.status === 'time' ? `${rsFont * 10 + 'px'}` : `${rsFont * 12 + 'px'}`};
   font-family: Pretendard-Regular;
   color: ${(props) =>
     props.status === 'bot'
@@ -37,14 +38,7 @@ export const BubbleText = styled.Text<{
       : props.status === 'user'
         ? '#fff'
         : palette.neutral[400]};
-  text-align: ${(props) => (props.status === 'date' ? 'center' : 'left')}
-`;
-
-//채팅 말풍선 옆에 시간
-export const TimeText = styled.Text`
-  font-size: ${rsFont * 10 + 'px'};
-  font-family: Pretendard-Regular;
-  color: ${palette.neutral[400]};
+  text-align: ${(props) => (props.status === 'date' ? 'center' : 'left')};
 `;
 
 //채팅 말풍선과 시간을 저장하는 말풍선 컨테이너
@@ -58,6 +52,5 @@ export const ChatBubbleContainer = styled.View<{ status: 'bot' | 'user' }>`
 
 //챗봇 프사 컨테이너
 export const ProfileImageContainer = styled.View`
-  flex : 1,
-  width : ${rsWidth * 35 + 'px'};
+  width: ${rsWidth * 35 + 'px'};
 `;

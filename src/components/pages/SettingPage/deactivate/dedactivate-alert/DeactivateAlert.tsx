@@ -9,7 +9,7 @@ import {
   SignOutTitleContainer,
 } from './DeactivateAlert.style';
 import Button from '../../../../button/button';
-import HeartMessage from '../../../../../assets/images/heartMessage.svg';
+import HeartMessage from '../../../../../assets/images/heartmessage.svg';
 
 const DeactivateAlert: React.FC = ({ route, navigation }) => {
   const { deactivateRequest } = route.params;

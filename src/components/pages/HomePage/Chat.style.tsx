@@ -18,4 +18,5 @@ export const DateLine = styled.View`
   padding-bottom: ${rsHeight * 8 + 'px'};
   margin-bottom: ${rsHeight * 20 + 'px'};
   justify-content: center;
+  align-items: center;
 `;
