@@ -10,6 +10,7 @@ import {
 } from './DeactivateAlert.style';
 import Button from '../../../../button/button';
 import HeartMessage from '../../../../../assets/images/heartmessage.svg';
+
 import { SettingStackName } from '../../../../../constants/Constants';
 
 const DeactivateAlert: React.FC = ({ navigation }) => {

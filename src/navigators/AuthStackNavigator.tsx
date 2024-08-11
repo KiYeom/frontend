@@ -16,8 +16,6 @@ const AuthStackNavigator: React.FC<any> = ({ navigation }) => {
     console.log('clickRight', RightStatus);
     setRightStatus(!RightStatus);
   };
-  console.log('auth stack navigator');
-  console.log('Login route name:', AuthStackName.Login);
 
   return (
     <AuthStack.Navigator>
