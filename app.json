@@ -4,7 +4,7 @@
     "slug": "reMIND",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/images/cookiesplash.png",
+    "icon": "./src/assets/images/appicon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./src/assets/images/splash.png",
@@ -18,7 +18,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/images/cookiesplash.png",
+        "foregroundImage": "./src/assets/images/appicon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.ceunnseo.reMIND",
