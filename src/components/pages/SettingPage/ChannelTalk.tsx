@@ -22,9 +22,11 @@ const ChannelTalk: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#F7F7F7',
   },
   webview: {
     flex: 1,
+    backgroundColor: '#F7F7F7',
   },
 });
 

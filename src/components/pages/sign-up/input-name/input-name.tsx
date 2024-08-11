@@ -12,7 +12,6 @@ import Input from '../../../input/input';
 import { NavigationProp } from '@react-navigation/native';
 import { css } from '@emotion/native';
 import { setUserNickname } from '../../../../utils/storageUtils';
-import AuthStackNavigator from '../../../../navigators/AuthStackNavigator';
 import { AuthStackName } from '../../../../constants/Constants';
 
 const validateName = (name: string): 'error' | 'default' | 'correct' => {
