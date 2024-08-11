@@ -26,7 +26,7 @@ export const UserInfoContainer = styled.TouchableOpacity<{ insets: EdgeInsets }>
 export const ProfileImage = styled.Image`
   width: ${rsWidth * 60 + 'px'};
   height: ${rsHeight * 60 + 'px'};
-  resize-mode: contain;
+  object-fit: contain;
 `;
 
 export const UserNickname = styled.Text`
