@@ -36,13 +36,13 @@ const InputName = ({ navigation }: { navigation: NavigationProp<any> }) => {
         `}>
         <TitleContaienr>
           <Annotation>만나서 반가워요!</Annotation>
-          <Title>쿠키에게 당신의{'\n'}이름을 알려주세요.</Title>
+          <Title>쿠키에게 당신의{'\n'}닉네임을 알려주세요.</Title>
         </TitleContaienr>
         <ContentContainer>
           <Input
             placeholder="내용을 입력해주세요."
             status={validateName(name)}
-            message="2~15 글자 사이의 이름을 지어주세요!"
+            message="2~15 글자 사이의 닉네임을 지어주세요!"
             withMessage={true}
             onChange={(text) => {
               if (text.length < 15) setName(text);
