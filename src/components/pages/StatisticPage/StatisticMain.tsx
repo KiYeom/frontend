@@ -53,7 +53,7 @@ const StatisticMain: React.FC<any> = () => {
         onClose={() => {
           setOpenModal(false);
         }}
-        onChange={() => {}}
+        onChange={setDate}
       />
     </>
   );

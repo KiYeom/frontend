@@ -11,6 +11,7 @@ import { reasons } from '../../../../../constants/Constants';
 import { useEffect } from 'react';
 import { TouchableWithoutFeedback } from 'react-native';
 import { deactivate } from '../../../../../apis/setting';
+import { UseSigninStatus } from '../../../../../utils/signin-status';
 import {
   Container,
   SignOutTitle,
@@ -20,6 +21,7 @@ const DeactivateReason: React.FC = () => {
   const [btnDisable, setBtnDisable] = useState<boolean>(true);
   const [isChecked, setIsChecked] = useState<boolean[]>(Array(reasons.length).fill(false));
   const [text, setText] = useState<string>('');
+  const { SigninStatus, setSigninStatus } = UseSigninStatus();
   let deactivateInfo = '';
 
   // useEffect를 사용하여 isChecked 변화에 따라 버튼의 비활성화 상태 변경
@@ -88,7 +90,10 @@ const DeactivateReason: React.FC = () => {
                     text: '탈퇴', // 버튼 제목
                     onPress: async () => {
                       console.log('탈퇴 버튼 누름');
-                      await deactivate(deactivateInfo);
+                      const res = await deactivate(deactivateInfo);
+                      if (res) {
+                        setSigninStatus(false);
+                      }
                     },
                   },
                 ],

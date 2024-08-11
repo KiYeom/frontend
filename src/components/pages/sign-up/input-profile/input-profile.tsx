@@ -108,7 +108,10 @@ const InputProfile: React.FC<any> = ({ navigation }) => {
             showRightIcon={true}
             status="disabled"
             rightIcon="arrow-down"
-            onPressContainer={() => setOpenModal(true)}
+            onPressContainer={() => {
+              console.log('모달 열리기');
+              setOpenModal(true);
+            }}
             value={
               birthDate
                 ? birthDate?.getFullYear() +
