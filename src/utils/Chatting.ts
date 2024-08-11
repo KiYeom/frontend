@@ -89,4 +89,5 @@ export const loadChatLogs = ({ data, setData }: any) => {
     console.log('loadChatLogs error', error);
     return;
   }
+  console.log('실행 결과 ', data);
 };

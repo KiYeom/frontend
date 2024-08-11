@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Platform } from 'react-native';
+import { useEffect } from 'react';
 import {
   LoginBtnLabel,
   LoginBtn,
@@ -102,7 +103,7 @@ const appleLogin = async (): Promise<boolean> => {
 
 //로그인 페이지
 const Login: React.FC<any> = ({ navigation }) => {
-  const { setSigninStatus } = UseSigninStatus();
+  const { SigninStatus, setSigninStatus } = UseSigninStatus();
   const onHandleLogin = async (vendor: TVender) => {
     let isSsoLoginSuccess = false;
     try {

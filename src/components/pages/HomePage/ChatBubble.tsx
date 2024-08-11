@@ -5,13 +5,11 @@ import {
   Container,
   ChatBubbleContainer,
 } from './ChatBubble.style';
-import { useAssets } from 'expo-asset';
-import { useState } from 'react';
 import { Image } from 'expo-image';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { TypingAnimation } from 'react-native-typing-animation';
 import palette from '../../../assets/styles/theme';
-import { chatting } from '../../../apis/chatting';
+
 type ChatBubbleProps = {
   status: 'user' | 'bot';
   text: string;

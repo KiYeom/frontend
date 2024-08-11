@@ -16,7 +16,7 @@ export const InputField = styled.TextInput<{
   height: ${rsHeight * 52 + 'px'};
   padding: 0 ${rsHeight * 18 + 'px'};
   padding-right: ${(props) =>
-    props.status !== 'disabled' ? rsWidth * 40 + 'px' : rsHeight * 18 + 'px'};
+    props.status !== 'disabled' ? rsWidth * 48 + 'px' : rsHeight * 18 + 'px'};
 
   background-color: ${palette.neutral[50]};
   font-size: ${rsFont * 16 + 'px'};

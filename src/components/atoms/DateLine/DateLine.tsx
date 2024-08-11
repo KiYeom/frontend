@@ -21,7 +21,7 @@ const DateLine = (props: DateProps) => {
         margin-bottom: ${rsHeight * 16 + 'px'};
       `}>
       <TouchableDateLine onPress={onPress}>
-        <Icon name="dateIcon" width={rsWidth * 14} height={rsHeight * 16} color="black" />
+        <Icon name="date-icon" width={rsWidth * 14} height={rsHeight * 16} color="black" />
         <DateLineText>{value}</DateLineText>
       </TouchableDateLine>
     </View>
