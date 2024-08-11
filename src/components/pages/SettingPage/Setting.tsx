@@ -111,7 +111,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
             screen: SettingStackName.EditUserInfo,
           })
         }>
-        <ProfileImage source={require('../../../assets/icons/profileImage.png')} />
+        <ProfileImage source={require('../../../assets/images/setting_default_profile.png')} />
         <UserNickname>{getUserNickname()}</UserNickname>
         <Icon
           name="arrow-right"
