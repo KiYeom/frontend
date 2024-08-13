@@ -22,8 +22,10 @@ const validateName = (name: string): 'error' | 'default' | 'correct' => {
 
 const InputName = ({ navigation }: { navigation: NavigationProp<any> }) => {
   const [name, setName] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
 
   const saveNickName = async (nickname: string) => {
+    setLoading(true);
     setUserNickname(nickname);
     navigation.navigate(AuthStackName.InputProfile);
   };
@@ -53,7 +55,7 @@ const InputName = ({ navigation }: { navigation: NavigationProp<any> }) => {
         <CTAContainer>
           <Button
             title="저장"
-            disabled={!(validateName(name) === 'correct')}
+            disabled={!(validateName(name) === 'correct') || loading}
             primary={true}
             onPress={() => saveNickName(name)}
           />
