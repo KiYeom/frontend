@@ -21,7 +21,8 @@ const BottomTabNavigator: React.FC<any> = () => {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: palette.primary[500], //tab bar focuse 색상
-      }}>
+      }}
+      detachInactiveScreens={false}>
       <Tab.Screen
         name={TabScreenName.Statistic}
         component={StatisticMain}

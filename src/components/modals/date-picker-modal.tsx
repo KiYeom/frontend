@@ -16,7 +16,7 @@ const DatePickerModal = ({
 }) => {
   const [date, setDate] = useState<Date>(new Date());
   return (
-    <Modal visible={modalVisible} transparent>
+    <Modal visible={modalVisible} animationType="fade" transparent>
       <TouchableWithoutFeedback onPress={onClose}>
         <ModalContainer>
           <TouchableWithoutFeedback>
