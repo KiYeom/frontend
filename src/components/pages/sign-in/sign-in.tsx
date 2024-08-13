@@ -83,7 +83,7 @@ const appleLogin = async (): Promise<boolean> => {
 
   if (res.isNewUser) {
     setTokenInfo(res.accessToken, res.refreshToken);
-    return true;
+    return false;
   }
 
   if (!res.isNewUser) {
@@ -104,7 +104,9 @@ const appleLogin = async (): Promise<boolean> => {
 //로그인 페이지
 const Login: React.FC<any> = ({ navigation }) => {
   const { SigninStatus, setSigninStatus } = UseSigninStatus();
+  const [loading, setLoading] = React.useState<boolean>(false);
   const onHandleLogin = async (vendor: TVender) => {
+    setLoading(true);
     let isSsoLoginSuccess = false;
     try {
       switch (vendor) {
@@ -127,8 +129,11 @@ const Login: React.FC<any> = ({ navigation }) => {
         navigation.navigate(AuthStackName.InputName);
         return;
       }
+      setLoading(false);
     } catch (error) {
       console.error(`[ERROR] onHandleLogin: ${error}`);
+      setLoading(false);
+      return;
     }
   };
 
@@ -140,16 +145,24 @@ const Login: React.FC<any> = ({ navigation }) => {
         <CookieImage source={require('../../../assets/images/cookielogin.png')} />
       </ImageContainer>
       <ButtonContainer style={css``}>
-        <LoginBtn vendor="kakao" activeOpacity={1} onPress={() => {}}>
+        {/* <LoginBtn vendor="kakao" activeOpacity={1} onPress={() => {}}>
           <LoginBtnIcon source={require('../../../assets/images/kakao.png')} />
           <LoginBtnLabel vendor="kakao">카카오 로그인</LoginBtnLabel>
-        </LoginBtn>
-        <LoginBtn vendor="google" activeOpacity={1} onPress={() => onHandleLogin('google')}>
+        </LoginBtn> */}
+        <LoginBtn
+          vendor="google"
+          activeOpacity={1}
+          onPress={() => onHandleLogin('google')}
+          disabled={loading}>
           <LoginBtnIcon source={require('../../../assets/images/google.png')} />
           <LoginBtnLabel vendor="google">구글로 로그인</LoginBtnLabel>
         </LoginBtn>
         {Platform.OS === 'ios' && (
-          <LoginBtn vendor="apple" activeOpacity={1} onPress={() => onHandleLogin('apple')}>
+          <LoginBtn
+            vendor="apple"
+            activeOpacity={1}
+            onPress={() => onHandleLogin('apple')}
+            disabled={loading}>
             <LoginBtnIcon source={require('../../../assets/images/apple.png')} />
             <LoginBtnLabel vendor="apple">애플로 로그인</LoginBtnLabel>
           </LoginBtn>
