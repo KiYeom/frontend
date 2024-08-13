@@ -26,14 +26,10 @@ import { Keyboard } from 'react-native';
 //date가 존재할 경우 Date 형태로 바꾸는 함수
 const formatBirthDate = (dateString: string | undefined): Date | undefined => {
   if (!dateString) {
-    console.log('dateString?', dateString);
     return undefined;
   }
-  console.log('dateString', dateString);
   const [year, month, day] = dateString.split('-').map(Number);
-  console.log('year, month, day', year, month, day);
   const dateObject = new Date(year, month - 1, day);
-  console.log('dateObject', dateObject);
   return dateObject;
 };
 
