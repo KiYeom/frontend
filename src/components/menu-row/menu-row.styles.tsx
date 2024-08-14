@@ -39,3 +39,11 @@ export const VersionStatus = styled.Text<{ isLatest: boolean }>`
 
   color: ${({ isLatest }) => (isLatest ? palette.primary[500] : palette.function.error)};
 `;
+
+export const LargeTouchArea = styled.TouchableOpacity`
+  width: auto;
+  height: auto;
+  padding-horizontal: ${rsWidth * 9 + 'px'};
+  padding-vertical: ${rsHeight * 9 + 'px'};
+  background-color: ${palette.neutral[900]};
+`;
