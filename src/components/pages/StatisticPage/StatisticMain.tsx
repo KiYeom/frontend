@@ -6,9 +6,9 @@ import DatePickerModal from '../../modals/date-picker-modal';
 import { useEffect, useState } from 'react';
 import { ScrollView } from 'react-native';
 import { css } from '@emotion/native';
-import DailyEmotionClassification from './DailyEmotionClassification';
+import DailyEmotionClassification from './Daily_EmotionClassification/DailyEmotionClassification';
 import DateLine from '../../atoms/DateLine/DateLine';
-import KeywordArea from './KeywordArea';
+import KeywordArea from './Daily_Keyword/KeywordArea';
 import palette from '../../../assets/styles/theme';
 //전체 통계 화면
 const StatisticMain: React.FC<any> = () => {

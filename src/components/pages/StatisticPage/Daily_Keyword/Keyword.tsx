@@ -1,9 +1,9 @@
 import React from 'react';
 import { Text } from 'react-native';
 import { KeywordContainer, KeywordText, KeywordIcon } from './Keyword.style';
-import Icon from '../../icons/icons';
-import { rsWidth, rsHeight, rsFont } from '../../../utils/responsive-size';
-import palette from '../../../assets/styles/theme';
+import Icon from '../../../icons/icons';
+import { rsWidth, rsHeight, rsFont } from '../../../../utils/responsive-size';
+import palette from '../../../../assets/styles/theme';
 
 export type KeywordProps = {
   index: number;

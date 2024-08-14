@@ -1,18 +1,21 @@
 import styled from '@emotion/native';
-import palette from '../../../assets/styles/theme';
-import { rsWidth, rsHeight, rsFont } from '../../../utils/responsive-size';
+import palette from '../../../../assets/styles/theme';
+import { rsWidth, rsHeight, rsFont } from '../../../../utils/responsive-size';
 
+//키워드 흰색 컨테이너
 export const KeywordContainer = styled.View`
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: flex-start;
   padding-vertical: ${rsHeight * 14 + 'px'};
   padding-horizontal: ${rsWidth * 12 + 'px'};
   gap: ${rsHeight * 8 + 'px'};
-  width: ${rsWidth * 350 + 'px'};
+  width: 100%;
+  max-width: ${rsWidth * 350 + 'px'};
   height: auto;
-  max-height: ${rsHeight * 70 + 'px'};
-  overflow: hidden;
+  max-height: ${rsHeight * 64 + 'px'};
+  overflow: hidden; //clip content
   box-sizing: border-box;
   background-color: white;
   border-radius: 10px;
@@ -38,13 +41,6 @@ export const KeywordIcon = styled.View<{ index: number }>`
   }};
 `;
 
-//키워드에 대한 설명
-export const KeywordText = styled.Text`
-  font-family: Pretendard-SemiBold;
-  font-size: ${16 * rsFont + 'px'};
-  color: ${palette.neutral[900]};
-`;
-
 //키워드 제목
 export const KeywordTitle = styled.Text`
   font-family: Pretendard-SemiBold;
@@ -52,10 +48,18 @@ export const KeywordTitle = styled.Text`
   color: ${palette.neutral[900]};
 `;
 
+//키워드에 대한 설명
+export const KeywordText = styled.Text`
+  font-family: Pretendard-Regular;
+  font-size: ${16 * rsFont + 'px'};
+  color: ${palette.neutral[900]};
+`;
+
 //키워드 전체 컨테이너 (제목 + 키워드들)
 export const Container = styled.View`
-  width: ${350 * rsWidth + 'px'};
+  width: 100%;
+  max-width: ${350 * rsWidth + 'px'};
   height: auto;
-  max-height: ${259 * rsHeight + 'px'};
+  max-height: ${253 * rsHeight + 'px'};
   gap: ${12 * rsHeight + 'px'};
 `;

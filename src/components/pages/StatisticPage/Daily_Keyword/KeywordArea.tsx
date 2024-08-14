@@ -1,11 +1,14 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { dailyAnalyze } from '../../../apis/analyze';
+import { dailyAnalyze } from '../../../../apis/analyze';
 import { Text, View } from 'react-native';
 import Keyword from './Keyword';
 import { KeywordContainer } from './Keyword.style';
-import { KeywordTitle, Container } from './Keyword.style';
-
+import { KeywordTitle, Container, EmptyContainer, KeywordText } from './Keyword.style';
+import { Image } from 'expo-image';
+import { rsWidth, rsHeight, rsFont } from '../../../../utils/responsive-size';
+import { Title, DescText } from '../StatisticMain.style';
+import Empty from '../Empty';
 const KeywordArea: React.FC<any> = (props: any) => {
   const { value } = props;
   const [summaryList, setSummaryList] = useState<string[]>([]);
@@ -23,12 +26,11 @@ const KeywordArea: React.FC<any> = (props: any) => {
     fetchData();
   }, [value]);
 
-  console.log('test', summaryList);
   return (
     <Container>
-      <KeywordTitle>나의 일상 키워드</KeywordTitle>
+      <Title>나의 일상 키워드</Title>
       {summaryList.length === 0 ? (
-        <Text>비어있습니다</Text>
+        <Empty type="채팅기록"></Empty>
       ) : (
         summaryList.map((keyword, index) => <Keyword index={index} keywordText={keyword} />)
       )}

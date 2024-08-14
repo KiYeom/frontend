@@ -1,12 +1,13 @@
 import React from 'react';
 import { css } from '@emotion/native';
-import { rsWidth, rsHeight, rsFont } from '../../../utils/responsive-size';
+import { rsWidth, rsHeight, rsFont } from '../../../../utils/responsive-size';
 import { View, Text } from 'react-native-ui-lib';
 import { SafeAreaView } from 'react-native';
 import { PieChart } from 'react-native-gifted-charts';
-import palette from '../../../assets/styles/theme';
-import { dailyAnalyze } from '../../../apis/analyze';
+import palette from '../../../../assets/styles/theme';
+import { dailyAnalyze } from '../../../../apis/analyze';
 import { useEffect, useState } from 'react';
+import Empty from '../Empty';
 type PieChartData = {
   label: string;
   value: number; //퍼센트값
@@ -177,13 +178,7 @@ const DailyEmotionClassification: React.FC<any> = (props: any) => {
               {renderLegendComponent(testPieData)}
             </>
           ) : (
-            <Text
-              style={css`
-                font-family: Pretendard-SemiBold;
-                font-size: ${rsFont * 16 + 'px'};
-              `}>
-              쿠키와 더 많은 대화를 나누어주세요
-            </Text>
+            <Empty type="채팅기록"></Empty>
           )}
         </View>
       </View>
