@@ -19,6 +19,7 @@ const DateLine = (props: DateProps) => {
         align-items: 'center';
         justify-content: 'center';
         margin-bottom: ${rsHeight * 16 + 'px'};
+        padding-top: ${rsHeight * 16 + 'px'};
       `}>
       <TouchableDateLine onPress={onPress}>
         <Icon name="date-icon" width={rsWidth * 14} height={rsHeight * 16} color="black" />

@@ -8,6 +8,8 @@ import { ScrollView } from 'react-native';
 import { css } from '@emotion/native';
 import DailyEmotionClassification from './DailyEmotionClassification';
 import DateLine from '../../atoms/DateLine/DateLine';
+import KeywordArea from './KeywordArea';
+import palette from '../../../assets/styles/theme';
 //전체 통계 화면
 const StatisticMain: React.FC<any> = () => {
   const [date, setDate] = useState<Date>(new Date()); //현재 날짜
@@ -19,10 +21,9 @@ const StatisticMain: React.FC<any> = () => {
         style={{ flex: 1, paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}>
         <ScrollView
           style={css`
-            flex: 1;
-            background-color: white;
-            padding-top: ${20 * rsHeight + 'px'};
-            padding-bottom: ${40 * rsHeight + 'px'};
+            flex: 1; //전체 대시보드 스타일링
+            background-color: ${palette.neutral[50]};
+            padding-horizontal: ${rsWidth * 20 + 'px'};
           `}>
           <DateLine
             value={
@@ -38,6 +39,15 @@ const StatisticMain: React.FC<any> = () => {
             }}
           />
           <DailyEmotionClassification
+            value={
+              date?.getFullYear() +
+              '-' +
+              String(date.getMonth() + 1).padStart(2, '0') +
+              '-' +
+              String(date.getDate()).padStart(2, '0')
+            }
+          />
+          <KeywordArea
             value={
               date?.getFullYear() +
               '-' +

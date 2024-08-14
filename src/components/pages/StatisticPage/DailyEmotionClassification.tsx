@@ -107,8 +107,6 @@ const DailyEmotionClassification: React.FC<any> = (props: any) => {
   return (
     <View
       style={css`
-        padding-vertical: ${40 * rsHeight + 'px'};
-        padding-horizontal: ${20 * rsWidth + 'px'};
         background-color: ${palette.neutral[50]};
         margin-bottom: ${rsHeight * 16 + 'px'};
         flex: 1; //전체 배경

@@ -6,8 +6,6 @@ export const dailyAnalyze = async (today: string): Promise<AnalyzeResult | undef
   try {
     console.log('today', today);
     const res = await instance.get('/v1/analyze/daily', { params: { date: today } });
-    //console.log('res.classification.isNULL', res.classification.isNULL);
-    //console.log('res.classification.labels', res.classification.labels);
     console.log('res!', res.data);
     return res.data; //record, summary, classification 리턴
   } catch (error) {
