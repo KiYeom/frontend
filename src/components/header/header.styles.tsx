@@ -19,7 +19,7 @@ export const HeaderContainer = styled.View<{ isTitle: boolean; insets: EdgeInset
   padding-right: ${(props) => props.insets.right};
 
   border-color: ${palette.neutral[100]};
-  border-bottom-width: ${(props) => (props.isTitle ? `${rsHeight * 1 + 'px'} ` : `none`)};
+  border-bottom-width: ${(props) => (props.isTitle ? `${rsHeight * 1 + 'px'} ` : `0px`)};
   background-color: #fff;
 `;
 
