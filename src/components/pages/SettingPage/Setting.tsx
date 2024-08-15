@@ -28,6 +28,7 @@ import Icon from '../../icons/icons';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import palette from '../../../assets/styles/theme';
 import MenuRow from '../../menu-row/menu-row';
+import * as Linking from 'expo-linking';
 import { getAppVersion } from '../../../utils/device-info';
 
 Notifications.setNotificationHandler({
