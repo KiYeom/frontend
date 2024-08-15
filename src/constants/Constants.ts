@@ -70,7 +70,10 @@ export enum SettingStackName {
   LicenseDetailPage = 'LicenseDetailPage',
 }
 
-export enum StatisticStackName {}
+export enum StatisticStackName {
+  Daily = 'Daily',
+  Period = 'Period',
+}
 
 export enum AuthStackName {
   Login = 'Login',

@@ -7,6 +7,7 @@ import CookieProfile from './svg/cookie-profile';
 import StatisticIcon from './svg/statistic-icon';
 import HomeIcon from './svg/home-icon';
 import SettingIcon from './svg/setting-icon';
+import CloverIcon from './svg/clover';
 
 export type TIconName =
   | 'airplane'
@@ -16,7 +17,8 @@ export type TIconName =
   | 'date-icon'
   | 'home-icon'
   | 'setting-icon'
-  | 'statistic-icon';
+  | 'statistic-icon'
+  | 'clover-icon';
 
 export default function Icon({
   width,
@@ -46,5 +48,7 @@ export default function Icon({
       return <SettingIcon width={width} height={height} color={color} />;
     case 'statistic-icon':
       return <StatisticIcon width={width} height={height} color={color} />;
+    case 'clover-icon':
+      return <CloverIcon width={width} height={height} color={color} />;
   }
 }
