@@ -17,6 +17,9 @@ import { periodAnalyze } from '../../../apis/analyze';
 import DateLine from '../../atoms/DateLine/DateLine';
 import Empty from './Empty';
 import PeriodFlowChart from './Period_FlowChart/PeriodFlowChartArea';
+import DateTimePicker from 'react-native-ui-datepicker';
+import dayjs from 'dayjs';
+
 // 오늘 날짜를 기준으로 일주일 전의 Date 객체 생성
 const getOneWeekAgoDate = () => {
   const today = new Date();
@@ -24,16 +27,17 @@ const getOneWeekAgoDate = () => {
   return today;
 };
 const PeriodStatisticPage: React.FC<any> = () => {
+  const [visible, setVisible] = React.useState(false);
   const [openModal, setOpenModal] = React.useState(false);
   const [date, setDate] = useState<Date>(new Date()); //현재 날짜
-  const [previousDate, setPreviousDate] = useState<Date>(getOneWeekAgoDate());
+  //const [previousDate, setPreviousDate] = useState<Date>(getOneWeekAgoDate());
   const [periodKeyword, setPeriodKeyword] = useState([]);
   const [periodKeywordCnt, setPeriodKeywordCnt] = useState(0);
   const navigation = useNavigation();
 
   useEffect(() => {
     console.log('기간리포트 열렸습니다');
-    const fetchData = async () => {
+    /*const fetchData = async () => {
       const res = await periodAnalyze(
         previousDate?.getFullYear() +
           '-' +
@@ -51,7 +55,7 @@ const PeriodStatisticPage: React.FC<any> = () => {
       setPeriodKeyword(res.data.keywords); //키워드 저장
       setPeriodKeywordCnt(res.data.count); //개수 저장
     };
-    fetchData();
+    fetchData();*/
   }, []);
   return (
     <>
@@ -68,16 +72,18 @@ const PeriodStatisticPage: React.FC<any> = () => {
             type="일일리포트"
             navigation={navigation}
             onPress={() => {
-              console.log(setOpenModal(true));
+              //console.log(setOpenModal(true));
+              console.log('버튼 누름');
+              setVisible(true);
             }}></ReportType>
           <DateLine
             value={
-              previousDate?.getFullYear() +
-              '년 ' +
-              String(previousDate.getMonth() + 1).padStart(2, '0') +
-              '월 ' +
-              String(previousDate.getDate()).padStart(2, '0') +
-              '일' +
+              //previousDate?.getFullYear() +
+              //'년 ' +
+              //String(previousDate.getMonth() + 1).padStart(2, '0') +
+              //'월 ' +
+              //String(previousDate.getDate()).padStart(2, '0') +
+              //'일' +
               ' ~ ' +
               date?.getFullYear() +
               '년 ' +
@@ -100,13 +106,16 @@ const PeriodStatisticPage: React.FC<any> = () => {
           </View>
         </ScrollView>
       </SafeAreaView>
-      <DatePickerModal
+      {/*<DatePickerModal
         modalVisible={openModal}
         onClose={() => {
           setOpenModal(false);
         }}
         onChange={setDate}
-      />
+      />*/}
+      {visible && (
+        <DateTimePicker mode="single" date={date} onChange={(params) => setDate(params.date)} />
+      )}
     </>
   );
 };

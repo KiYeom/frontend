@@ -1,31 +1,30 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import StatisticMain from '../components/pages/StatisticPage/StatisticMain';
 import { StatisticStackName } from '../constants/Constants';
 import PeriodStatisticPage from '../components/pages/StatisticPage/PeriodStatisticPage';
-const StatisticTab = createBottomTabNavigator();
+
+const StatisticStack = createNativeStackNavigator();
 
 const StatisticStackNavigator: React.FC = ({}) => {
   return (
-    <StatisticTab.Navigator
-      screenOptions={{
-        tabBarStyle: { display: 'none' }, // 모든 화면에서 탭 바 숨김
-      }}>
-      <StatisticTab.Screen
+    <StatisticStack.Navigator>
+      <StatisticStack.Screen
         name={StatisticStackName.Daily}
         component={StatisticMain}
         options={{
-          header: () => <></>,
+          headerShown: false,
         }}
       />
-      <StatisticTab.Screen
+      <StatisticStack.Screen
         name={StatisticStackName.Period}
         component={PeriodStatisticPage}
         options={{
-          header: () => <></>,
+          headerShown: false,
         }}
       />
-    </StatisticTab.Navigator>
+    </StatisticStack.Navigator>
   );
 };
 export default StatisticStackNavigator;

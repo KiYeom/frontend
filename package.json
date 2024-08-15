@@ -62,6 +62,7 @@
     "react-native-status-bar-height": "^2.6.0",
     "react-native-svg": "15.2.0",
     "react-native-typing-animation": "^0.1.7",
+    "react-native-ui-datepicker": "^2.0.3",
     "react-native-ui-lib": "^7.27.0",
     "react-native-web": "~0.19.10",
     "react-native-webview": "13.8.6",

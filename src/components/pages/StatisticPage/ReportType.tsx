@@ -43,9 +43,9 @@ const ReportType = (props: DateProps) => {
       </TouchableDateLine>
       <Button
         onPress={() =>
-          navigation.navigate(RootStackName.StatisStackNavigator, {
-            screen: type === '일일리포트' ? StatisticStackName.Daily : StatisticStackName.Period,
-          })
+          navigation.navigate(
+            type === '일일리포트' ? StatisticStackName.Daily : StatisticStackName.Period,
+          )
         }
         title={type}
       />

@@ -6,9 +6,11 @@ import { TabBarLabel, TabScreenName } from '../constants/Constants';
 import StatisticStackNavigator from './StatisticStackNavigator';
 import HomeStackNavigator from './HomeStackNavigator';
 import SettingStackNavigator from './SettingStackNavigator';
+import PeriodStatisticPage from '../components/pages/StatisticPage/PeriodStatisticPage';
 import StatisticMain from '../components/pages/StatisticPage/StatisticMain';
 import Home from '../components/pages/HomePage/Home';
 import Setting from '../components/pages/SettingPage/Setting';
+import { StatisticStackName } from '../constants/Constants';
 
 const Tab = createBottomTabNavigator();
 
@@ -25,7 +27,7 @@ const BottomTabNavigator: React.FC<any> = () => {
       detachInactiveScreens={false}>
       <Tab.Screen
         name={TabScreenName.Statistic}
-        component={StatisticMain}
+        component={StatisticStackNavigator}
         options={{
           tabBarLabel: TabBarLabel.Statistic,
         }}
