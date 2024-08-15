@@ -1,6 +1,6 @@
 import React from 'react';
 import { rsWidth, rsHeight, rsFont } from '../../../utils/responsive-size';
-import { Platform, SafeAreaView, StatusBar } from 'react-native';
+import { Button, Platform, SafeAreaView, StatusBar } from 'react-native';
 import { getTime, formatDate } from '../../../utils/Chatting';
 import DatePickerModal from '../../modals/date-picker-modal';
 import { useEffect, useState } from 'react';
@@ -14,6 +14,9 @@ import { Text, View } from 'react-native';
 import { Container } from './StatisticMain.style';
 import ReportType from './ReportType';
 import { dailyAnalyze } from '../../../apis/analyze';
+import { useNavigation } from '@react-navigation/native';
+import { RootStackName, StatisticStackName } from '../../../constants/Constants';
+
 //전체 통계 화면
 const StatisticMain: React.FC<any> = () => {
   const [date, setDate] = useState<Date>(new Date()); //현재 날짜
@@ -22,6 +25,7 @@ const StatisticMain: React.FC<any> = () => {
   const [labelsClassification, setLabelsClassification] = useState([]);
   const [isSummaryList, setIsSummaryList] = useState(true);
   const [summaryList, setSummaryList] = useState([]);
+  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,14 +58,8 @@ const StatisticMain: React.FC<any> = () => {
             padding-horizontal: ${rsWidth * 20 + 'px'};
           `}>
           <ReportType
-            value={
-              date?.getFullYear() +
-              '년 ' +
-              String(date.getMonth() + 1).padStart(2, '0') +
-              '월 ' +
-              String(date.getDate()).padStart(2, '0') +
-              '일'
-            }
+            type="기간리포트"
+            navigation={navigation}
             onPress={() => {
               console.log(setOpenModal(true));
             }}></ReportType>
@@ -74,9 +72,6 @@ const StatisticMain: React.FC<any> = () => {
               String(date.getDate()).padStart(2, '0') +
               '일'
             }
-            onPress={() => {
-              console.log(setOpenModal(true));
-            }}
           />
           <Container>
             <DailyEmotionClassification

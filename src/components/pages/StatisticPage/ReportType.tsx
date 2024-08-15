@@ -4,13 +4,16 @@ import { css } from '@emotion/native';
 import { rsHeight, rsWidth, rsFont } from '../../../utils/responsive-size';
 import { Text } from 'react-native';
 import { TouchableDateLine } from '../../atoms/DateLine/DateLine.style';
-import { Button } from 'react-native-ui-lib';
+import { Button } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { RootStackName, StatisticStackName } from '../../../constants/Constants';
 type DateProps = {
-  value: string; //오늘의 날짜
+  navigation: any;
+  type: string;
   onPress: () => void; //date를 클릭했을 때의 함수
 };
 const ReportType = (props: DateProps) => {
-  const { value, onPress } = props;
+  const { onPress, navigation, type } = props;
   return (
     <View
       style={css`
@@ -34,10 +37,17 @@ const ReportType = (props: DateProps) => {
             font-family: Pretendard-SemiBold;
             font-size: ${rsFont * 28 + 'px'};
           `}>
-          일일 리포트
+          {type === '기간리포트' ? '일일리포트' : '기간리포트'}
         </Text>
       </TouchableDateLine>
-      <Button>기간리포트</Button>
+      <Button
+        onPress={() =>
+          navigation.navigate(RootStackName.StatisStackNavigator, {
+            screen: StatisticStackName.Period,
+          })
+        }
+        title={type}
+      />
     </View>
   );
 };
