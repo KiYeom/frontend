@@ -43,7 +43,7 @@ const ReportType = (props: DateProps) => {
       <Button
         onPress={() =>
           navigation.navigate(RootStackName.StatisStackNavigator, {
-            screen: StatisticStackName.Period,
+            screen: type === '일일리포트' ? StatisticStackName.Daily : StatisticStackName.Period,
           })
         }
         title={type}

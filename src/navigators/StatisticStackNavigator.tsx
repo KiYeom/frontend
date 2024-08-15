@@ -7,7 +7,10 @@ const StatisticTab = createBottomTabNavigator();
 
 const StatisticStackNavigator: React.FC = ({}) => {
   return (
-    <StatisticTab.Navigator>
+    <StatisticTab.Navigator
+      screenOptions={{
+        tabBarStyle: { display: 'none' }, // 모든 화면에서 탭 바 숨김
+      }}>
       <StatisticTab.Screen
         name={StatisticStackName.Daily}
         component={StatisticMain}
