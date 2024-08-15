@@ -5,6 +5,7 @@ import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import Icon from '../icons/icons';
 import { TabBarLabel } from '../../constants/Constants';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Text } from 'react-native';
 
 const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
   const insets = useSafeAreaInsets();
@@ -15,8 +16,8 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
 
         //탭의 라벨 설정 (tabBarLabel, title, route 이름 순으로 라벨 설정)
         const label =
-          options.tabBarLabel !== undefined
-            ? options.tabBarLabel
+          options.tabBarLabel?.toString() !== undefined
+            ? options.tabBarLabel.toString()
             : options.title !== undefined
               ? options.title
               : route.name;
@@ -45,31 +46,37 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
             accessibilityState={isFocused ? { selected: true } : {}}
             accessibilityLabel={options.tabBarAccessibilityLabel}
             onPress={onPress}>
-            {label === TabBarLabel.Statistic && (
+            {label === TabBarLabel.Statistic ? (
               <Icon
                 name={'statistic-icon'}
                 width={rsWidth * 32}
                 height={rsHeight * 30}
                 color={isFocused ? palette.primary[500] : palette.neutral[300]}
               />
+            ) : (
+              <></>
             )}
-            {label === TabBarLabel.Home && (
+            {label === TabBarLabel.Home ? (
               <Icon
                 name={'home-icon'}
                 width={rsWidth * 34}
                 height={rsHeight * 30}
                 color={isFocused ? palette.primary[500] : palette.neutral[300]}
               />
+            ) : (
+              <></>
             )}
-            {label === TabBarLabel.Setting && (
+            {label === TabBarLabel.Setting ? (
               <Icon
                 name={'setting-icon'}
                 width={rsWidth * 30}
                 height={rsHeight * 32}
                 color={isFocused ? palette.primary[500] : palette.neutral[300]}
               />
+            ) : (
+              <></>
             )}
-            <TabLabel isFocused={isFocused}>{label.toString()}</TabLabel>;
+            <TabLabel isFocused={isFocused}>{label}</TabLabel>
           </TabButtonContainer>
         );
       })}
