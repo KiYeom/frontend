@@ -14,4 +14,5 @@ export const TouchableDateLine = styled.TouchableOpacity`
 export const DateLineText = styled.Text`
   font-family: Pretendard-Medium;
   font-size: ${14 * rsFont + 'px'};
+  color: ${palette.neutral[500]};
 `;

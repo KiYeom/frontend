@@ -3,28 +3,22 @@ import { useEffect, useState } from 'react';
 import { dailyAnalyze } from '../../../../apis/analyze';
 import { Text, View } from 'react-native';
 import Keyword from './Keyword';
-import { KeywordContainer } from './Keyword.style';
-import { KeywordTitle, Container, EmptyContainer, KeywordText } from './Keyword.style';
+import {
+  KeywordTitle,
+  Container,
+  KeywordText,
+  KeywordContainer,
+  KeywordIcon,
+} from './Keyword.style';
+import palette from '../../../../assets/styles/theme';
+import Icon from '../../../icons/icons';
 import { Image } from 'expo-image';
 import { rsWidth, rsHeight, rsFont } from '../../../../utils/responsive-size';
 import { Title, DescText } from '../StatisticMain.style';
 import Empty from '../Empty';
+
 const KeywordArea: React.FC<any> = (props: any) => {
-  const { value } = props;
-  const [summaryList, setSummaryList] = useState<string[]>([]);
-  //일상 키워드 리스트
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await dailyAnalyze(value);
-      console.log('res', res);
-      if (res.summary.isNULL === false) {
-        setSummaryList(res.summary.keywords);
-      } else {
-        setSummaryList([]);
-      }
-    };
-    fetchData();
-  }, [value]);
+  const { value, isSummaryList, summaryList } = props;
 
   return (
     <Container>
@@ -32,7 +26,25 @@ const KeywordArea: React.FC<any> = (props: any) => {
       {summaryList.length === 0 ? (
         <Empty type="채팅기록"></Empty>
       ) : (
-        summaryList.map((keyword, index) => <Keyword index={index} keywordText={keyword} />)
+        summaryList.map((keyword, index) => (
+          <KeywordContainer>
+            <KeywordIcon index={index}>
+              <Icon
+                name={'clover-icon'}
+                width={rsWidth * 18.9}
+                height={rsHeight * 18.9}
+                color={
+                  index === 0
+                    ? palette.primary[500]
+                    : index === 1
+                      ? palette.function.warning
+                      : '#A395F1'
+                }
+              />
+            </KeywordIcon>
+            <KeywordText>{keyword}</KeywordText>
+          </KeywordContainer>
+        ))
       )}
     </Container>
   );

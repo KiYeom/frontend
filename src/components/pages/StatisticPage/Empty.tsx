@@ -15,12 +15,15 @@ const Empty = (props: EmptyTypeProps) => {
   const { type } = props;
   return (
     <EmptyContainer>
-      (type === "채팅기록" &&
-      <Image
-        source={require('../../../assets/images/graycookie.png')}
-        style={{ objectFit: 'contain', width: 100 * rsWidth, height: 52.22 * rsHeight }}
-      />
-      <DescText>아직 쿠키와 채팅한 내역이 없어요!</DescText>)
+      {type === '채팅기록' && (
+        <>
+          <Image
+            source={require('../../../assets/images/graycookie.png')}
+            style={{ objectFit: 'contain', width: 100 * rsWidth, height: 52.22 * rsHeight }}
+          />
+          <DescText>아직 쿠키와 채팅한 내역이 없어요!</DescText>
+        </>
+      )}
     </EmptyContainer>
   );
 };

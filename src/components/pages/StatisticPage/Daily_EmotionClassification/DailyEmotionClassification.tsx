@@ -19,8 +19,7 @@ type LabelClassification = {
 };
 
 const DailyEmotionClassification: React.FC<any> = (props: any) => {
-  const { value } = props;
-  const [labelsClassification, setLabelsClassification] = useState<LabelClassification[]>([]);
+  const { value, isNullClassification, labelsClassification } = props;
   //pieData를 만들어주는 함수
   const generatePieData = (labelsClassification: LabelClassification[]) => {
     return labelsClassification.map((item, index) => {
@@ -32,23 +31,6 @@ const DailyEmotionClassification: React.FC<any> = (props: any) => {
       };
     });
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await dailyAnalyze(value);
-      console.log('res', res);
-      const isNullClassification = res.classification.isNULL; //true = 데이터 없음, false = 데이터 있음
-      const labelsClassification = res.classification.labels; //[], [{label : "감사한", percent : 53}, ...]
-      if (!isNullClassification) {
-        //감정 분류 데이터 존재하면
-        setLabelsClassification(labelsClassification);
-      } else {
-        //감정 분류 데이터 없으면
-        setLabelsClassification([]);
-      }
-    };
-    fetchData();
-  }, [value]);
 
   const testPieData = generatePieData(labelsClassification);
   //데이터가 있으면 [{"value" : "화나는", "percent" : 29}, ...]
@@ -111,6 +93,7 @@ const DailyEmotionClassification: React.FC<any> = (props: any) => {
         background-color: ${palette.neutral[50]};
         margin-bottom: ${rsHeight * 16 + 'px'};
         flex: 1; //전체 배경
+        background-color: purple;
       `}>
       <View
         style={css`
@@ -126,7 +109,7 @@ const DailyEmotionClassification: React.FC<any> = (props: any) => {
         <View
           style={css`
             background-color: white; //통계 차트 박스
-            border-radius: 10px;
+            border-radius: 20px;
             flex: 1;
             flex-direction: column;
             justify-content: center;
