@@ -35,16 +35,11 @@ const fillMissingDates = (data, startDate, endDate) => {
 };
 
 const PeriodFlowChart = ({ emotionsData, setEmotionsData, startDate, endDate }) => {
-  const [activeIndex, setActiveIndex] = useState(1);
+  const [activeIndex, setActiveIndex] = useState(0);
   const yAxisLabelWidth = 20;
   const screenWidth = Dimensions.get('window').width - 2 * yAxisLabelWidth * rsWidth;
 
   const buttonLabels = ['분노', '슬픔', '불안', '상처', '당황', '기쁨'];
-  console.log('~~~~~~~~~~~~PeriodFlowChart~~~~~~~~~', startDate, endDate);
-  // emotionsData가 로드되지 않았거나 activeIndex가 잘못된 경우
-  if (emotionsData.length === 0 || !emotionsData[activeIndex] || !emotionsData[activeIndex].chart) {
-    return <Text>Loading...</Text>; // 데이터를 불러오기 전 로딩 표시
-  }
 
   const filledData = fillMissingDates(emotionsData[activeIndex].chart, startDate, endDate);
   const spacing = screenWidth / (filledData.length - 1);
@@ -99,6 +94,9 @@ const PeriodFlowChart = ({ emotionsData, setEmotionsData, startDate, endDate }) 
               title={label}
               primary={index === activeIndex}
               onPress={() => {
+                console.log('filledData', filledData);
+                console.log('emotionsData[activeIndex].chart', emotionsData[activeIndex].chart);
+                console.log('activeIndex', activeIndex);
                 setActiveIndex(index);
               }}
             />
@@ -117,7 +115,6 @@ const PeriodFlowChart = ({ emotionsData, setEmotionsData, startDate, endDate }) 
             fontFamily: 'Pretendard-Regular',
           }}
           disableScroll={false}
-          backgroundColor={'black'}
           areaChart
           curved
           data={dataWithCustomLabels}
@@ -127,12 +124,9 @@ const PeriodFlowChart = ({ emotionsData, setEmotionsData, startDate, endDate }) 
           initialSpacing={0}
           color1="skyblue"
           color2="orange"
-          textColor1="red"
           hideDataPoints={true}
-          dataPointsColor1="blue"
-          dataPointsColor2="red"
-          startFillColor1="green"
-          startFillColor2="red"
+          dataPointsColor1="#58C3A5"
+          startFillColor1="#58C3A5"
           startOpacity={0.5}
           endOpacity={0.2}
           maxValue={100}

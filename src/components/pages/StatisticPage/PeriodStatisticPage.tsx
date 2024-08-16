@@ -1,6 +1,6 @@
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ScrollView } from 'react-native';
+import { ScrollView, StatusBar } from 'react-native';
 import { Platform } from 'react-native';
 import { css } from '@emotion/native';
 import { useState } from 'react';
@@ -92,47 +92,49 @@ const PeriodStatisticPage: React.FC<any> = () => {
     );
   }
   return (
-    <>
-      <SafeAreaView
-        style={{ flex: 1, paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}>
-        <ScrollView
-          style={css`
-            flex: 1; //통계 전체 컨테이너 (대시보드)
-            flex-direction: column;
-            background-color: orange;
-            padding-vertical: ${rsHeight * 40 + 'px'};
-          `}>
-          <ReportType
-            type="일일리포트"
-            navigation={navigation}
-            onPress={() => {
-              setOpenModal(true);
-            }}></ReportType>
-          <DateLine
-            value={
-              range.startDate && range.endDate
-                ? `${dayjs(range.startDate).locale(locale).format('YYYY년 M월 D일')} ~ ${dayjs(range.endDate).locale(locale).format('YYYY년 M월 D일')}`
-                : '날짜를 선택해주세요'
-            }
-          />
-          <PeriodFlowChart
-            emotionsData={emotionsData}
-            setEmotionsData={setEmotionsData}
-            startDate={dayjs(range.startDate).format('YYYY-MM-DD')}
-            endDate={dayjs(range.endDate).format('YYYY-MM-DD')}
-          />
-          <PeriodKeywordArea
-            periodKeywordList={periodKeywordList}
-            setPeriodKeywordList={setPeriodKeywordList}
-          />
-        </ScrollView>
-      </SafeAreaView>
-      <RangeDatePickerModal
-        modalVisible={openModal}
-        onClose={() => setOpenModal(false)}
-        onChange={onChange}
-      />
-    </>
+    <SafeAreaView
+      style={{
+        backgroundColor: 'blue',
+        flex: 1,
+      }}
+      edges={['top']}>
+      <ScrollView
+        style={css`
+          flex: 1; //통계 전체 컨테이너 (대시보드)
+          flex-direction: column;
+          background-color: ${palette.neutral[50]};
+          padding-vertical: ${rsHeight * 40 + 'px'};
+        `}>
+        <ReportType
+          type="일일리포트"
+          navigation={navigation}
+          onPress={() => {
+            setOpenModal(true);
+          }}></ReportType>
+        <DateLine
+          value={
+            range.startDate && range.endDate
+              ? `${dayjs(range.startDate).locale(locale).format('YYYY년 M월 D일')} ~ ${dayjs(range.endDate).locale(locale).format('YYYY년 M월 D일')}`
+              : '날짜를 선택해주세요'
+          }
+        />
+        <PeriodFlowChart
+          emotionsData={emotionsData}
+          setEmotionsData={setEmotionsData}
+          startDate={dayjs(range.startDate).format('YYYY-MM-DD')}
+          endDate={dayjs(range.endDate).format('YYYY-MM-DD')}
+        />
+        <PeriodKeywordArea
+          periodKeywordList={periodKeywordList}
+          setPeriodKeywordList={setPeriodKeywordList}
+        />
+        <RangeDatePickerModal
+          modalVisible={openModal}
+          onClose={() => setOpenModal(false)}
+          onChange={onChange}
+        />
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 export default PeriodStatisticPage;

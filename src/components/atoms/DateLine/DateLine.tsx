@@ -12,7 +12,6 @@ const DateLine = (props: DateProps) => {
   return (
     <View
       style={css`
-        background-color: pink;
         display: flex;
         flex: 1;
         align-items: flex-start;

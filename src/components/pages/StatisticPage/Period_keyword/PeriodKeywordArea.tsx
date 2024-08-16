@@ -13,7 +13,6 @@ const PeriodKeywordArea: React.FC<any> = (props: any) => {
   return (
     <View
       style={css`
-        background-color: gray;
         gap: ${12 * rsHeight + 'px'};
         padding-horizontal: ${rsWidth * 20 + 'px'};
       `}>
@@ -28,7 +27,7 @@ const PeriodKeywordArea: React.FC<any> = (props: any) => {
           height: auto;
           max-height: 197px;
           gap: ${rsHeight * 8 + 'px'};
-          background-color: purple;
+          background-color: pink;
         `}>
         {periodKeywordList && periodKeywordList.length > 0 ? (
           periodKeywordList.map((keyword, index) => <PeriodKeyword key={index} title={keyword} />)
