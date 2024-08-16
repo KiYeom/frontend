@@ -45,10 +45,8 @@ const RangeDatePickerModal = ({
                 title="입력 완료"
                 primary={true}
                 onPress={() => {
-                  //setRange({ startDate: range.startDate, endDate: range.endDate });
                   onChange?.(localRange);
                   onClose?.();
-                  //console.log('입력완료!!!!!!!!!!!!!', range.startDate, range.endDate);
                 }}
               />
             </ModalInner>
