@@ -12,10 +12,10 @@ const RangeDatePickerModal = ({
 }: {
   modalVisible?: boolean;
   onClose?: () => void;
-  onChange?: (date: Date) => void;
+  onChange?: (range: any) => void;
 }) => {
   const [date, setDate] = useState<Date>(new Date());
-  const [range, setRange] = React.useState<{
+  const [localRange, setLocalRange] = useState<{
     startDate: DateType;
     endDate: DateType;
   }>({
@@ -33,12 +33,11 @@ const RangeDatePickerModal = ({
                 open={true}
                 mode="range"
                 locale="kor"
-                onChange={(range) => {
-                  setRange(range);
-                  onChange?.(range); // range 객체 전체를 전달
+                onChange={(newRange) => {
+                  setLocalRange(newRange); // localRange 업데이트
                 }}
-                startDate={range.startDate}
-                endDate={range.endDate}
+                startDate={localRange.startDate}
+                endDate={localRange.endDate}
                 date={date}
                 displayFullDays
               />
@@ -46,9 +45,10 @@ const RangeDatePickerModal = ({
                 title="입력 완료"
                 primary={true}
                 onPress={() => {
-                  onChange?.(date);
+                  //setRange({ startDate: range.startDate, endDate: range.endDate });
+                  onChange?.(localRange);
                   onClose?.();
-                  console.log('입력완료!!!!!!!!!!!!!', range.startDate, range.endDate);
+                  //console.log('입력완료!!!!!!!!!!!!!', range.startDate, range.endDate);
                 }}
               />
             </ModalInner>

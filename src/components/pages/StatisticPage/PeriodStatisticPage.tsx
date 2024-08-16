@@ -76,8 +76,8 @@ const PeriodStatisticPage: React.FC<any> = () => {
     fetchData();
   }, [range]);
 
-  const onChange = useCallback((params) => {
-    setRange(params);
+  const onChange = useCallback((newRange) => {
+    setRange(newRange); // RangeDatePickerModal에서 전달된 range로 업데이트
   }, []);
   return (
     <>
@@ -88,15 +88,13 @@ const PeriodStatisticPage: React.FC<any> = () => {
             flex: 1; //통계 전체 컨테이너 (대시보드)
             flex-direction: column;
             background-color: orange;
-            padding-vertical: ${rsHeight * 16 + 'px'};
+            padding-vertical: ${rsHeight * 40 + 'px'};
           `}>
           <ReportType
             type="일일리포트"
             navigation={navigation}
             onPress={() => {
-              //console.log(setOpenModal(true));
               setOpenModal(true);
-              //setVisible(true);
             }}></ReportType>
           <DateLine
             value={
