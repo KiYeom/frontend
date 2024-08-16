@@ -3,12 +3,13 @@ import palette from '../../../assets/styles/theme';
 import { rsWidth, rsHeight, rsFont } from '../../../utils/responsive-size';
 import styled from '@emotion/native';
 
-//통계 컨테이너
+//통계 컴포넌트를 감싸는 전체 컨테이너
 export const Container = styled.View`
   flex: 1;
   gap: ${rsHeight * 30 + 'px'};
   padding-bottom: ${rsHeight * 30 + 'px'};
   background-color: gray;
+  padding-horizontal: ${rsWidth * 20 + 'px'};
 `;
 
 //키워드 제목

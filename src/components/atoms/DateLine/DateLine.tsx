@@ -12,12 +12,12 @@ const DateLine = (props: DateProps) => {
   return (
     <View
       style={css`
-        background-color: pink;
         display: flex;
         flex: 1;
         align-items: flex-start;
         justify-content: center;
         margin-bottom: ${rsHeight * 16 + 'px'};
+        padding-horizontal: ${rsWidth * 20 + 'px'};
       `}>
       <DateLineText>{value}</DateLineText>
     </View>

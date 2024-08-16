@@ -23,8 +23,8 @@ const ReportType = (props: DateProps) => {
         justify-content: space-between;
         height: auto;
         max-height: 36px;
-        background-color: green;
         margin-bottom: ${rsHeight * 16 + 'px'};
+        padding-horizontal: ${rsWidth * 20 + 'px'};
       `}>
       <TouchableDateLine
         onPress={onPress}
@@ -42,9 +42,9 @@ const ReportType = (props: DateProps) => {
       </TouchableDateLine>
       <Button
         onPress={() =>
-          navigation.navigate(RootStackName.StatisStackNavigator, {
-            screen: type === '일일리포트' ? StatisticStackName.Daily : StatisticStackName.Period,
-          })
+          navigation.navigate(
+            type === '일일리포트' ? StatisticStackName.Daily : StatisticStackName.Period,
+          )
         }
         title={type}
       />

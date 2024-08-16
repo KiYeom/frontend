@@ -55,7 +55,6 @@ const StatisticMain: React.FC<any> = () => {
             flex-direction: column;
             background-color: orange;
             padding-vertical: ${rsHeight * 16 + 'px'};
-            padding-horizontal: ${rsWidth * 20 + 'px'};
           `}>
           <ReportType
             type="기간리포트"
