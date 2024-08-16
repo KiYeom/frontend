@@ -46,7 +46,7 @@ const HomeChatBtn = ({ navigation }) => {
 
       <CookieImage
         style={{
-          resizeMode: 'repeat',
+          resizeMode: 'contain',
         }}
         source={require('../../../assets/images/homebuttonimage.png')}
       />

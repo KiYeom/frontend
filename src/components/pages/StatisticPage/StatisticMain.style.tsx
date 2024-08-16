@@ -7,8 +7,6 @@ import styled from '@emotion/native';
 export const Container = styled.View`
   flex: 1;
   gap: ${rsHeight * 30 + 'px'};
-  padding-bottom: ${rsHeight * 30 + 'px'};
-  background-color: gray;
   padding-horizontal: ${rsWidth * 20 + 'px'};
 `;
 
@@ -22,11 +20,10 @@ export const Title = styled.Text`
 //아무것도 없을 때 컨테이너
 export const EmptyContainer = styled.View`
   width: 100%;
-  max-width: ${rsWidth * 350 + 'px'};
   height: ${rsHeight * 220 + 'px'};
   background-color: white;
   border-radius: 10px;
-  gap: ${rsHeight * 12}px;
+  gap: ${rsHeight * 12 + 'px'};
   padding-vertical: ${rsHeight * 12 + 'px'};
   padding-horizontal: ${rsWidth * 12 + 'px'};
   justify-content: center;

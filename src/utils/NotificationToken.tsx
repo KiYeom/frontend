@@ -6,7 +6,7 @@ import { setNotificationToken } from '../apis/notification';
 import { getDeviceIdFromMMKV, getNotificationSent, setNotificationSent } from './storageUtils';
 
 function handleRegistrationError(errorMessage: string) {
-  console.error(errorMessage);
+  console.log(errorMessage);
 }
 
 const registerForPushNotificationsAsync = async () => {

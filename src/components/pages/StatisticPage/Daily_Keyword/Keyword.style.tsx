@@ -8,13 +8,11 @@ export const KeywordContainer = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  padding-vertical: ${rsHeight * 14 + 'px'};
   padding-horizontal: ${rsWidth * 12 + 'px'};
-  gap: ${rsHeight * 8 + 'px'};
+  padding-vertical: ${rsHeight * 14 + 'px'};
+  gap: ${rsWidth * 8 + 'px'};
   width: 100%;
-  max-width: ${rsWidth * 350 + 'px'};
   height: auto;
-  max-height: ${rsHeight * 64 + 'px'};
   overflow: hidden; //clip content
   box-sizing: border-box;
   background-color: white;
@@ -50,7 +48,7 @@ export const KeywordTitle = styled.Text`
 
 //키워드에 대한 설명
 export const KeywordText = styled.Text`
-  font-family: Pretendard-Regular;
+  font-family: Pretendard-SemiBold;
   font-size: ${16 * rsFont + 'px'};
   color: ${palette.neutral[900]};
 `;
