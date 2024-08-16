@@ -59,10 +59,9 @@ const StatisticMain: React.FC<any> = () => {
           <ReportType
             type="기간리포트"
             navigation={navigation}
-            //onPress={() => {
-            //console.log(setOpenModal(true));
-            //}}
-          ></ReportType>
+            onPress={() => {
+              console.log(setOpenModal(true));
+            }}></ReportType>
           <DateLine
             value={
               date?.getFullYear() +

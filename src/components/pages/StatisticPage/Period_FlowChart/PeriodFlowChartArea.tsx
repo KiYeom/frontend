@@ -1,44 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Button, Dimensions } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 import { rsWidth, rsFont } from '../../../../utils/responsive-size';
+import { periodChart } from '../../../../apis/analyze';
 
-const PeriodFlowChart = () => {
+const PeriodFlowChart = ({ emotionsData, setEmotionsData }) => {
   const [activeIndex, setActiveIndex] = useState(0);
+
   const yAxisLabelWidth = 20;
   const screenWidth = Dimensions.get('window').width - 2 * yAxisLabelWidth * rsWidth;
 
-  const res = [
-    {
-      category: 'anger',
-      chart: [
-        {
-          date: '2024-06-19',
-          value: 34,
-        },
-        {
-          date: '2024-06-27',
-          value: 63,
-        },
-        {
-          date: '2024-07-17',
-          value: 21,
-        },
-      ],
-    },
-    // 다른 카테고리 생략...
-  ];
-
   const buttonLabels = ['분노', '슬픔', '불안', '상처', '당황', '기쁨'];
 
-  const spacing = screenWidth / (res[activeIndex].chart.length - 1);
+  // emotionsData가 로드되지 않았거나 activeIndex가 잘못된 경우
+  if (emotionsData.length === 0 || !emotionsData[activeIndex] || !emotionsData[activeIndex].chart) {
+    return <Text>Loading...</Text>; // 데이터를 불러오기 전 로딩 표시
+  }
 
-  const customLabel = (label, alignment) => (
+  const spacing = screenWidth / (emotionsData[activeIndex].chart.length - 1);
+
+  const customLabel = (label, alignment, index) => (
     <View
       style={{
         backgroundColor: 'red',
-        paddingHorizontal: 6,
-        paddingVertical: 2,
         borderRadius: 5,
         position: 'absolute',
         [alignment]: 0,
@@ -47,16 +31,16 @@ const PeriodFlowChart = () => {
     </View>
   );
 
-  const dataWithCustomLabels = res[activeIndex].chart.map((dataPoint, index) => {
+  const dataWithCustomLabels = emotionsData[activeIndex].chart.map((dataPoint, index) => {
     if (index === 0) {
       return {
         ...dataPoint,
-        labelComponent: () => customLabel(dataPoint.date, 'right'),
+        labelComponent: () => customLabel(dataPoint.date, 'right', index),
       };
-    } else if (index === res[activeIndex].chart.length - 1) {
+    } else if (index === emotionsData[activeIndex].chart.length - 1) {
       return {
         ...dataPoint,
-        labelComponent: () => customLabel(dataPoint.date, 'left'),
+        labelComponent: () => customLabel(dataPoint.date, 'left', index),
       };
     } else {
       return {
@@ -79,7 +63,7 @@ const PeriodFlowChart = () => {
             fontSize: 12 * rsFont,
             fontFamily: 'Pretendard-Regular',
           }}
-          disableScroll={true}
+          disableScroll={false}
           backgroundColor={'black'}
           areaChart
           curved
