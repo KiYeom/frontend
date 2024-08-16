@@ -132,6 +132,7 @@ const PeriodStatisticPage: React.FC<any> = () => {
           modalVisible={openModal}
           onClose={() => setOpenModal(false)}
           onChange={onChange}
+          range={range}
         />
       </ScrollView>
     </SafeAreaView>

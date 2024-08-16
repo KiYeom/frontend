@@ -27,7 +27,6 @@ const PeriodKeywordArea: React.FC<any> = (props: any) => {
           height: auto;
           max-height: 197px;
           gap: ${rsHeight * 8 + 'px'};
-          background-color: pink;
         `}>
         {periodKeywordList && periodKeywordList.length > 0 ? (
           periodKeywordList.map((keyword, index) => <PeriodKeyword key={index} title={keyword} />)

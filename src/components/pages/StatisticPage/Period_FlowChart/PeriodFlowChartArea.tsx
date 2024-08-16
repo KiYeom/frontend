@@ -44,36 +44,6 @@ const PeriodFlowChart = ({ emotionsData, setEmotionsData, startDate, endDate }) 
   const filledData = fillMissingDates(emotionsData[activeIndex].chart, startDate, endDate);
   const spacing = screenWidth / (filledData.length - 1);
 
-  const customLabel = (label, alignment, index) => (
-    <View
-      style={{
-        backgroundColor: 'red',
-        borderRadius: 5,
-        position: 'absolute',
-        [alignment]: 0,
-      }}>
-      <Text style={{ color: 'white', fontWeight: 'bold', textAlign: 'center' }}>{label}</Text>
-    </View>
-  );
-
-  const dataWithCustomLabels = filledData.map((dataPoint, index) => {
-    if (index === 0) {
-      return {
-        ...dataPoint,
-        labelComponent: () => customLabel(dataPoint.date, 'right', index),
-      };
-    } else if (index === filledData.length - 1) {
-      return {
-        ...dataPoint,
-        labelComponent: () => customLabel(dataPoint.date, 'left', index),
-      };
-    } else {
-      return {
-        ...dataPoint,
-      };
-    }
-  });
-
   return (
     <>
       <View
@@ -117,7 +87,7 @@ const PeriodFlowChart = ({ emotionsData, setEmotionsData, startDate, endDate }) 
           disableScroll={false}
           areaChart
           curved
-          data={dataWithCustomLabels}
+          data={filledData}
           height={300}
           width={screenWidth}
           spacing={spacing}

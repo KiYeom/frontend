@@ -9,18 +9,20 @@ const RangeDatePickerModal = ({
   modalVisible,
   onClose,
   onChange,
+  range,
 }: {
   modalVisible?: boolean;
   onClose?: () => void;
   onChange?: (range: any) => void;
+  range?: DateType;
 }) => {
   const [date, setDate] = useState<Date>(new Date());
   const [localRange, setLocalRange] = useState<{
     startDate: DateType;
     endDate: DateType;
   }>({
-    startDate: dayjs().subtract(7, 'day').startOf('day'), // 일주일 전 날짜
-    endDate: dayjs().startOf('day'), // 현재 날짜
+    startDate: range.startDate, // 일주일 전 날짜
+    endDate: range.endDate, // 현재 날짜
   });
 
   return (

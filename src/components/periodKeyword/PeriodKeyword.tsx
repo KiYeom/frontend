@@ -15,7 +15,7 @@ const PeriodKeyword = (props: PeriodKeywordProps) => {
         padding-vertical: ${rsHeight * 8 + 'px'};
         background-color: white;
         border-radius: 10px;
-        width: 171px;
+        width: 48%;
         height: auto;
         max-height: 33px;
         justify-content: center;
