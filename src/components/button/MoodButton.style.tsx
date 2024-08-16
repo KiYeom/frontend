@@ -9,7 +9,7 @@ export const MoodButtonContainer = styled.TouchableOpacity<{
   padding-vertical: ${rsHeight * 10 + 'px'};
   padding-horizontal: ${rsWidth * 10 + 'px'};
   width: ${rsWidth * 48 + 'px'};
-  height: ${rsHeight * 32 + 'px'};
+  height: auto;
   border-radius: 10px;
   background-color: ${(props) => (props.primary ? 'white' : 'transparent')};
   justify-content: center;
