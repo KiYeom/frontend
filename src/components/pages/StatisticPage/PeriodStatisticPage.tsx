@@ -1,28 +1,27 @@
 import React from 'react';
-import { Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ScrollView, TouchableWithoutFeedback } from 'react-native';
-import { View } from 'react-native';
+import { ScrollView, StatusBar } from 'react-native';
 import { Platform } from 'react-native';
 import { css } from '@emotion/native';
-import styled from '@emotion/native';
-import DatePickerModal from '../../modals/date-picker-modal';
 import { useState } from 'react';
+import { View } from 'react-native';
 import ReportType from './ReportType';
 import { useNavigation } from '@react-navigation/native';
 import { rsHeight, rsWidth, rsFont } from '../../../utils/responsive-size';
 import { useEffect } from 'react';
 import PeriodKeywordArea from './Period_keyword/PeriodKeywordArea';
 import DateLine from '../../atoms/DateLine/DateLine';
-import Empty from './Empty';
 import PeriodFlowChart from './Period_FlowChart/PeriodFlowChartArea';
 import dayjs from 'dayjs';
-import DateTimePicker, { DateType, ModeType } from 'react-native-ui-datepicker';
+import DateType from 'react-native-ui-datepicker';
 import { useCallback } from 'react';
 import { periodChart, periodKeyword } from '../../../apis/analyze';
 import RangeDatePickerModal from '../../rangeCal/range-date-picker-modal';
+import { StyleSheet, ActivityIndicator } from 'react-native';
+import palette from '../../../assets/styles/theme';
+
 const PeriodStatisticPage: React.FC<any> = () => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [visible, setVisible] = React.useState(false);
   const [periodKeywordList, setPeriodKeywordList] = useState([]);
@@ -39,12 +38,13 @@ const PeriodStatisticPage: React.FC<any> = () => {
   const [openModal, setOpenModal] = React.useState(false);
 
   const navigation = useNavigation();
+
   //날짜가 변경되는 경우
   useEffect(() => {
     const fetchData = async () => {
       console.log('날짜가 변경됨');
       try {
-        setIsLoading(true);
+        setLoading(true);
         setError(null);
 
         const startDateFormatted = dayjs(range.startDate).format('YYYY-MM-DD');
@@ -54,7 +54,6 @@ const PeriodStatisticPage: React.FC<any> = () => {
           periodChart(startDateFormatted, endDateFormatted), //기간 감정 차트
           periodKeyword(startDateFormatted, endDateFormatted), //기간 키워드 리스트
         ]);
-
         if (res && res.charts) {
           setEmotionsData(res.charts);
         }
@@ -69,55 +68,74 @@ const PeriodStatisticPage: React.FC<any> = () => {
         setError('데이터를 불러오는 중 오류가 발생했습니다.');
         console.error(err);
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     };
 
     fetchData();
   }, [range]);
 
-  const onChange = useCallback((params) => {
-    setRange(params);
+  const onChange = useCallback((newRange) => {
+    setRange(newRange); // RangeDatePickerModal에서 전달된 range로 업데이트
   }, []);
+
+  if (loading) {
+    return (
+      <View
+        style={css`
+          flex: 1;
+          justify-content: center;
+          align-items: center;
+        `}>
+        <ActivityIndicator size="large" color={palette.primary[500]} />
+      </View>
+    );
+  }
   return (
-    <>
-      <SafeAreaView
-        style={{ flex: 1, paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}>
-        <ScrollView
-          style={css`
-            flex: 1; //통계 전체 컨테이너 (대시보드)
-            flex-direction: column;
-            background-color: orange;
-            padding-vertical: ${rsHeight * 16 + 'px'};
-          `}>
-          <ReportType
-            type="일일리포트"
-            navigation={navigation}
-            onPress={() => {
-              //console.log(setOpenModal(true));
-              setOpenModal(true);
-              //setVisible(true);
-            }}></ReportType>
-          <DateLine
-            value={
-              range.startDate && range.endDate
-                ? `${dayjs(range.startDate).locale(locale).format('YYYY년 M월 D일')} ~ ${dayjs(range.endDate).locale(locale).format('YYYY년 M월 D일')}`
-                : '날짜를 선택해주세요'
-            }
-          />
-          <PeriodFlowChart emotionsData={emotionsData} setEmotionsData={setEmotionsData} />
-          <PeriodKeywordArea
-            periodKeywordList={periodKeywordList}
-            setPeriodKeywordList={setPeriodKeywordList}
-          />
-        </ScrollView>
-      </SafeAreaView>
-      <RangeDatePickerModal
-        modalVisible={openModal}
-        onClose={() => setOpenModal(false)}
-        onChange={onChange}
-      />
-    </>
+    <SafeAreaView
+      style={{
+        backgroundColor: 'blue',
+        flex: 1,
+      }}
+      edges={['top']}>
+      <ScrollView
+        style={css`
+          flex: 1; //통계 전체 컨테이너 (대시보드)
+          flex-direction: column;
+          background-color: ${palette.neutral[50]};
+          padding-vertical: ${rsHeight * 40 + 'px'};
+        `}>
+        <ReportType
+          type="일일리포트"
+          navigation={navigation}
+          onPress={() => {
+            setOpenModal(true);
+          }}></ReportType>
+        <DateLine
+          value={
+            range.startDate && range.endDate
+              ? `${dayjs(range.startDate).locale(locale).format('YYYY년 M월 D일')} ~ ${dayjs(range.endDate).locale(locale).format('YYYY년 M월 D일')}`
+              : '날짜를 선택해주세요'
+          }
+        />
+        <PeriodFlowChart
+          emotionsData={emotionsData}
+          setEmotionsData={setEmotionsData}
+          startDate={dayjs(range.startDate).format('YYYY-MM-DD')}
+          endDate={dayjs(range.endDate).format('YYYY-MM-DD')}
+        />
+        <PeriodKeywordArea
+          periodKeywordList={periodKeywordList}
+          setPeriodKeywordList={setPeriodKeywordList}
+        />
+        <RangeDatePickerModal
+          modalVisible={openModal}
+          onClose={() => setOpenModal(false)}
+          onChange={onChange}
+          range={range}
+        />
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 export default PeriodStatisticPage;

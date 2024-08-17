@@ -5,23 +5,41 @@ import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import Button from '../button/button';
 import DateTimePicker, { DateType, ModeType } from 'react-native-ui-datepicker';
 import dayjs from 'dayjs';
+import { DescText } from '../pages/StatisticPage/StatisticMain.style';
+import { css } from '@emotion/native';
+import { Text } from 'react-native';
 const RangeDatePickerModal = ({
   modalVisible,
   onClose,
   onChange,
+  range,
 }: {
   modalVisible?: boolean;
   onClose?: () => void;
-  onChange?: (date: Date) => void;
+  onChange?: (range: any) => void;
+  range?: DateType;
 }) => {
   const [date, setDate] = useState<Date>(new Date());
-  const [range, setRange] = React.useState<{
+  const [localRange, setLocalRange] = useState<{
     startDate: DateType;
     endDate: DateType;
   }>({
-    startDate: dayjs().subtract(7, 'day').startOf('day'), // 일주일 전 날짜
-    endDate: dayjs().startOf('day'), // 현재 날짜
+    startDate: range.startDate, // 일주일 전 날짜
+    endDate: range.endDate, // 현재 날짜
   });
+  console.log('시작', localRange.startDate);
+  console.log('끝', localRange.endDate);
+  //두 날짜의 차이가 하루 이하면 버튼 비활성화
+  const validateDate = (startDate: any, endDate: any) => {
+    const oneDayInMillis = 24 * 60 * 60 * 1000;
+    if (!startDate || !endDate) {
+      return false;
+    }
+    if (endDate - startDate <= oneDayInMillis) {
+      return false;
+    }
+    return true;
+  };
 
   return (
     <Modal visible={modalVisible} animationType="fade" transparent>
@@ -33,22 +51,25 @@ const RangeDatePickerModal = ({
                 open={true}
                 mode="range"
                 locale="kor"
-                onChange={(range) => {
-                  setRange(range);
-                  onChange?.(range); // range 객체 전체를 전달
+                onChange={(newRange) => {
+                  setLocalRange(newRange); // localRange 업데이트
                 }}
-                startDate={range.startDate}
-                endDate={range.endDate}
+                startDate={localRange.startDate}
+                endDate={localRange.endDate}
                 date={date}
                 displayFullDays
               />
+              <DescText>
+                {!validateDate(localRange.startDate, localRange.endDate) &&
+                  '날짜를 올바르게 입력해주셈'}
+              </DescText>
               <Button
                 title="입력 완료"
                 primary={true}
+                disabled={!validateDate(localRange.startDate, localRange.endDate)}
                 onPress={() => {
-                  onChange?.(date);
+                  onChange?.(localRange);
                   onClose?.();
-                  console.log('입력완료!!!!!!!!!!!!!', range.startDate, range.endDate);
                 }}
               />
             </ModalInner>
