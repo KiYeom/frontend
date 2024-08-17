@@ -30,7 +30,7 @@ export const BubbleText = styled.Text<{
   status: 'bot' | 'user' | 'time' | 'date';
 }>`
   font-size: ${(props) =>
-    props.status === 'time' ? `${rsFont * 10 + 'px'}` : `${rsFont * 12 + 'px'}`};
+    props.status === 'time' ? `${rsFont * 12 + 'px'}` : `${rsFont * 14 + 'px'}`};
   font-family: Pretendard-Regular;
   color: ${(props) =>
     props.status === 'bot'

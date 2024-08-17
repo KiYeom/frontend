@@ -1,29 +1,23 @@
-import { TouchableDateLine, DateLineText } from './DateLine.style';
+import { DateLineText } from './DateLine.style';
 import { View } from 'react-native';
-import Icon from '../../icons/icons';
 import { css } from '@emotion/native';
-import { rsHeight, rsWidth } from '../../../utils/responsive-size';
-import { getTime, formatDate } from '../../../utils/Chatting';
+import { rsWidth } from '../../../utils/responsive-size';
+
 type DateProps = {
   value: string; //오늘의 날짜
-  onPress: () => void; //date를 클릭했을 때의 함수
 };
 const DateLine = (props: DateProps) => {
-  const { value, onPress } = props;
+  const { value } = props;
   return (
     <View
       style={css`
-        background-color: 'white';
-        display: 'flex';
+        display: flex;
         flex: 1;
-        align-items: 'center';
-        justify-content: 'center';
-        margin-bottom: ${rsHeight * 16 + 'px'};
+        align-items: flex-start;
+        justify-content: center;
+        padding-horizontal: ${rsWidth * 20 + 'px'};
       `}>
-      <TouchableDateLine onPress={onPress}>
-        <Icon name="date-icon" width={rsWidth * 14} height={rsHeight * 16} color="black" />
-        <DateLineText>{value}</DateLineText>
-      </TouchableDateLine>
+      <DateLineText>{value}</DateLineText>
     </View>
   );
 };

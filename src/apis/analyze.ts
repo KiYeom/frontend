@@ -1,17 +1,46 @@
 import { instance } from './interceptor';
-import { AnalyzeResult } from './analyze.type';
+import { TDailyAnalyze, TPeriodChart, TPeriodKeywords } from './analyze.type';
 
 //INFO : 일일 분석
-export const dailyAnalyze = async (today: string): Promise<AnalyzeResult | undefined> => {
+export const dailyAnalyze = async (today: string): Promise<TDailyAnalyze | undefined> => {
   try {
     console.log('today', today);
     const res = await instance.get('/v1/analyze/daily', { params: { date: today } });
-    //console.log('res.classification.isNULL', res.classification.isNULL);
-    //console.log('res.classification.labels', res.classification.labels);
-    console.log('res!', res.data);
     return res.data; //record, summary, classification 리턴
   } catch (error) {
     console.log('[ERROR] daily analyze', error);
     return;
+  }
+};
+
+//기간 분석 : 일상 키워드 조회
+export const periodKeyword = async (
+  start: string,
+  end: string,
+): Promise<TPeriodKeywords | undefined> => {
+  try {
+    const res = await instance.get('/v1/analyze/period/keywords', {
+      params: { start_date: start, end_date: end },
+    });
+    return res.data;
+  } catch (error) {
+    console.log('[ERROR] period keyword', error);
+    return undefined;
+  }
+};
+
+//기간 분석 : 감정 추이 조회
+export const periodChart = async (
+  start: string,
+  end: string,
+): Promise<TPeriodChart | undefined> => {
+  try {
+    const res = await instance.get('/v1/analyze/period/chart', {
+      params: { start_date: start, end_date: end },
+    });
+    return res.data;
+  } catch (error) {
+    console.log('[ERROR] period chart analyze', error);
+    return undefined;
   }
 };
