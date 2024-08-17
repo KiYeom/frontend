@@ -66,7 +66,11 @@ const Chat: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <View
+      style={css`
+        flex: 1;
+        padding-bottom: ${20 * rsHeight + 'px'};
+      `}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={{ flex: 1 }}
@@ -91,7 +95,7 @@ const Chat: React.FC = () => {
           <ChatInput data={data} setData={setData} />
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   );
 };
 

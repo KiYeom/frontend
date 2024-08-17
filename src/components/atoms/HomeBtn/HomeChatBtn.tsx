@@ -4,17 +4,14 @@ import {
   HomeBtnTitle,
   HomeBtnText,
   HomeBtn,
-  ImageContainer,
   HomeBtnDescription,
   CookieImage,
-  CookieImageContainer,
 } from './HomeChatBtn.style';
 import { getUserNickname } from '../../../utils/storageUtils';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { HomeStackName, RootStackName } from '../../../constants/Constants';
 import Icon from '../../icons/icons';
 import palette from '../../../assets/styles/theme';
-import { Image } from 'react-native';
 
 const HomeChatBtn = ({ navigation }) => {
   const [name, setName] = React.useState<string>('');
@@ -49,7 +46,7 @@ const HomeChatBtn = ({ navigation }) => {
 
       <CookieImage
         style={{
-          resizeMode: 'repeat',
+          resizeMode: 'contain',
         }}
         source={require('../../../assets/images/homebuttonimage.png')}
       />
