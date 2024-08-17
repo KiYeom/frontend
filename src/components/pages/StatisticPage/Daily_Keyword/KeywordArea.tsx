@@ -1,20 +1,9 @@
 import React from 'react';
-import { useEffect, useState } from 'react';
-import { dailyAnalyze } from '../../../../apis/analyze';
-import { Text, View } from 'react-native';
-import Keyword from './Keyword';
-import {
-  KeywordTitle,
-  Container,
-  KeywordText,
-  KeywordContainer,
-  KeywordIcon,
-} from './Keyword.style';
+import { Container, KeywordText, KeywordContainer, KeywordIcon } from './Keyword.style';
 import palette from '../../../../assets/styles/theme';
 import Icon from '../../../icons/icons';
-import { Image } from 'expo-image';
-import { rsWidth, rsHeight, rsFont } from '../../../../utils/responsive-size';
-import { Title, DescText } from '../StatisticMain.style';
+import { rsWidth, rsHeight } from '../../../../utils/responsive-size';
+import { Title } from '../StatisticMain.style';
 import Empty from '../Empty';
 
 const KeywordArea: React.FC<any> = (props: any) => {
@@ -27,12 +16,12 @@ const KeywordArea: React.FC<any> = (props: any) => {
         <Empty type="채팅기록"></Empty>
       ) : (
         summaryList.map((keyword, index) => (
-          <KeywordContainer>
+          <KeywordContainer key={index}>
             <KeywordIcon index={index}>
               <Icon
                 name={'clover-icon'}
-                width={rsWidth * 18.9}
-                height={rsHeight * 18.9}
+                width={rsWidth * 18}
+                height={rsHeight * 18}
                 color={
                   index === 0
                     ? palette.primary[500]
