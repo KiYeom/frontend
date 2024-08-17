@@ -104,6 +104,7 @@ const PeriodStatisticPage: React.FC<any> = () => {
           flex-direction: column;
           background-color: ${palette.neutral[50]};
           padding-vertical: ${rsHeight * 40 + 'px'};
+          padding-bottom: ${rsHeight * 50 + 'px'};
         `}>
         <View style={{ paddingBottom: 50 * rsHeight }}>
           <ReportType
