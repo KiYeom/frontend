@@ -22,7 +22,6 @@ const ReportType = (props: DateProps) => {
         flex: 1;
         justify-content: space-between;
         height: auto;
-        max-height: 36px;
         margin-bottom: ${rsHeight * 16 + 'px'};
         padding-horizontal: ${rsWidth * 20 + 'px'};
       `}>

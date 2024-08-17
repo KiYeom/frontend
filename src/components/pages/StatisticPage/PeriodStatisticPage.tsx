@@ -94,7 +94,7 @@ const PeriodStatisticPage: React.FC<any> = () => {
   return (
     <SafeAreaView
       style={{
-        backgroundColor: 'blue',
+        backgroundColor: palette.neutral[50],
         flex: 1,
       }}
       edges={['top']}>
@@ -105,35 +105,37 @@ const PeriodStatisticPage: React.FC<any> = () => {
           background-color: ${palette.neutral[50]};
           padding-vertical: ${rsHeight * 40 + 'px'};
         `}>
-        <ReportType
-          type="일일리포트"
-          navigation={navigation}
-          onPress={() => {
-            setOpenModal(true);
-          }}></ReportType>
-        <DateLine
-          value={
-            range.startDate && range.endDate
-              ? `${dayjs(range.startDate).locale(locale).format('YYYY년 M월 D일')} ~ ${dayjs(range.endDate).locale(locale).format('YYYY년 M월 D일')}`
-              : '날짜를 선택해주세요'
-          }
-        />
-        <PeriodFlowChart
-          emotionsData={emotionsData}
-          setEmotionsData={setEmotionsData}
-          startDate={dayjs(range.startDate).format('YYYY-MM-DD')}
-          endDate={dayjs(range.endDate).format('YYYY-MM-DD')}
-        />
-        <PeriodKeywordArea
-          periodKeywordList={periodKeywordList}
-          setPeriodKeywordList={setPeriodKeywordList}
-        />
-        <RangeDatePickerModal
-          modalVisible={openModal}
-          onClose={() => setOpenModal(false)}
-          onChange={onChange}
-          range={range}
-        />
+        <View style={{ paddingBottom: 50 * rsHeight }}>
+          <ReportType
+            type="일일리포트"
+            navigation={navigation}
+            onPress={() => {
+              setOpenModal(true);
+            }}></ReportType>
+          <DateLine
+            value={
+              range.startDate && range.endDate
+                ? `${dayjs(range.startDate).locale(locale).format('YYYY년 M월 D일')} ~ ${dayjs(range.endDate).locale(locale).format('YYYY년 M월 D일')}`
+                : '날짜를 선택해주세요'
+            }
+          />
+          <PeriodFlowChart
+            emotionsData={emotionsData}
+            setEmotionsData={setEmotionsData}
+            startDate={dayjs(range.startDate).format('YYYY-MM-DD')}
+            endDate={dayjs(range.endDate).format('YYYY-MM-DD')}
+          />
+          <PeriodKeywordArea
+            periodKeywordList={periodKeywordList}
+            setPeriodKeywordList={setPeriodKeywordList}
+          />
+          <RangeDatePickerModal
+            modalVisible={openModal}
+            onClose={() => setOpenModal(false)}
+            onChange={onChange}
+            range={range}
+          />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

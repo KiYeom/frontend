@@ -66,7 +66,7 @@ const StatisticMain: React.FC<any> = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const dailyStatistics = await dailyAnalyze(getApiDateString(date ?? getServerYestoday()));
+      const dailyStatistics = await dailyAnalyze('2024-08-13');
       if (!dailyStatistics) {
         alert('네트워크 연결이 불안정합니다. 잠시 후 다시 시도해주세요.');
         return;
@@ -89,7 +89,7 @@ const StatisticMain: React.FC<any> = () => {
               flex: 1; //통계 전체 컨테이너 (대시보드)
               flex-direction: column;
               background-color: ${palette.neutral[50]};
-              padding-vertical: ${rsHeight * 16 + 'px'};
+              padding-vertical: ${rsHeight * 20 + 'px'};
               gap: ${rsHeight * 16 + 'px'};
               padding-top: ${rsHeight * 40 + 'px'};
             `}>

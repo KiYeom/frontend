@@ -1,6 +1,6 @@
 import styled from '@emotion/native';
 import React, { useState } from 'react';
-import { Modal, TouchableWithoutFeedback } from 'react-native';
+import { Modal, TouchableWithoutFeedback, View } from 'react-native';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import Button from '../button/button';
 import DateTimePicker, { DateType, ModeType } from 'react-native-ui-datepicker';
@@ -47,21 +47,23 @@ const RangeDatePickerModal = ({
         <ModalContainer>
           <TouchableWithoutFeedback>
             <ModalInner>
-              <DateTimePicker
-                open={true}
-                mode="range"
-                locale="kor"
-                onChange={(newRange) => {
-                  setLocalRange(newRange); // localRange 업데이트
-                }}
-                startDate={localRange.startDate}
-                endDate={localRange.endDate}
-                date={date}
-                displayFullDays
-              />
+              <View>
+                <DateTimePicker
+                  open={true}
+                  mode="range"
+                  locale="kor"
+                  onChange={(newRange) => {
+                    setLocalRange(newRange); // localRange 업데이트
+                  }}
+                  startDate={localRange.startDate}
+                  endDate={localRange.endDate}
+                  date={date}
+                  displayFullDays
+                />
+              </View>
               <DescText>
                 {!validateDate(localRange.startDate, localRange.endDate) &&
-                  '날짜를 올바르게 입력해주셈'}
+                  '날짜를 올바르게 입력해주세요.'}
               </DescText>
               <Button
                 title="입력 완료"
@@ -88,7 +90,7 @@ const ModalContainer = styled.View`
 `;
 
 const ModalInner = styled.View`
-  width: 350px;
+  width: auto;
   background-color: white;
   padding: ${rsHeight * 30 + 'px'} ${rsWidth * 20 + 'px'};
   border-radius: 30px;
