@@ -80,6 +80,9 @@
     "react-native-svg-transformer": "^1.5.0",
     "typescript": "~5.3.3"
   },
+  "overrides": {
+    "expo-modules-core": "1.12.20"
+  },
   "private": true,
   "proxy": "http://34.125.112.144:8000"
 }
