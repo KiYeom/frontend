@@ -1,6 +1,6 @@
 import React from 'react';
 import { WebView } from 'react-native-webview';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const ChannelTalk: React.FC = () => {
@@ -14,6 +14,7 @@ const ChannelTalk: React.FC = () => {
       <WebView
         source={{ uri: 'https://j2wk7.channel.io/home' }}
         allowsBackForwardNavigationGestures={true}
+        mediaCapturePermissionGrantType={'deny'} //FIX: ios 권한 없어서 튕기는 문제 발생
         style={styles.webview}
       />
     </View>
