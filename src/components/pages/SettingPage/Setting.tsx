@@ -133,9 +133,10 @@ const Setting: React.FC<any> = ({ navigation }) => {
         <MenuRow
           text="문의하기"
           onPress={() =>
-            navigation.navigate(RootStackName.SettingStackNavigator, {
-              screen: SettingStackName.ChannelTalk,
-            })
+            // navigation.navigate(RootStackName.SettingStackNavigator, {
+            //   screen: SettingStackName.ChannelTalk,
+            // })
+            Linking.openURL('https://j2wk7.channel.io/home')
           }
         />
         <MenuRow
