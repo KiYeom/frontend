@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Platform } from 'react-native';
+import { Linking, Platform, Text, TouchableOpacity, View } from 'react-native';
 import { useEffect } from 'react';
 import {
   LoginBtnLabel,
@@ -20,6 +20,10 @@ import { getAccessToken, setInfoWhenLogin, setTokenInfo } from '../../../utils/s
 import { TVender } from '../../../constants/types';
 import { UseSigninStatus } from '../../../utils/signin-status';
 import { AuthStackName } from '../../../constants/Constants';
+import palette from '../../../assets/styles/theme';
+import CustomCheckBox from '../../atoms/CustomCheckBox';
+import { rsHeight } from '../../../utils/responsive-size';
+import { Checkbox } from 'react-native-ui-lib';
 
 const googleLogin = async (): Promise<boolean> => {
   GoogleSignin.configure({
@@ -104,8 +108,13 @@ const appleLogin = async (): Promise<boolean> => {
 //로그인 페이지
 const Login: React.FC<any> = ({ navigation }) => {
   const { SigninStatus, setSigninStatus } = UseSigninStatus();
+  const [legelAllowed, setLegelAllowed] = React.useState<boolean>(false);
   const [loading, setLoading] = React.useState<boolean>(false);
   const onHandleLogin = async (vendor: TVender) => {
+    if (!legelAllowed) {
+      alert('서비스 이용약관 및 개인정보 처리방침에 동의해주세요.');
+      return;
+    }
     setLoading(true);
     let isSsoLoginSuccess = false;
     try {
@@ -149,6 +158,7 @@ const Login: React.FC<any> = ({ navigation }) => {
           <LoginBtnIcon source={require('../../../assets/images/kakao.png')} />
           <LoginBtnLabel vendor="kakao">카카오 로그인</LoginBtnLabel>
         </LoginBtn> */}
+
         <LoginBtn
           vendor="google"
           activeOpacity={1}
@@ -167,6 +177,39 @@ const Login: React.FC<any> = ({ navigation }) => {
             <LoginBtnLabel vendor="apple">애플로 로그인</LoginBtnLabel>
           </LoginBtn>
         )}
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => {
+            setLegelAllowed(!legelAllowed);
+          }}>
+          <Checkbox
+            value={legelAllowed}
+            onValueChange={() => {
+              setLegelAllowed(!legelAllowed);
+            }}
+            label={'서비스 이용약관 및 개인정보 처리방침에 동의합니다.'}
+            color={legelAllowed ? palette.primary[400] : palette.neutral[200]}
+            labelStyle={{ fontSize: 12 }} //라벨 스타일링
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() =>
+            Linking.openURL(
+              'https://autumn-flier-d18.notion.site/reMIND-167ef1180e2d42b09d019e6d187fccfd',
+            )
+          }>
+          <Text
+            style={css`
+              text-align: center;
+              justify-content: center;
+              align-items: end;
+              text-family: 'Prentendard-Regular';
+              color: blue;
+            `}>
+            약관 확인
+          </Text>
+        </TouchableOpacity>
       </ButtonContainer>
     </Container>
   );
