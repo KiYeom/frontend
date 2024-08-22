@@ -140,11 +140,27 @@ const Setting: React.FC<any> = ({ navigation }) => {
           }
         />
         <MenuRow
+          text="서비스 이용약관"
+          onPress={
+            () =>
+              Linking.openURL(
+                'https://autumn-flier-d18.notion.site/reMIND-167ef1180e2d42b09d019e6d187fccfd',
+              )
+            // navigation.navigate(RootStackName.SettingStackNavigator, {
+            //   screen: SettingStackName.PrivacyPolicy,
+            // })
+          }
+        />
+        <MenuRow
           text="개인정보 처리방침"
-          onPress={() =>
-            navigation.navigate(RootStackName.SettingStackNavigator, {
-              screen: SettingStackName.PrivacyPolicy,
-            })
+          onPress={
+            () =>
+              Linking.openURL(
+                'https://autumn-flier-d18.notion.site/reMIND-167ef1180e2d42b09d019e6d187fccfd',
+              )
+            // navigation.navigate(RootStackName.SettingStackNavigator, {
+            //   screen: SettingStackName.PrivacyPolicy,
+            // })
           }
         />
         <MenuRow

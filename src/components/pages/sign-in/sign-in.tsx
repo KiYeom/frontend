@@ -109,10 +109,11 @@ const appleLogin = async (): Promise<boolean> => {
 const Login: React.FC<any> = ({ navigation }) => {
   const { SigninStatus, setSigninStatus } = UseSigninStatus();
   const [legelAllowed, setLegelAllowed] = React.useState<boolean>(false);
+  const [fourth, setFourth] = React.useState<boolean>(false);
   const [loading, setLoading] = React.useState<boolean>(false);
   const onHandleLogin = async (vendor: TVender) => {
-    if (!legelAllowed) {
-      alert('서비스 이용약관 및 개인정보 처리방침에 동의해주세요.');
+    if (!legelAllowed || !fourth) {
+      alert('이용약관, 개인정보 처리방침 및 연령 제한을 확인해주세요.');
       return;
     }
     setLoading(true);
@@ -189,7 +190,22 @@ const Login: React.FC<any> = ({ navigation }) => {
             }}
             label={'서비스 이용약관 및 개인정보 처리방침에 동의합니다.'}
             color={legelAllowed ? palette.primary[400] : palette.neutral[200]}
-            labelStyle={{ fontSize: 12 }} //라벨 스타일링
+            labelStyle={{ fontSize: 14 }} //라벨 스타일링
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => {
+            setFourth(!fourth);
+          }}>
+          <Checkbox
+            value={fourth}
+            onValueChange={() => {
+              setFourth(!fourth);
+            }}
+            label={'만 14세 이상입니다.'}
+            color={fourth ? palette.primary[400] : palette.neutral[200]}
+            labelStyle={{ fontSize: 14 }} //라벨 스타일링
           />
         </TouchableOpacity>
         <TouchableOpacity
