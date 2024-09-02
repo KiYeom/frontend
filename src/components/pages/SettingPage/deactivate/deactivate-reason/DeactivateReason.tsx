@@ -10,7 +10,6 @@ import { FormContainer } from './DeactivateReason.style';
 import { reasons } from '../../../../../constants/Constants';
 import { useEffect } from 'react';
 import { TouchableWithoutFeedback } from 'react-native';
-import { deactivate } from '../../../../../apis/setting';
 import {
   Container,
   SignOutTitle,

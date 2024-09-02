@@ -49,7 +49,7 @@ const Input = (props: InputProps) => {
         pointerEvents={onPressContainer ? 'none' : 'auto'}
       />
       {showRightIcon && (
-        <IconContainer onPress={onPressContainer ?? onPressIcon}>
+        <IconContainer onPress={onPressContainer ?? onPressIcon} disabled={disabled}>
           <Icon
             name={rightIcon}
             width={rsWidth * 16}
