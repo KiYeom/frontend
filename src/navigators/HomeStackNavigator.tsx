@@ -23,8 +23,16 @@ const HomeStackNavigator: React.FC = () => {
         component={Chat}
         options={{ headerShown: true, header: () => <Header title="쿠키의 채팅방" /> }}
       />
-      <HomeStack.Screen name={HomeStackName.LargeEmotionChart} component={LargeEmotionChart} />
-      <HomeStack.Screen name={HomeStackName.SmallEmotionChart} component={SmallEmotionChart} />
+      <HomeStack.Screen
+        name={HomeStackName.LargeEmotionChart}
+        component={LargeEmotionChart}
+        options={{ headerShown: true, header: () => <Header title="감정 기록" /> }}
+      />
+      <HomeStack.Screen
+        name={HomeStackName.SmallEmotionChart}
+        component={SmallEmotionChart}
+        options={{ headerShown: true, header: () => <Header title="감정 기록" /> }}
+      />
     </HomeStack.Navigator>
   );
 };

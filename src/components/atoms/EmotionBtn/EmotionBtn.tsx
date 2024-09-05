@@ -27,8 +27,8 @@ const EmotionBtn = ({ navigation }) => {
       <HomeBtn
         onPress={() =>
           navigation.navigate(RootStackName.HomeStackNavigator, {
-            //screen: HomeStackName.LargeEmotionChart,
-            screen: HomeStackName.SmallEmotionChart,
+            screen: HomeStackName.LargeEmotionChart,
+            //screen: HomeStackName.SmallEmotionChart,
           })
         }></HomeBtn>
     </>

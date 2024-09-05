@@ -1,108 +1,108 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, FlatList, StyleSheet, Dimensions } from 'react-native';
-import { Title, Desc } from './EmotionChart.style';
+import React, { useRef, useState } from 'react';
+import { StyleSheet, ScrollView } from 'react-native';
+import { View, Text, Carousel, Image, Colors, Spacings, Constants } from 'react-native-ui-lib';
+import palette from '../../../assets/styles/theme';
+import { rsWidth, rsHeight, rsFont } from '../../../utils/responsive-size';
 import { HomeContainer } from './Home.style';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Desc, Title } from './EmotionChart.style';
 import Button from '../../button/button';
+import EmotionChip from '../../atoms/EmotionChip/EmotionChip';
+import { HomeStackName, RootStackName, TabScreenName } from '../../../constants/Constants';
+const INITIAL_PAGE = 2;
+const IMAGES = [
+  'https://images.pexels.com/photos/2529159/pexels-photo-2529159.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
+  'https://images.pexels.com/photos/2529146/pexels-photo-2529146.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
+  'https://images.pexels.com/photos/2529158/pexels-photo-2529158.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
+];
 
-const screenWidth = Dimensions.get('window').width;
-const itemWidth = screenWidth * 0.45; // 각 항목의 너비를 화면 너비의 45%로 설정
-const itemHeight = 120; // 각 항목의 높이를 설정
+const BACKGROUND_COLORS = [
+  Colors.red50,
+  Colors.yellow20,
+  Colors.purple50,
+  Colors.green50,
+  Colors.cyan50,
+  Colors.red50,
+];
 
-const SmallEmotionChart: React.FC = () => {
-  const insets = useSafeAreaInsets();
+const SmallEmotionChart = ({ navigation }) => {
   const [count, setCount] = useState(0);
-  const emotions = [
-    { id: 1, emoji: '😠', label: '격분한' },
-    { id: 2, emoji: '😐', label: '지루한' },
-    { id: 3, emoji: '😢', label: '슬픈' },
-    { id: 4, emoji: '😊', label: '기쁜' },
-    { id: 5, emoji: '😇', label: '평온한' },
-    { id: 6, emoji: '😱', label: '놀란' },
-    { id: 7, emoji: '😡', label: '화난' },
-    { id: 8, emoji: '😃', label: '행복한' },
-    // 필요한 만큼 감정 데이터를 추가
-  ];
+  const insets = useSafeAreaInsets();
+  const carouselRef = useRef(null);
+  const [currentPage, setCurrentPage] = useState(INITIAL_PAGE);
 
-  // 두 개씩 묶어서 세트로 나누기
-  const groupedEmotions = [];
-  for (let i = 0; i < emotions.length; i += 2) {
-    groupedEmotions.push(emotions.slice(i, i + 2));
-  }
+  const getWidth = () => {
+    //return Constants.windowWidth - Spacings.s5 * 2;
+    return rsWidth * 150; //캐러셀 안에 들어있는거 너비
+  };
 
-  const renderItem = ({ item, index }) => {
-    const firstRow = groupedEmotions[index];
-    const secondRow = groupedEmotions[index + 1] || []; // 두 번째 줄이 없으면 빈 배열
-    return (
-      <View style={styles.page}>
-        <View style={styles.row}>
-          {firstRow.map((emotion) => (
-            <View key={emotion.id} style={styles.emotionCard}>
-              <Text style={styles.emoji}>{emotion.emoji}</Text>
-              <Text>{emotion.label}</Text>
-            </View>
-          ))}
-        </View>
-        <View style={styles.row}>
-          {secondRow.map((emotion) => (
-            <View key={emotion.id} style={styles.emotionCard}>
-              <Text style={styles.emoji}>{emotion.emoji}</Text>
-              <Text>{emotion.label}</Text>
-            </View>
-          ))}
-        </View>
-      </View>
-    );
+  const onChangePage = (currentPage) => {
+    setCurrentPage(currentPage);
+  };
+
+  const onPagePress = (index) => {
+    console.log('page changed!');
+    if (carouselRef.current) {
+      carouselRef.current.goToPage(index, true);
+    }
   };
 
   return (
     <HomeContainer insets={insets}>
       <Title>감정 기록</Title>
-      <Desc>오늘의 감정을 알려주세요</Desc>
-      <FlatList
-        data={groupedEmotions}
-        horizontal
-        pagingEnabled
-        renderItem={renderItem}
-        keyExtractor={(item, index) => `page-${index}`}
-        showsHorizontalScrollIndicator={false}
-        style={styles.flatList}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{ flex: 1, backgroundColor: 'yellow' }}
+        contentContainerStyle={{ flexGrow: 1 }}>
+        <Text h1 margin-20 $textDefault>
+          오늘의 감정을 알려주세요
+        </Text>
+
+        <Carousel
+          ref={carouselRef}
+          onChangePage={onChangePage}
+          pageWidth={getWidth()}
+          itemSpacings={12} //아이템끼리의 거리
+          containerMarginHorizontal={Spacings.s2} //캐러셀 전체 화면이랑 요소 사이에 마진값
+          initialPage={INITIAL_PAGE} //앱이 처음 실행되고 보여줄 초기 페이지
+          containerStyle={{ flex: 1, backgroundColor: 'red' }} //캐러셀 전체 스타일링
+          pageControlPosition={Carousel.pageControlPositions.UNDER} //under면 indicator 밑에서 멈추고, over면 indicator를 덮음
+          pageControlProps={{ onPagePress }}
+          allowAccessibleLayout>
+          {BACKGROUND_COLORS.map((color, index) => (
+            <View key={index} style={[styles.page, { backgroundColor: color, gap: 12 }]}>
+              {/*<Text margin-15>CARD {index}</Text>*/}
+              <EmotionChip emotion={{ emoji: '1', label: '테스트' }} />
+              <EmotionChip emotion={{ emoji: '1', label: '테스트' }} />
+              <EmotionChip emotion={{ emoji: '1', label: '테스트' }} />
+              <EmotionChip emotion={{ emoji: '1', label: '테스트' }} />
+              <EmotionChip emotion={{ emoji: '1', label: '테스트' }} />
+              <EmotionChip emotion={{ emoji: '1', label: '테스트' }} />
+            </View>
+          ))}
+        </Carousel>
+      </ScrollView>
+      <Title>기록한 감정</Title>
+      <View style={{ height: 100, backgroundColor: 'green' }}></View>
+      <Button
+        title={`감정 ${count}개 기록하기`}
+        primary={true}
+        onPress={() => navigation.navigate(TabScreenName.Home)}
       />
-      <View>
-        <Title>기록한 감정</Title>
-      </View>
-      <View>
-        <Desc>감정 키워드는 3~5개 선택힐 수 있습니다.</Desc>
-        <Button title={`감정 ${count}개 선택함`} primary={count > 0} />
-      </View>
     </HomeContainer>
   );
 };
 
 const styles = StyleSheet.create({
-  flatList: {
-    flexGrow: 0,
-  },
   page: {
-    width: screenWidth,
-    justifyContent: 'center',
-    paddingVertical: 10,
+    flex: 1,
+    borderWidth: 1,
+    borderRadius: 8,
   },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 10,
-  },
-  emotionCard: {
-    width: itemWidth,
-    height: itemHeight,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#f0f0f0',
-    borderRadius: 10,
-  },
-  emoji: {
-    fontSize: 24,
+  loopCarousel: {
+    position: 'absolute',
+    bottom: 15,
+    left: 10,
   },
 });
 
