@@ -9,6 +9,7 @@ import {
   setDeviceId,
 } from './src/utils/storageUtils';
 import * as SplashScreen from 'expo-splash-screen';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useFonts } from 'expo-font';
 import AuthStackNavigator from './src/navigators/AuthStackNavigator';
 import palette from './src/assets/styles/theme';
