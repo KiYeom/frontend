@@ -12,6 +12,7 @@ import HappyEmotion from './svg/happy-emotion';
 import AngryEmotion from './svg/angry-emotion';
 import SadEmotion from './svg/sad-emotion';
 import RelaxEmotion from './svg/relax-emotion';
+import CheckIcon from './svg/check-icon';
 
 export type TIconName =
   | 'airplane'
@@ -26,7 +27,8 @@ export type TIconName =
   | 'happy-emotion'
   | 'angry-emotion'
   | 'sad-emotion'
-  | 'relax-emotion';
+  | 'relax-emotion'
+  | 'check-icon';
 
 export default function Icon({
   width,
@@ -66,5 +68,7 @@ export default function Icon({
       return <SadEmotion width={width} height={height} color={color} />;
     case 'relax-emotion':
       return <RelaxEmotion width={width} height={height} color={color} />;
+    case 'check-icon':
+      return <CheckIcon width={width} height={height} color={color} />;
   }
 }

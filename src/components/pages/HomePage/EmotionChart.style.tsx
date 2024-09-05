@@ -41,6 +41,8 @@ export const LargeEmotionComponent = styled.TouchableOpacity<{ color: string }>`
   height: ${rsHeight * 50 + 'px'};
   width: ${rsWidth * 150 + 'px'};
   border-radius: 10px;
+  justify-content: center;
+  align-items: center;
 `;
 
 //전체 화면

@@ -88,7 +88,6 @@ const SmallEmotionChart = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const carouselRef = useRef(null);
   const [currentPage, setCurrentPage] = useState(INITIAL_PAGE);
-  const [selectedEmotion, setSelectedEmotion] = useState(null);
   const [selectedEmotions, setSelectedEmotions] = useState([]); // 선택된 감정들 저장
 
   const handleEmotionListClick = (emotion) => {
@@ -118,24 +117,10 @@ const SmallEmotionChart = ({ navigation }) => {
     }
   };
 
-  // EmotionChip 클릭 시 선택된 감정 객체를 상태에 저장하는 함수
-  const handleEmotionClick = (emotion) => {
-    setSelectedEmotion(emotion);
-  };
-
   return (
     <Container>
       <Title>오늘의 감정을 알려주세요</Title>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={
-          {
-            //backgroundColor: 'pink'
-          }
-        }
-        contentContainerStyle={{ flexGrow: 1 }}
-        //</>contentContainerStyle={{ flexGrow: 1 }}
-      >
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
         <Carousel
           ref={carouselRef}
           onChangePage={onChangePage}
@@ -161,6 +146,7 @@ const SmallEmotionChart = ({ navigation }) => {
                   key={emotionIndex}
                   category={emotion.category}
                   detail={emotion.detail}
+                  isSelected={selectedEmotions.some((e) => e.detail === emotion.detail)} // 선택된 감정인지 확인
                   onPress={() => handleEmotionListClick(emotion)}
                 />
               ))}
@@ -179,13 +165,11 @@ const SmallEmotionChart = ({ navigation }) => {
           showsVerticalScrollIndicator={false}
           style={{
             flexGrow: 0,
-            //backgroundColor: 'green',
             paddingVertical: 15 * rsHeight,
           }}
           contentContainerStyle={{
             flexGrow: 1,
             flexDirection: 'row',
-            //paddingHorizontal: rsWidth * 24,
           }}>
           {selectedEmotions.length > 0 ? (
             selectedEmotions.map((emotion, index) => (
@@ -215,7 +199,6 @@ const SmallEmotionChart = ({ navigation }) => {
                 justify-content: center;
                 height: ${rsHeight * 100 + 'px'};
                 width: ${rsWidth * 100 + 'px'};
-                //background-color: lightgray;
                 border-radius: 10px;
                 margin-right: ${rsWidth * 8 + 'px'};
               `}>
@@ -226,9 +209,6 @@ const SmallEmotionChart = ({ navigation }) => {
       </View>
       <View
         style={css`
-          //background-color: orange;
-          //padding-bottom: ${rsHeight * 40 + 'px'};
-          //padding-horizontal: ${rsWidth * 24 + 'px'};
           gap: ${rsHeight * 8 + 'px'};
         `}>
         <EmotionDesc>
@@ -238,7 +218,7 @@ const SmallEmotionChart = ({ navigation }) => {
         </EmotionDesc>
 
         <Button
-          title={`감정 ${count}개 기록하기`}
+          title={`감정 ${selectedEmotions.length}개 기록하기`}
           primary={true}
           onPress={() => navigation.navigate(TabScreenName.Home)}
         />
