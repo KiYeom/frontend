@@ -13,6 +13,8 @@ import { HomeStackName, RootStackName, TabScreenName } from '../../../constants/
 import { DescText } from '../StatisticPage/StatisticMain.style';
 import { css } from '@emotion/native';
 import { EmotionDesc } from './EmotionChart.style';
+import { TIconName } from '../../icons/icons';
+import Icon from '../../icons/icons';
 const INITIAL_PAGE = 2;
 const IMAGES = [
   'https://images.pexels.com/photos/2529159/pexels-photo-2529159.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
@@ -87,6 +89,18 @@ const SmallEmotionChart = ({ navigation }) => {
   const carouselRef = useRef(null);
   const [currentPage, setCurrentPage] = useState(INITIAL_PAGE);
   const [selectedEmotion, setSelectedEmotion] = useState(null);
+  const [selectedEmotions, setSelectedEmotions] = useState([]); // 선택된 감정들 저장
+
+  const handleEmotionListClick = (emotion) => {
+    // 이미 선택된 감정인지 확인
+    if (selectedEmotions.some((e) => e.detail === emotion.detail)) {
+      // 이미 선택된 경우, 리스트에서 제거
+      setSelectedEmotions(selectedEmotions.filter((e) => e.detail !== emotion.detail));
+    } else {
+      // 선택된 감정 추가
+      setSelectedEmotions([...selectedEmotions, emotion]);
+    }
+  };
 
   const getWidth = () => {
     //return Constants.windowWidth - Spacings.s5 * 2;
@@ -147,7 +161,7 @@ const SmallEmotionChart = ({ navigation }) => {
                   key={emotionIndex}
                   category={emotion.category}
                   detail={emotion.detail}
-                  onPress={() => handleEmotionClick(emotion)}
+                  onPress={() => handleEmotionListClick(emotion)}
                 />
               ))}
             </View>
@@ -161,6 +175,7 @@ const SmallEmotionChart = ({ navigation }) => {
         `}>
         <SmallTitle>기록한 감정</SmallTitle>
         <ScrollView
+          horizontal
           showsVerticalScrollIndicator={false}
           style={{
             flexGrow: 0,
@@ -172,27 +187,41 @@ const SmallEmotionChart = ({ navigation }) => {
             flexDirection: 'row',
             //paddingHorizontal: rsWidth * 24,
           }}>
-          <View
-            style={css`
-              height: ${rsHeight * 100 + 'px'};
-              width: ${rsWidth * 100 + 'px'};
-              background-color: gray;
-              border-radius: 10px;
-              margin-right: ${rsWidth * 8 + 'px'};
-            `}>
-            <Text>테스트</Text>
-          </View>
-
-          <View
-            style={css`
-              height: ${rsHeight * 100 + 'px'};
-              width: ${rsWidth * 100 + 'px'};
-              background-color: gray;
-              border-radius: 10px;
-              margin-left: ${rsWidth * 8 + 'px'};
-            `}>
-            <Text>테스트2</Text>
-          </View>
+          {selectedEmotions.length > 0 ? (
+            selectedEmotions.map((emotion, index) => (
+              <View
+                key={index}
+                style={css`
+                  height: ${rsHeight * 100 + 'px'};
+                  width: ${rsWidth * 100 + 'px'};
+                  background-color: gray;
+                  border-radius: 10px;
+                  margin-right: ${rsWidth * 8 + 'px'};
+                  align-items: center;
+                  justify-content: center;
+                `}>
+                <Icon
+                  name={`${emotion.category}-emotion` as TIconName}
+                  width={rsWidth * 25 + 'px'}
+                />
+                <Text>{emotion.detail}</Text>
+              </View>
+            ))
+          ) : (
+            <View
+              style={css`
+                flex: 1;
+                align-items: center;
+                justify-content: center;
+                height: ${rsHeight * 100 + 'px'};
+                width: ${rsWidth * 100 + 'px'};
+                //background-color: lightgray;
+                border-radius: 10px;
+                margin-right: ${rsWidth * 8 + 'px'};
+              `}>
+              <Text>감정을 선택해주세요</Text>
+            </View>
+          )}
         </ScrollView>
       </View>
       <View
@@ -203,7 +232,9 @@ const SmallEmotionChart = ({ navigation }) => {
           gap: ${rsHeight * 8 + 'px'};
         `}>
         <EmotionDesc>
-          {selectedEmotion ? `${selectedEmotion.detail} : ${selectedEmotion.desc}` : ''}
+          {selectedEmotions.length > 0
+            ? `${selectedEmotions[selectedEmotions.length - 1].detail} : ${selectedEmotions[selectedEmotions.length - 1].desc}`
+            : ''}
         </EmotionDesc>
 
         <Button
