@@ -5,14 +5,17 @@ import palette from '../../../assets/styles/theme';
 //제목
 export const Title = styled.Text`
   font-family: Pretendard-Semibold;
-  font-size: ${rsFont * 24 + 'px'};
+  font-size: ${rsFont * 28 + 'px'};
   color: ${palette.neutral[500]};
   text-align: center;
 `;
 
-//제목 컨테이너
-export const TitleContainer = styled.View`
-  padding-top: ${rsHeight * 30 + 'px'};
+//소제목
+export const SmallTitle = styled.Text`
+  font-family: Pretendard-Semibold;
+  font-size: ${rsFont * 20 + 'px'};
+  color: ${palette.neutral[500]};
+  text-align: left;
 `;
 
 //아래 설명 글
@@ -43,22 +46,20 @@ export const LargeEmotionComponent = styled.TouchableOpacity<{ color: string }>`
 //전체 화면
 export const Container = styled.View`
   flex: 1;
-  padding-vertical: ${rsHeight * 40 + 'px'};
+  padding-bottom: ${rsHeight * 40 + 'px'};
+  padding-top: ${rsHeight * 20 + 'px'};
   padding-horizontal: ${rsWidth * 24 + 'px'};
 `;
-
-/*
-export const TabLabel = styled.Text<{ isFocused: boolean }>`
-  font-size: ${13 * rsFont + 'px'};
-  font-family: Pretendard-Medium;
-  width: 100%;
-  text-align: center;
-  color: ${(props) => (props.isFocused ? palette.primary[500] : palette.neutral[300])};
-`;
-*/
 
 //기록한 감정
 export const RecordedEmotion = styled.ScrollView`
   flex-direction: row;
   background-color: purple;
+`;
+
+//감정 설명 창
+export const EmotionDesc = styled.Text`
+  font-size: ${rsFont * 14 + 'px'};
+  font-family: Pretendard-Medium;
+  text-align: center;
 `;

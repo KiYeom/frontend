@@ -1,12 +1,6 @@
 import React from 'react';
 import { Text } from 'react-native-paper';
-import {
-  Title,
-  Desc,
-  EmotionLevel,
-  LargeEmotionComponent,
-  TitleContainer,
-} from './EmotionChart.style';
+import { Title, Desc, EmotionLevel, LargeEmotionComponent } from './EmotionChart.style';
 import { Container } from './EmotionChart.style';
 import { CTAContainer } from '../sign-up/input-name/input-name.styles';
 import { View } from 'react-native-ui-lib';

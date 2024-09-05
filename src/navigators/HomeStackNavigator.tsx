@@ -16,22 +16,22 @@ const HomeStackNavigator: React.FC = () => {
       screenOptions={{
         gestureEnabled: false,
         animation: 'slide_from_bottom', // This enables the slide up animation
-        headerShown: false,
+        headerShown: true,
       }}>
       <HomeStack.Screen
         name={HomeStackName.Chat}
         component={Chat}
-        options={{ headerShown: true, header: () => <Header title="쿠키의 채팅방" /> }}
+        options={{ header: () => <Header title="쿠키의 채팅방" /> }}
       />
       <HomeStack.Screen
         name={HomeStackName.LargeEmotionChart}
         component={LargeEmotionChart}
-        options={{ headerShown: true, header: () => <Header title="감정 기록" /> }}
+        options={{ header: () => <Header /> }}
       />
       <HomeStack.Screen
         name={HomeStackName.SmallEmotionChart}
         component={SmallEmotionChart}
-        options={{ headerShown: true, header: () => <Header title="감정 기록" /> }}
+        options={{ header: () => <Header /> }}
       />
     </HomeStack.Navigator>
   );
