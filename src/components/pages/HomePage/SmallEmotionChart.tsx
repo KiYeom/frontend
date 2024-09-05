@@ -202,11 +202,10 @@ const SmallEmotionChart = ({ navigation }) => {
           //padding-horizontal: ${rsWidth * 24 + 'px'};
           gap: ${rsHeight * 8 + 'px'};
         `}>
-        {selectedEmotion && (
-          <EmotionDesc>
-            {selectedEmotion.detail} : {selectedEmotion.desc}
-          </EmotionDesc>
-        )}
+        <EmotionDesc>
+          {selectedEmotion ? `${selectedEmotion.detail} : ${selectedEmotion.desc}` : ''}
+        </EmotionDesc>
+
         <Button
           title={`감정 ${count}개 기록하기`}
           primary={true}
