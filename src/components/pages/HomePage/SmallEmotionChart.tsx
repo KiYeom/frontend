@@ -128,7 +128,13 @@ const SmallEmotionChart = ({ navigation }) => {
 
   return (
     <Container>
-      <Title>오늘의 감정을 알려주세요</Title>
+      <Title
+        style={css`
+          margin-left: ${rsWidth * 24 + 'px'};
+          text-align: left;
+        `}>
+        오늘의 감정을 알려주세요
+      </Title>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
         <Carousel
           ref={carouselRef}
@@ -169,7 +175,7 @@ const SmallEmotionChart = ({ navigation }) => {
           padding-horizontal: ${rsWidth * 24 + 'px'};
           flex-grow: 0;
         `}>
-        <SmallTitle>기록한 감정</SmallTitle>
+        <SmallTitle>기록한 감정 ({selectedEmotions.length}/5)</SmallTitle>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -218,8 +224,9 @@ const SmallEmotionChart = ({ navigation }) => {
               : ''}
           </EmotionDesc>
           <Button
-            title={`감정 ${selectedEmotions.length}개 기록하기`}
+            title={selectedEmotions.length < 3 ? `3개 이상 감정을 골라주세요` : `감정 기록하기`}
             primary={true}
+            disabled={selectedEmotions.length < 3 || selectedEmotions.length > 5}
             onPress={() => navigation.navigate(TabScreenName.Home)}
           />
         </View>

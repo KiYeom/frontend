@@ -61,6 +61,7 @@ const LargeEmotionChart: React.FC = ({ navigation }) => {
         <Button
           title="기분 선택하기"
           primary={true}
+          disabled={selectedEmotionIndex == null}
           onPress={() =>
             navigation.navigate(RootStackName.HomeStackNavigator, {
               screen: HomeStackName.SmallEmotionChart,
