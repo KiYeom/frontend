@@ -2,9 +2,11 @@ import styled from '@emotion/native';
 import palette from '../../../assets/styles/theme';
 import { ratio, rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 
-export const HomeBtn = styled.TouchableOpacity`
-  height: ${rsHeight * 400 + 'px'};
+export const HomeBtn = styled.TouchableOpacity<{ status: string }>`
+  height: ${rsHeight * 279 + 'px'};
   background-color: ${palette.primary[50]};
+  background-color: ${(props) =>
+    props.status === 'home' ? palette.primary[50] : palette.neutral[50]};
   border-radius: ${ratio * 20 + 'px'};
 `;
 
@@ -29,9 +31,10 @@ export const HomeBtnDescription = styled.View`
   height: auto;
 `;
 
-export const HomeBtnText = styled.Text`
+export const HomeBtnText = styled.Text<{ status: string }>`
   font-size: ${rsFont * 16 + 'px'};
-  color: ${palette.primary[500]};
+  //color: ${palette.primary[500]};
+  color: ${(props) => (props.status === 'home' ? palette.primary[500] : palette.neutral[500])};
   font-family: Pretendard-Medium;
   letter-spacing: ${rsWidth * -0.41 + 'px'};
   line-height: ${rsHeight * 32 + 'px'};
@@ -50,8 +53,17 @@ export const CookieImage = styled.Image`
   position: absolute;
   right: 0;
   bottom: 0;
-  width: ${rsWidth * 297 + 'px'};
-  height: ${rsHeight * 247 + 'px'};
+  width: ${rsWidth * 220 + 'px'};
+  height: ${rsHeight * 177 + 'px'};
+  object-fit: contain;
+`;
+
+export const EmotionImage = styled.Image`
+  position: absolute;
+  right: 20;
+  bottom: -20;
+  width: ${rsWidth * 300 + 'px'};
+  height: ${rsHeight * 177 + 'px'};
   object-fit: contain;
 `;
 

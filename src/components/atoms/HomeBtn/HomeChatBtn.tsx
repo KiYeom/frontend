@@ -29,13 +29,14 @@ const HomeChatBtn = ({ navigation }) => {
     <HomeBtn
       onPress={() =>
         navigation.navigate(RootStackName.HomeStackNavigator, { screen: HomeStackName.Chat })
-      }>
+      }
+      status={'home'}>
       <HomeBtnTitle>
         {name}님,{'\n'}오늘은 어떤 하루를 보내셨나요?
       </HomeBtnTitle>
 
       <HomeBtnDescription>
-        <HomeBtnText>쿠키와 대화하러 가기</HomeBtnText>
+        <HomeBtnText status={'home'}>쿠키와 대화하러 가기</HomeBtnText>
         <Icon
           name="arrow-right"
           width={rsWidth * 6 + 'px'}
