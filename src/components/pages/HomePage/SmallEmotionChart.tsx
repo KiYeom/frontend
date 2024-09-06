@@ -99,6 +99,9 @@ const SmallEmotionChart = ({ navigation }) => {
       setSelectedEmotions(selectedEmotions.filter((e) => e.detail !== emotion.detail));
     } else {
       // 선택된 감정 추가
+      if (selectedEmotions.length >= 5) {
+        return;
+      }
       setSelectedEmotions([...selectedEmotions, emotion]);
     }
   };
@@ -203,7 +206,7 @@ const SmallEmotionChart = ({ navigation }) => {
                 border-radius: 10px;
                 margin-right: ${rsWidth * 8 + 'px'};
               `}>
-              <Text>감정을 선택해주세요</Text>
+              <Text style={css``}></Text>
             </View>
           )}
         </ScrollView>
