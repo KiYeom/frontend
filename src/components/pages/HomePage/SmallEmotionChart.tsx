@@ -15,6 +15,7 @@ import { css } from '@emotion/native';
 import { EmotionDesc } from './EmotionChart.style';
 import { TIconName } from '../../icons/icons';
 import Icon from '../../icons/icons';
+import EmotionCard from '../../atoms/EmotionCard/EmotionCard';
 
 const INITIAL_PAGE = 2;
 const IMAGES = [
@@ -120,6 +121,8 @@ const SmallEmotionChart = ({ navigation }) => {
 
   // Chip을 삭제하는 핸들러
   const handleRemoveEmotion = (emotion) => {
+    console.log('삭제 버튼 누름');
+    console.log(selectedEmotions);
     setSelectedEmotions(selectedEmotions.filter((e) => e.detail !== emotion.detail));
   };
 
@@ -169,7 +172,7 @@ const SmallEmotionChart = ({ navigation }) => {
         <SmallTitle>기록한 감정</SmallTitle>
         <ScrollView
           horizontal
-          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
           style={{
             flexGrow: 0,
             paddingVertical: 15 * rsHeight,
@@ -181,28 +184,7 @@ const SmallEmotionChart = ({ navigation }) => {
           }}>
           {selectedEmotions.length > 0 ? (
             selectedEmotions.map((emotion, index) => (
-              <View
-                key={index}
-                style={css`
-                  height: ${rsHeight * 100 + 'px'};
-                  width: ${rsWidth * 100 + 'px'};
-                  background-color: gray;
-                  border-radius: 10px;
-                  margin-right: ${rsWidth * 8 + 'px'};
-                  align-items: center;
-                  justify-content: center;
-                `}>
-                <Icon
-                  name={`${emotion.category}-emotion` as TIconName}
-                  width={rsWidth * 25 + 'px'}
-                />
-                <TouchableOpacity
-                  onPress={() => handleRemoveEmotion(emotion)}
-                  style={{ padding: rsWidth * 4 }}>
-                  <Text>X</Text>
-                </TouchableOpacity>
-                <Text>{emotion.detail}</Text>
-              </View>
+              <EmotionCard key={index} emotion={emotion} onPress={handleRemoveEmotion} />
             ))
           ) : (
             <View

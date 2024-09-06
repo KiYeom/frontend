@@ -13,6 +13,7 @@ import AngryEmotion from './svg/angry-emotion';
 import SadEmotion from './svg/sad-emotion';
 import RelaxEmotion from './svg/relax-emotion';
 import CheckIcon from './svg/check-icon';
+import CancelIcon from './svg/cancel-icon';
 
 export type TIconName =
   | 'airplane'
@@ -28,7 +29,8 @@ export type TIconName =
   | 'angry-emotion'
   | 'sad-emotion'
   | 'relax-emotion'
-  | 'check-icon';
+  | 'check-icon'
+  | 'cancel-icon';
 
 export default function Icon({
   width,
@@ -70,5 +72,7 @@ export default function Icon({
       return <RelaxEmotion width={width} height={height} color={color} />;
     case 'check-icon':
       return <CheckIcon width={width} height={height} color={color} />;
+    case 'cancel-icon':
+      return <CancelIcon width={width} height={height} color={color} />;
   }
 }
