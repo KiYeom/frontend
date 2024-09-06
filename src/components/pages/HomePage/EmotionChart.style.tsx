@@ -29,7 +29,7 @@ export const Desc = styled.Text`
 
 //감정 선택란
 export const EmotionLevel = styled.View`
-  padding-vertical: ${rsHeight * 20 + 'px'};
+  padding-top: ${rsHeight * 40 + 'px'};
   flex: 1;
   justify-content: space-between;
   align-items: center;
@@ -48,9 +48,6 @@ export const LargeEmotionComponent = styled.TouchableOpacity<{ color: string }>`
 //전체 화면
 export const Container = styled.View`
   flex: 1;
-  padding-bottom: ${rsHeight * 40 + 'px'};
-  padding-top: ${rsHeight * 20 + 'px'};
-  padding-horizontal: ${rsWidth * 24 + 'px'};
 `;
 
 //기록한 감정
@@ -61,7 +58,7 @@ export const RecordedEmotion = styled.ScrollView`
 
 //감정 설명 창
 export const EmotionDesc = styled.Text`
-  font-size: ${rsFont * 14 + 'px'};
+  font-size: ${rsFont * 18 + 'px'};
   font-family: Pretendard-Medium;
   text-align: center;
 `;

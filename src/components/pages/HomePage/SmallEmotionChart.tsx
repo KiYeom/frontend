@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { View, Text, Carousel, Image, Colors, Spacings, Constants } from 'react-native-ui-lib';
 import palette from '../../../assets/styles/theme';
 import { rsWidth, rsHeight, rsFont } from '../../../utils/responsive-size';
@@ -15,6 +15,7 @@ import { css } from '@emotion/native';
 import { EmotionDesc } from './EmotionChart.style';
 import { TIconName } from '../../icons/icons';
 import Icon from '../../icons/icons';
+
 const INITIAL_PAGE = 2;
 const IMAGES = [
   'https://images.pexels.com/photos/2529159/pexels-photo-2529159.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
@@ -117,6 +118,11 @@ const SmallEmotionChart = ({ navigation }) => {
     }
   };
 
+  // Chip을 삭제하는 핸들러
+  const handleRemoveEmotion = (emotion) => {
+    setSelectedEmotions(selectedEmotions.filter((e) => e.detail !== emotion.detail));
+  };
+
   return (
     <Container>
       <Title>오늘의 감정을 알려주세요</Title>
@@ -133,11 +139,10 @@ const SmallEmotionChart = ({ navigation }) => {
           pageControlProps={{ onPagePress }}
           //allowAccessibleLayout
         >
-          {BACKGROUND_COLORS.map((color, index) => (
+          {emotions.map((emotionGroup, index) => (
             <View
               key={index}
               style={css`
-                //background-color: ${color};
                 flex: 1;
                 justify-content: space-between;
               `}>
@@ -158,6 +163,8 @@ const SmallEmotionChart = ({ navigation }) => {
       <View
         style={css`
           padding-vertical: 10px;
+          padding-horizontal: ${rsWidth * 24 + 'px'};
+          flex-grow: 0;
         `}>
         <SmallTitle>기록한 감정</SmallTitle>
         <ScrollView
@@ -166,6 +173,7 @@ const SmallEmotionChart = ({ navigation }) => {
           style={{
             flexGrow: 0,
             paddingVertical: 15 * rsHeight,
+            //backgroundColor: 'orange',
           }}
           contentContainerStyle={{
             flexGrow: 1,
@@ -188,6 +196,11 @@ const SmallEmotionChart = ({ navigation }) => {
                   name={`${emotion.category}-emotion` as TIconName}
                   width={rsWidth * 25 + 'px'}
                 />
+                <TouchableOpacity
+                  onPress={() => handleRemoveEmotion(emotion)}
+                  style={{ padding: rsWidth * 4 }}>
+                  <Text>X</Text>
+                </TouchableOpacity>
                 <Text>{emotion.detail}</Text>
               </View>
             ))
@@ -211,17 +224,23 @@ const SmallEmotionChart = ({ navigation }) => {
         style={css`
           gap: ${rsHeight * 8 + 'px'};
         `}>
-        <EmotionDesc>
-          {selectedEmotions.length > 0
-            ? `${selectedEmotions[selectedEmotions.length - 1].detail} : ${selectedEmotions[selectedEmotions.length - 1].desc}`
-            : ''}
-        </EmotionDesc>
-
-        <Button
-          title={`감정 ${selectedEmotions.length}개 기록하기`}
-          primary={true}
-          onPress={() => navigation.navigate(TabScreenName.Home)}
-        />
+        <View
+          style={css`
+            padding-vertical: ${rsHeight * 40 + 'px'};
+            padding-horizontal: ${rsWidth * 24 + 'px'};
+            gap: ${rsHeight * 10 + 'px'};
+          `}>
+          <EmotionDesc>
+            {selectedEmotions.length > 0
+              ? `${selectedEmotions[selectedEmotions.length - 1].detail} : ${selectedEmotions[selectedEmotions.length - 1].desc}`
+              : ''}
+          </EmotionDesc>
+          <Button
+            title={`감정 ${selectedEmotions.length}개 기록하기`}
+            primary={true}
+            onPress={() => navigation.navigate(TabScreenName.Home)}
+          />
+        </View>
       </View>
     </Container>
   );

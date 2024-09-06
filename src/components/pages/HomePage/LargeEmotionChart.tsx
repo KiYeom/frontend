@@ -13,6 +13,7 @@ import { HomeStackName, RootStackName } from '../../../constants/Constants';
 import HomeStackNavigator from '../../../navigators/HomeStackNavigator';
 import { ButtonContainer } from '../sign-in/sing-in.styles';
 import { useState } from 'react';
+import { css } from '@emotion/native';
 
 //대분류 감정 차트
 const LargeEmotionChart: React.FC = ({ navigation }) => {
@@ -34,7 +35,12 @@ const LargeEmotionChart: React.FC = ({ navigation }) => {
 
   return (
     <Container>
-      <Title>오늘 기분은 어떠신가요?</Title>
+      <View
+        style={css`
+          padding-top: ${rsHeight * 40 + 'px'};
+        `}>
+        <Title>오늘 기분은 어떠신가요?</Title>
+      </View>
       <EmotionLevel>
         <Icon name={'happy-emotion'} />
         {posNegEmotion.map((data, index) => (
@@ -45,16 +51,23 @@ const LargeEmotionChart: React.FC = ({ navigation }) => {
             {selectedEmotionIndex === index && <Icon name="check-icon" />}
           </LargeEmotionComponent>
         ))}
+        <Icon name={'angry-emotion'} />
       </EmotionLevel>
-      <Button
-        title="기분 선택하기"
-        primary={true}
-        onPress={() =>
-          navigation.navigate(RootStackName.HomeStackNavigator, {
-            screen: HomeStackName.SmallEmotionChart,
-          })
-        }
-      />
+      <View
+        style={css`
+          padding-vertical: ${rsHeight * 40 + 'px'};
+          padding-horizontal: ${rsWidth * 24 + 'px'};
+        `}>
+        <Button
+          title="기분 선택하기"
+          primary={true}
+          onPress={() =>
+            navigation.navigate(RootStackName.HomeStackNavigator, {
+              screen: HomeStackName.SmallEmotionChart,
+            })
+          }
+        />
+      </View>
     </Container>
   );
 };
