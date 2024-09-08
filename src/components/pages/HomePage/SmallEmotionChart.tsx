@@ -17,6 +17,7 @@ import { TIconName } from '../../icons/icons';
 import Icon from '../../icons/icons';
 import EmotionCard from '../../atoms/EmotionCard/EmotionCard';
 import useEmotionStore from '../../../utils/emotion-status';
+import { todayEmotion } from '../../../apis/analyze';
 
 const INITIAL_PAGE = 2;
 const IMAGES = [
@@ -95,6 +96,7 @@ const SmallEmotionChart = ({ navigation }) => {
   const { selectedEmotions, addEmotion, removeEmotion } = useEmotionStore();
 
   const handleEmotionListClick = (emotion) => {
+    console.log('click', emotion);
     // 이미 선택된 감정인지 확인
     if (selectedEmotions.some((e) => e.detail === emotion.detail)) {
       // 이미 선택된 경우, 리스트에서 제거
@@ -240,7 +242,13 @@ const SmallEmotionChart = ({ navigation }) => {
             title={selectedEmotions.length < 3 ? `3개 이상 감정을 골라주세요` : `감정 기록하기`}
             primary={true}
             disabled={selectedEmotions.length < 3 || selectedEmotions.length > 5}
-            onPress={() => navigation.navigate(TabScreenName.Home)}
+            onPress={async () => {
+              const emotionDetails = selectedEmotions.map((emotion) => emotion.detail);
+              //console.log('emotionDetails', emotionDetails);
+              const res = await todayEmotion(emotionDetails);
+              console.log('res', res);
+              navigation.navigate(TabScreenName.Home);
+            }}
           />
         </View>
       </View>

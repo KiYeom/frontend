@@ -52,3 +52,7 @@ export type TPeriodKeywords = {
   count: number;
   keywords: string[];
 };
+
+export type TEmotions = {
+  keywords: string[];
+};
