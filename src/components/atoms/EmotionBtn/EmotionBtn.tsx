@@ -48,12 +48,25 @@ const EmotionBtn = ({ navigation }) => {
             color={palette.neutral[500]}
           />
         </HomeBtnDescription>
-        <EmotionImage
-          style={{
-            resizeMode: 'contain',
-          }}
-          source={require('../../../assets/images/test.png')}
-        />
+        <View
+          style={css`
+            //background-color: pink;
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: ${rsHeight * 130 + 'px'};
+            justify-content: center;
+            align-items: center;
+          `}>
+          <EmotionImage
+            style={{
+              resizeMode: 'contain',
+              //backgroundColor: 'black',
+            }}
+            source={require('../../../assets/images/test.png')}
+          />
+        </View>
       </HomeBtn>
     </>
   );
