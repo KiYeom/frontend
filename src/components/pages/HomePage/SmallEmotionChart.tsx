@@ -16,6 +16,7 @@ import { EmotionDesc } from './EmotionChart.style';
 import { TIconName } from '../../icons/icons';
 import Icon from '../../icons/icons';
 import EmotionCard from '../../atoms/EmotionCard/EmotionCard';
+import useEmotionStore from '../../../utils/emotion-status';
 
 const INITIAL_PAGE = 2;
 const IMAGES = [
@@ -90,19 +91,22 @@ const SmallEmotionChart = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const carouselRef = useRef(null);
   const [currentPage, setCurrentPage] = useState(INITIAL_PAGE);
-  const [selectedEmotions, setSelectedEmotions] = useState([]); // 선택된 감정들 저장
+  //const [selectedEmotions, setSelectedEmotions] = useState([]); // 선택된 감정들 저장
+  const { selectedEmotions, addEmotion, removeEmotion } = useEmotionStore();
 
   const handleEmotionListClick = (emotion) => {
     // 이미 선택된 감정인지 확인
     if (selectedEmotions.some((e) => e.detail === emotion.detail)) {
       // 이미 선택된 경우, 리스트에서 제거
-      setSelectedEmotions(selectedEmotions.filter((e) => e.detail !== emotion.detail));
+      //setSelectedEmotions(selectedEmotions.filter((e) => e.detail !== emotion.detail));
+      removeEmotion(emotion.detail);
     } else {
       // 선택된 감정 추가
       if (selectedEmotions.length >= 5) {
         return;
       }
-      setSelectedEmotions([...selectedEmotions, emotion]);
+      //setSelectedEmotions([...selectedEmotions, emotion]);
+      addEmotion(emotion);
     }
   };
 
@@ -125,8 +129,9 @@ const SmallEmotionChart = ({ navigation }) => {
   // Chip을 삭제하는 핸들러
   const handleRemoveEmotion = (emotion) => {
     console.log('삭제 버튼 누름');
-    console.log(selectedEmotions);
-    setSelectedEmotions(selectedEmotions.filter((e) => e.detail !== emotion.detail));
+    //console.log(selectedEmotions);
+    //setSelectedEmotions(selectedEmotions.filter((e) => e.detail !== emotion.detail));
+    removeEmotion(emotion.detail);
   };
 
   return (
@@ -193,7 +198,12 @@ const SmallEmotionChart = ({ navigation }) => {
           }}>
           {selectedEmotions.length > 0 ? (
             selectedEmotions.map((emotion, index) => (
-              <EmotionCard key={index} emotion={emotion} onPress={handleRemoveEmotion} />
+              <EmotionCard
+                key={index}
+                emotion={emotion}
+                onPress={handleRemoveEmotion}
+                status={'default'}
+              />
             ))
           ) : (
             <View

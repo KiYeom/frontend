@@ -5,12 +5,12 @@ import { View, TouchableOpacity, Text } from 'react-native';
 import { TIconName } from '../../icons/icons';
 import Icon from '../../icons/icons';
 import palette from '../../../assets/styles/theme';
-const EmotionCard = ({ emotion, onPress }) => {
+const EmotionCard = ({ emotion, onPress, status }) => {
   return (
     <View
       style={css`
         height: ${rsHeight * 100 + 'px'};
-        width: ${rsWidth * 100 + 'px'};
+        width: ${status === 'default' ? rsWidth * 100 + 'px' : rsWidth * 60 + 'px'};
         background-color: white;
         border-radius: 10px;
         margin-right: ${rsWidth * 8 + 'px'};
@@ -19,30 +19,35 @@ const EmotionCard = ({ emotion, onPress }) => {
         justify-content: center;
         border: 1px solid ${palette.neutral[100]};
       `}>
-      <View
-        style={css`
-          width: 100%;
-          flex-direction: row;
-          justify-content: flex-end;
-        `}>
-        <TouchableOpacity
-          onPress={() => onPress(emotion)}
+      {status != 'simple' && (
+        <View
           style={css`
-            padding: ${rsWidth * 4 + 'px'};
-            width: auto;
+            width: 100%;
+            flex-direction: row;
+            justify-content: flex-end;
           `}>
-          <Icon name={'cancel-icon'} />
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity
+            onPress={() => onPress(emotion)}
+            style={css`
+              padding: ${rsWidth * 4 + 'px'};
+              width: auto;
+            `}>
+            <Icon name={'cancel-icon'} />
+          </TouchableOpacity>
+        </View>
+      )}
+
       <Icon name={`${emotion.category}-emotion` as TIconName} width={rsWidth * 25 + 'px'} />
-      <Text
-        style={css`
-          font-family: Pretendard-Medium;
-          font-size: ${rsFont * 14 + 'px'};
-          color: ${palette.neutral[900]};
-        `}>
-        {emotion.detail}
-      </Text>
+      {status != 'simple' && (
+        <Text
+          style={css`
+            font-family: Pretendard-Medium;
+            font-size: ${rsFont * 14 + 'px'};
+            color: ${palette.neutral[900]};
+          `}>
+          {emotion.detail}
+        </Text>
+      )}
     </View>
   );
 };
