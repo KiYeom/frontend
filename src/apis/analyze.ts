@@ -1,5 +1,5 @@
 import { instance } from './interceptor';
-import { TDailyAnalyze, TPeriodChart, TPeriodKeywords } from './analyze.type';
+import { TDailyAnalyze, TPeriodChart, TPeriodKeywords, TEmotions } from './analyze.type';
 
 //INFO : 일일 분석
 export const dailyAnalyze = async (today: string): Promise<TDailyAnalyze | undefined> => {
@@ -42,5 +42,20 @@ export const periodChart = async (
   } catch (error) {
     console.log('[ERROR] period chart analyze', error);
     return undefined;
+  }
+};
+
+//오늘의 기분 기록
+export const todayEmotion = async (emotions: string[]): Promise<string[] | undefined> => {
+  try {
+    const data = `"${emotions.join('", "')}"`;
+    console.log('data~~~~~~~~~~~`', [data]);
+    const res = await instance.post('/v1/analyze/period/keywords', {
+      keywords: emotions,
+    });
+    return res;
+  } catch (error) {
+    console.log('[ERROR] todayEmotion', error);
+    return;
   }
 };
