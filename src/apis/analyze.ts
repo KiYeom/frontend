@@ -48,6 +48,8 @@ export const periodChart = async (
 //오늘의 기분 기록
 export const todayEmotion = async (emotions: string[]): Promise<string[] | undefined> => {
   try {
+    const data = `"${emotions.join('", "')}"`;
+    console.log('data~~~~~~~~~~~`', [data]);
     const res = await instance.post('/v1/analyze/period/keywords', {
       keywords: emotions,
     });

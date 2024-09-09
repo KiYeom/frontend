@@ -27,7 +27,7 @@ const emotions = [
     { category: 'angry', detail: '질투하는', desc: '남이 잘되는 것을 시기하는' },
     { category: 'angry', detail: '경멸하는', desc: '남을 깔보거나 무시하는' },
     { category: 'sad', detail: '굴욕적인', desc: '수치스럽고 창피한' },
-    { category: 'sad', detail: '죄책감 느끼는', desc: '잘못한 일에 대해 미안해하는' },
+    { category: 'sad', detail: '죄책감을 느끼는', desc: '잘못한 일에 대해 미안해하는' },
     { category: 'sad', detail: '비참한', desc: '아주 슬프고 불쌍한' },
   ],
   [
@@ -57,7 +57,7 @@ const emotions = [
   [
     { category: 'happy', detail: '신나는', desc: '기분이 좋고 흥겨운' },
     { category: 'happy', detail: '행복한', desc: '아주 기쁘고 좋은' },
-    { category: 'happy', detail: '자신있는', desc: '스스로를 믿고 당당한' },
+    { category: 'happy', detail: '자신 있는', desc: '스스로를 믿고 당당한' },
     { category: 'relax', detail: '존중받는', desc: '남에게 인정받고 귀하게 여겨지는' },
     { category: 'relax', detail: '만족하는', desc: '원하는 대로 되어 기쁜' },
     { category: 'relax', detail: '안정된', desc: '불안함이 없이 편안한' },
@@ -67,16 +67,15 @@ const emotions = [
     { category: 'happy', detail: '자랑스러운', desc: '스스로 또는 남의 일이 대견한' },
     { category: 'happy', detail: '성취감이 드는', desc: '목표를 이루어 기쁜' },
     { category: 'relax', detail: '사랑받는', desc: '누군가에게 소중하게 여겨지는' },
-    { category: 'relax', detail: '감동받는', desc: '마음이 크게 움직이는' },
+    { category: 'relax', detail: '감동받은', desc: '마음이 크게 움직이는' },
     { category: 'relax', detail: '감사하는', desc: '고마운 마음을 느끼는' },
   ],
 ];
 
-const SmallEmotionChart = ({ route }) => {
+const SmallEmotionChart = ({ navigation, route }) => {
   const { page } = route.params || 0;
   console.log('Selected page:', page);
   console.log(page);
-  const [count, setCount] = useState(0);
   const insets = useSafeAreaInsets();
   const carouselRef = useRef(null);
   const [currentPage, setCurrentPage] = useState(page);
@@ -243,7 +242,7 @@ const SmallEmotionChart = ({ route }) => {
           disabled={selectedEmotions.length < 3 || selectedEmotions.length > 5}
           onPress={async () => {
             const emotionDetails = selectedEmotions.map((emotion) => emotion.detail);
-            //console.log('emotionDetails', emotionDetails);
+            console.log('emotionDetails', emotionDetails);
             const res = await todayEmotion(emotionDetails);
             console.log('res', res);
             navigation.navigate(TabScreenName.Home);

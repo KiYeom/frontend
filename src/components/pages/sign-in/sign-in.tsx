@@ -35,7 +35,7 @@ const googleLogin = async (): Promise<boolean> => {
     await GoogleSignin.signIn();
     const googleTokens = await GoogleSignin.getTokens();
     googleToken = googleTokens.accessToken;
-    //console.log('---googleToken---', googleToken);
+    console.log('---googleToken---', googleToken);
   } catch (error) {
     console.error(`[ERROR] GoogleSignin.signIn(): ${error}`);
     return false;

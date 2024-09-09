@@ -54,6 +54,7 @@ const PeriodStatisticPage: React.FC<any> = () => {
           periodChart(startDateFormatted, endDateFormatted), //기간 감정 차트
           periodKeyword(startDateFormatted, endDateFormatted), //기간 키워드 리스트
         ]);
+        console.log('기간 감정 차트', res);
         if (res && res.charts) {
           setEmotionsData(res.charts);
         }
