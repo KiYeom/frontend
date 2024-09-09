@@ -34,7 +34,7 @@ const EmotionBtn = ({ navigation }) => {
     <>
       <HomeBtn
         onPress={() => {
-          if (selectedEmotions.length > 0) {
+          if (selectedEmotions.length >= 3 && selectedEmotions.length <= 5) {
             //수정하는 경우
             navigation.navigate(RootStackName.HomeStackNavigator, {
               screen: HomeStackName.SmallEmotionChart,
@@ -76,7 +76,7 @@ const EmotionBtn = ({ navigation }) => {
             flex-direction: row;
             padding-left: ${rsWidth * 8 + 'px'};
           `}>
-          {selectedEmotions.length > 0 ? (
+          {selectedEmotions.length >= 3 && selectedEmotions.length <= 5 ? (
             selectedEmotions.map((emotion, index) => (
               <EmotionCard
                 key={index}

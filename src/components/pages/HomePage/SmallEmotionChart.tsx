@@ -19,22 +19,8 @@ import EmotionCard from '../../atoms/EmotionCard/EmotionCard';
 import useEmotionStore from '../../../utils/emotion-status';
 import { todayEmotion } from '../../../apis/analyze';
 
-const INITIAL_PAGE = 2;
-const IMAGES = [
-  'https://images.pexels.com/photos/2529159/pexels-photo-2529159.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
-  'https://images.pexels.com/photos/2529146/pexels-photo-2529146.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
-  'https://images.pexels.com/photos/2529158/pexels-photo-2529158.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
-];
+const INITIAL_PAGE = 0;
 import { Container } from './EmotionChart.style';
-
-const BACKGROUND_COLORS = [
-  Colors.red50,
-  Colors.yellow20,
-  Colors.purple50,
-  Colors.green50,
-  Colors.cyan50,
-  Colors.red50,
-];
 
 const emotions = [
   [
@@ -122,7 +108,7 @@ const SmallEmotionChart = ({ navigation }) => {
   };
 
   const onPagePress = (index) => {
-    console.log('page changed!');
+    console.log('page changed!', index);
     if (carouselRef.current) {
       carouselRef.current.goToPage(index, true);
     }
@@ -142,6 +128,7 @@ const SmallEmotionChart = ({ navigation }) => {
         style={css`
           margin-left: ${rsWidth * 24 + 'px'};
           text-align: left;
+          padding-top: ${rsHeight * 40 + 'px'};
         `}>
         오늘의 감정을 알려주세요
       </Title>
@@ -150,12 +137,19 @@ const SmallEmotionChart = ({ navigation }) => {
           ref={carouselRef}
           onChangePage={onChangePage}
           pageWidth={getWidth()} //캐러셀의 너비
-          containerPaddingVertical={10 * rsHeight} //캐러셀 전체 화면이랑 요소 사이 마진값
-          //containerMarginHorizontal={24 * rsWidth} //캐러셀 전체 화면이랑 요소 사이에 마진값
+          containerPaddingVertical={10 * rsHeight} //캐러셀 전체 화면이랑 요소 사이 마진값 (vertical)
+          containerMarginHorizontal={12 * rsWidth} //캐러셀 전체 화면이랑 요소 사이에 마진값
           initialPage={INITIAL_PAGE} //앱이 처음 실행되고 보여줄 초기 페이지
           containerStyle={{ flexGrow: 1 }} //캐러셀 전체 스타일링
           pageControlPosition={Carousel.pageControlPositions.UNDER} //under면 indicator 밑에서 멈추고, over면 indicator를 덮음
-          pageControlProps={{ onPagePress }}
+          pageControlProps={{
+            onPagePress,
+            color: 'red',
+            size: 10,
+            numOfPages: 6,
+            limitShownPages: false,
+          }}
+          itemSpacings={12 * rsWidth}
           //allowAccessibleLayout
         >
           {emotions.map((emotionGroup, index) => (
@@ -181,9 +175,10 @@ const SmallEmotionChart = ({ navigation }) => {
 
       <View
         style={css`
-          padding-vertical: 10px;
+          padding-vertical: ${rsHeight * 10 + 'px'};
           padding-horizontal: ${rsWidth * 24 + 'px'};
           flex-grow: 0;
+          //background-color: blue;
         `}>
         <SmallTitle>기록한 감정 ({selectedEmotions.length}/5)</SmallTitle>
         <ScrollView
@@ -223,34 +218,30 @@ const SmallEmotionChart = ({ navigation }) => {
           )}
         </ScrollView>
       </View>
+
       <View
         style={css`
+          padding-bottom: ${rsHeight * 40 + 'px'};
+          padding-horizontal: ${rsWidth * 24 + 'px'};
           gap: ${rsHeight * 8 + 'px'};
         `}>
-        <View
-          style={css`
-            padding-vertical: ${rsHeight * 40 + 'px'};
-            padding-horizontal: ${rsWidth * 24 + 'px'};
-            gap: ${rsHeight * 10 + 'px'};
-          `}>
-          <EmotionDesc>
-            {selectedEmotions.length > 0
-              ? `${selectedEmotions[selectedEmotions.length - 1].detail} : ${selectedEmotions[selectedEmotions.length - 1].desc}`
-              : ''}
-          </EmotionDesc>
-          <Button
-            title={selectedEmotions.length < 3 ? `3개 이상 감정을 골라주세요` : `감정 기록하기`}
-            primary={true}
-            disabled={selectedEmotions.length < 3 || selectedEmotions.length > 5}
-            onPress={async () => {
-              const emotionDetails = selectedEmotions.map((emotion) => emotion.detail);
-              //console.log('emotionDetails', emotionDetails);
-              const res = await todayEmotion(emotionDetails);
-              console.log('res', res);
-              navigation.navigate(TabScreenName.Home);
-            }}
-          />
-        </View>
+        <EmotionDesc>
+          {selectedEmotions.length > 0
+            ? `${selectedEmotions[selectedEmotions.length - 1].detail} : ${selectedEmotions[selectedEmotions.length - 1].desc}`
+            : ''}
+        </EmotionDesc>
+        <Button
+          title={selectedEmotions.length < 3 ? `3개 이상 감정을 골라주세요` : `감정 기록하기`}
+          primary={true}
+          disabled={selectedEmotions.length < 3 || selectedEmotions.length > 5}
+          onPress={async () => {
+            const emotionDetails = selectedEmotions.map((emotion) => emotion.detail);
+            //console.log('emotionDetails', emotionDetails);
+            const res = await todayEmotion(emotionDetails);
+            console.log('res', res);
+            navigation.navigate(TabScreenName.Home);
+          }}
+        />
       </View>
     </Container>
   );
