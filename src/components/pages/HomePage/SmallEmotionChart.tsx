@@ -146,12 +146,12 @@ const SmallEmotionChart = ({ route }) => {
           pageWidth={getWidth()} //캐러셀의 너비
           containerPaddingVertical={10 * rsHeight} //캐러셀 전체 화면이랑 요소 사이 마진값 (vertical)
           containerMarginHorizontal={12 * rsWidth} //캐러셀 전체 화면이랑 요소 사이에 마진값
-          initialPage={page} //앱이 처음 실행되고 보여줄 초기 페이지
+          initialPage={4 - page} //앱이 처음 실행되고 보여줄 초기 페이지
           containerStyle={{ flexGrow: 1 }} //캐러셀 전체 스타일링
-          pageControlPosition={Carousel.pageControlPositions.UNDER} //under면 indicator 밑에서 멈추고, over면 indicator를 덮음
+          //pageControlPosition={Carousel.pageControlPositions.UNDER} //under면 indicator 밑에서 멈추고, over면 indicator를 덮음
           pageControlProps={{
             onPagePress,
-            color: 'red',
+            color: palette.neutral[900],
             size: 10,
             numOfPages: 6,
             limitShownPages: false,
