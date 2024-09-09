@@ -12,12 +12,7 @@ const HomeStack = createNativeStackNavigator();
 
 const HomeStackNavigator: React.FC = () => {
   return (
-    <HomeStack.Navigator
-      screenOptions={{
-        gestureEnabled: false,
-        animation: 'slide_from_bottom', // This enables the slide up animation
-        headerShown: true,
-      }}>
+    <HomeStack.Navigator>
       <HomeStack.Screen
         name={HomeStackName.Chat}
         component={Chat}
