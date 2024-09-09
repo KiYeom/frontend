@@ -23,6 +23,7 @@ import HomeStackNavigator from './src/navigators/HomeStackNavigator';
 import StatisticStackNavigator from './src/navigators/StatisticStackNavigator';
 import SettingStackNavigator from './src/navigators/SettingStackNavigator';
 import { RootStackName } from './src/constants/Constants';
+import { RootSiblingParent } from 'react-native-root-siblings';
 
 if (process.env.EXPO_PUBLIC_AMPLITUDE) {
   amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE);

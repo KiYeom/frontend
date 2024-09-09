@@ -18,9 +18,10 @@ import Icon from '../../icons/icons';
 import EmotionCard from '../../atoms/EmotionCard/EmotionCard';
 import useEmotionStore from '../../../utils/emotion-status';
 import { todayEmotion } from '../../../apis/analyze';
+import { Container } from './EmotionChart.style';
+import Toast from 'react-native-root-toast';
 
 const INITIAL_PAGE = 0;
-import { Container } from './EmotionChart.style';
 
 const emotions = [
   [
@@ -81,7 +82,7 @@ const SmallEmotionChart = ({ navigation }) => {
   //const [selectedEmotions, setSelectedEmotions] = useState([]); // 선택된 감정들 저장
   const { selectedEmotions, addEmotion, removeEmotion } = useEmotionStore();
 
-  const handleEmotionListClick = (emotion) => {
+  const handleEmotionListClick = async (emotion) => {
     console.log('click', emotion);
     // 이미 선택된 감정인지 확인
     if (selectedEmotions.some((e) => e.detail === emotion.detail)) {
@@ -91,6 +92,11 @@ const SmallEmotionChart = ({ navigation }) => {
     } else {
       // 선택된 감정 추가
       if (selectedEmotions.length >= 5) {
+        console.log('5개 넘음');
+        Toast.show('감정은 5개까지 선택할 수 있습니다.', {
+          duration: Toast.durations.SHORT,
+          position: Toast.positions.CENTER,
+        });
         return;
       }
       //setSelectedEmotions([...selectedEmotions, emotion]);
@@ -118,7 +124,7 @@ const SmallEmotionChart = ({ navigation }) => {
   const handleRemoveEmotion = (emotion) => {
     console.log('삭제 버튼 누름');
     //console.log(selectedEmotions);
-    //setSelectedEmotions(selectedEmotions.filter((e) => e.detail !== emotion.detail));
+    //setSelectedEmotions(selectedEmotions.filter((e) => e.detail !== emotion.detail);
     removeEmotion(emotion.detail);
   };
 
