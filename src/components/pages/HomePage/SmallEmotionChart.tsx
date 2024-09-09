@@ -21,8 +21,6 @@ import { todayEmotion } from '../../../apis/analyze';
 import { Container } from './EmotionChart.style';
 import Toast from 'react-native-root-toast';
 
-const INITIAL_PAGE = 0;
-
 const emotions = [
   [
     { category: 'angry', detail: '격분한', desc: '몹시 분하고 화가 난' },
@@ -74,11 +72,14 @@ const emotions = [
   ],
 ];
 
-const SmallEmotionChart = ({ navigation }) => {
+const SmallEmotionChart = ({ route }) => {
+  const { page } = route.params || 0;
+  console.log('Selected page:', page);
+  console.log(page);
   const [count, setCount] = useState(0);
   const insets = useSafeAreaInsets();
   const carouselRef = useRef(null);
-  const [currentPage, setCurrentPage] = useState(INITIAL_PAGE);
+  const [currentPage, setCurrentPage] = useState(page);
   //const [selectedEmotions, setSelectedEmotions] = useState([]); // 선택된 감정들 저장
   const { selectedEmotions, addEmotion, removeEmotion } = useEmotionStore();
 
@@ -93,7 +94,7 @@ const SmallEmotionChart = ({ navigation }) => {
       // 선택된 감정 추가
       if (selectedEmotions.length >= 5) {
         console.log('5개 넘음');
-        Toast.show('감정은 5개까지 선택할 수 있습니다.', {
+        Toast.show('감정은 5개까지 선택할 수 있습니다!', {
           duration: Toast.durations.SHORT,
           position: Toast.positions.CENTER,
         });
@@ -145,7 +146,7 @@ const SmallEmotionChart = ({ navigation }) => {
           pageWidth={getWidth()} //캐러셀의 너비
           containerPaddingVertical={10 * rsHeight} //캐러셀 전체 화면이랑 요소 사이 마진값 (vertical)
           containerMarginHorizontal={12 * rsWidth} //캐러셀 전체 화면이랑 요소 사이에 마진값
-          initialPage={INITIAL_PAGE} //앱이 처음 실행되고 보여줄 초기 페이지
+          initialPage={page} //앱이 처음 실행되고 보여줄 초기 페이지
           containerStyle={{ flexGrow: 1 }} //캐러셀 전체 스타일링
           pageControlPosition={Carousel.pageControlPositions.UNDER} //under면 indicator 밑에서 멈추고, over면 indicator를 덮음
           pageControlProps={{

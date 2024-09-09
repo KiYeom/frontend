@@ -65,6 +65,7 @@ const LargeEmotionChart: React.FC = ({ navigation }) => {
           onPress={() =>
             navigation.navigate(RootStackName.HomeStackNavigator, {
               screen: HomeStackName.SmallEmotionChart,
+              params: { page: selectedEmotionIndex },
             })
           }
         />
