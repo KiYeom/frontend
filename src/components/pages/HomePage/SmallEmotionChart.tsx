@@ -50,25 +50,25 @@ const emotions = [
     { category: 'happy', detail: '놀란', desc: '예상치 못한 일로 깜짝 놀란' },
     { category: 'happy', detail: '활기찬', desc: '생기 있고 에너지가 넘치는' },
     { category: 'happy', detail: '기쁜', desc: '마음이 즐겁고 행복한' },
-    { category: 'relax', detail: '차분한', desc: '침착하고 조용한' },
-    { category: 'relax', detail: '편안한', desc: '마음이 편하고 안정된' },
-    { category: 'relax', detail: '자유로운', desc: '구속받지 않고 마음대로 할 수 있는' },
+    { category: 'calm', detail: '차분한', desc: '침착하고 조용한' },
+    { category: 'calm', detail: '편안한', desc: '마음이 편하고 안정된' },
+    { category: 'calm', detail: '자유로운', desc: '구속받지 않고 마음대로 할 수 있는' },
   ],
   [
     { category: 'happy', detail: '신나는', desc: '기분이 좋고 흥겨운' },
     { category: 'happy', detail: '행복한', desc: '아주 기쁘고 좋은' },
     { category: 'happy', detail: '자신 있는', desc: '스스로를 믿고 당당한' },
-    { category: 'relax', detail: '존중받는', desc: '남에게 인정받고 귀하게 여겨지는' },
-    { category: 'relax', detail: '만족하는', desc: '원하는 대로 되어 기쁜' },
-    { category: 'relax', detail: '안정된', desc: '불안함이 없이 편안한' },
+    { category: 'calm', detail: '존중받는', desc: '남에게 인정받고 귀하게 여겨지는' },
+    { category: 'calm', detail: '만족하는', desc: '원하는 대로 되어 기쁜' },
+    { category: 'calm', detail: '안정된', desc: '불안함이 없이 편안한' },
   ],
   [
     { category: 'happy', detail: '황홀한', desc: '너무 좋아서 어찌할 바를 모르는' },
     { category: 'happy', detail: '자랑스러운', desc: '스스로 또는 남의 일이 대견한' },
     { category: 'happy', detail: '성취감이 드는', desc: '목표를 이루어 기쁜' },
-    { category: 'relax', detail: '사랑받는', desc: '누군가에게 소중하게 여겨지는' },
-    { category: 'relax', detail: '감동받은', desc: '마음이 크게 움직이는' },
-    { category: 'relax', detail: '감사하는', desc: '고마운 마음을 느끼는' },
+    { category: 'calm', detail: '사랑받는', desc: '누군가에게 소중하게 여겨지는' },
+    { category: 'calm', detail: '감동받은', desc: '마음이 크게 움직이는' },
+    { category: 'calm', detail: '감사하는', desc: '고마운 마음을 느끼는' },
   ],
 ];
 
@@ -241,7 +241,12 @@ const SmallEmotionChart = ({ navigation, route }) => {
           primary={true}
           disabled={selectedEmotions.length < 3 || selectedEmotions.length > 5}
           onPress={async () => {
-            const emotionDetails = selectedEmotions.map((emotion) => emotion.detail);
+            console.log('selected emotions : ', selectedEmotions);
+            //const emotionDetails = selectedEmotions.map((emotion) => emotion.detail);
+            const emotionDetails = selectedEmotions.map((item) => ({
+              keyword: item.detail,
+              group: item.category,
+            }));
             console.log('emotionDetails', emotionDetails);
             const res = await todayEmotion(emotionDetails);
             console.log('res', res);
