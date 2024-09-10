@@ -242,7 +242,6 @@ const SmallEmotionChart = ({ navigation, route }) => {
           disabled={selectedEmotions.length < 3 || selectedEmotions.length > 5}
           onPress={async () => {
             console.log('selected emotions : ', selectedEmotions);
-            //const emotionDetails = selectedEmotions.map((emotion) => emotion.detail);
             const emotionDetails = selectedEmotions.map((item) => ({
               keyword: item.detail,
               group: item.category,
