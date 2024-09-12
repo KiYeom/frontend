@@ -48,12 +48,27 @@ export const periodChart = async (
 //오늘의 기분 기록
 export const todayEmotion = async (data: any): Promise<string[] | undefined> => {
   try {
+    const myEmotions = data.map(({ keyword, group, index }) => ({ keyword, group }));
+    //console.log('---------myEmotions', myEmotions);
+    //console.log('-----------data', data);
     const res = await instance.post('/v1/analyze/period/keywords', {
-      keywords: data,
+      keywords: myEmotions,
     });
     return res;
   } catch (error) {
     console.log('[ERROR] todayEmotion', error);
+    return;
+  }
+};
+
+//기록한 오늘의 기분 조회하기
+export const todayEmotionCheck = async () => {
+  try {
+    const res = await instance.get('/v1/analyze/today-record');
+    console.log('기분 조회하기', res);
+    return res.data;
+  } catch {
+    console.log('기록한 오늘의 기분 error', error);
     return;
   }
 };

@@ -6,7 +6,7 @@ import palette from '../../../assets/styles/theme';
 import Icon from '../../icons/icons';
 import { TIconName } from '../../icons/icons';
 import { rsWidth, rsHeight, rsFont } from '../../../utils/responsive-size';
-const EmotionChip = ({ category, detail, onPress, isSelected }) => {
+const EmotionChip = ({ group, keyword, onPress, isSelected }) => {
   return (
     <TouchableOpacity
       style={css`
@@ -23,7 +23,7 @@ const EmotionChip = ({ category, detail, onPress, isSelected }) => {
         border: 3px solid ${isSelected ? palette.primary[500] : 'transparent'};
       `}
       onPress={onPress}>
-      <Icon name={`${category}-emotion` as TIconName} width={rsWidth * 25 + 'px'} />
+      <Icon name={`${group}-emotion` as TIconName} width={rsWidth * 25 + 'px'} />
       <Text
         style={css`
           flex: 1;
@@ -34,7 +34,7 @@ const EmotionChip = ({ category, detail, onPress, isSelected }) => {
           font-family: Pretendard-Regular;
           font-size: ${rsFont * 15 + 'px'};
         `}>
-        {detail}
+        {keyword}
       </Text>
     </TouchableOpacity>
   );

@@ -5,8 +5,6 @@ import Input from '../../input/input';
 import { userSend, aiSend, botAnswer } from '../../../utils/Chatting';
 import { saveChatLogs } from '../../../utils/Chatting';
 import { Message } from '../../../constants/Constants';
-import { Subject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
 
 let debounceTest = '';
 const ChatInput = ({ data, setData }: any) => {
