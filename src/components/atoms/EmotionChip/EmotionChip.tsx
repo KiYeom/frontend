@@ -16,7 +16,7 @@ const EmotionChip = ({ group, keyword, onPress, isSelected }) => {
         flex-direction: row;
         align-items: center; /* 세로 중앙 정렬 */
         justify-content: center; /* 가로 중앙 정렬 */
-        padding-horizontal: ${rsWidth * 10 + 'px'};
+        padding-horizontal: ${rsWidth * 5 + 'px'};
         padding-vertical: ${rsHeight * 10 + 'px'};
         border-radius: 10px;
         gap: ${rsWidth * 10 + 'px'};
