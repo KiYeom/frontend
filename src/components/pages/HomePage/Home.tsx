@@ -9,6 +9,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 const Home: React.FC<any> = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   useEffect(() => {
+    //console.log('home 화면');
     requestNotificationPermission();
   }, []);
 

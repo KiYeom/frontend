@@ -37,7 +37,7 @@ const EmotionCard = ({ emotion, onPress, status }) => {
         </View>
       )}
 
-      <Icon name={`${emotion.category}-emotion` as TIconName} width={rsWidth * 25 + 'px'} />
+      <Icon name={`${emotion.group}-emotion` as TIconName} width={rsWidth * 25 + 'px'} />
       {status != 'simple' && (
         <Text
           style={css`
@@ -45,7 +45,7 @@ const EmotionCard = ({ emotion, onPress, status }) => {
             font-size: ${rsFont * 14 + 'px'};
             color: ${palette.neutral[900]};
           `}>
-          {emotion.detail}
+          {emotion.keyword}
         </Text>
       )}
     </View>

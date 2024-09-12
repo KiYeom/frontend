@@ -1,6 +1,6 @@
 import { SvgXml } from 'react-native-svg';
 
-export const RelaxEmotion = ({ width = 50, height = 50, color = '#9DDFCC' }: IconProps) => {
+export const CalmEmotion = ({ width = 50, height = 50, color = '#9DDFCC' }: IconProps) => {
   const svg = `
 <svg width=${width} height=${height} viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M7.2002 18.8999H21.3002" stroke="black"/>
@@ -13,4 +13,4 @@ export const RelaxEmotion = ({ width = 50, height = 50, color = '#9DDFCC' }: Ico
   return <SvgXml xml={svg} width={width} height={height} color={color} />;
 };
 
-export default RelaxEmotion;
+export default CalmEmotion;

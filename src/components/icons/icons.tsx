@@ -11,7 +11,7 @@ import CloverIcon from './svg/clover';
 import HappyEmotion from './svg/happy-emotion';
 import AngryEmotion from './svg/angry-emotion';
 import SadEmotion from './svg/sad-emotion';
-import RelaxEmotion from './svg/relax-emotion';
+import CalmEmotion from './svg/relax-emotion';
 import CheckIcon from './svg/check-icon';
 import CancelIcon from './svg/cancel-icon';
 
@@ -28,7 +28,7 @@ export type TIconName =
   | 'happy-emotion'
   | 'angry-emotion'
   | 'sad-emotion'
-  | 'relax-emotion'
+  | 'calm-emotion'
   | 'check-icon'
   | 'cancel-icon';
 
@@ -68,8 +68,8 @@ export default function Icon({
       return <AngryEmotion width={width} height={height} color={color} />;
     case 'sad-emotion':
       return <SadEmotion width={width} height={height} color={color} />;
-    case 'relax-emotion':
-      return <RelaxEmotion width={width} height={height} color={color} />;
+    case 'calm-emotion':
+      return <CalmEmotion width={width} height={height} color={color} />;
     case 'check-icon':
       return <CheckIcon width={width} height={height} color={color} />;
     case 'cancel-icon':
