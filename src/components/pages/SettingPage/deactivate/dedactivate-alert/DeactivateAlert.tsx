@@ -9,7 +9,7 @@ import {
   SignOutTitleContainer,
 } from './DeactivateAlert.style';
 import Button from '../../../../button/button';
-import HeartMessage from '../../../../../assets/images/heartmessage.svg';
+import HeartIcon from '../../../../icons/svg/heart-icon';
 
 import { SettingStackName } from '../../../../../constants/Constants';
 
@@ -33,12 +33,13 @@ const DeactivateAlert: React.FC = ({ navigation }) => {
         </SignOutTitle>
       </SignOutTitleContainer>
       <ImageContainer>
-        <HeartMessage width={100} style={{ padding: 0, margin: 0 }} />
+        <HeartIcon />
         <Image
           source={require('../../../../../assets/images/cal.jpg')}
           style={{ width: 150, height: 150, resizeMode: 'contain' }}
         />
       </ImageContainer>
+
       <AlertText>탈퇴 후, 모든 데이터는 복구가 불가능합니다.</AlertText>
       <Button
         title="탈퇴하기"
