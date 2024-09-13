@@ -19,31 +19,41 @@ import { Text } from 'react-native';
 import EmotionCard from '../EmotionCard/EmotionCard';
 import { todayEmotionCheck } from '../../../apis/analyze';
 import useRecordedEmotionStore from '../../../utils/emotion-recorded';
+import { TEmotionCheck } from '../../../apis/analyze.type';
 
 const EmotionBtn = ({ navigation }) => {
   const [name, setName] = useState<string>('');
   //const [selectedEmotions, setSelectedEmotions] = useState([]);
   const { recordedEmotions, setRecordedEmotions } = useRecordedEmotionStore();
   const { selectedEmotions, setSelectedEmotions, addEmotion, removeEmotion } = useEmotionStore();
+  //const [testEmotionList, setTestEmotionList] = useState<TEmotionCheck[]>([]); //desc(선택), group, keyword
   const [isNULL, setIsNULL] = useState(false);
 
   useEffect(() => {
-    console.log('emotionBtn');
-    const unsubscribe = navigation.addListener('focus', () => {
-      setName(getUserNickname() + '');
-    });
+    //데이터 가져오기
     const fetchData = async () => {
-      const dailyEmotionData = await todayEmotionCheck(); //isNULL, Keywords
-      if (!dailyEmotionData.isNULL) {
-        setRecordedEmotions(dailyEmotionData.Keywords);
-        setSelectedEmotions(dailyEmotionData.Keywords);
-        console.log('dailyEmotionData.Keywords', dailyEmotionData.Keywords);
-        console.log('dailyEmotionData.Keywords', dailyEmotionData.Keywords);
+      try {
+        const data = await todayEmotionCheck(); // 데이터를 비동기로 가져옴
+        console.log('useEffect data', data);
+        if (!data.isNULL) {
+          //Keyword가 있으면 state 업데이트 {keyword : "키워드", gruop : "group"} 형태
+          setRecordedEmotions(data.Keywords);
+        }
+      } catch (error) {
+        console.error('Failed to fetch data:', error); // 에러 처리
       }
-      setIsNULL(dailyEmotionData.isNULL);
     };
-    fetchData();
-    return unsubscribe;
+    // 화면이 focus될 때마다 실행
+    const handleFocus = () => {
+      setName(getUserNickname() + ''); // 사용자 이름 설정
+      fetchData(); // 데이터 fetch
+    };
+
+    const unsubscribe = navigation.addListener('focus', handleFocus);
+    // 컴포넌트 unmount 시 리스너를 해제
+    return () => {
+      unsubscribe();
+    };
   }, [navigation]);
 
   return (
@@ -90,7 +100,7 @@ const EmotionBtn = ({ navigation }) => {
             flex-direction: row;
             padding-left: ${rsWidth * 8 + 'px'};
           `}>
-          {!isNULL ? (
+          {recordedEmotions.length ? (
             recordedEmotions.map((emotion, index) => (
               <EmotionCard
                 key={index}

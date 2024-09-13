@@ -56,3 +56,9 @@ export type TPeriodKeywords = {
 export type TEmotions = {
   keywords: string[];
 };
+
+export type TEmotionCheck = {
+  desc?: string;
+  group: 'angry' | 'sad' | 'happy' | 'calm';
+  keyword: string;
+};

@@ -36,6 +36,14 @@ module.exports = {
     },
     plugins: [
       [
+        '@sentry/react-native/expo',
+        {
+          organization: process.env.SENTRY_ORG,
+          project: process.env.SENTRY_PROJECT,
+          url: 'https://sentry.io/',
+        },
+      ],
+      [
         '@react-native-google-signin/google-signin',
         {
           iosUrlScheme: 'com.googleusercontent.apps.94079762653-arcgeib4l0hbg6snh81cjimd9iuuoun3',
