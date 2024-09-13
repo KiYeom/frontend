@@ -122,6 +122,9 @@ const SmallEmotionChart = ({ navigation, route }) => {
   //const [selectedEmotions, setSelectedEmotions] = useState([]); // 선택된 감정들 저장
   const { selectedEmotions, setSelectedEmotions, addEmotion, removeEmotion } = useEmotionStore();
   const { recordedEmotions, setRecordedEmotions } = useRecordedEmotionStore();
+  useEffect(() => {
+    setSelectedEmotions(recordedEmotions);
+  }, []);
 
   const handleEmotionListClick = async (emotion) => {
     console.log('click', emotion);
