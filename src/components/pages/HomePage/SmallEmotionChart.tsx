@@ -281,16 +281,9 @@ const SmallEmotionChart = ({ navigation, route }) => {
           primary={true}
           disabled={selectedEmotions.length < 3 || selectedEmotions.length > 5}
           onPress={async () => {
-            //console.log('버튼 누름 selected emotions : ', selectedEmotions);
-            /*const emotionDetails = selectedEmotions.map((item) => ({
-              keyword: item.keyword,
-              group: item.group,
-            }));*/
             setRecordedEmotions(selectedEmotions);
-            //console.log('emotionDetails', emotionDetails);
-            //console.log('=========', recordedEmotions);
             const res = await todayEmotion(recordedEmotions);
-            //console.log('res', res);
+            console.log('res', res);
             navigation.navigate(TabScreenName.Home);
           }}
         />

@@ -5,32 +5,30 @@ import Input from '../../input/input';
 import { userSend, aiSend, botAnswer } from '../../../utils/Chatting';
 import { saveChatLogs } from '../../../utils/Chatting';
 import { Message } from '../../../constants/Constants';
+import { debounce } from 'lodash';
 
-let debounceTest = '';
 const ChatInput = ({ data, setData }: any) => {
   const [text, setText] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const sentenceRef = useRef<string[]>([]); // sentence 배열을 useRef로 관리
+  const timeoutRef = useRef(null);
 
-  const changeText = (newtext: string) => {
-    setText(newtext);
-  };
-
-  const onPressHandle = async () => {
-    if (text === '') {
-      return;
-    }
+  //챗봇의 말풍선 (...)을 만들어 보여주고, 답변을 보여주는 setBubble 함수
+  const setBubble = async () => {
+    console.log('sentenceRef.current', sentenceRef.current);
+    if (sentenceRef.current.length === 0) return;
     setIsLoading(true);
-    const userQuestion = userSend(text);
-    setText('');
+    //1. 챗봇 ... 말풍선을 보여준다
     setData((prevData: any) => {
-      const newData = [botAnswer(), userQuestion, ...prevData];
+      const newData = [botAnswer(), ...prevData];
       //const newData = [userQuestion, ...prevData];
       saveChatLogs(newData);
       return newData;
     });
+    //2. ai의 답변을 가지고 온다.
+    const aiResponse = await testResponseFunc(sentenceRef.current);
 
-    const aiResponse = await aiSend(text);
-
+    //3. 답변을 받아오면 (...)을 받아온 답변으로 변경해준다
     setData((prevData: Message[]) => {
       if (prevData.length === 0) return prevData;
       const updatedFirstMessage = {
@@ -40,34 +38,56 @@ const ChatInput = ({ data, setData }: any) => {
       const newData = [updatedFirstMessage, ...prevData.slice(1)];
       return newData;
     });
+    sentenceRef.current.length = 0; //유저 텍스트 값 초기화
     setIsLoading(false);
   };
 
-  const clickSubject = useRef(new Subject());
-  //subject 인스턴스 생성 (시간 이벤트를 주는 사람) -> 특정 컴포넌트 참조할 수 있도록 useRef
+  //키보드 혹은 확인 버튼을 누르고, 2초 후에 action을 실행시키는 handleKeyPress 함수
+  const handleKeyPress = () => {
+    console.log('눌렀습니다앙');
+    // 기존에 타이머가 돌아가고 있었으면 멈춘다
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    // 멈추고 타이머를 새로 돌리며, 2초가 지나면 setBubble 함수가 실행된다.
+    timeoutRef.current = setTimeout(async () => {
+      setBubble();
+    }, 2000); // 1초 후에 실행
+  };
 
-  /*useEffect(() => {
-    // 디바운싱을 적용하여 구독
-    const subscription = clickSubject.current
-      .pipe(
-        debounceTime(300), // 300ms 동안 대기 후, 값 변경이 없을 때 마지막 값을 방출
-      )
-      .subscribe(() => {
-        //이벤트가 일어났을 때의 상황을 확인할 때 (ex. 변수깂 변화 등) 사용
-        debounceTest += text;
-        console.log('디바운싱된 값 !', debounceTest);
-      });
+  const changeText = (newText) => {
+    setText(newText);
+  };
 
-    // 컴포넌트가 언마운트될 때 unsubscribe 해주기 (메모리 누수)
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
+  //메세지 보내기 버튼을 클릭했을 때 동작하는 함수
+  const testFunc = () => {
+    //아무런 내용을 작성하지 않고 버튼을 클릭한 경우
+    if (text === '') {
+      console.log('버튼이 눌리면 안 됨');
+      return;
+    }
+    // 작성하고 버튼을 클릭한 경우 : 현재 작성한 텍스트를 sentence 배열에 추가
+    sentenceRef.current.push(text);
+    console.log('현재 텍스트 넣음', sentenceRef.current);
+    setText(''); // text input을 초기화함
+    handleKeyPress(); //타이머 돌리고
+    const userQuestion = userSend(text); //유저가 보낸 말을 말풍선으로 만들고
+    setData((prevData: any) => {
+      //말풍선 데이터에 저장
+      const newData = [userQuestion, ...prevData];
+      saveChatLogs(newData);
+      return newData;
+    });
+  };
 
-  // 버튼 클릭 핸들러
-  const handleClick = useCallback(() => {
-    clickSubject.current.next(); // 클릭 이벤트를 subject로 전송
-  }, []);*/
+  //유저가 한 말을 모두 뭉쳐서 ai의 답변을 받는 함수
+  const testResponseFunc = async (userSentence: string[]) => {
+    const test = userSentence.join(' ');
+    console.log('합친 결과', test);
+    const aiTestResponse = await aiSend(test);
+    console.log('ai의 답장', aiTestResponse);
+    return aiTestResponse;
+  };
 
   return (
     <View>
@@ -79,9 +99,9 @@ const ChatInput = ({ data, setData }: any) => {
           rightIcon="airplane"
           value={text}
           onChange={(newText) => changeText(newText)}
-          onPressIcon={onPressHandle}
-          //onPressIcon={handleClick}
-          disabled={false}
+          onPressIcon={testFunc}
+          disabled={isLoading || text.trim() === ''} //loading중일때는 혹은 빈칸만 작성했으면 버튼이 눌리면 안 됨
+          onKeyPress={handleKeyPress}
         />
       </TextInputContainer>
     </View>

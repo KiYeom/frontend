@@ -45,13 +45,13 @@ const Chat: React.FC = () => {
 
   useEffect(() => {
     saveChatLogs(data);
+    console.log('data ', data);
   }, [data]);
 
   const renderItem = ({ item, index }: any) => {
     const currentDate = item.date;
     const nextDate = index + 1 < data.length ? data[index + 1].date : undefined;
     let showDateLine = currentDate !== nextDate || nextDate === undefined;
-    console.log('currentDate', currentDate);
 
     return (
       <View>
