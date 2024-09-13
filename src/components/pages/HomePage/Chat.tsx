@@ -15,7 +15,7 @@ import ChatInput from './ChatInput';
 import { DateLine } from './Chat.style';
 import { Message } from '../../../constants/Constants';
 import { loadChatLogs, saveChatLogs } from '../../../utils/Chatting';
-import { getChatting } from '../../../utils/storageUtils';
+import { getAiResponse, getChatting } from '../../../utils/storageUtils';
 import { StatusBar } from 'expo-status-bar';
 import { useHeaderHeight } from '@react-navigation/elements';
 import palette from '../../../assets/styles/theme';
@@ -29,7 +29,13 @@ const Chat: React.FC = () => {
 
   useEffect(() => {
     loadChatLogs({ data, setData });
-
+    //console.log('dd', getAiResponse());
+    //console.log('data', data[0]);
+    if (Array.isArray(data) && data.length > 0) {
+      const newData = [...data]; // 기존 data를 복사
+      newData[0].text = getAiResponse(); // 복사한 배열의 첫 번째 요소의 text를 변경
+      setData(newData); // 상태 업데이트
+    }
     const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () =>
       setKeyboardVisible(true),
     );
@@ -45,7 +51,7 @@ const Chat: React.FC = () => {
 
   useEffect(() => {
     saveChatLogs(data);
-    console.log('data ', data);
+    //console.log('data ', data);
   }, [data]);
 
   const renderItem = ({ item, index }: any) => {

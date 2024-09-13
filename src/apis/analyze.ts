@@ -54,14 +54,10 @@ export const periodChart = async (
 //오늘의 기분 기록
 export const todayEmotion = async (data: TEmotionCheck[]): Promise<string[] | undefined> => {
   try {
-    console.log('전달하는 데이터 data', data);
     const myEmotions = data.map(({ keyword, group }) => ({ keyword, group }));
-    console.log('---------myEmotions', myEmotions);
-    //console.log('-----------data', data);
     const res = await instance.post('/v1/analyze/today-record', {
       keywords: myEmotions,
     });
-    console.log('res--------', res);
     return res;
   } catch (error) {
     console.log('[ERROR] todayEmotion', error);
