@@ -6,6 +6,7 @@ import { userSend, aiSend, botAnswer } from '../../../utils/Chatting';
 import { saveChatLogs } from '../../../utils/Chatting';
 import { Message } from '../../../constants/Constants';
 import { debounce } from 'lodash';
+import { saveAiResponse, getAiResponse } from '../../../utils/storageUtils';
 
 const ChatInput = ({ data, setData }: any) => {
   const [text, setText] = useState<string>('');
@@ -27,7 +28,7 @@ const ChatInput = ({ data, setData }: any) => {
     });
     //2. ai의 답변을 가지고 온다.
     const aiResponse = await testResponseFunc(sentenceRef.current);
-
+    saveAiResponse(aiResponse.text);
     //3. 답변을 받아오면 (...)을 받아온 답변으로 변경해준다
     setData((prevData: Message[]) => {
       if (prevData.length === 0) return prevData;
@@ -52,7 +53,7 @@ const ChatInput = ({ data, setData }: any) => {
     // 멈추고 타이머를 새로 돌리며, 2초가 지나면 setBubble 함수가 실행된다.
     timeoutRef.current = setTimeout(async () => {
       setBubble();
-    }, 2000); // 1초 후에 실행
+    }, 1500); // 1초 후에 실행
   };
 
   const changeText = (newText) => {
@@ -85,6 +86,7 @@ const ChatInput = ({ data, setData }: any) => {
     const test = userSentence.join(' ');
     console.log('합친 결과', test);
     const aiTestResponse = await aiSend(test);
+    saveAiResponse(aiTestResponse.text); //ai의 답변 저장
     console.log('ai의 답장', aiTestResponse);
     return aiTestResponse;
   };
