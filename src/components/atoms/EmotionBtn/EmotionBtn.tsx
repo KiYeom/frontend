@@ -25,7 +25,7 @@ const EmotionBtn = ({ navigation }) => {
   const [name, setName] = useState<string>('');
   //const [selectedEmotions, setSelectedEmotions] = useState([]);
   const { recordedEmotions, setRecordedEmotions } = useRecordedEmotionStore();
-  const { selectedEmotions, setSelectedEmotions, addEmotion, removeEmotion } = useEmotionStore();
+  //const { selectedEmotions, setSelectedEmotions, addEmotion, removeEmotion } = useEmotionStore();
   //const [testEmotionList, setTestEmotionList] = useState<TEmotionCheck[]>([]); //desc(선택), group, keyword
   const [isNULL, setIsNULL] = useState(false);
 
@@ -62,7 +62,7 @@ const EmotionBtn = ({ navigation }) => {
         onPress={() => {
           if (!isNULL) {
             //입력한 감정을 수정하는 경우
-            console.log('selectedEmotions', selectedEmotions);
+            //console.log('selectedEmotions', selectedEmotions);
             navigation.navigate(RootStackName.HomeStackNavigator, {
               screen: HomeStackName.SmallEmotionChart,
             });
