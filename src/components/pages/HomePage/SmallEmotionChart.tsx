@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, ScrollView, TouchableOpacity, InteractionManager } from 'react-native';
 import { View, Text, Carousel, Image, Colors, Spacings, Constants } from 'react-native-ui-lib';
 import palette from '../../../assets/styles/theme';
 import { rsWidth, rsHeight, rsFont } from '../../../utils/responsive-size';
@@ -122,6 +122,8 @@ const SmallEmotionChart = ({ navigation, route }) => {
   //const [selectedEmotions, setSelectedEmotions] = useState([]); // 선택된 감정들 저장
   const { selectedEmotions, setSelectedEmotions, addEmotion, removeEmotion } = useEmotionStore();
   const { recordedEmotions, setRecordedEmotions } = useRecordedEmotionStore();
+  const scrollViewRef = useRef(null);
+
   useEffect(() => {
     setSelectedEmotions(recordedEmotions);
   }, []);
@@ -146,6 +148,17 @@ const SmallEmotionChart = ({ navigation, route }) => {
       addEmotion(emotion);
     }
   };
+
+  useEffect(() => {
+    // 스크롤을 약간 지연시키기 위해 setTimeout 사용
+    const timeout = setTimeout(() => {
+      if (scrollViewRef.current) {
+        scrollViewRef.current.scrollToEnd({ animated: true }); // 스크롤을 맨 끝으로 이동
+      }
+    }, 100); // 100ms 지연 (필요에 따라 조정 가능)
+
+    return () => clearTimeout(timeout); // 클린업 타이머 제거
+  }, [selectedEmotions]); // selectedEmotions가 변경될 때마다 실행
 
   const getWidth = () => {
     //return Constants.windowWidth - Spacings.s5 * 2;
@@ -232,6 +245,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
         <SmallTitle>기록한 감정 ({selectedEmotions.length}/5)</SmallTitle>
         <ScrollView
           horizontal
+          ref={scrollViewRef}
           showsHorizontalScrollIndicator={false}
           style={{
             flexGrow: 0,
