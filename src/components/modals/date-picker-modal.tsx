@@ -26,6 +26,7 @@ const DatePickerModal = ({
                 date={date}
                 locale="kor"
                 mode="date"
+                theme="light"
                 onDateChange={(new_date) => setDate(new_date)}
               />
               <Button
