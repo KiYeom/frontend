@@ -14,6 +14,7 @@ import SadEmotion from './svg/sad-emotion';
 import CalmEmotion from './svg/relax-emotion';
 import CheckIcon from './svg/check-icon';
 import CancelIcon from './svg/cancel-icon';
+import Calendar from './svg/calendar';
 
 export type TIconName =
   | 'airplane'
@@ -30,7 +31,8 @@ export type TIconName =
   | 'sad-emotion'
   | 'calm-emotion'
   | 'check-icon'
-  | 'cancel-icon';
+  | 'cancel-icon'
+  | 'calendar';
 
 export default function Icon({
   width,
@@ -74,5 +76,7 @@ export default function Icon({
       return <CheckIcon width={width} height={height} color={color} />;
     case 'cancel-icon':
       return <CancelIcon width={width} height={height} color={color} />;
+    case 'calendar':
+      return <Calendar width={width} height={height} color={color} />;
   }
 }
