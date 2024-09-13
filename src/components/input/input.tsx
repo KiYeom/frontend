@@ -20,6 +20,9 @@ type InputProps = {
     text?: StyleProp<TextStyle>;
   };
   disabled?: boolean;
+  onFocus?: () => void;
+  onBlur?: () => void;
+  onKeyPress?: () => void;
 };
 const Input = (props: InputProps) => {
   const {
@@ -36,6 +39,9 @@ const Input = (props: InputProps) => {
     onPressIcon, //아이콘이 눌렸을 때
     styles, //적용될 스타일
     disabled,
+    onFocus = () => {}, //입력창이 포커스되었을 때
+    onBlur = () => {}, //입력창에 포커스 해제되었을 때
+    onKeyPress = () => {},
   } = props; //props 객체를 변수로 선언하여 기본값 설정
   return (
     <InputContainer onPress={onPressContainer} activeOpacity={1} disabled={disabled}>
@@ -47,6 +53,9 @@ const Input = (props: InputProps) => {
         editable={status !== 'disabled'}
         style={styles?.text}
         pointerEvents={onPressContainer ? 'none' : 'auto'}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        onKeyPress={onKeyPress}
       />
       {showRightIcon && (
         <IconContainer onPress={onPressContainer ?? onPressIcon} disabled={disabled}>
@@ -54,7 +63,7 @@ const Input = (props: InputProps) => {
             name={rightIcon}
             width={rsWidth * 16}
             height={rsHeight * 16}
-            color={palette.neutral[500]}
+            color={disabled ? palette.neutral[200] : palette.neutral[400]}
           />
         </IconContainer>
       )}

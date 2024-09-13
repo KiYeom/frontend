@@ -37,6 +37,8 @@ const EmotionBtn = ({ navigation }) => {
       if (!dailyEmotionData.isNULL) {
         setRecordedEmotions(dailyEmotionData.Keywords);
         setSelectedEmotions(dailyEmotionData.Keywords);
+        console.log('dailyEmotionData.Keywords', dailyEmotionData.Keywords);
+        console.log('dailyEmotionData.Keywords', dailyEmotionData.Keywords);
       }
       setIsNULL(dailyEmotionData.isNULL);
     };
