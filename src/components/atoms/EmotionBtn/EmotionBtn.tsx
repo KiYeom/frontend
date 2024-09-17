@@ -20,14 +20,13 @@ import EmotionCard from '../EmotionCard/EmotionCard';
 import { todayEmotionCheck } from '../../../apis/analyze';
 import useRecordedEmotionStore from '../../../utils/emotion-recorded';
 import { TEmotionCheck } from '../../../apis/analyze.type';
+import { ActivityIndicator } from 'react-native-paper';
 
 const EmotionBtn = ({ navigation }) => {
   const [name, setName] = useState<string>('');
-  //const [selectedEmotions, setSelectedEmotions] = useState([]);
   const { recordedEmotions, setRecordedEmotions } = useRecordedEmotionStore();
-  //const { selectedEmotions, setSelectedEmotions, addEmotion, removeEmotion } = useEmotionStore();
-  //const [testEmotionList, setTestEmotionList] = useState<TEmotionCheck[]>([]); //desc(선택), group, keyword
   const [isNULL, setIsNULL] = useState(false);
+  const [loading, setLoading] = useState(false); //로딩중이면 true, 로딩이 끝났으면 false
 
   useEffect(() => {
     //데이터 가져오기
@@ -47,6 +46,7 @@ const EmotionBtn = ({ navigation }) => {
     const handleFocus = () => {
       setName(getUserNickname() + ''); // 사용자 이름 설정
       fetchData(); // 데이터 fetch
+      setLoading(false);
     };
 
     const unsubscribe = navigation.addListener('focus', handleFocus);
@@ -56,70 +56,87 @@ const EmotionBtn = ({ navigation }) => {
     };
   }, [navigation]);
 
+  if (loading) {
+    return (
+      <View>
+        <ActivityIndicator size="large" color={palette.primary[500]} />
+      </View>
+    );
+  }
+
   return (
-    <>
-      <HomeBtn
-        onPress={() => {
-          if (!isNULL) {
-            //입력한 감정을 수정하는 경우
-            //console.log('selectedEmotions', selectedEmotions);
-            navigation.navigate(RootStackName.HomeStackNavigator, {
-              screen: HomeStackName.SmallEmotionChart,
-            });
-          } else {
-            //아직 입력하지 않아, 감정을 입력해야 하는 경우
-            navigation.navigate(RootStackName.HomeStackNavigator, {
-              screen: HomeStackName.LargeEmotionChart,
-            });
-          }
-        }}
-        status={'emotion'}>
-        <HomeBtnTitle>
-          {!isNULL
-            ? `${name}님,${'\n'}오늘의 마음을 확인해보세요!`
-            : `${name}님,${'\n'}오늘의 마음은 어떤가요?`}
-        </HomeBtnTitle>
-        <HomeBtnDescription>
-          <HomeBtnText status={'mood'}> {!isNULL ? `감정 수정하기` : `감정 기록하기`}</HomeBtnText>
-          <Icon
-            name="arrow-right"
-            width={rsWidth * 6 + 'px'}
-            height={rsHeight * 12 + 'px'}
-            color={palette.neutral[500]}
-          />
-        </HomeBtnDescription>
-        <View
-          style={css`
-            position: absolute;
-            right: 0;
-            bottom: 0;
-            width: 100%;
-            height: ${rsHeight * 130 + 'px'};
-            justify-content: center;
-            align-items: center;
-            flex-direction: row;
-            padding-left: ${rsWidth * 8 + 'px'};
-          `}>
-          {recordedEmotions.length ? (
-            recordedEmotions.map((emotion, index) => (
-              <EmotionCard
-                key={index}
-                emotion={emotion}
-                onPress={() => console.log('눌림')}
-                status={'simple'}
-              />
-            ))
-          ) : (
-            <EmotionImage
-              style={{
-                resizeMode: 'contain',
-              }}
-              source={require('../../../assets/images/test.png')}
-            />
-          )}
+    <HomeBtn
+      onPress={() => {
+        if (!isNULL) {
+          //입력한 감정을 수정하는 경우
+          //console.log('selectedEmotions', selectedEmotions);
+          navigation.navigate(RootStackName.HomeStackNavigator, {
+            screen: HomeStackName.SmallEmotionChart,
+          });
+        } else {
+          //아직 입력하지 않아, 감정을 입력해야 하는 경우
+          navigation.navigate(RootStackName.HomeStackNavigator, {
+            screen: HomeStackName.LargeEmotionChart,
+          });
+        }
+      }}
+      status={'emotion'}>
+      {loading ? (
+        <View>
+          <ActivityIndicator size="large" color={palette.primary[500]} />
         </View>
-      </HomeBtn>
-    </>
+      ) : (
+        <>
+          <HomeBtnTitle>
+            {!isNULL
+              ? `${name}님,${'\n'}오늘의 마음을 확인해보세요!`
+              : `${name}님,${'\n'}오늘의 마음은 어떤가요?`}
+          </HomeBtnTitle>
+          <HomeBtnDescription>
+            <HomeBtnText status={'mood'}>
+              {' '}
+              {!isNULL ? `감정 수정하기` : `감정 기록하기`}
+            </HomeBtnText>
+            <Icon
+              name="arrow-right"
+              width={rsWidth * 6 + 'px'}
+              height={rsHeight * 12 + 'px'}
+              color={palette.neutral[500]}
+            />
+          </HomeBtnDescription>
+          <View
+            style={css`
+              position: absolute;
+              right: 0;
+              bottom: 0;
+              width: 100%;
+              height: ${rsHeight * 130 + 'px'};
+              justify-content: center;
+              align-items: center;
+              flex-direction: row;
+              padding-left: ${rsWidth * 8 + 'px'};
+            `}>
+            {recordedEmotions.length ? (
+              recordedEmotions.map((emotion, index) => (
+                <EmotionCard
+                  key={index}
+                  emotion={emotion}
+                  onPress={() => console.log('눌림')}
+                  status={'simple'}
+                />
+              ))
+            ) : (
+              <EmotionImage
+                style={{
+                  resizeMode: 'contain',
+                }}
+                source={require('../../../assets/images/test.png')}
+              />
+            )}
+          </View>
+        </>
+      )}
+    </HomeBtn>
   );
 };
 export default EmotionBtn;
