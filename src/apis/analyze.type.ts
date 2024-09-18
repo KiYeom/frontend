@@ -59,6 +59,7 @@ export type TEmotions = {
 
 export type TEmotionCheck = {
   desc?: string;
-  group: 'angry' | 'sad' | 'happy' | 'calm';
+  //group: 'angry' | 'sad' | 'happy' | 'calm';
+  group: string;
   keyword: string;
 };

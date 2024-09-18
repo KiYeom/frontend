@@ -10,7 +10,7 @@ const EmotionCard = ({ emotion, onPress, status }) => {
     <View
       style={css`
         height: ${rsHeight * 100 + 'px'};
-        width: ${status === 'default' ? rsWidth * 100 + 'px' : rsWidth * 60 + 'px'};
+        width: ${status === 'simple' ? rsWidth * 60 + 'px' : rsWidth * 105 + 'px'};
         background-color: white;
         border-radius: 10px;
         margin-right: ${rsWidth * 8 + 'px'};
@@ -26,14 +26,16 @@ const EmotionCard = ({ emotion, onPress, status }) => {
             flex-direction: row;
             justify-content: flex-end;
           `}>
-          <TouchableOpacity
-            onPress={() => onPress(emotion)}
-            style={css`
-              padding: ${rsWidth * 4 + 'px'};
-              width: auto;
-            `}>
-            <Icon name={'cancel-icon'} />
-          </TouchableOpacity>
+          {status === 'default' && (
+            <TouchableOpacity
+              onPress={() => onPress(emotion)}
+              style={css`
+                padding: ${rsWidth * 4 + 'px'};
+                width: auto;
+              `}>
+              <Icon name={'cancel-icon'} />
+            </TouchableOpacity>
+          )}
         </View>
       )}
 
