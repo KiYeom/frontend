@@ -13,7 +13,8 @@ const DateLine = (props: DateProps) => {
       style={css`
         display: flex;
         flex: 1;
-        align-items: flex-start;
+        //align-items: flex-start;
+        align-items: center;
         justify-content: center;
         padding-horizontal: ${rsWidth * 20 + 'px'};
       `}>

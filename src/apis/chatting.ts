@@ -4,7 +4,7 @@ import { instance } from './interceptor';
 
 export const chatting = async (characterId: number, question: string): Promise<TChatAnswer> => {
   try {
-    const res = await instance.post('/v1/chat', {
+    const res = await instance.post('/v1/chat/memory', {
       characterId,
       question,
     });

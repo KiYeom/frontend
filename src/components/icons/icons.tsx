@@ -8,6 +8,13 @@ import StatisticIcon from './svg/statistic-icon';
 import HomeIcon from './svg/home-icon';
 import SettingIcon from './svg/setting-icon';
 import CloverIcon from './svg/clover';
+import HappyEmotion from './svg/happy-emotion';
+import AngryEmotion from './svg/angry-emotion';
+import SadEmotion from './svg/sad-emotion';
+import CalmEmotion from './svg/relax-emotion';
+import CheckIcon from './svg/check-icon';
+import CancelIcon from './svg/cancel-icon';
+import Calendar from './svg/calendar';
 
 export type TIconName =
   | 'airplane'
@@ -18,7 +25,14 @@ export type TIconName =
   | 'home-icon'
   | 'setting-icon'
   | 'statistic-icon'
-  | 'clover-icon';
+  | 'clover-icon'
+  | 'happy-emotion'
+  | 'angry-emotion'
+  | 'sad-emotion'
+  | 'calm-emotion'
+  | 'check-icon'
+  | 'cancel-icon'
+  | 'calendar';
 
 export default function Icon({
   width,
@@ -50,5 +64,19 @@ export default function Icon({
       return <StatisticIcon width={width} height={height} color={color} />;
     case 'clover-icon':
       return <CloverIcon width={width} height={height} color={color} />;
+    case 'happy-emotion':
+      return <HappyEmotion width={width} height={height} color={color} />;
+    case 'angry-emotion':
+      return <AngryEmotion width={width} height={height} color={color} />;
+    case 'sad-emotion':
+      return <SadEmotion width={width} height={height} color={color} />;
+    case 'calm-emotion':
+      return <CalmEmotion width={width} height={height} color={color} />;
+    case 'check-icon':
+      return <CheckIcon width={width} height={height} color={color} />;
+    case 'cancel-icon':
+      return <CancelIcon width={width} height={height} color={color} />;
+    case 'calendar':
+      return <Calendar width={width} height={height} color={color} />;
   }
 }

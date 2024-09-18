@@ -2,7 +2,7 @@ module.exports = {
   expo: {
     name: 'reMIND',
     slug: 'reMIND',
-    version: '1.1.0',
+    version: '1.1.2',
     orientation: 'portrait',
     icon: './src/assets/images/appicon.png',
     userInterfaceStyle: 'light',
@@ -36,9 +36,17 @@ module.exports = {
     },
     plugins: [
       [
+        '@sentry/react-native/expo',
+        {
+          organization: process.env.SENTRY_ORG,
+          project: process.env.SENTRY_PROJECT,
+          url: 'https://sentry.io/',
+        },
+      ],
+      [
         '@react-native-google-signin/google-signin',
         {
-          iosUrlScheme: process.env.IOS_URL_SCHEMA,
+          iosUrlScheme: 'com.googleusercontent.apps.94079762653-arcgeib4l0hbg6snh81cjimd9iuuoun3',
         },
       ],
       [

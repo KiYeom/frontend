@@ -19,6 +19,7 @@ import { periodChart, periodKeyword } from '../../../apis/analyze';
 import RangeDatePickerModal from '../../rangeCal/range-date-picker-modal';
 import { StyleSheet, ActivityIndicator } from 'react-native';
 import palette from '../../../assets/styles/theme';
+import PageName from './PageName';
 
 const PeriodStatisticPage: React.FC<any> = () => {
   const [loading, setLoading] = useState(true);
@@ -54,6 +55,7 @@ const PeriodStatisticPage: React.FC<any> = () => {
           periodChart(startDateFormatted, endDateFormatted), //기간 감정 차트
           periodKeyword(startDateFormatted, endDateFormatted), //기간 키워드 리스트
         ]);
+        console.log('기간 감정 차트', res);
         if (res && res.charts) {
           setEmotionsData(res.charts);
         }
@@ -106,13 +108,18 @@ const PeriodStatisticPage: React.FC<any> = () => {
           padding-vertical: ${rsHeight * 40 + 'px'};
           padding-bottom: ${rsHeight * 50 + 'px'};
         `}>
-        <View style={{ paddingBottom: 50 * rsHeight }}>
+        <View
+          style={css`
+            padding-bottom: ${rsHeight * 50 + 'px'};
+            gap: ${rsHeight * 16 + 'px'};
+          `}>
           <ReportType
             type="일일리포트"
             navigation={navigation}
             onPress={() => {
               setOpenModal(true);
             }}></ReportType>
+          <PageName type="기간 리포트" />
           <DateLine
             value={
               range.startDate && range.endDate

@@ -9,6 +9,7 @@ import {
   setDeviceId,
 } from './src/utils/storageUtils';
 import * as SplashScreen from 'expo-splash-screen';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useFonts } from 'expo-font';
 import AuthStackNavigator from './src/navigators/AuthStackNavigator';
 import palette from './src/assets/styles/theme';
@@ -22,6 +23,13 @@ import HomeStackNavigator from './src/navigators/HomeStackNavigator';
 import StatisticStackNavigator from './src/navigators/StatisticStackNavigator';
 import SettingStackNavigator from './src/navigators/SettingStackNavigator';
 import { RootStackName } from './src/constants/Constants';
+import { RootSiblingParent } from 'react-native-root-siblings';
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({
+  dsn: 'https://038362834934b1090d94fe368fdbcbf7@o4507944128020480.ingest.us.sentry.io/4507944132870145',
+  debug: true, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
+});
 
 if (process.env.EXPO_PUBLIC_AMPLITUDE) {
   amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE);
@@ -167,4 +175,5 @@ const navTheme = {
     background: 'rgb(255, 255, 255)',
   },
 };
-export default App;
+
+export default Sentry.wrap(App);
