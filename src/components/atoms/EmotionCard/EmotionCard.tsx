@@ -10,8 +10,7 @@ const EmotionCard = ({ emotion, onPress, status }) => {
     <View
       style={css`
         height: ${rsHeight * 100 + 'px'};
-        //width: ${status === 'default' ? rsWidth * 100 + 'px' : rsWidth * 60 + 'px'};
-        width: ${status === 'simple' ? rsWidth * 60 + 'px' : rsWidth * 100 + 'px'};
+        width: ${status === 'simple' ? rsWidth * 60 + 'px' : rsWidth * 105 + 'px'};
         background-color: white;
         border-radius: 10px;
         margin-right: ${rsWidth * 8 + 'px'};

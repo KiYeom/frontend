@@ -15,6 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 import { TLabel, TEmotionCheck } from '../../../apis/analyze.type';
 import palette from '../../../assets/styles/theme';
 import EmotionArea from './Daily_Keyword/EmotionArea';
+import PageName from './PageName';
 
 const START_HOUR_OF_DAY = 6;
 
@@ -106,6 +107,7 @@ const StatisticMain: React.FC<any> = () => {
               onPress={() => {
                 setOpenModal(true);
               }}></ReportType>
+            <PageName type="일일 리포트" />
             <DateLine value={getDateString(date ?? getServerYestoday())} />
             <Container>
               <DailyEmotionClassification
