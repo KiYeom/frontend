@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 import { DescText } from '../pages/StatisticPage/StatisticMain.style';
 import { css } from '@emotion/native';
 import { Text } from 'react-native';
+import palette from '../../assets/styles/theme';
 const RangeDatePickerModal = ({
   modalVisible,
   onClose,
@@ -59,6 +60,7 @@ const RangeDatePickerModal = ({
                   endDate={localRange.endDate}
                   date={date}
                   displayFullDays
+                  selectedItemColor={palette.primary[400]}
                 />
               </View>
               <DescText>

@@ -16,6 +16,7 @@ import { TLabel, TEmotionCheck } from '../../../apis/analyze.type';
 import palette from '../../../assets/styles/theme';
 import EmotionArea from './Daily_Keyword/EmotionArea';
 import PageName from './PageName';
+import { Text } from 'react-native';
 
 const START_HOUR_OF_DAY = 6;
 
