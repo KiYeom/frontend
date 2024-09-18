@@ -18,12 +18,6 @@ const Home: React.FC<any> = ({ navigation }) => {
     <HomeContainer insets={insets}>
       <HomeChatBtn navigation={navigation} />
       <EmotionBtn navigation={navigation} />
-      {/*<Button
-        title="Press me"
-        onPress={() => {
-          throw new Error('Hello, again, Sentry!');
-        }}
-      />*/}
     </HomeContainer>
   );
 };
