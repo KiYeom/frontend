@@ -25,7 +25,7 @@ module.exports = {
       permissions: ['INTERNET'],
       googleServicesFile: process.env.GOOGLE_SERVICES_FILE,
     },
-    scheme: 'com.ceunnseo.reMIND',
+    scheme: 'com.ceunnseo.remind',
     web: {
       favicon: './assets/favicon.png',
     },

@@ -203,7 +203,7 @@ const Login: React.FC<any> = ({ navigation }) => {
             onValueChange={() => {
               setFourth(!fourth);
             }}
-            label={'만 14세 이상입니다.'}
+            label={'만 14세 이상입니다'}
             color={fourth ? palette.primary[400] : palette.neutral[200]}
             labelStyle={{ fontSize: 14 }} //라벨 스타일링
           />
