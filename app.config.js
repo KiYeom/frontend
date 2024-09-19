@@ -2,7 +2,7 @@ module.exports = {
   expo: {
     name: 'reMIND',
     slug: 'reMIND',
-    version: '1.1.2',
+    version: '1.1.3',
     orientation: 'portrait',
     icon: './src/assets/images/appicon.png',
     userInterfaceStyle: 'light',
@@ -96,7 +96,7 @@ module.exports = {
     ],
     runtimeVersion: '1.0.0',
     updates: {
-      url: 'http://u.expo.dev/1cd0480c-0399-4503-ae2d-ec73641ea4fd',
+      url: 'https://u.expo.dev/1cd0480c-0399-4503-ae2d-ec73641ea4fd',
     },
   },
 };
