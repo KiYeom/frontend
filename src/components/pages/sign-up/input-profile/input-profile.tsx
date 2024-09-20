@@ -7,6 +7,8 @@ import {
   Title,
   TitleContaienr,
 } from '../input-name/input-name.styles';
+import { css } from '@emotion/native';
+import { View, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { BtnLabel, ButtonGroup, FormContainer, GenderButton, Label } from './input-profile.styles';
 import Input from '../../../input/input';
 import DatePickerModal from '../../../modals/date-picker-modal';
@@ -16,12 +18,15 @@ import { TGender } from '../../../../constants/types';
 import { getUserNickname, setInfoWhenLogin } from '../../../../utils/storageUtils';
 import { UseSigninStatus } from '../../../../utils/signin-status';
 import { UseRightStatus } from '../../../../utils/right-status';
+import { validateBirth } from '../../../../utils/ValidateBirth';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const InputProfile: React.FC<any> = ({ navigation }) => {
   const [name, setName] = React.useState('');
   const [gender, setGender] = React.useState<TGender>();
   const [openModal, setOpenModal] = React.useState(false);
-  const [birthDate, setBirthdate] = React.useState<Date>();
+  const [birthDate, setBirthdate] = React.useState<string>('');
   const [loading, setLoading] = React.useState(false);
   const [firstLoaded, setFirstLoaded] = React.useState(false);
   const { setSigninStatus } = UseSigninStatus();
@@ -33,7 +38,7 @@ const InputProfile: React.FC<any> = ({ navigation }) => {
   };
 
   const availableBtn = (): boolean => {
-    if (name && gender && birthDate) {
+    if (name && gender && validateBirth(birthDate) === 'correct') {
       return true;
     } else return false;
   };
@@ -43,9 +48,10 @@ const InputProfile: React.FC<any> = ({ navigation }) => {
       const res = await updateUserProfile({
         nickname: name,
         gender: gender ?? null,
-        birthdate: birthDate
-          ? `${birthDate.getFullYear()}-${String(birthDate.getMonth() + 1).padStart(2, '0')}-${String(birthDate.getDate()).padStart(2, '0')}`
-          : null,
+        birthdate:
+          validateBirth(birthDate) === 'correct'
+            ? `${birthDate.split('.')[0]}-${birthDate.split('.')[1]}-${birthDate.split('.')[2]}`
+            : null,
       });
 
       if (res) {
@@ -94,68 +100,75 @@ const InputProfile: React.FC<any> = ({ navigation }) => {
     }
   }, [RightStatus]);
 
+  const handleDateChange = (text: string) => {
+    let formatted = text.replace(/\D/g, '');
+
+    // 형식이 YYYY.MM.DD 로 맞춰지도록 수정
+    if (formatted.length > 4) {
+      formatted = formatted.slice(0, 4) + '.' + formatted.slice(4);
+    }
+    if (formatted.length > 7) {
+      formatted = formatted.slice(0, 7) + '.' + formatted.slice(7);
+    }
+    // 최대 10자리로 자르기 (YYYY.MM.DD)
+    if (formatted.length > 10) {
+      formatted = formatted.slice(0, 10);
+    }
+    setBirthdate(formatted);
+  };
+
   return (
-    <>
-      <TitleContaienr>
-        <Annotation>{name}님을 더 잘 이해하고 싶어요.</Annotation>
-        <Title>쿠키에게{'\n'}정보를 알려주세요.</Title>
-      </TitleContaienr>
-      <ContentContainer>
-        <FormContainer>
-          <Label>생년월일</Label>
-          <Input
-            placeholder="생년월일 입력"
-            showRightIcon={true}
-            status="disabled"
-            rightIcon="arrow-down"
-            onPressContainer={() => {
-              console.log('모달 열리기');
-              setOpenModal(true);
-            }}
-            value={
-              birthDate
-                ? birthDate?.getFullYear() +
-                  '.' +
-                  String(birthDate.getMonth() + 1).padStart(2, '0') +
-                  '.' +
-                  String(birthDate.getDate()).padStart(2, '0')
-                : undefined
-            }
-            styles={{ text: { color: palette.neutral[900] } }}
+    <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <View
+        style={css`
+          flex: 1;
+        `}>
+        <TitleContaienr>
+          <Annotation>{name}님을 더 잘 이해하고 싶어요.</Annotation>
+          <Title>쿠키에게{'\n'}정보를 알려주세요.</Title>
+        </TitleContaienr>
+        <ContentContainer>
+          <FormContainer>
+            <Label>생년월일</Label>
+            <Input
+              keyboardType="numeric"
+              placeholder="1990.01.01"
+              status={validateBirth(birthDate)}
+              message="생년월일(8자)을 알려주세요!"
+              withMessage={true}
+              onChange={(text) => handleDateChange(text)}
+              styles={{ text: { color: palette.neutral[900] } }}
+              value={birthDate}
+            />
+          </FormContainer>
+          <FormContainer>
+            <Label>성별</Label>
+            <ButtonGroup>
+              <GenderButton
+                activeOpacity={1}
+                selected={gender === '여성'}
+                onPress={() => setGender('여성')}>
+                <BtnLabel selected={gender === '여성'}>여성</BtnLabel>
+              </GenderButton>
+              <GenderButton
+                activeOpacity={1}
+                selected={gender === '남성'}
+                onPress={() => setGender('남성')}>
+                <BtnLabel selected={gender === '남성'}>남성</BtnLabel>
+              </GenderButton>
+            </ButtonGroup>
+          </FormContainer>
+        </ContentContainer>
+        <CTAContainer>
+          <Button
+            title="다음"
+            disabled={!availableBtn() || loading}
+            primary={true}
+            onPress={saveProfile}
           />
-        </FormContainer>
-        <FormContainer>
-          <Label>성별</Label>
-          <ButtonGroup>
-            <GenderButton
-              activeOpacity={1}
-              selected={gender === '여성'}
-              onPress={() => setGender('여성')}>
-              <BtnLabel selected={gender === '여성'}>여성</BtnLabel>
-            </GenderButton>
-            <GenderButton
-              activeOpacity={1}
-              selected={gender === '남성'}
-              onPress={() => setGender('남성')}>
-              <BtnLabel selected={gender === '남성'}>남성</BtnLabel>
-            </GenderButton>
-          </ButtonGroup>
-        </FormContainer>
-      </ContentContainer>
-      <CTAContainer>
-        <Button
-          title="다음"
-          disabled={!availableBtn() || loading}
-          primary={true}
-          onPress={saveProfile}
-        />
-      </CTAContainer>
-      <DatePickerModal
-        modalVisible={openModal}
-        onClose={() => setOpenModal(false)}
-        onChange={setBirthdate}
-      />
-    </>
+        </CTAContainer>
+      </View>
+    </KeyboardAwareScrollView>
   );
 };
 

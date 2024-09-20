@@ -14,6 +14,9 @@ import {
   getUserNickname,
   setUserInfo,
 } from '../../../utils/storageUtils';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { View } from 'react-native';
+import { css } from '@emotion/native';
 import { ButtonGroup } from '../sign-up/input-profile/input-profile.styles';
 import { GenderButton } from '../sign-up/input-profile/input-profile.styles';
 import { BtnLabel } from '../sign-up/input-profile/input-profile.styles';
@@ -21,36 +24,54 @@ import DatePickerModal from '../../modals/date-picker-modal';
 import { TGender } from '../../../constants/types';
 import { TouchableWithoutFeedback } from 'react-native';
 import { Keyboard } from 'react-native';
+import { validateBirth } from '../../../utils/ValidateBirth';
+import { KeyboardAvoidingView } from 'react-native';
 //설정 - 프로필 수정 화면
 
-//date가 존재할 경우 Date 형태로 바꾸는 함수
-const formatBirthDate = (dateString: string | undefined): Date | undefined => {
+//date가 존재할 경우 'yyyy.mm.dd' 형태로 바꾸는 함수
+const formatBirthDate = (dateString: string | undefined): string | undefined => {
   if (!dateString) {
     return undefined;
   }
-  const [year, month, day] = dateString.split('-').map(Number);
-  const dateObject = new Date(year, month - 1, day);
-  return dateObject;
+  return dateString.replace(/-/g, '.');
 };
 
 const EditUserInfo: React.FC = ({ navigation }) => {
   //FIX: 생년월일 클릭 시 에러 발생
   const [name, setName] = React.useState<string>(getUserNickname() + '');
   const [gender, setGender] = React.useState<TGender | undefined>(getUserGender());
-  const [birthDate, setBirthDate] = React.useState<Date | undefined>(
+  const [birthDate, setBirthDate] = React.useState<string | undefined>(
     formatBirthDate(getUserBirthdate()),
   );
   const [openModal, setOpenModal] = React.useState<boolean>(false);
   const [loading, setLoading] = React.useState<boolean>(false);
+
+  const handleDateChange = (text: string) => {
+    let formatted = text.replace(/\D/g, '');
+
+    // 형식이 YYYY.MM.DD 로 맞춰지도록 수정
+    if (formatted.length > 4) {
+      formatted = formatted.slice(0, 4) + '.' + formatted.slice(4);
+    }
+    if (formatted.length > 7) {
+      formatted = formatted.slice(0, 7) + '.' + formatted.slice(7);
+    }
+    // 최대 10자리로 자르기 (YYYY.MM.DD)
+    if (formatted.length > 10) {
+      formatted = formatted.slice(0, 10);
+    }
+    setBirthDate(formatted);
+  };
 
   const editUserInfo = () => {
     setLoading(true);
     userEditInfo({
       nickname: name,
       gender: gender ?? null,
-      birthdate: birthDate
-        ? `${birthDate.getFullYear()}-${String(birthDate.getMonth() + 1).padStart(2, '0')}-${String(birthDate.getDate()).padStart(2, '0')}`
-        : null,
+      birthdate:
+        validateBirth(birthDate) === 'correct'
+          ? `${birthDate.split('.')[0]}-${birthDate.split('.')[1]}-${birthDate.split('.')[2]}`
+          : null,
     })
       .then((res) => {
         if (!res) {
@@ -68,8 +89,11 @@ const EditUserInfo: React.FC = ({ navigation }) => {
   };
 
   return (
-    <>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <View
+        style={css`
+          flex: 1;
+        `}>
         <ContentContainer>
           <FormContainer>
             <Label>이름</Label>
@@ -87,20 +111,13 @@ const EditUserInfo: React.FC = ({ navigation }) => {
           <FormContainer>
             <Label>생년월일</Label>
             <Input
-              placeholder="생년월일 입력"
-              showRightIcon={true}
-              status="disabled"
-              rightIcon="arrow-down"
-              onPressContainer={() => setOpenModal(true)}
-              value={
-                birthDate
-                  ? birthDate?.getFullYear() +
-                    '.' +
-                    String(birthDate.getMonth() + 1).padStart(2, '0') +
-                    '.' +
-                    String(birthDate.getDate()).padStart(2, '0')
-                  : undefined
-              }
+              keyboardType="numeric"
+              placeholder="1990.01.01"
+              status={validateBirth(birthDate)}
+              message="생년월일(8자)을 알려주세요!"
+              withMessage={true}
+              onChange={(text) => handleDateChange(text)}
+              value={birthDate}
               styles={{ text: { color: palette.neutral[900] } }}
             />
           </FormContainer>
@@ -122,21 +139,20 @@ const EditUserInfo: React.FC = ({ navigation }) => {
             </ButtonGroup>
           </FormContainer>
         </ContentContainer>
-      </TouchableWithoutFeedback>
-      <CTAContainer>
-        <Button
-          title="저장"
-          disabled={!(validateName(name + '') === 'correct') || loading}
-          primary={true}
-          onPress={() => editUserInfo()}
-        />
-      </CTAContainer>
-      <DatePickerModal
-        modalVisible={openModal}
-        onClose={() => setOpenModal(false)}
-        onChange={setBirthDate}
-      />
-    </>
+        <CTAContainer>
+          <Button
+            title="저장"
+            disabled={
+              !(validateName(name + '') === 'correct') ||
+              loading ||
+              !(validateBirth(birthDate) === 'correct')
+            }
+            primary={true}
+            onPress={() => editUserInfo()}
+          />
+        </CTAContainer>
+      </View>
+    </KeyboardAwareScrollView>
   );
 };
 export default EditUserInfo;
