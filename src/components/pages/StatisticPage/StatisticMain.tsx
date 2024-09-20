@@ -17,6 +17,8 @@ import palette from '../../../assets/styles/theme';
 import EmotionArea from './Daily_Keyword/EmotionArea';
 import PageName from './PageName';
 import { Text } from 'react-native';
+import { useCallback } from 'react';
+import SingleDatePickerModal from '../../rangeCal/single-date-picker-modal';
 
 const START_HOUR_OF_DAY = 6;
 
@@ -37,6 +39,8 @@ const getServerYestoday = (currentDate: Date = new Date()) => {
 };
 
 const getDateString = (date: Date): string => {
+  console.log('getDateString', date, Object.prototype.toString.call(date));
+  console.log('getDateString getfullyear', date.getFullYear);
   return (
     date?.getFullYear() +
     '년 ' +
@@ -68,6 +72,11 @@ const StatisticMain: React.FC<any> = () => {
   const [isNullRecordKeywordList, setIsNullRecordKeywordList] = useState(false);
   const [summaryList, setSummaryList] = useState<string[]>([]);
   const navigation = useNavigation();
+
+  const onChange = useCallback((newDate) => {
+    console.log('onchange', newDate);
+    setDate(newDate);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -125,10 +134,15 @@ const StatisticMain: React.FC<any> = () => {
         </ScrollView>
       </SafeAreaView>
 
-      <DatePickerModal
+      {/*<DatePickerModal
         modalVisible={openModal}
         onClose={() => setOpenModal(false)}
         onChange={setDate}
+      />*/}
+      <SingleDatePickerModal
+        modalVisible={openModal}
+        onClose={() => setOpenModal(false)}
+        onChange={onChange}
       />
     </View>
   );
