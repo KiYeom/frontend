@@ -1,13 +1,10 @@
 import React from 'react';
-import { Container, KeywordText, KeywordContainer, KeywordIcon } from './Keyword.style';
-import palette from '../../../../assets/styles/theme';
-import Icon from '../../../icons/icons';
-import { rsWidth, rsHeight } from '../../../../utils/responsive-size';
-import { Title } from '../StatisticMain.style';
-import Empty from '../Empty';
-import { Text, View, ScrollView } from 'react-native';
-import { css } from '@emotion/native';
+import { ScrollView } from 'react-native';
 import EmotionCard from '../../../atoms/EmotionCard/EmotionCard';
+import Empty from '../Empty';
+import { Title } from '../StatisticMain.style';
+import { Container } from './Keyword.style';
+
 const EmotionArea: React.FC<any> = (props: any) => {
   const { isRecordKeywordList, isNullRecordKeywordList } = props;
   console.log('-----------isNullRecordKeywordList---', isNullRecordKeywordList);

@@ -1,7 +1,7 @@
-import { DateLineText } from './DateLine.style';
-import { View } from 'react-native';
 import { css } from '@emotion/native';
+import { View } from 'react-native';
 import { rsWidth } from '../../../utils/responsive-size';
+import { DateLineText } from './DateLine.style';
 
 type DateProps = {
   value: string; //오늘의 날짜

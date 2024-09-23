@@ -1,11 +1,11 @@
-import React from 'react';
 import { css } from '@emotion/native';
-import { rsWidth, rsHeight, rsFont } from '../../../../utils/responsive-size';
-import { View, Text } from 'react-native-ui-lib';
+import React from 'react';
 import { PieChart } from 'react-native-gifted-charts';
-import palette from '../../../../assets/styles/theme';
-import Empty from '../Empty';
+import { Text, View } from 'react-native-ui-lib';
 import { TLabel } from '../../../../apis/analyze.type';
+import palette from '../../../../assets/styles/theme';
+import { rsFont, rsHeight, rsWidth } from '../../../../utils/responsive-size';
+import Empty from '../Empty';
 
 type TLabelWithColor = {
   label: string;

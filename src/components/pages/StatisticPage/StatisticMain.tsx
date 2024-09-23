@@ -1,22 +1,19 @@
-import React from 'react';
-import { rsHeight } from '../../../utils/responsive-size';
-import { Platform, SafeAreaView, StatusBar, View } from 'react-native';
-import DatePickerModal from '../../modals/date-picker-modal';
-import { useEffect, useState } from 'react';
-import { ScrollView } from 'react-native';
 import { css } from '@emotion/native';
-import DailyEmotionClassification from './Daily_EmotionClassification/DailyEmotionClassification';
-import DateLine from '../../atoms/DateLine/DateLine';
-import KeywordArea from './Daily_Keyword/KeywordArea';
-import { Container } from './StatisticMain.style';
-import ReportType from './ReportType';
-import { dailyAnalyze } from '../../../apis/analyze';
 import { useNavigation } from '@react-navigation/native';
-import { TLabel, TEmotionCheck } from '../../../apis/analyze.type';
+import React, { useEffect, useState } from 'react';
+import { Platform, SafeAreaView, ScrollView, StatusBar, View } from 'react-native';
+import { dailyAnalyze } from '../../../apis/analyze';
+import { TEmotionCheck, TLabel } from '../../../apis/analyze.type';
 import palette from '../../../assets/styles/theme';
+import { rsHeight } from '../../../utils/responsive-size';
+import DateLine from '../../atoms/DateLine/DateLine';
+import DatePickerModal from '../../modals/date-picker-modal';
+import DailyEmotionClassification from './Daily_EmotionClassification/DailyEmotionClassification';
 import EmotionArea from './Daily_Keyword/EmotionArea';
+import KeywordArea from './Daily_Keyword/KeywordArea';
 import PageName from './PageName';
-import { Text } from 'react-native';
+import ReportType from './ReportType';
+import { Container } from './StatisticMain.style';
 
 const START_HOUR_OF_DAY = 6;
 

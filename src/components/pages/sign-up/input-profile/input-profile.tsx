@@ -1,5 +1,13 @@
 import React, { useEffect } from 'react';
+import { updateUserProfile } from '../../../../apis/auth';
+import palette from '../../../../assets/styles/theme';
+import { TGender } from '../../../../constants/types';
+import { UseRightStatus } from '../../../../utils/right-status';
+import { UseSigninStatus } from '../../../../utils/signin-status';
+import { getUserNickname, setInfoWhenLogin } from '../../../../utils/storageUtils';
 import Button from '../../../button/button';
+import Input from '../../../input/input';
+import DatePickerModal from '../../../modals/date-picker-modal';
 import {
   Annotation,
   ContentContainer,
@@ -8,14 +16,6 @@ import {
   TitleContaienr,
 } from '../input-name/input-name.styles';
 import { BtnLabel, ButtonGroup, FormContainer, GenderButton, Label } from './input-profile.styles';
-import Input from '../../../input/input';
-import DatePickerModal from '../../../modals/date-picker-modal';
-import palette from '../../../../assets/styles/theme';
-import { updateUserProfile } from '../../../../apis/auth';
-import { TGender } from '../../../../constants/types';
-import { getUserNickname, setInfoWhenLogin } from '../../../../utils/storageUtils';
-import { UseSigninStatus } from '../../../../utils/signin-status';
-import { UseRightStatus } from '../../../../utils/right-status';
 
 const InputProfile: React.FC<any> = ({ navigation }) => {
   const [name, setName] = React.useState('');

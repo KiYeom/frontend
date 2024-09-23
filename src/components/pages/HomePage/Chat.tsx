@@ -1,25 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
-import {
-  View,
-  FlatList,
-  Platform,
-  Keyboard,
-  Text,
-  KeyboardAvoidingView,
-  SafeAreaView,
-} from 'react-native';
 import { css } from '@emotion/native';
-import { rsWidth, rsHeight, rsFont } from '../../../utils/responsive-size';
-import ChatBubble from './ChatBubble';
-import ChatInput from './ChatInput';
-import { DateLine } from './Chat.style';
+import { useHeaderHeight } from '@react-navigation/elements';
+import { StatusBar } from 'expo-status-bar';
+import React, { useEffect, useRef, useState } from 'react';
+import { FlatList, Keyboard, KeyboardAvoidingView, Platform, View } from 'react-native';
 import { Message } from '../../../constants/Constants';
 import { loadChatLogs, saveChatLogs } from '../../../utils/Chatting';
+import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { getAiResponse, getChatting } from '../../../utils/storageUtils';
-import { StatusBar } from 'expo-status-bar';
-import { useHeaderHeight } from '@react-navigation/elements';
-import palette from '../../../assets/styles/theme';
-import { DateLineText } from './Chat.style';
+import { DateLine, DateLineText } from './Chat.style';
+import ChatBubble from './ChatBubble';
+import ChatInput from './ChatInput';
 
 const Chat: React.FC = () => {
   const flatListRef = useRef<FlatList<any>>(null);

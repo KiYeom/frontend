@@ -1,9 +1,8 @@
 import React from 'react';
-import { Label } from '../pages/sign-up/input-profile/input-profile.styles';
-import Input from '../input/input';
 import palette from '../../assets/styles/theme';
-import { FormContainer } from '../pages/sign-up/input-profile/input-profile.styles';
+import Input from '../input/input';
 import DatePickerModal from '../modals/date-picker-modal';
+import { FormContainer, Label } from '../pages/sign-up/input-profile/input-profile.styles';
 
 const BirthInput: React.FC<any> = ({ birthDate, setBirthDate }): any => {
   const [openModal, setOpenModal] = React.useState(false);

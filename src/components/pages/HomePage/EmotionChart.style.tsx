@@ -1,6 +1,6 @@
 import styled from '@emotion/native';
-import { rsFont, rsWidth, rsHeight } from '../../../utils/responsive-size';
 import palette from '../../../assets/styles/theme';
+import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 
 //제목
 export const Title = styled.Text`

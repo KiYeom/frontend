@@ -1,10 +1,10 @@
 import React from 'react';
-import { Container, KeywordText, KeywordContainer, KeywordIcon } from './Keyword.style';
 import palette from '../../../../assets/styles/theme';
+import { rsHeight, rsWidth } from '../../../../utils/responsive-size';
 import Icon from '../../../icons/icons';
-import { rsWidth, rsHeight } from '../../../../utils/responsive-size';
-import { Title } from '../StatisticMain.style';
 import Empty from '../Empty';
+import { Title } from '../StatisticMain.style';
+import { Container, KeywordContainer, KeywordIcon, KeywordText } from './Keyword.style';
 
 const KeywordArea: React.FC<any> = (props: any) => {
   const { value, isSummaryList, summaryList } = props;

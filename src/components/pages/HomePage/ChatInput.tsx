@@ -1,12 +1,10 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { View, Platform } from 'react-native';
-import { TextInputContainer } from './Chat.style';
-import Input from '../../input/input';
-import { userSend, aiSend, botAnswer } from '../../../utils/Chatting';
-import { saveChatLogs } from '../../../utils/Chatting';
+import React, { useRef, useState } from 'react';
+import { View } from 'react-native';
 import { Message } from '../../../constants/Constants';
-import { debounce } from 'lodash';
-import { saveAiResponse, getAiResponse } from '../../../utils/storageUtils';
+import { aiSend, botAnswer, saveChatLogs, userSend } from '../../../utils/Chatting';
+import { saveAiResponse } from '../../../utils/storageUtils';
+import Input from '../../input/input';
+import { TextInputContainer } from './Chat.style';
 
 const ChatInput = ({ data, setData }: any) => {
   const [text, setText] = useState<string>('');

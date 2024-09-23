@@ -1,11 +1,9 @@
-import React from 'react';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import requestNotificationPermission from '../../../utils/NotificationToken';
+import EmotionBtn from '../../atoms/EmotionBtn/EmotionBtn';
 import HomeChatBtn from '../../atoms/HomeBtn/HomeChatBtn';
 import { HomeContainer } from './Home.style';
-import EmotionBtn from '../../atoms/EmotionBtn/EmotionBtn';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Button } from 'react-native';
 
 const Home: React.FC<any> = ({ navigation }) => {
   const insets = useSafeAreaInsets();

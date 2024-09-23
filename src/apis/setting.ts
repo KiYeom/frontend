@@ -1,5 +1,5 @@
-import { instance } from './interceptor';
 import { TCommonResult } from './common.types';
+import { instance } from './interceptor';
 import { TAllowedNotifications, TSetNotification } from './notification.types';
 import { TDisplayUserInfo, TLatestVersion, TUserInfo } from './setting.types';
 

@@ -1,7 +1,6 @@
-import React from 'react';
-import { Text, StyleSheet, ScrollView } from 'react-native';
-import { useLayoutEffect } from 'react';
 import { useRoute } from '@react-navigation/native';
+import React, { useLayoutEffect } from 'react';
+import { ScrollView, StyleSheet, Text } from 'react-native';
 import Header from '../../header/header';
 
 const LicenseDetailPage: React.FC<any> = ({ navigation }) => {
