@@ -1,26 +1,26 @@
-import React, { useEffect } from 'react';
-import Button from '../../button/button';
-import palette from '../../../assets/styles/theme';
-import { Label } from '../sign-up/input-profile/input-profile.styles';
-import Input from '../../input/input';
-import { FormContainer } from '../sign-up/input-profile/input-profile.styles';
-import { ContentContainer } from '../sign-up/input-name/input-name.styles';
-import { validateName } from '../../../utils/ValidateName';
-import { CTAContainer } from '../sign-up/input-name/input-name.styles';
+import React from 'react';
+import { Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { userEditInfo } from '../../../apis/userEditInfo'; //api 수정해야 함
+import palette from '../../../assets/styles/theme';
+import { TGender } from '../../../constants/types';
 import {
   getUserBirthdate,
   getUserGender,
   getUserNickname,
   setUserInfo,
 } from '../../../utils/storageUtils';
-import { ButtonGroup } from '../sign-up/input-profile/input-profile.styles';
-import { GenderButton } from '../sign-up/input-profile/input-profile.styles';
-import { BtnLabel } from '../sign-up/input-profile/input-profile.styles';
+import { validateName } from '../../../utils/ValidateName';
+import Button from '../../button/button';
+import Input from '../../input/input';
 import DatePickerModal from '../../modals/date-picker-modal';
-import { TGender } from '../../../constants/types';
-import { TouchableWithoutFeedback } from 'react-native';
-import { Keyboard } from 'react-native';
+import { ContentContainer, CTAContainer } from '../sign-up/input-name/input-name.styles';
+import {
+  BtnLabel,
+  ButtonGroup,
+  FormContainer,
+  GenderButton,
+  Label,
+} from '../sign-up/input-profile/input-profile.styles';
 //설정 - 프로필 수정 화면
 
 //date가 존재할 경우 Date 형태로 바꾸는 함수

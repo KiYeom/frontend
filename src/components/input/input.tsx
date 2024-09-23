@@ -1,8 +1,8 @@
-import { TextStyle, StyleProp } from 'react-native';
-import { IconContainer, InputContainer, InputField, WithMessage } from './input.styles';
-import Icon, { TIconName } from '../icons/icons';
-import { rsHeight, rsWidth } from '../../utils/responsive-size';
+import { StyleProp, TextStyle } from 'react-native';
 import palette from '../../assets/styles/theme';
+import { rsHeight, rsWidth } from '../../utils/responsive-size';
+import Icon, { TIconName } from '../icons/icons';
+import { IconContainer, InputContainer, InputField, WithMessage } from './input.styles';
 
 type InputProps = {
   status?: 'correct' | 'error' | 'default' | 'disabled';

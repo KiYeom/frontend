@@ -1,25 +1,18 @@
-import React from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { ScrollView, StatusBar } from 'react-native';
-import { Platform } from 'react-native';
 import { css } from '@emotion/native';
-import { useState } from 'react';
-import { View } from 'react-native';
-import ReportType from './ReportType';
 import { useNavigation } from '@react-navigation/native';
-import { rsHeight, rsWidth, rsFont } from '../../../utils/responsive-size';
-import { useEffect } from 'react';
-import PeriodKeywordArea from './Period_keyword/PeriodKeywordArea';
-import DateLine from '../../atoms/DateLine/DateLine';
-import PeriodFlowChart from './Period_FlowChart/PeriodFlowChartArea';
 import dayjs from 'dayjs';
-import DateType from 'react-native-ui-datepicker';
-import { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { ActivityIndicator, ScrollView, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { periodChart, periodKeyword } from '../../../apis/analyze';
-import RangeDatePickerModal from '../../rangeCal/range-date-picker-modal';
-import { StyleSheet, ActivityIndicator } from 'react-native';
 import palette from '../../../assets/styles/theme';
+import { rsHeight } from '../../../utils/responsive-size';
+import DateLine from '../../atoms/DateLine/DateLine';
+import RangeDatePickerModal from '../../rangeCal/range-date-picker-modal';
 import PageName from './PageName';
+import PeriodFlowChart from './Period_FlowChart/PeriodFlowChartArea';
+import PeriodKeywordArea from './Period_keyword/PeriodKeywordArea';
+import ReportType from './ReportType';
 
 const PeriodStatisticPage: React.FC<any> = () => {
   const [loading, setLoading] = useState(true);

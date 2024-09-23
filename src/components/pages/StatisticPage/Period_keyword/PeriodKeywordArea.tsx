@@ -1,12 +1,11 @@
-import React from 'react';
-import palette from '../../../../assets/styles/theme';
-import { rsFont, rsWidth, rsHeight } from '../../../../utils/responsive-size';
-import { Container } from '../StatisticMain.style';
-import PeriodKeyword from '../../../periodKeyword/PeriodKeyword';
-import { Title, DescText } from '../StatisticMain.style';
-import { View } from 'react-native';
 import { css } from '@emotion/native';
+import React from 'react';
+import { View } from 'react-native';
+import { rsHeight, rsWidth } from '../../../../utils/responsive-size';
+import PeriodKeyword from '../../../periodKeyword/PeriodKeyword';
 import Empty from '../Empty';
+import { Title } from '../StatisticMain.style';
+
 const PeriodKeywordArea: React.FC<any> = (props: any) => {
   const { periodKeywordList, setPeriodKeywordList } = props;
   console.log('데이터 확인', periodKeywordList);

@@ -1,23 +1,23 @@
+import { css } from '@emotion/native';
 import React, { useEffect, useState } from 'react';
+import { View } from 'react-native';
+import { ActivityIndicator } from 'react-native-paper';
+import { todayEmotionCheck } from '../../../apis/analyze';
+import palette from '../../../assets/styles/theme';
+import { HomeStackName, RootStackName } from '../../../constants/Constants';
+import useRecordedEmotionStore from '../../../utils/emotion-recorded';
+import { rsHeight, rsWidth } from '../../../utils/responsive-size';
+import { getUserNickname } from '../../../utils/storageUtils';
+import Icon from '../../icons/icons';
+import EmotionCard from '../EmotionCard/EmotionCard';
+import '../HomeBtn/HomeChatBtn';
 import {
+  EmotionImage,
   HomeBtn,
-  HomeBtnTitle,
   HomeBtnDescription,
   HomeBtnText,
+  HomeBtnTitle,
 } from '../HomeBtn/HomeChatBtn.style';
-import '../HomeBtn/HomeChatBtn';
-import { css } from '@emotion/native';
-import { View } from 'react-native';
-import { getUserNickname } from '../../../utils/storageUtils';
-import { rsHeight, rsWidth } from '../../../utils/responsive-size';
-import { HomeStackName, RootStackName } from '../../../constants/Constants';
-import Icon from '../../icons/icons';
-import palette from '../../../assets/styles/theme';
-import { EmotionImage } from '../HomeBtn/HomeChatBtn.style';
-import EmotionCard from '../EmotionCard/EmotionCard';
-import { todayEmotionCheck } from '../../../apis/analyze';
-import useRecordedEmotionStore from '../../../utils/emotion-recorded';
-import { ActivityIndicator } from 'react-native-paper';
 
 const EmotionBtn = ({ navigation }) => {
   const [name, setName] = useState<string>('');

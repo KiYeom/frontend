@@ -1,7 +1,7 @@
 import styled from '@emotion/native';
-import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
-import palette from '../../../assets/styles/theme';
 import { EdgeInsets } from 'react-native-safe-area-context';
+import palette from '../../../assets/styles/theme';
+import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 
 export const SettingContainer = styled.ScrollView`
   flex: 1;

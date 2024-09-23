@@ -1,9 +1,6 @@
-import { FlatList } from 'react-native';
-import { StyleSheet } from 'react-native';
-import { View, Text, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'react-native-paper';
-import React from 'react';
-import { useState, useEffect } from 'react';
 import { TLicense } from '../../../constants/types';
 
 const LicensePage: React.FC<any> = ({ navigation }) => {

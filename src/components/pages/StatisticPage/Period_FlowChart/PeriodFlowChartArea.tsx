@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Button, Dimensions } from 'react-native';
-import { LineChart } from 'react-native-gifted-charts';
-import { rsWidth, rsHeight, rsFont } from '../../../../utils/responsive-size';
-import { periodChart } from '../../../../apis/analyze';
-import { Title } from '../StatisticMain.style';
-import dayjs from 'dayjs';
 import { css } from '@emotion/native';
+import dayjs from 'dayjs';
+import React, { useState } from 'react';
+import { Dimensions, View } from 'react-native';
+import { LineChart } from 'react-native-gifted-charts';
+import { rsFont, rsHeight, rsWidth } from '../../../../utils/responsive-size';
 import MoodButton from '../../../button/MoodButton';
+import { Title } from '../StatisticMain.style';
 
 const fillMissingDates = (data, startDate, endDate) => {
   const result = [];

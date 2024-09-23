@@ -1,6 +1,6 @@
 import styled from '@emotion/native';
-import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import palette from '../../assets/styles/theme';
+import { rsHeight, rsWidth } from '../../utils/responsive-size';
 
 export const ButtonContainer = styled.TouchableOpacity<{ disabled?: boolean; primary?: boolean }>`
   display: flex;

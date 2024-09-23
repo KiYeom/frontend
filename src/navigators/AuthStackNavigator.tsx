@@ -1,12 +1,12 @@
 //처음 회원가입을 하면 infoscreen으로 가서... 이름, 나이, 성별 물어보기
-import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import InputName from '../components/pages/sign-up/input-name/input-name';
+import React from 'react';
 import Header from '../components/header/header';
-import InputProfile from '../components/pages/sign-up/input-profile/input-profile';
-import { UseRightStatus } from '../utils/right-status';
-import { AuthStackName } from '../constants/Constants';
 import Login from '../components/pages/sign-in/sign-in';
+import InputName from '../components/pages/sign-up/input-name/input-name';
+import InputProfile from '../components/pages/sign-up/input-profile/input-profile';
+import { AuthStackName } from '../constants/Constants';
+import { UseRightStatus } from '../utils/right-status';
 
 const AuthStack = createNativeStackNavigator();
 

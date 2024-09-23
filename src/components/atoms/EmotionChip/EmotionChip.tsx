@@ -1,11 +1,10 @@
-import React from 'react';
-import { Chip } from 'react-native-ui-lib'; // Wix의 UI 라이브러리에서 가져오기
-import { View, Text, TouchableOpacity } from 'react-native';
 import { css } from '@emotion/native';
+import React from 'react';
+import { Text, TouchableOpacity } from 'react-native';
 import palette from '../../../assets/styles/theme';
-import Icon from '../../icons/icons';
-import { TIconName } from '../../icons/icons';
-import { rsWidth, rsHeight, rsFont } from '../../../utils/responsive-size';
+import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
+import Icon, { TIconName } from '../../icons/icons';
+
 const EmotionChip = ({ group, keyword, onPress, isSelected }) => {
   return (
     <TouchableOpacity

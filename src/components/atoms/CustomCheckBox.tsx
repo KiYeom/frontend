@@ -1,7 +1,7 @@
 import React from 'react';
+import { StyleSheet } from 'react-native';
 import { Checkbox } from 'react-native-ui-lib';
 import palette from '../../assets/styles/theme';
-import { StyleSheet } from 'react-native';
 import TextArea from '../textarea/TextArea';
 import { Container } from './CustomCheckBox.style';
 

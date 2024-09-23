@@ -1,6 +1,6 @@
 import styled from '@emotion/native';
 import palette from '../../assets/styles/theme';
-import { rsWidth, rsHeight, rsFont } from '../../utils/responsive-size';
+import { rsFont, rsHeight, rsWidth } from '../../utils/responsive-size';
 
 export const MoodButtonContainer = styled.TouchableOpacity<{
   primary?: boolean;

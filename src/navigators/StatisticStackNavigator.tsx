@@ -1,9 +1,8 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
+import PeriodStatisticPage from '../components/pages/StatisticPage/PeriodStatisticPage';
 import StatisticMain from '../components/pages/StatisticPage/StatisticMain';
 import { StatisticStackName } from '../constants/Constants';
-import PeriodStatisticPage from '../components/pages/StatisticPage/PeriodStatisticPage';
 
 const StatisticStack = createNativeStackNavigator();
 

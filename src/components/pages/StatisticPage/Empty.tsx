@@ -1,9 +1,7 @@
-import React from 'react';
 import { Image } from 'expo-image';
-import { DescText } from './StatisticMain.style';
-import { EmptyContainer } from './StatisticMain.style';
-import { rsWidth, rsHeight } from '../../../utils/responsive-size';
-import { css } from '@emotion/native';
+import React from 'react';
+import { rsHeight, rsWidth } from '../../../utils/responsive-size';
+import { DescText, EmptyContainer } from './StatisticMain.style';
 
 export type EmptyTypeProps = {
   type: string;

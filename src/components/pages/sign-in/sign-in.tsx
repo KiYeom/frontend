@@ -1,39 +1,29 @@
-import * as React from 'react';
-import { Linking, Platform, Text, TouchableOpacity, View } from 'react-native';
-import { useEffect } from 'react';
-import {
-  LoginBtnLabel,
-  LoginBtn,
-  LoginBtnIcon,
-  ButtonContainer,
-  Container,
-  WelcomeTitle,
-  CookieImage,
-  ImageContainer,
-} from './sing-in.styles';
 import { css } from '@emotion/native';
-import * as AppleAuthentication from 'expo-apple-authentication';
-import AuthStackNavigator from '../../../navigators/AuthStackNavigator';
 import {
   GoogleSignin,
   isErrorWithCode,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
+import * as AppleAuthentication from 'expo-apple-authentication';
+import * as React from 'react';
+import { Linking, Platform, Text, TouchableOpacity } from 'react-native';
+import { Checkbox } from 'react-native-ui-lib';
 import { ssoLogin } from '../../../apis/auth';
-import {
-  clearTokenInfo,
-  getAccessToken,
-  setInfoWhenLogin,
-  setTokenInfo,
-} from '../../../utils/storageUtils';
+import palette from '../../../assets/styles/theme';
+import { AuthStackName } from '../../../constants/Constants';
 import { TVender } from '../../../constants/types';
 import { UseSigninStatus } from '../../../utils/signin-status';
-import { AuthStackName } from '../../../constants/Constants';
-import palette from '../../../assets/styles/theme';
-import CustomCheckBox from '../../atoms/CustomCheckBox';
-import { rsHeight } from '../../../utils/responsive-size';
-import { Checkbox } from 'react-native-ui-lib';
-import { useFocusEffect } from '@react-navigation/native';
+import { setInfoWhenLogin, setTokenInfo } from '../../../utils/storageUtils';
+import {
+  ButtonContainer,
+  Container,
+  CookieImage,
+  ImageContainer,
+  LoginBtn,
+  LoginBtnIcon,
+  LoginBtnLabel,
+  WelcomeTitle,
+} from './sing-in.styles';
 
 enum OauthResult {
   UserCancel,
