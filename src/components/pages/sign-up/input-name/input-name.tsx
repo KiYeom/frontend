@@ -1,4 +1,11 @@
-import { View, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { css } from '@emotion/native';
+import { NavigationProp } from '@react-navigation/native';
+import React from 'react';
+import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
+import { AuthStackName } from '../../../../constants/Constants';
+import { setUserNickname } from '../../../../utils/storageUtils';
+import Button from '../../../button/button';
+import Input from '../../../input/input';
 import {
   Annotation,
   ContentContainer,
@@ -6,13 +13,6 @@ import {
   Title,
   TitleContaienr,
 } from './input-name.styles';
-import React from 'react';
-import Button from '../../../button/button';
-import Input from '../../../input/input';
-import { NavigationProp } from '@react-navigation/native';
-import { css } from '@emotion/native';
-import { setUserNickname } from '../../../../utils/storageUtils';
-import { AuthStackName } from '../../../../constants/Constants';
 
 const validateName = (name: string): 'error' | 'default' | 'correct' => {
   if (name.length !== 0 && (name.length < 2 || name.length > 15)) return 'error';
@@ -27,6 +27,7 @@ const InputName = ({ navigation }: { navigation: NavigationProp<any> }) => {
   const saveNickName = async (nickname: string) => {
     setLoading(true);
     setUserNickname(nickname);
+    setLoading(false);
     navigation.navigate(AuthStackName.InputProfile);
   };
 

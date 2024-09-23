@@ -1,6 +1,8 @@
 import React from 'react';
-import { Image } from 'react-native';
 import { getChatting } from '../../../../../utils/storageUtils';
+import Button from '../../../../button/button';
+import Calendar from '../../../../icons/svg/calendar';
+import HeartIcon from '../../../../icons/svg/heart-icon';
 import {
   AlertText,
   Container,
@@ -8,9 +10,6 @@ import {
   SignOutTitle,
   SignOutTitleContainer,
 } from './DeactivateAlert.style';
-import Button from '../../../../button/button';
-import HeartIcon from '../../../../icons/svg/heart-icon';
-import Calendar from '../../../../icons/svg/calendar';
 
 import { SettingStackName } from '../../../../../constants/Constants';
 

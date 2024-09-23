@@ -1,7 +1,7 @@
-import { Platform } from 'react-native';
+import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-import Constants from 'expo-constants';
+import { Platform } from 'react-native';
 import { setNotificationToken } from '../apis/notification';
 import { getDeviceIdFromMMKV, getNotificationSent, setNotificationSent } from './storageUtils';
 

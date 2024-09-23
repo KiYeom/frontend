@@ -1,14 +1,14 @@
+import { Image } from 'expo-image';
+import { TypingAnimation } from 'react-native-typing-animation';
+import palette from '../../../assets/styles/theme';
+import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import {
   Bubble,
   BubbleText,
-  ProfileImageContainer,
-  Container,
   ChatBubbleContainer,
+  Container,
+  ProfileImageContainer,
 } from './ChatBubble.style';
-import { Image } from 'expo-image';
-import { rsHeight, rsWidth } from '../../../utils/responsive-size';
-import { TypingAnimation } from 'react-native-typing-animation';
-import palette from '../../../assets/styles/theme';
 
 type ChatBubbleProps = {
   status: 'user' | 'bot';

@@ -1,16 +1,10 @@
+import { TDailyAnalyze, TEmotionCheck, TPeriodChart, TPeriodKeywords } from './analyze.type';
 import { instance } from './interceptor';
-import {
-  TDailyAnalyze,
-  TPeriodChart,
-  TPeriodKeywords,
-  TEmotions,
-  TEmotionCheck,
-} from './analyze.type';
 
 //INFO : 일일 분석
 export const dailyAnalyze = async (today: string): Promise<TDailyAnalyze | undefined> => {
   try {
-    console.log('today', today);
+    //console.log('today', today);
     const res = await instance.get('/v1/analyze/daily', { params: { date: today } });
     return res.data; //record, summary, classification 리턴
   } catch (error) {
@@ -69,10 +63,10 @@ export const todayEmotion = async (data: TEmotionCheck[]): Promise<string[] | un
 export const todayEmotionCheck = async () => {
   try {
     const res = await instance.get('/v1/analyze/today-record');
-    console.log('기분 조회하기', res);
+    //console.log('기분 조회하기', res);
     return res.data;
-  } catch {
-    console.log('기록한 오늘의 기분 error', error);
+  } catch (error) {
+    //console.log('기록한 오늘의 기분 error', error);
     return;
   }
 };

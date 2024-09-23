@@ -1,9 +1,7 @@
-import React from 'react';
 import { Image } from 'expo-image';
-import { DescText } from './StatisticMain.style';
-import { EmptyContainer } from './StatisticMain.style';
-import { rsWidth, rsHeight } from '../../../utils/responsive-size';
-import { css } from '@emotion/native';
+import React from 'react';
+import { rsHeight, rsWidth } from '../../../utils/responsive-size';
+import { DescText, EmptyContainer } from './StatisticMain.style';
 
 export type EmptyTypeProps = {
   type: string;
@@ -16,7 +14,7 @@ const Empty = (props: EmptyTypeProps) => {
   const { type } = props;
   return (
     <EmptyContainer>
-      {type === '채팅기록' && (
+      {type === '채팅기록' ? (
         <>
           <Image
             source={require('../../../assets/images/graycookie.png')}
@@ -27,6 +25,18 @@ const Empty = (props: EmptyTypeProps) => {
             }}
           />
           <DescText>아직 쿠키와 채팅한 내역이 없어요!</DescText>
+        </>
+      ) : (
+        <>
+          <Image
+            source={require('../../../assets/images/graycookie.png')}
+            style={{
+              width: rsWidth * 100,
+              height: rsHeight * 65,
+              resizeMode: 'contain',
+            }}
+          />
+          <DescText>기록한 나의 감정이 없어요!</DescText>
         </>
       )}
     </EmptyContainer>

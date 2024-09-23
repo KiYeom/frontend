@@ -1,17 +1,17 @@
 import React, { useEffect } from 'react';
+import palette from '../../../assets/styles/theme';
+import { HomeStackName, RootStackName } from '../../../constants/Constants';
+import { rsHeight, rsWidth } from '../../../utils/responsive-size';
+import { getUserNickname } from '../../../utils/storageUtils';
+import Icon from '../../icons/icons';
 import './HomeChatBtn.style';
 import {
-  HomeBtnTitle,
-  HomeBtnText,
+  CookieImage,
   HomeBtn,
   HomeBtnDescription,
-  CookieImage,
+  HomeBtnText,
+  HomeBtnTitle,
 } from './HomeChatBtn.style';
-import { getUserNickname } from '../../../utils/storageUtils';
-import { rsHeight, rsWidth } from '../../../utils/responsive-size';
-import { HomeStackName, RootStackName } from '../../../constants/Constants';
-import Icon from '../../icons/icons';
-import palette from '../../../assets/styles/theme';
 
 const HomeChatBtn = ({ navigation }) => {
   const [name, setName] = React.useState<string>('');

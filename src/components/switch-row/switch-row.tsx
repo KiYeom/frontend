@@ -1,4 +1,6 @@
 import React from 'react';
+import { View } from 'react-native-ui-lib';
+import SwitchComponent from '../switch/switch';
 import './switch-row.styles';
 import {
   SwitchRowContainer,
@@ -6,8 +8,6 @@ import {
   SwitchRowTextContainner,
   SwitchRowTitle,
 } from './switch-row.styles';
-import { View } from 'react-native-ui-lib';
-import SwitchComponent from '../switch/switch';
 
 export type SwitchRowProps = {
   title: string;

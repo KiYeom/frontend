@@ -1,7 +1,8 @@
-import React from 'react';
 import { css } from '@emotion/native';
-import { View, Text } from 'react-native';
-import { rsHeight, rsWidth, rsFont } from '../../utils/responsive-size';
+import React from 'react';
+import { Text, View } from 'react-native';
+import { rsHeight } from '../../utils/responsive-size';
+
 export type PeriodKeywordProps = {
   title: string;
 };

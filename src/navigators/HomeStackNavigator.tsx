@@ -1,12 +1,10 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
+import Header from '../components/header/header';
 import Chat from '../components/pages/HomePage/Chat';
 import LargeEmotionChart from '../components/pages/HomePage/LargeEmotionChart';
 import SmallEmotionChart from '../components/pages/HomePage/SmallEmotionChart';
-import Header from '../components/header/header';
 import { HomeStackName } from '../constants/Constants';
-import { Easing } from 'react-native';
-import Home from '../components/pages/HomePage/Home';
 
 const HomeStack = createNativeStackNavigator();
 

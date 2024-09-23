@@ -40,7 +40,7 @@
     "expo-random": "~14.0.1",
     "expo-splash-screen": "~0.27.5",
     "expo-status-bar": "~1.12.1",
-    "expo-updates": "~0.25.20",
+    "expo-updates": "~0.25.24",
     "expo-web-browser": "~13.0.3",
     "gifted-charts-core": "^0.1.29",
     "i": "^0.3.7",
