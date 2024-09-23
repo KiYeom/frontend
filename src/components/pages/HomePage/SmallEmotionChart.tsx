@@ -32,14 +32,12 @@ const SmallEmotionChart = ({ navigation, route }) => {
   }, []);
 
   const handleEmotionListClick = async (emotion) => {
-    console.log('click', emotion);
     // 이미 선택된 감정인지 확인
     if (selectedEmotions.some((e) => e.keyword === emotion.keyword)) {
       removeEmotion(emotion.keyword);
     } else {
       // 선택된 감정 추가
       if (selectedEmotions.length >= 5) {
-        console.log('5개 넘음');
         Toast.show('감정은 5개까지 선택할 수 있습니다!', {
           duration: Toast.durations.SHORT,
           position: Toast.positions.CENTER,

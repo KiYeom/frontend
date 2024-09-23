@@ -6,6 +6,7 @@ import HomeChatBtn from '../../atoms/HomeBtn/HomeChatBtn';
 import { HomeContainer } from './Home.style';
 
 const Home: React.FC<any> = ({ navigation }) => {
+  const [birth, setBirth] = React.useState('');
   const insets = useSafeAreaInsets();
   useEffect(() => {
     //console.log('home 화면');

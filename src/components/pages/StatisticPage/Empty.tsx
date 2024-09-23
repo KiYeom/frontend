@@ -14,7 +14,7 @@ const Empty = (props: EmptyTypeProps) => {
   const { type } = props;
   return (
     <EmptyContainer>
-      {type === '채팅기록' && (
+      {type === '채팅기록' ? (
         <>
           <Image
             source={require('../../../assets/images/graycookie.png')}
@@ -25,6 +25,18 @@ const Empty = (props: EmptyTypeProps) => {
             }}
           />
           <DescText>아직 쿠키와 채팅한 내역이 없어요!</DescText>
+        </>
+      ) : (
+        <>
+          <Image
+            source={require('../../../assets/images/graycookie.png')}
+            style={{
+              width: rsWidth * 100,
+              height: rsHeight * 65,
+              resizeMode: 'contain',
+            }}
+          />
+          <DescText>기록한 나의 감정이 없어요!</DescText>
         </>
       )}
     </EmptyContainer>

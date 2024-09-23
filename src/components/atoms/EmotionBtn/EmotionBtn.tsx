@@ -31,19 +31,17 @@ const EmotionBtn = ({ navigation }) => {
       setLoading(true); // 로딩 시작
       try {
         const data = await todayEmotionCheck(); // 데이터를 비동기로 가져옴
-        console.log('useEffect data', data);
         if (!data.isNULL) {
-          console.log('데이터가 있음');
+          //console.log('데이터가 있음');
           // Keyword가 있으면 state 업데이트 {keyword : "키워드", group : "group"} 형태
           setRecordedEmotions(data.Keywords);
           setIsNULL(false); // 데이터가 있으면 false로 설정
         } else {
-          console.log('데이터 없음');
           setRecordedEmotions([]);
           setIsNULL(true); // 데이터가 없으면 true로 설정
         }
       } catch (error) {
-        console.error('Failed to fetch data:', error); // 에러 처리
+        //console.error('Failed to fetch data:', error); // 에러 처리
       } finally {
         setLoading(false); // 로딩 종료
       }

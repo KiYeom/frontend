@@ -36,7 +36,7 @@ const PeriodStatisticPage: React.FC<any> = () => {
   //날짜가 변경되는 경우
   useEffect(() => {
     const fetchData = async () => {
-      console.log('날짜가 변경됨');
+      //console.log('날짜가 변경됨');
       try {
         setLoading(true);
         setError(null);
@@ -48,17 +48,17 @@ const PeriodStatisticPage: React.FC<any> = () => {
           periodChart(startDateFormatted, endDateFormatted), //기간 감정 차트
           periodKeyword(startDateFormatted, endDateFormatted), //기간 키워드 리스트
         ]);
-        console.log('기간 감정 차트', res);
+        //console.log('기간 감정 차트', res);
         if (res && res.charts) {
           setEmotionsData(res.charts);
         }
         if (res2 && res2.keywords) {
           setPeriodKeywordList(res2.keywords);
         }
-        console.log('시작 날짜 ', startDateFormatted);
-        console.log('종료 날짜 ', endDateFormatted);
-        console.log('기간 리포트 api 응답 결과', res.charts);
-        console.log('기간 키워드 결과', res2.keywords);
+        //console.log('시작 날짜 ', startDateFormatted);
+        //console.log('종료 날짜 ', endDateFormatted);
+        //console.log('기간 리포트 api 응답 결과', res.charts);
+        //console.log('기간 키워드 결과', res2.keywords);
       } catch (err) {
         setError('데이터를 불러오는 중 오류가 발생했습니다.');
         console.error(err);

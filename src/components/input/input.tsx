@@ -5,6 +5,7 @@ import Icon, { TIconName } from '../icons/icons';
 import { IconContainer, InputContainer, InputField, WithMessage } from './input.styles';
 
 type InputProps = {
+  keyboardType?: 'numeric';
   status?: 'correct' | 'error' | 'default' | 'disabled';
   withMessage?: boolean;
   message?: string;
@@ -26,6 +27,7 @@ type InputProps = {
 };
 const Input = (props: InputProps) => {
   const {
+    keyboardType = 'default', //입력 키보드의 디폴트값
     status = 'default', //입력 필드 상태값
     withMessage = false, //메세지 표시 여부
     showRightIcon = false, //오른쪽에 표시되는 아이콘 여부
@@ -46,6 +48,7 @@ const Input = (props: InputProps) => {
   return (
     <InputContainer onPress={onPressContainer} activeOpacity={1} disabled={disabled}>
       <InputField
+        keyboardType={keyboardType}
         placeholder={placeholder}
         status={status}
         value={value}

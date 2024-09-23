@@ -7,13 +7,11 @@ import { Container } from './Keyword.style';
 
 const EmotionArea: React.FC<any> = (props: any) => {
   const { isRecordKeywordList, isNullRecordKeywordList } = props;
-  console.log('-----------isNullRecordKeywordList---', isNullRecordKeywordList);
-  console.log('-------isRecordKeywordList-------', isRecordKeywordList);
   return (
     <Container>
       <Title>기록한 감정</Title>
       {isNullRecordKeywordList ? (
-        <Empty type="채팅기록"></Empty>
+        <Empty type="감정기록"></Empty>
       ) : (
         <ScrollView
           horizontal
