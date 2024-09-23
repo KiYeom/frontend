@@ -13,7 +13,7 @@ export type TOptionButton = {
 
 export type TGender = '여성' | '남성';
 
-export type TVender = 'kakao' | 'google' | 'apple';
+export type TVender = 'kakao' | 'google' | 'apple' | 'guest';
 
 export type TNotificationType = 'system' | 'chat_cookie';
 

@@ -6,14 +6,14 @@ import {
 } from '@react-native-google-signin/google-signin';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import * as React from 'react';
-import { Linking, Platform, Text, TouchableOpacity } from 'react-native';
-import { Checkbox } from 'react-native-ui-lib';
+import { Platform } from 'react-native';
 import { ssoLogin } from '../../../apis/auth';
-import palette from '../../../assets/styles/theme';
 import { AuthStackName } from '../../../constants/Constants';
 import { TVender } from '../../../constants/types';
 import { UseSigninStatus } from '../../../utils/signin-status';
-import { setInfoWhenLogin, setTokenInfo } from '../../../utils/storageUtils';
+import { getDeviceIdFromMMKV, setInfoWhenLogin, setTokenInfo } from '../../../utils/storageUtils';
+import GuestModal from '../../modals/guest-modal';
+import PrivacyModal from '../../modals/privacy-modal';
 import {
   ButtonContainer,
   Container,
@@ -33,6 +33,36 @@ enum OauthResult {
   OauthError,
   UnknownError,
 }
+
+const guestLogin = async (): Promise<OauthResult> => {
+  const deviceId = getDeviceIdFromMMKV();
+  if (!deviceId) {
+    return OauthResult.UnknownError;
+  }
+  const res = await ssoLogin(deviceId, 'guest');
+  if (!res) {
+    return OauthResult.BackendError;
+  }
+
+  if (res.isNewUser) {
+    setTokenInfo(res.accessToken, res.refreshToken);
+    return OauthResult.NewUserSuccess;
+  }
+
+  if (!res.isNewUser) {
+    setInfoWhenLogin(
+      res.nickname,
+      res.birthdate,
+      res.gender,
+      res.accessToken,
+      res.refreshToken,
+      res.notice,
+    );
+    return OauthResult.OldUserSuccess;
+  }
+
+  return OauthResult.UnknownError;
+};
 
 const googleLogin = async (): Promise<OauthResult> => {
   GoogleSignin.configure({
@@ -124,14 +154,12 @@ const appleLogin = async (): Promise<OauthResult> => {
 //로그인 페이지
 const Login: React.FC<any> = ({ navigation }) => {
   const { SigninStatus, setSigninStatus } = UseSigninStatus();
-  const [legelAllowed, setLegelAllowed] = React.useState<boolean>(false);
-  const [fourth, setFourth] = React.useState<boolean>(false);
   const [loading, setLoading] = React.useState<boolean>(false);
+  const [lastVendor, setLastVendor] = React.useState<TVender | undefined>();
+  const [privacyModal, setPrivacyModal] = React.useState(false);
+  const [guestModal, setGuestModal] = React.useState(false);
+
   const onHandleLogin = async (vendor: TVender) => {
-    if (!legelAllowed || !fourth) {
-      alert('이용약관, 개인정보 처리방침 및 연령 제한을 확인해주세요.');
-      return;
-    }
     setLoading(true);
     let oauthResult: OauthResult = OauthResult.UnknownError;
     try {
@@ -143,6 +171,9 @@ const Login: React.FC<any> = ({ navigation }) => {
           oauthResult = await appleLogin();
           break;
         case 'kakao':
+          break;
+        case 'guest':
+          oauthResult = await guestLogin();
           break;
       }
       setLoading(false);
@@ -158,7 +189,7 @@ const Login: React.FC<any> = ({ navigation }) => {
       }
       if (oauthResult === OauthResult.NewUserSuccess) {
         //새로운 유저
-        navigation.navigate(AuthStackName.InputName);
+        navigation.navigate(AuthStackName.InputName, { isGuestMode: vendor === 'guest' });
         return;
       }
       if (oauthResult === OauthResult.BackendError) {
@@ -192,9 +223,22 @@ const Login: React.FC<any> = ({ navigation }) => {
         </LoginBtn> */}
 
         <LoginBtn
+          vendor="guest"
+          activeOpacity={1}
+          onPress={() => {
+            setLastVendor('guest');
+            setGuestModal(true);
+          }}
+          disabled={loading}>
+          <LoginBtnLabel vendor="guest">비회원으로 바로 시작하기</LoginBtnLabel>
+        </LoginBtn>
+        <LoginBtn
           vendor="google"
           activeOpacity={1}
-          onPress={() => onHandleLogin('google')}
+          onPress={() => {
+            setLastVendor('google');
+            setPrivacyModal(true);
+          }}
           disabled={loading}>
           <LoginBtnIcon source={require('../../../assets/images/google.png')} />
           <LoginBtnLabel vendor="google">구글로 로그인</LoginBtnLabel>
@@ -203,61 +247,30 @@ const Login: React.FC<any> = ({ navigation }) => {
           <LoginBtn
             vendor="apple"
             activeOpacity={1}
-            onPress={() => onHandleLogin('apple')}
+            onPress={() => {
+              setLastVendor('apple');
+              setPrivacyModal(true);
+            }}
             disabled={loading}>
             <LoginBtnIcon source={require('../../../assets/images/apple.png')} />
             <LoginBtnLabel vendor="apple">애플로 로그인</LoginBtnLabel>
           </LoginBtn>
         )}
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={() => {
-            setLegelAllowed(!legelAllowed);
-          }}>
-          <Checkbox
-            value={legelAllowed}
-            onValueChange={() => {
-              setLegelAllowed(!legelAllowed);
-            }}
-            label={'서비스 이용약관 및 개인정보 처리방침에 동의합니다.'}
-            color={legelAllowed ? palette.primary[400] : palette.neutral[200]}
-            labelStyle={{ fontSize: 14 }} //라벨 스타일링
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={() => {
-            setFourth(!fourth);
-          }}>
-          <Checkbox
-            value={fourth}
-            onValueChange={() => {
-              setFourth(!fourth);
-            }}
-            label={'만 14세 이상입니다'}
-            color={fourth ? palette.primary[400] : palette.neutral[200]}
-            labelStyle={{ fontSize: 14 }} //라벨 스타일링
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={() =>
-            Linking.openURL(
-              'https://autumn-flier-d18.notion.site/reMIND-167ef1180e2d42b09d019e6d187fccfd',
-            )
-          }>
-          <Text
-            style={css`
-              text-align: center;
-              justify-content: center;
-              align-items: end;
-              text-family: 'Prentendard-Regular';
-              color: blue;
-            `}>
-            약관 확인
-          </Text>
-        </TouchableOpacity>
       </ButtonContainer>
+      <PrivacyModal
+        modalVisible={privacyModal}
+        onSubmit={() => {
+          if (lastVendor) onHandleLogin(lastVendor);
+        }}
+        onClose={() => setPrivacyModal(false)}
+      />
+      <GuestModal
+        modalVisible={guestModal}
+        onSubmit={() => {
+          onHandleLogin('guest');
+        }}
+        onClose={() => setGuestModal(false)}
+      />
     </Container>
   );
 };
