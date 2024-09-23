@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { animatedViewStyle, SwitchContainer } from './switch.styles';
 import { Animated, Easing } from 'react-native';
 import palette from '../../assets/styles/theme';
+import { animatedViewStyle, SwitchContainer } from './switch.styles';
 
 export type SwitchProps = {
   isEnabled: boolean;

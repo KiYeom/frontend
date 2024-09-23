@@ -1,5 +1,5 @@
 import { chatting } from '../apis/chatting';
-import { setChatting, getChatting } from './storageUtils';
+import { getChatting, setChatting } from './storageUtils';
 
 //채팅을 보낸 현재 시간 (date)을 리턴하는 함수
 export const getTime = (): number => {

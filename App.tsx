@@ -1,30 +1,28 @@
-import { StyleSheet, View, ActivityIndicator } from 'react-native';
-import React, { useState, useEffect } from 'react';
-import BottomTabNavigator from './src/navigators/BottomTabNavigator';
+import * as amplitude from '@amplitude/analytics-react-native';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import * as Sentry from '@sentry/react-native';
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { reissueAccessToken } from './src/apis/interceptor';
+import palette from './src/assets/styles/theme';
+import { RootStackName } from './src/constants/Constants';
+import AuthStackNavigator from './src/navigators/AuthStackNavigator';
+import BottomTabNavigator from './src/navigators/BottomTabNavigator';
+import HomeStackNavigator from './src/navigators/HomeStackNavigator';
+import SettingStackNavigator from './src/navigators/SettingStackNavigator';
+import StatisticStackNavigator from './src/navigators/StatisticStackNavigator';
+import { getDeviceId } from './src/utils/device-info';
+import { UseSigninStatus } from './src/utils/signin-status';
 import {
   clearInfoWhenLogout,
   getAccessToken,
   getRefreshToken,
   setDeviceId,
 } from './src/utils/storageUtils';
-import * as SplashScreen from 'expo-splash-screen';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useFonts } from 'expo-font';
-import AuthStackNavigator from './src/navigators/AuthStackNavigator';
-import palette from './src/assets/styles/theme';
-import { getDeviceId } from './src/utils/device-info';
-import { UseSigninStatus } from './src/utils/signin-status';
-import { reissueAccessToken } from './src/apis/interceptor';
-import * as amplitude from '@amplitude/analytics-react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import HomeStackNavigator from './src/navigators/HomeStackNavigator';
-import StatisticStackNavigator from './src/navigators/StatisticStackNavigator';
-import SettingStackNavigator from './src/navigators/SettingStackNavigator';
-import { RootStackName } from './src/constants/Constants';
-import { RootSiblingParent } from 'react-native-root-siblings';
-import * as Sentry from '@sentry/react-native';
 
 Sentry.init({
   dsn: 'https://038362834934b1090d94fe368fdbcbf7@o4507944128020480.ingest.us.sentry.io/4507944132870145',
@@ -78,7 +76,7 @@ const App: React.FC = () => {
     const deviceId = await getDeviceId();
     if (deviceId === null) {
       console.error('DeviceId is undefined');
-      alert('디바이스 정보를 가져오는데 실패했습니다. 앱을 다시 실행해주세요.');
+      alert('지원하지 않는 운영체제입니다. 문의: admin@remind4u.co.kr');
       return;
     }
     setDeviceId(deviceId);

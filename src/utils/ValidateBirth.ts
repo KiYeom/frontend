@@ -1,4 +1,7 @@
-export const validateBirth = (birth: string): 'error' | 'default' | 'correct' => {
+export const validateBirth = (birth: string | undefined): 'error' | 'default' | 'correct' => {
+  if (birth === undefined) {
+    return 'correct';
+  }
   const parts = birth.split('.');
   if (parts.length < 3 || parts[2].length < 2) {
     //끝까지 다 입력하기 전까지는 default

@@ -1,6 +1,6 @@
 import React from 'react';
 import './button.styles';
-import { ButtonLabel, ButtonContainer } from './button.styles';
+import { ButtonContainer, ButtonLabel } from './button.styles';
 
 export type ButtonProps = {
   title: string;

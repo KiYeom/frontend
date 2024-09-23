@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import { markdownContent } from '../../../constants/PrivacyPolicy';
 //설정 - 개인정보 처리방침 페이지

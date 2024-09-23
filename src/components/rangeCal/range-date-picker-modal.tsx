@@ -1,14 +1,12 @@
 import styled from '@emotion/native';
 import React, { useState } from 'react';
 import { Modal, TouchableWithoutFeedback, View } from 'react-native';
+import DateTimePicker, { DateType } from 'react-native-ui-datepicker';
+import palette from '../../assets/styles/theme';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import Button from '../button/button';
-import DateTimePicker, { DateType, ModeType } from 'react-native-ui-datepicker';
-import dayjs from 'dayjs';
 import { DescText } from '../pages/StatisticPage/StatisticMain.style';
-import { css } from '@emotion/native';
-import { Text } from 'react-native';
-import palette from '../../assets/styles/theme';
+
 const RangeDatePickerModal = ({
   modalVisible,
   onClose,
@@ -28,8 +26,8 @@ const RangeDatePickerModal = ({
     startDate: range.startDate, // 일주일 전 날짜
     endDate: range.endDate, // 현재 날짜
   });
-  console.log('시작', localRange.startDate);
-  console.log('끝', localRange.endDate);
+  //console.log('시작', localRange.startDate);
+  //console.log('끝', localRange.endDate);
   //두 날짜의 차이가 하루 이하면 버튼 비활성화
   const validateDate = (startDate: any, endDate: any) => {
     const oneDayInMillis = 24 * 60 * 60 * 1000;

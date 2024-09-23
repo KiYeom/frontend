@@ -1,6 +1,6 @@
 import styled from '@emotion/native';
 import palette from '../../../../assets/styles/theme';
-import { rsWidth, rsHeight, rsFont } from '../../../../utils/responsive-size';
+import { rsFont, rsHeight, rsWidth } from '../../../../utils/responsive-size';
 
 //키워드 흰색 컨테이너
 export const KeywordContainer = styled.View`

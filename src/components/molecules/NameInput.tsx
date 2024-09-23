@@ -1,7 +1,6 @@
 import React from 'react';
 import Input from '../input/input';
-import { Label } from '../pages/sign-up/input-profile/input-profile.styles';
-import { FormContainer } from '../pages/sign-up/input-profile/input-profile.styles';
+import { FormContainer, Label } from '../pages/sign-up/input-profile/input-profile.styles';
 //설정 - 프로필 수정 화면에서 이름을 입력하는 창
 
 interface NameInputProps {

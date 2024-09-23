@@ -1,5 +1,16 @@
+import { css } from '@emotion/native';
 import React, { useEffect } from 'react';
+import { View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { updateUserProfile } from '../../../../apis/auth';
+import palette from '../../../../assets/styles/theme';
+import { TGender } from '../../../../constants/types';
+import { UseRightStatus } from '../../../../utils/right-status';
+import { UseSigninStatus } from '../../../../utils/signin-status';
+import { getUserNickname, setInfoWhenLogin } from '../../../../utils/storageUtils';
+import { validateBirth } from '../../../../utils/ValidateBirth';
 import Button from '../../../button/button';
+import Input from '../../../input/input';
 import {
   Annotation,
   ContentContainer,
@@ -7,20 +18,7 @@ import {
   Title,
   TitleContaienr,
 } from '../input-name/input-name.styles';
-import { css } from '@emotion/native';
-import { View, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { BtnLabel, ButtonGroup, FormContainer, GenderButton, Label } from './input-profile.styles';
-import Input from '../../../input/input';
-import DatePickerModal from '../../../modals/date-picker-modal';
-import palette from '../../../../assets/styles/theme';
-import { updateUserProfile } from '../../../../apis/auth';
-import { TGender } from '../../../../constants/types';
-import { getUserNickname, setInfoWhenLogin } from '../../../../utils/storageUtils';
-import { UseSigninStatus } from '../../../../utils/signin-status';
-import { UseRightStatus } from '../../../../utils/right-status';
-import { validateBirth } from '../../../../utils/ValidateBirth';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const InputProfile: React.FC<any> = ({ navigation }) => {
   const [name, setName] = React.useState('');

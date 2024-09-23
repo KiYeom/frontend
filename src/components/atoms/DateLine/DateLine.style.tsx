@@ -1,6 +1,6 @@
 import styled from '@emotion/native';
-import { rsHeight, rsWidth, rsFont } from '../../../utils/responsive-size';
 import palette from '../../../assets/styles/theme';
+import { rsFont, rsWidth } from '../../../utils/responsive-size';
 
 export const TouchableDateLine = styled.TouchableOpacity`
   gap: ${rsWidth * 4 + 'px'};

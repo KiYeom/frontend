@@ -1,24 +1,19 @@
-import React from 'react';
-import { rsHeight } from '../../../utils/responsive-size';
-import { Platform, SafeAreaView, StatusBar, View } from 'react-native';
-import DatePickerModal from '../../modals/date-picker-modal';
-import { useEffect, useState } from 'react';
-import { ScrollView } from 'react-native';
 import { css } from '@emotion/native';
-import DailyEmotionClassification from './Daily_EmotionClassification/DailyEmotionClassification';
-import DateLine from '../../atoms/DateLine/DateLine';
-import KeywordArea from './Daily_Keyword/KeywordArea';
-import { Container } from './StatisticMain.style';
-import ReportType from './ReportType';
-import { dailyAnalyze } from '../../../apis/analyze';
 import { useNavigation } from '@react-navigation/native';
-import { TLabel, TEmotionCheck } from '../../../apis/analyze.type';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Platform, SafeAreaView, ScrollView, StatusBar, View } from 'react-native';
+import { dailyAnalyze } from '../../../apis/analyze';
+import { TEmotionCheck, TLabel } from '../../../apis/analyze.type';
 import palette from '../../../assets/styles/theme';
-import EmotionArea from './Daily_Keyword/EmotionArea';
-import PageName from './PageName';
-import { Text } from 'react-native';
-import { useCallback } from 'react';
+import { rsHeight } from '../../../utils/responsive-size';
+import DateLine from '../../atoms/DateLine/DateLine';
 import SingleDatePickerModal from '../../rangeCal/single-date-picker-modal';
+import DailyEmotionClassification from './Daily_EmotionClassification/DailyEmotionClassification';
+import EmotionArea from './Daily_Keyword/EmotionArea';
+import KeywordArea from './Daily_Keyword/KeywordArea';
+import PageName from './PageName';
+import ReportType from './ReportType';
+import { Container } from './StatisticMain.style';
 
 const START_HOUR_OF_DAY = 6;
 
@@ -39,8 +34,8 @@ const getServerYestoday = (currentDate: Date = new Date()) => {
 };
 
 const getDateString = (date: Date): string => {
-  console.log('getDateString', date, Object.prototype.toString.call(date));
-  console.log('getDateString getfullyear', date.getFullYear);
+  //console.log('getDateString', date, Object.prototype.toString.call(date));
+  //console.log('getDateString getfullyear', date.getFullYear);
   return (
     date?.getFullYear() +
     '년 ' +
@@ -74,7 +69,7 @@ const StatisticMain: React.FC<any> = () => {
   const navigation = useNavigation();
 
   const onChange = useCallback((newDate) => {
-    console.log('onchange', newDate);
+    //console.log('onchange', newDate);
     setDate(newDate);
   }, []);
 
@@ -133,12 +128,6 @@ const StatisticMain: React.FC<any> = () => {
           </View>
         </ScrollView>
       </SafeAreaView>
-
-      {/*<DatePickerModal
-        modalVisible={openModal}
-        onClose={() => setOpenModal(false)}
-        onChange={setDate}
-      />*/}
       <SingleDatePickerModal
         modalVisible={openModal}
         onClose={() => setOpenModal(false)}

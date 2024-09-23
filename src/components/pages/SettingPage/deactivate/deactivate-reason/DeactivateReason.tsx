@@ -1,22 +1,17 @@
-import React from 'react';
-import { Keyboard } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { deavtivate } from '../../../../../apis/setting';
+import { reasons } from '../../../../../constants/Constants';
+import { UseSigninStatus } from '../../../../../utils/signin-status';
+import { clearInfoWhenLogout, getUserNickname } from '../../../../../utils/storageUtils';
 import Button from '../../../../button/button';
 import DeactivateReasonCheckBoxs from '../../../../molecules/DeactivateReasonCheckBoxs';
-import { Alert } from 'react-native';
-import { clearInfoWhenLogout, getUserNickname } from '../../../../../utils/storageUtils';
-import { CheckboxContainer } from './DeactivateReason.style';
-import { useState } from 'react';
-import { FormContainer } from './DeactivateReason.style';
-import { reasons } from '../../../../../constants/Constants';
-import { useEffect } from 'react';
-import { TouchableWithoutFeedback } from 'react-native';
 import {
   Container,
   SignOutTitle,
   SignOutTitleContainer,
 } from '../dedactivate-alert/DeactivateAlert.style';
-import { deavtivate } from '../../../../../apis/setting';
-import { UseSigninStatus } from '../../../../../utils/signin-status';
+import { CheckboxContainer, FormContainer } from './DeactivateReason.style';
 
 const DeactivateReason: React.FC = () => {
   const [btnDisable, setBtnDisable] = useState<boolean>(true);

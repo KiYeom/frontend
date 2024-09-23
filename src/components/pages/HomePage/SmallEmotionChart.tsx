@@ -1,27 +1,19 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { StyleSheet, ScrollView, TouchableOpacity, InteractionManager } from 'react-native';
-import { View, Text, Carousel, Image, Colors, Spacings, Constants } from 'react-native-ui-lib';
-import palette from '../../../assets/styles/theme';
-import { rsWidth, rsHeight, rsFont } from '../../../utils/responsive-size';
-import { HomeContainer } from './Home.style';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Desc, Title } from './EmotionChart.style';
-import Button from '../../button/button';
-import EmotionChip from '../../atoms/EmotionChip/EmotionChip';
-import { SmallTitle } from './EmotionChart.style';
-import { HomeStackName, RootStackName, TabScreenName } from '../../../constants/Constants';
-import { DescText } from '../StatisticPage/StatisticMain.style';
 import { css } from '@emotion/native';
-import { EmotionDesc } from './EmotionChart.style';
-import { TIconName } from '../../icons/icons';
-import Icon from '../../icons/icons';
-import EmotionCard from '../../atoms/EmotionCard/EmotionCard';
-import useEmotionStore from '../../../utils/emotion-status';
-import { todayEmotion } from '../../../apis/analyze';
-import { Container } from './EmotionChart.style';
+import React, { useEffect, useRef, useState } from 'react';
+import { ScrollView } from 'react-native';
 import Toast from 'react-native-root-toast';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Carousel, Text, View } from 'react-native-ui-lib';
+import { todayEmotion } from '../../../apis/analyze';
+import palette from '../../../assets/styles/theme';
+import { emotionData, emotions, TabScreenName } from '../../../constants/Constants';
 import useRecordedEmotionStore from '../../../utils/emotion-recorded';
-import { emotions, emotionData } from '../../../constants/Constants';
+import useEmotionStore from '../../../utils/emotion-status';
+import { rsHeight, rsWidth } from '../../../utils/responsive-size';
+import EmotionCard from '../../atoms/EmotionCard/EmotionCard';
+import EmotionChip from '../../atoms/EmotionChip/EmotionChip';
+import Button from '../../button/button';
+import { Container, EmotionDesc, SmallTitle, Title } from './EmotionChart.style';
 
 const SmallEmotionChart = ({ navigation, route }) => {
   const { page } = route.params || 0;
@@ -40,14 +32,12 @@ const SmallEmotionChart = ({ navigation, route }) => {
   }, []);
 
   const handleEmotionListClick = async (emotion) => {
-    console.log('click', emotion);
     // 이미 선택된 감정인지 확인
     if (selectedEmotions.some((e) => e.keyword === emotion.keyword)) {
       removeEmotion(emotion.keyword);
     } else {
       // 선택된 감정 추가
       if (selectedEmotions.length >= 5) {
-        console.log('5개 넘음');
         Toast.show('감정은 5개까지 선택할 수 있습니다!', {
           duration: Toast.durations.SHORT,
           position: Toast.positions.CENTER,

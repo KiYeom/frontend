@@ -1,7 +1,7 @@
 import React from 'react';
-import { WebView } from 'react-native-webview';
-import { View, StyleSheet, Text } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { WebView } from 'react-native-webview';
 
 const ChannelTalk: React.FC = () => {
   const insets = useSafeAreaInsets();

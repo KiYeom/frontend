@@ -1,10 +1,10 @@
-import React from 'react';
 import { css } from '@emotion/native';
-import { rsWidth, rsHeight, rsFont } from '../../../utils/responsive-size';
-import { View, TouchableOpacity, Text } from 'react-native';
-import { TIconName } from '../../icons/icons';
-import Icon from '../../icons/icons';
+import React from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
 import palette from '../../../assets/styles/theme';
+import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
+import Icon, { TIconName } from '../../icons/icons';
+
 const EmotionCard = ({ emotion, onPress, status }) => {
   return (
     <View

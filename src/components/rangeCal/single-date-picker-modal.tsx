@@ -1,14 +1,10 @@
 import styled from '@emotion/native';
 import React, { useState } from 'react';
 import { Modal, TouchableWithoutFeedback, View } from 'react-native';
+import DateTimePicker from 'react-native-ui-datepicker';
+import palette from '../../assets/styles/theme';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import Button from '../button/button';
-import DateTimePicker, { DateType, ModeType } from 'react-native-ui-datepicker';
-import dayjs from 'dayjs';
-import { DescText } from '../pages/StatisticPage/StatisticMain.style';
-import { css } from '@emotion/native';
-import { Text } from 'react-native';
-import palette from '../../assets/styles/theme';
 const SingleDatePickerModal = ({
   modalVisible,
   onClose,
@@ -31,7 +27,7 @@ const SingleDatePickerModal = ({
                   mode="single"
                   locale="kor"
                   onChange={(newDate) => {
-                    console.log('newDate', newDate);
+                    //console.log('newDate', newDate);
                     setDate(new Date(newDate.date));
                   }}
                   date={date}

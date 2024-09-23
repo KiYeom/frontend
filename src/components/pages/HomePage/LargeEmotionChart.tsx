@@ -1,19 +1,12 @@
-import React from 'react';
-import { Text } from 'react-native-paper';
-import { Title, Desc, EmotionLevel, LargeEmotionComponent } from './EmotionChart.style';
-import { Container } from './EmotionChart.style';
-import { CTAContainer } from '../sign-up/input-name/input-name.styles';
-import { View } from 'react-native-ui-lib';
-import { HomeContainer } from './Home.style';
+import { css } from '@emotion/native';
+import React, { useState } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { View } from 'react-native-ui-lib';
+import { HomeStackName, RootStackName } from '../../../constants/Constants';
+import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import Button from '../../button/button';
 import Icon from '../../icons/icons';
-import { rsWidth, rsHeight } from '../../../utils/responsive-size';
-import { HomeStackName, RootStackName } from '../../../constants/Constants';
-import HomeStackNavigator from '../../../navigators/HomeStackNavigator';
-import { ButtonContainer } from '../sign-in/sing-in.styles';
-import { useState } from 'react';
-import { css } from '@emotion/native';
+import { Container, EmotionLevel, LargeEmotionComponent, Title } from './EmotionChart.style';
 
 //대분류 감정 차트
 const LargeEmotionChart: React.FC = ({ navigation }) => {

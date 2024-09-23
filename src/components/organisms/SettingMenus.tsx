@@ -1,11 +1,9 @@
-import React from 'react';
-import { Text, View } from 'react-native';
-import { StyleSheet } from 'react-native';
 import * as Notifications from 'expo-notifications';
+import React from 'react';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import palette from '../../assets/styles/theme';
 import { MenuItemProps } from '../../constants/Constants';
 import MenuItem from '../molecules/MenuItem';
-import { Alert } from 'react-native';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({

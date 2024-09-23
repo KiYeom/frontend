@@ -1,5 +1,5 @@
-import palette from '../../../assets/styles/theme';
 import styled from '@emotion/native'; // Add this import
+import palette from '../../../assets/styles/theme';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 
 export const LoginBtn = styled.TouchableOpacity<{ vendor: 'kakao' | 'google' | 'apple' }>`

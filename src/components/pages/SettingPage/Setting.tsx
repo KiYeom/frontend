@@ -1,19 +1,22 @@
-import { Alert, StyleSheet, Text, View } from 'react-native';
-import React, { useEffect } from 'react';
-import { CHATLOG, RootStackName, SettingStackName } from '../../../constants/Constants';
-import SettingMenus from '../../organisms/SettingMenus';
+import * as Linking from 'expo-linking';
 import * as Notifications from 'expo-notifications';
-import UserInfomation from '../../molecules/UserInfomation';
-import { deavtivate, getLatestVersion, getUserInfo, logout } from '../../../apis/setting';
+import React, { useEffect } from 'react';
+import { Alert } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { getLatestVersion, logout } from '../../../apis/setting';
+import palette from '../../../assets/styles/theme';
+import { CHATLOG, RootStackName, SettingStackName } from '../../../constants/Constants';
+import { getAppVersion } from '../../../utils/device-info';
+import { rsHeight, rsWidth } from '../../../utils/responsive-size';
+import { UseSigninStatus } from '../../../utils/signin-status';
 import {
   clearInfoWhenLogout,
   getDeviceIdFromMMKV,
   getUserNickname,
-  setUserInfo,
   storage,
 } from '../../../utils/storageUtils';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { UseSigninStatus } from '../../../utils/signin-status';
+import Icon from '../../icons/icons';
+import MenuRow from '../../menu-row/menu-row';
 import {
   AppSettingContainer,
   ProfileImage,
@@ -24,12 +27,6 @@ import {
   UserNickname,
   UserSettingContainer,
 } from './Setting.style';
-import Icon from '../../icons/icons';
-import { rsHeight, rsWidth } from '../../../utils/responsive-size';
-import palette from '../../../assets/styles/theme';
-import MenuRow from '../../menu-row/menu-row';
-import * as Linking from 'expo-linking';
-import { getAppVersion } from '../../../utils/device-info';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({

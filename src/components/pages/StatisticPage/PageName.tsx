@@ -1,11 +1,6 @@
-import { TouchableOpacity, View } from 'react-native';
-import Icon from '../../icons/icons';
 import { css } from '@emotion/native';
-import { rsHeight, rsWidth, rsFont, ratio } from '../../../utils/responsive-size';
 import { Text } from 'react-native';
-import { TouchableDateLine } from '../../atoms/DateLine/DateLine.style';
-import { StatisticStackName } from '../../../constants/Constants';
-import palette from '../../../assets/styles/theme';
+import { rsFont } from '../../../utils/responsive-size';
 
 type TitleProps = {
   type: string;

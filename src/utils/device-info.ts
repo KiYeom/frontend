@@ -1,12 +1,14 @@
-import * as Device from 'expo-device';
 import * as Application from 'expo-application';
+import * as Device from 'expo-device';
+import { Platform } from 'react-native';
 
 export const getDeviceId = async (): Promise<string | null> => {
-  if (Device.osName === 'iOS' || Device.osName === 'iPadOS') {
+  if (Platform.OS === 'ios') {
     return await Application.getIosIdForVendorAsync();
-  } else if (Device.osName === 'Android') {
+  } else if (Platform.OS === 'android') {
     return Application.getAndroidId();
   } else {
+    console.log('Unsupported OS: ' + Platform.OS);
     return null;
   }
 };

@@ -1,31 +1,28 @@
-import React, { useEffect } from 'react';
-import Button from '../../button/button';
-import palette from '../../../assets/styles/theme';
-import { Label } from '../sign-up/input-profile/input-profile.styles';
-import Input from '../../input/input';
-import { FormContainer } from '../sign-up/input-profile/input-profile.styles';
-import { ContentContainer } from '../sign-up/input-name/input-name.styles';
-import { validateName } from '../../../utils/ValidateName';
-import { CTAContainer } from '../sign-up/input-name/input-name.styles';
+import { css } from '@emotion/native';
+import React from 'react';
+import { View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { userEditInfo } from '../../../apis/userEditInfo'; //api 수정해야 함
+import palette from '../../../assets/styles/theme';
+import { TGender } from '../../../constants/types';
 import {
   getUserBirthdate,
   getUserGender,
   getUserNickname,
   setUserInfo,
 } from '../../../utils/storageUtils';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { View } from 'react-native';
-import { css } from '@emotion/native';
-import { ButtonGroup } from '../sign-up/input-profile/input-profile.styles';
-import { GenderButton } from '../sign-up/input-profile/input-profile.styles';
-import { BtnLabel } from '../sign-up/input-profile/input-profile.styles';
-import DatePickerModal from '../../modals/date-picker-modal';
-import { TGender } from '../../../constants/types';
-import { TouchableWithoutFeedback } from 'react-native';
-import { Keyboard } from 'react-native';
 import { validateBirth } from '../../../utils/ValidateBirth';
-import { KeyboardAvoidingView } from 'react-native';
+import { validateName } from '../../../utils/ValidateName';
+import Button from '../../button/button';
+import Input from '../../input/input';
+import { ContentContainer, CTAContainer } from '../sign-up/input-name/input-name.styles';
+import {
+  BtnLabel,
+  ButtonGroup,
+  FormContainer,
+  GenderButton,
+  Label,
+} from '../sign-up/input-profile/input-profile.styles';
 //설정 - 프로필 수정 화면
 
 //date가 존재할 경우 'yyyy.mm.dd' 형태로 바꾸는 함수
@@ -69,7 +66,7 @@ const EditUserInfo: React.FC = ({ navigation }) => {
       nickname: name,
       gender: gender ?? null,
       birthdate:
-        validateBirth(birthDate) === 'correct'
+        birthDate && validateBirth(birthDate) === 'correct'
           ? `${birthDate.split('.')[0]}-${birthDate.split('.')[1]}-${birthDate.split('.')[2]}`
           : null,
     })
