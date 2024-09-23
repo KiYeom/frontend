@@ -1,4 +1,3 @@
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import React, { useEffect, useState } from 'react';
 import { Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { deavtivate } from '../../../../../apis/setting';
@@ -27,10 +26,8 @@ const DeactivateReason: React.FC = () => {
     deavtivate(reasons)
       .then((res) => {
         if (res.result) {
-          GoogleSignin.signOut().then(() => {
-            clearInfoWhenLogout();
-            setSigninStatus(false);
-          });
+          clearInfoWhenLogout();
+          setSigninStatus(false);
         }
       })
       .catch((e) => {

@@ -1,4 +1,3 @@
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import * as Linking from 'expo-linking';
 import * as Notifications from 'expo-notifications';
 import React, { useEffect } from 'react';
@@ -52,7 +51,6 @@ const Setting: React.FC<any> = ({ navigation }) => {
       if (deviceId) await logout(deviceId);
       else await logout('');
       clearInfoWhenLogout();
-      await GoogleSignin.signOut();
       storage.delete(CHATLOG);
       console.log('[Setting - Logout Button] LogOut: 1, SigninStatus: ', SigninStatus);
       setSigninStatus(false);
