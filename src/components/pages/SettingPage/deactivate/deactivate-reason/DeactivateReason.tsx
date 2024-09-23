@@ -17,6 +17,7 @@ import {
 } from '../dedactivate-alert/DeactivateAlert.style';
 import { deavtivate } from '../../../../../apis/setting';
 import { UseSigninStatus } from '../../../../../utils/signin-status';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const DeactivateReason: React.FC = () => {
   const [btnDisable, setBtnDisable] = useState<boolean>(true);
@@ -31,8 +32,10 @@ const DeactivateReason: React.FC = () => {
     deavtivate(reasons)
       .then((res) => {
         if (res.result) {
-          clearInfoWhenLogout();
-          setSigninStatus(false);
+          GoogleSignin.signOut().then(() => {
+            clearInfoWhenLogout();
+            setSigninStatus(false);
+          });
         }
       })
       .catch((e) => {

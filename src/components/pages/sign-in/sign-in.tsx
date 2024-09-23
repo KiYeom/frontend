@@ -14,9 +14,18 @@ import {
 import { css } from '@emotion/native';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import AuthStackNavigator from '../../../navigators/AuthStackNavigator';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import {
+  GoogleSignin,
+  isErrorWithCode,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
 import { ssoLogin } from '../../../apis/auth';
-import { getAccessToken, setInfoWhenLogin, setTokenInfo } from '../../../utils/storageUtils';
+import {
+  clearTokenInfo,
+  getAccessToken,
+  setInfoWhenLogin,
+  setTokenInfo,
+} from '../../../utils/storageUtils';
 import { TVender } from '../../../constants/types';
 import { UseSigninStatus } from '../../../utils/signin-status';
 import { AuthStackName } from '../../../constants/Constants';
@@ -24,31 +33,44 @@ import palette from '../../../assets/styles/theme';
 import CustomCheckBox from '../../atoms/CustomCheckBox';
 import { rsHeight } from '../../../utils/responsive-size';
 import { Checkbox } from 'react-native-ui-lib';
+import { useFocusEffect } from '@react-navigation/native';
 
-const googleLogin = async (): Promise<boolean> => {
+enum OauthResult {
+  UserCancel,
+  OldUserSuccess,
+  NewUserSuccess,
+  BackendError,
+  OauthError,
+  UnknownError,
+}
+
+const googleLogin = async (): Promise<OauthResult> => {
   GoogleSignin.configure({
     iosClientId: process.env.EXPO_PUBLIC_IOS_CLIENT_ID,
   });
 
   let googleToken;
   try {
+    await GoogleSignin.signOut();
     await GoogleSignin.signIn();
     const googleTokens = await GoogleSignin.getTokens();
     googleToken = googleTokens.accessToken;
     console.log('---googleToken---', googleToken);
   } catch (error) {
-    console.error(`[ERROR] GoogleSignin.signIn(): ${error}`);
-    return false;
+    if (isErrorWithCode(error) && error.code === statusCodes.SIGN_IN_CANCELLED) {
+      return OauthResult.UserCancel;
+    }
+    return OauthResult.OauthError;
   }
 
   const res = await ssoLogin(googleToken, 'google');
   if (!res) {
-    return false;
+    return OauthResult.BackendError;
   }
 
   if (res.isNewUser) {
     setTokenInfo(res.accessToken, res.refreshToken);
-    return false;
+    return OauthResult.NewUserSuccess;
   }
 
   if (!res.isNewUser) {
@@ -60,34 +82,38 @@ const googleLogin = async (): Promise<boolean> => {
       res.refreshToken,
       res.notice,
     );
-    return true;
+    return OauthResult.OldUserSuccess;
   }
 
-  return false;
+  return OauthResult.UnknownError;
 };
 
-const appleLogin = async (): Promise<boolean> => {
+const appleLogin = async (): Promise<OauthResult> => {
   let credential;
   try {
     credential = await AppleAuthentication.signInAsync();
-  } catch (error) {
-    console.error(`[ERROR] appleLogin - signInAsync: ${error}`);
-    return false;
+  } catch (error: any) {
+    console.error(`[ERROR] appleLogin - signInAsync: ${error.code}`);
+    if (error.code === 'ERR_REQUEST_CANCELED') {
+      return OauthResult.UserCancel;
+    } else {
+      return OauthResult.OauthError;
+    }
   }
 
   if (!credential.authorizationCode) {
-    return false;
+    return OauthResult.OauthError;
   }
 
   const res = await ssoLogin(credential.authorizationCode, 'apple');
 
   if (!res) {
-    return false;
+    return OauthResult.BackendError;
   }
 
   if (res.isNewUser) {
     setTokenInfo(res.accessToken, res.refreshToken);
-    return false;
+    return OauthResult.NewUserSuccess;
   }
 
   if (!res.isNewUser) {
@@ -99,10 +125,10 @@ const appleLogin = async (): Promise<boolean> => {
       res.refreshToken,
       res.notice,
     );
-    return true;
+    return OauthResult.OldUserSuccess;
   }
 
-  return false;
+  return OauthResult.UnknownError;
 };
 
 //로그인 페이지
@@ -117,29 +143,44 @@ const Login: React.FC<any> = ({ navigation }) => {
       return;
     }
     setLoading(true);
-    let isSsoLoginSuccess = false;
+    let oauthResult: OauthResult = OauthResult.UnknownError;
     try {
       switch (vendor) {
         case 'google':
-          isSsoLoginSuccess = await googleLogin();
+          oauthResult = await googleLogin();
           break;
         case 'apple':
-          isSsoLoginSuccess = await appleLogin();
+          oauthResult = await appleLogin();
           break;
         case 'kakao':
           break;
       }
-      if (isSsoLoginSuccess) {
+      setLoading(false);
+      //로그인이 사용자로 취소, 기존 유저 성공, 새 유저 성공, 백엔드 실패, sso제공자 실패, 알 수 없는 실패 6가지로 나눔
+      if (oauthResult === OauthResult.UserCancel) {
+        //사용자가 로그인을 취소
+        return;
+      }
+      if (oauthResult === OauthResult.OldUserSuccess) {
         //로그인 성공
         setSigninStatus(true);
         return;
       }
-      if (getAccessToken()) {
+      if (oauthResult === OauthResult.NewUserSuccess) {
         //새로운 유저
         navigation.navigate(AuthStackName.InputName);
         return;
       }
-      setLoading(false);
+      if (oauthResult === OauthResult.BackendError) {
+        alert('서버와의 통신이 실패했습니다. 잠시 후 다시 시도해주세요.');
+        return;
+      }
+      if (oauthResult === OauthResult.OauthError) {
+        alert('소셜로그인 회사와의 통신이 실패했습니다. 잠시 후 다시 시도해주세요.');
+        return;
+      }
+      alert('알 수 없는 이유로 실패했습니다. 잠시 후 다시 시도해주세요.');
+      return;
     } catch (error) {
       console.error(`[ERROR] onHandleLogin: ${error}`);
       setLoading(false);

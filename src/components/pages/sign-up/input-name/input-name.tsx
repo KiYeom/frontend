@@ -27,6 +27,7 @@ const InputName = ({ navigation }: { navigation: NavigationProp<any> }) => {
   const saveNickName = async (nickname: string) => {
     setLoading(true);
     setUserNickname(nickname);
+    setLoading(false);
     navigation.navigate(AuthStackName.InputProfile);
   };
 

@@ -12,6 +12,7 @@ import {
 } from '../utils/storageUtils';
 import { UseSigninStatus } from '../utils/signin-status';
 import { getAppVersion, getDeviceOS } from '../utils/device-info';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 function setInterceptor(instance: any) {
   instance.interceptors.request.use(async function (config: any) {
@@ -33,6 +34,7 @@ function setInterceptor(instance: any) {
         if (!refreshToken) {
           // refreshToken이 없으면 로그인이 안되어있는 상태
           clearInfoWhenLogout();
+          await GoogleSignin.signOut();
           const { SigninStatus, setSigninStatus } = UseSigninStatus();
           console.log('[Interceptor - NoRefresh] LogOut: 1, SigninStatus: ', SigninStatus);
           setSigninStatus(false);
@@ -45,6 +47,7 @@ function setInterceptor(instance: any) {
         if (!accessToken) {
           // refreshToken이 없으면 로그인이 안되어있는 상태
           clearInfoWhenLogout();
+          await GoogleSignin.signOut();
           const { SigninStatus, setSigninStatus } = UseSigninStatus();
           console.log('[Interceptor - Reissue Wrong] LogOut: 2, SigninStatus: ', SigninStatus);
           setSigninStatus(false);

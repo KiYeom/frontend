@@ -25,6 +25,7 @@ import SettingStackNavigator from './src/navigators/SettingStackNavigator';
 import { RootStackName } from './src/constants/Constants';
 import { RootSiblingParent } from 'react-native-root-siblings';
 import * as Sentry from '@sentry/react-native';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 Sentry.init({
   dsn: 'https://038362834934b1090d94fe368fdbcbf7@o4507944128020480.ingest.us.sentry.io/4507944132870145',
@@ -78,13 +79,14 @@ const App: React.FC = () => {
     const deviceId = await getDeviceId();
     if (deviceId === null) {
       console.error('DeviceId is undefined');
-      alert('디바이스 정보를 가져오는데 실패했습니다. 앱을 다시 실행해주세요.');
+      alert('지원하지 않는 운영체제입니다. 문의: admin@remind4u.co.kr');
       return;
     }
     setDeviceId(deviceId);
     const signinResult = await checkSignIn();
     if (!signinResult) {
       clearInfoWhenLogout();
+      await GoogleSignin.signOut();
     }
     setSigninStatus(signinResult);
   };

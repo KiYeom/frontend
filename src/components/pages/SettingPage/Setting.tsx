@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 import { CHATLOG, RootStackName, SettingStackName } from '../../../constants/Constants';
 import SettingMenus from '../../organisms/SettingMenus';
 import * as Notifications from 'expo-notifications';
-import UserInfomation from '../../molecules/UserInfomation';
 import { deavtivate, getLatestVersion, getUserInfo, logout } from '../../../apis/setting';
 import {
   clearInfoWhenLogout,
@@ -30,6 +29,7 @@ import palette from '../../../assets/styles/theme';
 import MenuRow from '../../menu-row/menu-row';
 import * as Linking from 'expo-linking';
 import { getAppVersion } from '../../../utils/device-info';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -54,6 +54,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
       if (deviceId) await logout(deviceId);
       else await logout('');
       clearInfoWhenLogout();
+      await GoogleSignin.signOut();
       storage.delete(CHATLOG);
       console.log('[Setting - Logout Button] LogOut: 1, SigninStatus: ', SigninStatus);
       setSigninStatus(false);
