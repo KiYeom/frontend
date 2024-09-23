@@ -2,7 +2,7 @@ import styled from '@emotion/native'; // Add this import
 import palette from '../../../assets/styles/theme';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 
-export const LoginBtn = styled.TouchableOpacity<{ vendor: 'kakao' | 'google' | 'apple' }>`
+export const LoginBtn = styled.TouchableOpacity<{ vendor: 'kakao' | 'google' | 'apple' | 'guest' }>`
   border-radius: 10px;
   height: 54px;
   gap: ${rsHeight * 12 + 'px'};
@@ -13,19 +13,21 @@ export const LoginBtn = styled.TouchableOpacity<{ vendor: 'kakao' | 'google' | '
   justify-content: center;
 
   background-color: ${(props) =>
-    props.vendor === 'kakao' ? '#FEE500' : props.vendor === 'google' ? 'white' : 'black'};
+    props.vendor === 'kakao'
+      ? '#FEE500'
+      : props.vendor === 'google'
+        ? 'white'
+        : props.vendor === 'guest'
+          ? palette.primary[400]
+          : 'black'};
   border: ${(props) => (props.vendor === 'google' ? '1px solid #dcdcdc' : 'none')};
 `;
 
-export const LoginBtnLabel = styled.Text<{ vendor: 'kakao' | 'google' | 'apple' }>`
+export const LoginBtnLabel = styled.Text<{ vendor: 'kakao' | 'google' | 'apple' | 'guest' }>`
   font-size: ${rsFont * 20 + 'px'};
   font-family: Pretendard-SemiBold;
   color: ${(props) =>
-    props.vendor === 'kakao'
-      ? 'black'
-      : props.vendor === 'google'
-        ? 'rgba(0,0,0,0.54)'
-        : '#FFFFFF'};
+    props.vendor === 'kakao' ? 'black' : props.vendor === 'google' ? 'rgba(0,0,0,0.54)' : 'white'};
 `;
 
 export const LoginBtnIcon = styled.Image`

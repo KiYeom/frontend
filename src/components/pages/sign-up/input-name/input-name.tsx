@@ -1,9 +1,10 @@
 import { css } from '@emotion/native';
-import { NavigationProp } from '@react-navigation/native';
 import React from 'react';
 import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
+import { updateUserProfile } from '../../../../apis/auth';
 import { AuthStackName } from '../../../../constants/Constants';
-import { setUserNickname } from '../../../../utils/storageUtils';
+import { UseSigninStatus } from '../../../../utils/signin-status';
+import { setInfoWhenLogin, setUserNickname } from '../../../../utils/storageUtils';
 import Button from '../../../button/button';
 import Input from '../../../input/input';
 import {
@@ -20,15 +21,59 @@ const validateName = (name: string): 'error' | 'default' | 'correct' => {
   else return 'default';
 };
 
-const InputName = ({ navigation }: { navigation: NavigationProp<any> }) => {
+const InputName = ({ route, navigation }) => {
   const [name, setName] = React.useState('');
   const [loading, setLoading] = React.useState(false);
+  const { setSigninStatus } = UseSigninStatus();
+  const { isGuestMode } = route.params;
 
-  const saveNickName = async (nickname: string) => {
+  const guestModeSignUp = async () => {
+    if (name) {
+      const res = await updateUserProfile({
+        nickname: name,
+        gender: null,
+        birthdate: null,
+      });
+
+      if (res) {
+        setInfoWhenLogin(
+          '' + res.nickname,
+          res.birthdate,
+          res.gender,
+          res.accessToken,
+          res.refreshToken,
+          res.notice,
+        );
+        setSigninStatus(true);
+        return true;
+      }
+      return false;
+    }
+    return false;
+  };
+
+  const saveNickName = (nickname: string) => {
+    console.log('isGuestMode', isGuestMode);
     setLoading(true);
     setUserNickname(nickname);
-    setLoading(false);
-    navigation.navigate(AuthStackName.InputProfile);
+    if (!isGuestMode) {
+      navigation.navigate(AuthStackName.InputProfile);
+      setLoading(false);
+    } else {
+      guestModeSignUp()
+        .then((res) => {
+          if (!res) {
+            alert('닉네임을 저장하는데 실패했습니다. 잠시 후 다시 시도해주세요.');
+          }
+        })
+        .catch((error) => {
+          alert('닉네임을 저장하는데 실패했습니다. 잠시 후 다시 시도해주세요.');
+          console.error(error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   };
 
   return (
