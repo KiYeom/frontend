@@ -1,8 +1,8 @@
-import { TAuth, TNewUser } from './auth.types';
-import { instance } from './interceptor';
+import { TVender } from '../constants/types';
 import { getAppVersion, getDeviceOS } from '../utils/device-info';
 import { getDeviceIdFromMMKV } from '../utils/storageUtils';
-import { TVender } from '../constants/types';
+import { TAuth, TNewUser } from './auth.types';
+import { instance } from './interceptor';
 
 //INFO: SSO 로그인
 export const ssoLogin = async (code: string, vender: TVender): Promise<TAuth | undefined> => {

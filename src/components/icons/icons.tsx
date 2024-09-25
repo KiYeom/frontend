@@ -1,13 +1,19 @@
+import Airplane from './svg/airplane';
+import AngryEmotion from './svg/angry-emotion';
 import ArrowDown from './svg/arrow-down';
 import ArrowLeft from './svg/arrow-left';
-import Airplane from './svg/airplane';
-import DateIcon from './svg/date-icon';
 import ArrowRight from './svg/arrow-right';
-import CookieProfile from './svg/cookie-profile';
-import StatisticIcon from './svg/statistic-icon';
-import HomeIcon from './svg/home-icon';
-import SettingIcon from './svg/setting-icon';
+import Calendar from './svg/calendar';
+import CancelIcon from './svg/cancel-icon';
+import CheckIcon from './svg/check-icon';
 import CloverIcon from './svg/clover';
+import DateIcon from './svg/date-icon';
+import HappyEmotion from './svg/happy-emotion';
+import HomeIcon from './svg/home-icon';
+import CalmEmotion from './svg/relax-emotion';
+import SadEmotion from './svg/sad-emotion';
+import SettingIcon from './svg/setting-icon';
+import StatisticIcon from './svg/statistic-icon';
 
 export type TIconName =
   | 'airplane'
@@ -18,7 +24,14 @@ export type TIconName =
   | 'home-icon'
   | 'setting-icon'
   | 'statistic-icon'
-  | 'clover-icon';
+  | 'clover-icon'
+  | 'happy-emotion'
+  | 'angry-emotion'
+  | 'sad-emotion'
+  | 'calm-emotion'
+  | 'check-icon'
+  | 'cancel-icon'
+  | 'calendar';
 
 export default function Icon({
   width,
@@ -50,5 +63,19 @@ export default function Icon({
       return <StatisticIcon width={width} height={height} color={color} />;
     case 'clover-icon':
       return <CloverIcon width={width} height={height} color={color} />;
+    case 'happy-emotion':
+      return <HappyEmotion width={width} height={height} color={color} />;
+    case 'angry-emotion':
+      return <AngryEmotion width={width} height={height} color={color} />;
+    case 'sad-emotion':
+      return <SadEmotion width={width} height={height} color={color} />;
+    case 'calm-emotion':
+      return <CalmEmotion width={width} height={height} color={color} />;
+    case 'check-icon':
+      return <CheckIcon width={width} height={height} color={color} />;
+    case 'cancel-icon':
+      return <CancelIcon width={width} height={height} color={color} />;
+    case 'calendar':
+      return <Calendar width={width} height={height} color={color} />;
   }
 }

@@ -1,11 +1,10 @@
-import { BottomTabBarCotainer, TabButtonContainer, TabLabel } from './bottom-tab-bar.style';
-import palette from '../../assets/styles/theme';
-import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import Icon from '../icons/icons';
-import { TabBarLabel } from '../../constants/Constants';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Text } from 'react-native';
+import palette from '../../assets/styles/theme';
+import { TabBarLabel } from '../../constants/Constants';
+import { rsHeight, rsWidth } from '../../utils/responsive-size';
+import Icon from '../icons/icons';
+import { BottomTabBarCotainer, TabButtonContainer, TabLabel } from './bottom-tab-bar.style';
 
 const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
   const insets = useSafeAreaInsets();

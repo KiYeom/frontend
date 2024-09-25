@@ -1,25 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
-import {
-  View,
-  FlatList,
-  Platform,
-  Keyboard,
-  Text,
-  KeyboardAvoidingView,
-  SafeAreaView,
-} from 'react-native';
 import { css } from '@emotion/native';
-import { rsWidth, rsHeight, rsFont } from '../../../utils/responsive-size';
-import ChatBubble from './ChatBubble';
-import ChatInput from './ChatInput';
-import { DateLine } from './Chat.style';
+import { useHeaderHeight } from '@react-navigation/elements';
+import { StatusBar } from 'expo-status-bar';
+import React, { useEffect, useRef, useState } from 'react';
+import { FlatList, Keyboard, KeyboardAvoidingView, Platform, View } from 'react-native';
 import { Message } from '../../../constants/Constants';
 import { loadChatLogs, saveChatLogs } from '../../../utils/Chatting';
-import { getChatting } from '../../../utils/storageUtils';
-import { StatusBar } from 'expo-status-bar';
-import { useHeaderHeight } from '@react-navigation/elements';
-import palette from '../../../assets/styles/theme';
-import { DateLineText } from './Chat.style';
+import { rsHeight, rsWidth } from '../../../utils/responsive-size';
+import { getAiResponse, getChatting } from '../../../utils/storageUtils';
+import { DateLine, DateLineText } from './Chat.style';
+import ChatBubble from './ChatBubble';
+import ChatInput from './ChatInput';
 
 const Chat: React.FC = () => {
   const flatListRef = useRef<FlatList<any>>(null);
@@ -29,7 +19,11 @@ const Chat: React.FC = () => {
 
   useEffect(() => {
     loadChatLogs({ data, setData });
-
+    if (Array.isArray(data) && data.length > 0) {
+      const newData = [...data]; // 기존 data를 복사
+      newData[0].text = getAiResponse(); // 복사한 배열의 첫 번째 요소의 text를 변경
+      setData(newData); // 상태 업데이트
+    }
     const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () =>
       setKeyboardVisible(true),
     );
@@ -45,13 +39,13 @@ const Chat: React.FC = () => {
 
   useEffect(() => {
     saveChatLogs(data);
+    //console.log('data ', data);
   }, [data]);
 
   const renderItem = ({ item, index }: any) => {
     const currentDate = item.date;
     const nextDate = index + 1 < data.length ? data[index + 1].date : undefined;
     let showDateLine = currentDate !== nextDate || nextDate === undefined;
-    console.log('currentDate', currentDate);
 
     return (
       <View>

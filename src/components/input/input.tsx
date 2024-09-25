@@ -1,10 +1,11 @@
-import { TextStyle, StyleProp } from 'react-native';
-import { IconContainer, InputContainer, InputField, WithMessage } from './input.styles';
-import Icon, { TIconName } from '../icons/icons';
-import { rsHeight, rsWidth } from '../../utils/responsive-size';
+import { StyleProp, TextStyle } from 'react-native';
 import palette from '../../assets/styles/theme';
+import { rsHeight, rsWidth } from '../../utils/responsive-size';
+import Icon, { TIconName } from '../icons/icons';
+import { IconContainer, InputContainer, InputField, WithMessage } from './input.styles';
 
 type InputProps = {
+  keyboardType?: 'numeric';
   status?: 'correct' | 'error' | 'default' | 'disabled';
   withMessage?: boolean;
   message?: string;
@@ -20,9 +21,13 @@ type InputProps = {
     text?: StyleProp<TextStyle>;
   };
   disabled?: boolean;
+  onFocus?: () => void;
+  onBlur?: () => void;
+  onKeyPress?: () => void;
 };
 const Input = (props: InputProps) => {
   const {
+    keyboardType = 'default', //입력 키보드의 디폴트값
     status = 'default', //입력 필드 상태값
     withMessage = false, //메세지 표시 여부
     showRightIcon = false, //오른쪽에 표시되는 아이콘 여부
@@ -36,10 +41,14 @@ const Input = (props: InputProps) => {
     onPressIcon, //아이콘이 눌렸을 때
     styles, //적용될 스타일
     disabled,
+    onFocus = () => {}, //입력창이 포커스되었을 때
+    onBlur = () => {}, //입력창에 포커스 해제되었을 때
+    onKeyPress = () => {},
   } = props; //props 객체를 변수로 선언하여 기본값 설정
   return (
     <InputContainer onPress={onPressContainer} activeOpacity={1} disabled={disabled}>
       <InputField
+        keyboardType={keyboardType}
         placeholder={placeholder}
         status={status}
         value={value}
@@ -47,6 +56,9 @@ const Input = (props: InputProps) => {
         editable={status !== 'disabled'}
         style={styles?.text}
         pointerEvents={onPressContainer ? 'none' : 'auto'}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        onKeyPress={onKeyPress}
       />
       {showRightIcon && (
         <IconContainer onPress={onPressContainer ?? onPressIcon} disabled={disabled}>
@@ -54,7 +66,7 @@ const Input = (props: InputProps) => {
             name={rightIcon}
             width={rsWidth * 16}
             height={rsHeight * 16}
-            color={palette.neutral[500]}
+            color={disabled ? palette.neutral[200] : palette.neutral[400]}
           />
         </IconContainer>
       )}

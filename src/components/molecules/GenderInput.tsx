@@ -1,11 +1,11 @@
 import React from 'react';
-import { Label } from '../pages/sign-up/input-profile/input-profile.styles';
 import {
-  ButtonGroup,
-  GenderButton,
   BtnLabel,
+  ButtonGroup,
+  FormContainer,
+  GenderButton,
+  Label,
 } from '../pages/sign-up/input-profile/input-profile.styles';
-import { FormContainer } from '../pages/sign-up/input-profile/input-profile.styles';
 
 const GenderInput: React.FC<any> = ({ gender, setGender }): any => {
   return (

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { ScrollContainer } from './notifications.styles';
-import SwitchRow from '../../../switch-row/switch-row';
 import { getNotificationStatus, setNotificationStatus } from '../../../../apis/notification';
+import SwitchRow from '../../../switch-row/switch-row';
+import { ScrollContainer } from './notifications.styles';
 
 const Notifications = () => {
   const [systemSwitchState, setSystemSwitchState] = React.useState(false);

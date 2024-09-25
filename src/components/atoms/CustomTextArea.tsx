@@ -1,8 +1,7 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { StyleSheet } from 'react-native';
 import { TextField } from 'react-native-ui-lib'; //eslint-disable-line
 import palette from '../../assets/styles/theme';
-import { StyleSheet } from 'react-native';
 
 const CustomTextArea: React.FC = () => {
   const [text, setText] = useState('');

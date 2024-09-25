@@ -1,24 +1,18 @@
-import React from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { ScrollView, StatusBar } from 'react-native';
-import { Platform } from 'react-native';
 import { css } from '@emotion/native';
-import { useState } from 'react';
-import { View } from 'react-native';
-import ReportType from './ReportType';
 import { useNavigation } from '@react-navigation/native';
-import { rsHeight, rsWidth, rsFont } from '../../../utils/responsive-size';
-import { useEffect } from 'react';
-import PeriodKeywordArea from './Period_keyword/PeriodKeywordArea';
-import DateLine from '../../atoms/DateLine/DateLine';
-import PeriodFlowChart from './Period_FlowChart/PeriodFlowChartArea';
 import dayjs from 'dayjs';
-import DateType from 'react-native-ui-datepicker';
-import { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { ActivityIndicator, ScrollView, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { periodChart, periodKeyword } from '../../../apis/analyze';
-import RangeDatePickerModal from '../../rangeCal/range-date-picker-modal';
-import { StyleSheet, ActivityIndicator } from 'react-native';
 import palette from '../../../assets/styles/theme';
+import { rsHeight } from '../../../utils/responsive-size';
+import DateLine from '../../atoms/DateLine/DateLine';
+import RangeDatePickerModal from '../../rangeCal/range-date-picker-modal';
+import PageName from './PageName';
+import PeriodFlowChart from './Period_FlowChart/PeriodFlowChartArea';
+import PeriodKeywordArea from './Period_keyword/PeriodKeywordArea';
+import ReportType from './ReportType';
 
 const PeriodStatisticPage: React.FC<any> = () => {
   const [loading, setLoading] = useState(true);
@@ -42,7 +36,7 @@ const PeriodStatisticPage: React.FC<any> = () => {
   //날짜가 변경되는 경우
   useEffect(() => {
     const fetchData = async () => {
-      console.log('날짜가 변경됨');
+      //console.log('날짜가 변경됨');
       try {
         setLoading(true);
         setError(null);
@@ -54,16 +48,17 @@ const PeriodStatisticPage: React.FC<any> = () => {
           periodChart(startDateFormatted, endDateFormatted), //기간 감정 차트
           periodKeyword(startDateFormatted, endDateFormatted), //기간 키워드 리스트
         ]);
+        //console.log('기간 감정 차트', res);
         if (res && res.charts) {
           setEmotionsData(res.charts);
         }
         if (res2 && res2.keywords) {
           setPeriodKeywordList(res2.keywords);
         }
-        console.log('시작 날짜 ', startDateFormatted);
-        console.log('종료 날짜 ', endDateFormatted);
-        console.log('기간 리포트 api 응답 결과', res.charts);
-        console.log('기간 키워드 결과', res2.keywords);
+        //console.log('시작 날짜 ', startDateFormatted);
+        //console.log('종료 날짜 ', endDateFormatted);
+        //console.log('기간 리포트 api 응답 결과', res.charts);
+        //console.log('기간 키워드 결과', res2.keywords);
       } catch (err) {
         setError('데이터를 불러오는 중 오류가 발생했습니다.');
         console.error(err);
@@ -106,13 +101,18 @@ const PeriodStatisticPage: React.FC<any> = () => {
           padding-vertical: ${rsHeight * 40 + 'px'};
           padding-bottom: ${rsHeight * 50 + 'px'};
         `}>
-        <View style={{ paddingBottom: 50 * rsHeight }}>
+        <View
+          style={css`
+            padding-bottom: ${rsHeight * 50 + 'px'};
+            gap: ${rsHeight * 16 + 'px'};
+          `}>
           <ReportType
             type="일일리포트"
             navigation={navigation}
             onPress={() => {
               setOpenModal(true);
             }}></ReportType>
+          <PageName type="기간 리포트" />
           <DateLine
             value={
               range.startDate && range.endDate

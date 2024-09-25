@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { Alert } from 'react-native';
+import { getAppVersion, getDeviceOS } from '../utils/device-info';
+import { UseSigninStatus } from '../utils/signin-status';
 import {
   clearInfoWhenLogout,
   deleteAccessToken,
@@ -10,8 +11,6 @@ import {
   setNotice,
   setUserInfo,
 } from '../utils/storageUtils';
-import { UseSigninStatus } from '../utils/signin-status';
-import { getAppVersion, getDeviceOS } from '../utils/device-info';
 
 function setInterceptor(instance: any) {
   instance.interceptors.request.use(async function (config: any) {

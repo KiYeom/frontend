@@ -1,9 +1,9 @@
 import styled from '@emotion/native';
 import React, { useState } from 'react';
 import { Modal, TouchableWithoutFeedback } from 'react-native';
+import DatePicker from 'react-native-date-picker';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import Button from '../button/button';
-import DatePicker from 'react-native-date-picker';
 
 const DatePickerModal = ({
   modalVisible,
@@ -26,6 +26,7 @@ const DatePickerModal = ({
                 date={date}
                 locale="kor"
                 mode="date"
+                theme="light"
                 onDateChange={(new_date) => setDate(new_date)}
               />
               <Button

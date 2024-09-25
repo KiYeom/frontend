@@ -1,6 +1,6 @@
 import styled from '@emotion/native';
-import { rsFont, rsHeight, rsWidth } from '../../utils/responsive-size';
 import palette from '../../assets/styles/theme';
+import { rsFont, rsHeight, rsWidth } from '../../utils/responsive-size';
 
 export const InputContainer = styled.TouchableOpacity`
   display: flex;
@@ -11,6 +11,7 @@ export const InputContainer = styled.TouchableOpacity`
 
 export const InputField = styled.TextInput<{
   status: 'default' | 'error' | 'correct' | 'disabled';
+  keyboardType?: 'numeric' | 'default';
 }>`
   border-radius: 10px;
   height: ${rsHeight * 52 + 'px'};

@@ -1,6 +1,6 @@
 import styled from '@emotion/native';
-import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { EdgeInsets } from 'react-native-safe-area-context';
+import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 
 export const HomeContainer = styled.View<{ insets: EdgeInsets }>`
   flex: 1;

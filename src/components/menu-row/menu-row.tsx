@@ -1,21 +1,18 @@
+import * as Linking from 'expo-linking';
 import React from 'react';
-import './menu-row.styles';
-import { View } from 'react-native-ui-lib';
-import SwitchComponent from '../switch/switch';
-import Icon from '../icons/icons';
-import { rsHeight, rsWidth } from '../../utils/responsive-size';
+import { Platform } from 'react-native';
 import palette from '../../assets/styles/theme';
+import { getAppVersion } from '../../utils/device-info';
+import { rsHeight, rsWidth } from '../../utils/responsive-size';
+import Icon from '../icons/icons';
+import './menu-row.styles';
 import {
-  LargeTouchArea,
   MenuRowContainer,
   MenuRowText,
   MenuRowTextContainer,
   VersionStatus,
   VersionText,
 } from './menu-row.styles';
-import { getAppVersion } from '../../utils/device-info';
-import * as Linking from 'expo-linking';
-import { Platform } from 'react-native';
 
 export type MenuRowProps = {
   text: string;
@@ -34,6 +31,8 @@ const linkingToStore = (
     //버전 표시 하고, 업데이트 필요할 때
     if (Platform.OS === 'ios') {
       Linking.openURL('https://apps.apple.com/app/remind/id6544783154');
+    } else if (Platform.OS === 'android') {
+      Linking.openURL('https://play.google.com/store/apps/details?id=com.ceunnseo.reMIND');
     }
     return;
   }

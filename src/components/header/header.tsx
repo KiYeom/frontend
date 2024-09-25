@@ -1,16 +1,16 @@
-import { rsWidth } from '../../utils/responsive-size';
 import { useNavigation } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import palette from '../../assets/styles/theme';
+import { rsWidth } from '../../utils/responsive-size';
 import Icon, { TIconName } from '../icons/icons';
 import {
-  HeaderLeft,
   HeaderCenter,
   HeaderContainer,
+  HeaderLeft,
+  HeaderRight,
   HeaderTitle,
   OptionText,
-  HeaderRight,
 } from './header.styles';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type HeaderProps = {
   title?: string;

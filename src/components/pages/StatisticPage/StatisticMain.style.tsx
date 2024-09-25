@@ -1,7 +1,6 @@
-import React from 'react';
-import palette from '../../../assets/styles/theme';
-import { rsWidth, rsHeight, rsFont } from '../../../utils/responsive-size';
 import styled from '@emotion/native';
+import palette from '../../../assets/styles/theme';
+import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 
 //통계 컴포넌트를 감싸는 전체 컨테이너
 export const Container = styled.View`

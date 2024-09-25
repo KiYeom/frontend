@@ -1,5 +1,5 @@
 import { chatting } from '../apis/chatting';
-import { setChatting, getChatting } from './storageUtils';
+import { getChatting, setChatting } from './storageUtils';
 
 //채팅을 보낸 현재 시간 (date)을 리턴하는 함수
 export const getTime = (): number => {
@@ -79,15 +79,15 @@ export const saveChatLogs = (logs: any) => {
 
 //앱을 처음 실행할 때 스토리지에 저장된 대화를 꺼내오는 함수
 export const loadChatLogs = ({ data, setData }: any) => {
-  console.log('loadChatLogs 실행');
+  //console.log('loadChatLogs 실행');
   try {
     const chatLogs = getChatting();
     if (chatLogs) {
       setData(JSON.parse(chatLogs));
     }
   } catch (error) {
-    console.log('loadChatLogs error', error);
+    //console.log('loadChatLogs error', error);
     return;
   }
-  console.log('실행 결과 ', data);
+  //console.log('실행 결과 ', data);
 };

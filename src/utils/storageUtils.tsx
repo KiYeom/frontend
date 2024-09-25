@@ -196,3 +196,12 @@ export const setNotice = (notice: TNotice): void => {
 export const deleteNotice = (): void => {
   storage.delete(NOTICE);
 };
+
+//ai 답변 저장하기
+export const saveAiResponse = (aiResponse: string) => {
+  storage.set('AIRESPONSE', aiResponse);
+};
+//ai 답변 가져오기
+export const getAiResponse = () => {
+  return storage.getString('AIRESPONSE');
+};

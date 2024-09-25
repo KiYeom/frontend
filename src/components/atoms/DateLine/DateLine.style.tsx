@@ -1,6 +1,6 @@
 import styled from '@emotion/native';
-import { rsHeight, rsWidth, rsFont } from '../../../utils/responsive-size';
 import palette from '../../../assets/styles/theme';
+import { rsFont, rsWidth } from '../../../utils/responsive-size';
 
 export const TouchableDateLine = styled.TouchableOpacity`
   gap: ${rsWidth * 4 + 'px'};
@@ -13,6 +13,6 @@ export const TouchableDateLine = styled.TouchableOpacity`
 
 export const DateLineText = styled.Text`
   font-family: Pretendard-Medium;
-  font-size: ${14 * rsFont + 'px'};
+  font-size: ${16 * rsFont + 'px'};
   color: ${palette.neutral[500]};
 `;

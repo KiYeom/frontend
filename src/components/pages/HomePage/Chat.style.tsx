@@ -1,6 +1,7 @@
 import styled from '@emotion/native';
-import { rsFont, rsWidth, rsHeight } from '../../../utils/responsive-size';
 import palette from '../../../assets/styles/theme';
+import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
+
 export const ChatContainer = styled.View`
   flex: 1;
   padding-horizontal: ${rsWidth * 20 + 'px'};

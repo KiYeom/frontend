@@ -2,15 +2,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import palette from '../assets/styles/theme';
 import BottomTabBar from '../components/bottom/bottom-tab-bar';
-import { TabBarLabel, TabScreenName } from '../constants/Constants';
-import StatisticStackNavigator from './StatisticStackNavigator';
-import HomeStackNavigator from './HomeStackNavigator';
-import SettingStackNavigator from './SettingStackNavigator';
-import PeriodStatisticPage from '../components/pages/StatisticPage/PeriodStatisticPage';
-import StatisticMain from '../components/pages/StatisticPage/StatisticMain';
 import Home from '../components/pages/HomePage/Home';
 import Setting from '../components/pages/SettingPage/Setting';
-import { StatisticStackName } from '../constants/Constants';
+import { TabBarLabel, TabScreenName } from '../constants/Constants';
+import StatisticStackNavigator from './StatisticStackNavigator';
 
 const Tab = createBottomTabNavigator();
 

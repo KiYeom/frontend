@@ -1,19 +1,19 @@
-import React from 'react';
-import { rsHeight } from '../../../utils/responsive-size';
-import { Platform, SafeAreaView, StatusBar, View } from 'react-native';
-import DatePickerModal from '../../modals/date-picker-modal';
-import { useEffect, useState } from 'react';
-import { ScrollView } from 'react-native';
 import { css } from '@emotion/native';
-import DailyEmotionClassification from './Daily_EmotionClassification/DailyEmotionClassification';
-import DateLine from '../../atoms/DateLine/DateLine';
-import KeywordArea from './Daily_Keyword/KeywordArea';
-import { Container } from './StatisticMain.style';
-import ReportType from './ReportType';
-import { dailyAnalyze } from '../../../apis/analyze';
 import { useNavigation } from '@react-navigation/native';
-import { TLabel } from '../../../apis/analyze.type';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Platform, SafeAreaView, ScrollView, StatusBar, View } from 'react-native';
+import { dailyAnalyze } from '../../../apis/analyze';
+import { TEmotionCheck, TLabel } from '../../../apis/analyze.type';
 import palette from '../../../assets/styles/theme';
+import { rsHeight } from '../../../utils/responsive-size';
+import DateLine from '../../atoms/DateLine/DateLine';
+import SingleDatePickerModal from '../../rangeCal/single-date-picker-modal';
+import DailyEmotionClassification from './Daily_EmotionClassification/DailyEmotionClassification';
+import EmotionArea from './Daily_Keyword/EmotionArea';
+import KeywordArea from './Daily_Keyword/KeywordArea';
+import PageName from './PageName';
+import ReportType from './ReportType';
+import { Container } from './StatisticMain.style';
 
 const START_HOUR_OF_DAY = 6;
 
@@ -24,16 +24,18 @@ const getServerYestoday = (currentDate: Date = new Date()) => {
   let hour = koreaTime.getHours();
 
   if (hour >= 0 && hour < START_HOUR_OF_DAY) {
-    // 오전 0시에서 6시 사이라면 어꺼제 출력
+    // 오전 0시에서 6시 사이라면 엊그제 출력 (2일전)
     koreaTime.setDate(koreaTime.getDate() - 2);
   } else {
-    // 그렇지 않으면 어제 출력
+    // 그렇지 않으면 어제 출력 (어제)
     koreaTime.setDate(koreaTime.getDate() - 1);
   }
   return koreaTime;
 };
 
 const getDateString = (date: Date): string => {
+  //console.log('getDateString', date, Object.prototype.toString.call(date));
+  //console.log('getDateString getfullyear', date.getFullYear);
   return (
     date?.getFullYear() +
     '년 ' +
@@ -56,17 +58,26 @@ const getApiDateString = (date: Date): string => {
 
 //전체 통계 화면
 const StatisticMain: React.FC<any> = () => {
-  const [date, setDate] = useState<Date | undefined>(getServerYestoday()); //현재 날짜
+  const [date, setDate] = useState<Date | undefined>(getServerYestoday()); //서버에서 계산하는 날짜
   const [openModal, setOpenModal] = React.useState(false);
   const [isNullClassification, setIsNullClassification] = useState(true);
   const [labelsClassification, setLabelsClassification] = useState<TLabel[]>([]);
   const [isSummaryList, setIsSummaryList] = useState(true);
+  const [isRecordKeywordList, setIsRecordKeywordList] = useState<TEmotionCheck[]>([]);
+  const [isNullRecordKeywordList, setIsNullRecordKeywordList] = useState(false);
   const [summaryList, setSummaryList] = useState<string[]>([]);
   const navigation = useNavigation();
+
+  const onChange = useCallback((newDate) => {
+    //console.log('onchange', newDate);
+    setDate(newDate);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
       const dailyStatistics = await dailyAnalyze(getApiDateString(date ?? getServerYestoday()));
+      //console.log('dailyStatistics', dailyStatistics);
+      //console.log('dailyStatistics ----', dailyStatistics?.record.Keywords);
       if (!dailyStatistics) {
         alert('네트워크 연결이 불안정합니다. 잠시 후 다시 시도해주세요.');
         return;
@@ -75,6 +86,8 @@ const StatisticMain: React.FC<any> = () => {
       setLabelsClassification(dailyStatistics.classification.labels);
       setIsSummaryList(dailyStatistics.summary.isNULL);
       setSummaryList(dailyStatistics.summary.keywords);
+      setIsRecordKeywordList(dailyStatistics.record.Keywords);
+      setIsNullRecordKeywordList(dailyStatistics.record.isNULL);
     };
     fetchData();
   }, [date]);
@@ -99,22 +112,26 @@ const StatisticMain: React.FC<any> = () => {
               onPress={() => {
                 setOpenModal(true);
               }}></ReportType>
+            <PageName type="일일 리포트" />
             <DateLine value={getDateString(date ?? getServerYestoday())} />
             <Container>
               <DailyEmotionClassification
                 isNullClassification={isNullClassification}
                 labelsClassification={labelsClassification}
               />
+              <EmotionArea
+                isRecordKeywordList={isRecordKeywordList}
+                isNullRecordKeywordList={isNullRecordKeywordList}
+              />
               <KeywordArea isSummaryList={isSummaryList} summaryList={summaryList} />
             </Container>
           </View>
         </ScrollView>
       </SafeAreaView>
-
-      <DatePickerModal
+      <SingleDatePickerModal
         modalVisible={openModal}
         onClose={() => setOpenModal(false)}
-        onChange={setDate}
+        onChange={onChange}
       />
     </View>
   );
