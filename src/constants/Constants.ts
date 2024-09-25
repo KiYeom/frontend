@@ -2,7 +2,7 @@ import { TNotificationType } from './types';
 
 export const CHATLOG = 'CHATLOG';
 
-export const ERRORMESSAGE = '멍멍!🐶 쿠키 조금 아픈데 잠시 후에 다시 얘기해도 될까요?😣';
+export const ERRORMESSAGE = '혹시 다시 얘기해주실 수 있나요? 멍멍!🐶🐾';
 
 export const SPLASH_PATH = '/src/assets/images/splash.png';
 export const COOKIE_PROFILE_PATH = './src/assets/images/setting_default_profile.png';
