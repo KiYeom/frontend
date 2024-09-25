@@ -1,3 +1,4 @@
+import { debounce } from 'lodash';
 import React, { useRef, useState } from 'react';
 import { View } from 'react-native';
 import { Message } from '../../../constants/Constants';
@@ -23,7 +24,8 @@ const ChatInput = ({ data, setData }: any) => {
       return newData;
     });
     //2. ai의 답변을 가지고 온다.
-    const aiResponse = await testResponseFunc(sentenceRef.current);
+    //const aiResponse = await testResponseFunc(sentenceRef.current);
+    const aiResponse = await apiTestResponseFunc(sentenceRef.current);
     saveAiResponse(aiResponse.text);
     //3. 답변을 받아오면 (...)을 받아온 답변으로 변경해준다
     setData((prevData: Message[]) => {
@@ -73,6 +75,18 @@ const ChatInput = ({ data, setData }: any) => {
       return newData;
     });
   };
+
+  const apiTestResponseFunc = debounce(
+    async (userSentence: string[]) => {
+      //testResponseFunc(sentenceRef.current);
+      const test = userSentence.join(' ');
+      const aiTestResponse = await aiSend(test);
+      saveAiResponse(aiTestResponse.text); //ai의 답변 저장
+      return aiTestResponse;
+    },
+    1000,
+    { leading: true, trailing: false },
+  );
 
   //유저가 한 말을 모두 뭉쳐서 ai의 답변을 받는 함수
   const testResponseFunc = async (userSentence: string[]) => {
