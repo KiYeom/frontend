@@ -19,8 +19,6 @@ const Chat: React.FC = () => {
 
   useEffect(() => {
     loadChatLogs({ data, setData });
-    //console.log('dd', getAiResponse());
-    //console.log('data', data[0]);
     if (Array.isArray(data) && data.length > 0) {
       const newData = [...data]; // 기존 data를 복사
       newData[0].text = getAiResponse(); // 복사한 배열의 첫 번째 요소의 text를 변경
