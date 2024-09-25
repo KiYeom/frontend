@@ -31,6 +31,8 @@ const linkingToStore = (
     //버전 표시 하고, 업데이트 필요할 때
     if (Platform.OS === 'ios') {
       Linking.openURL('https://apps.apple.com/app/remind/id6544783154');
+    } else if (Platform.OS === 'android') {
+      Linking.openURL('https://play.google.com/store/apps/details?id=com.ceunnseo.reMIND');
     }
     return;
   }
