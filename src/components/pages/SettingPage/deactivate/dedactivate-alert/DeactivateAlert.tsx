@@ -19,7 +19,7 @@ const DeactivateAlert: React.FC = ({ navigation }) => {
   let chatCount = 0;
   if (chats) {
     const chatArray = JSON.parse(chats);
-    chatCount = chatArray.length;
+    chatCount = chatArray.length - 1;
   }
 
   //console.log('chats ========', chatCount);
@@ -43,7 +43,7 @@ const DeactivateAlert: React.FC = ({ navigation }) => {
         disabled={false}
         primary={true}
         onPress={() => {
-          console.log('탈퇴 버튼 누름');
+          //console.log('탈퇴 버튼 누름');
           navigation.navigate(SettingStackName.DeactivateReason);
         }}
       />
