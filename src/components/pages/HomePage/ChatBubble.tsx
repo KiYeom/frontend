@@ -21,7 +21,7 @@ type ChatBubbleProps = {
 const ChatBubble = (props: ChatBubbleProps) => {
   const { status, text, time } = props;
   return (
-    <Container status={status}>
+    <Container status={status} style={{ backgroundColor: 'transparent' }}>
       {status === 'bot' && (
         <ProfileImageContainer>
           <Image
