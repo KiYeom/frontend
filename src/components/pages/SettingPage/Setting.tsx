@@ -161,7 +161,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
           }
         />
         <MenuRow
-          text="오픈 라이센스"
+          text="오픈소스 라이센스"
           onPress={() =>
             navigation.navigate(RootStackName.SettingStackNavigator, {
               screen: SettingStackName.LicensePage,
