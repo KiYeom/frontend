@@ -72,17 +72,9 @@ const EmotionBtn = ({ navigation }) => {
   return (
     <HomeBtn
       onPress={() => {
-        if (!isNULL) {
-          //입력한 감정을 수정하는 경우
-          navigation.navigate(RootStackName.HomeStackNavigator, {
-            screen: HomeStackName.SmallEmotionChart,
-          });
-        } else {
-          //아직 입력하지 않아, 감정을 입력해야 하는 경우
-          navigation.navigate(RootStackName.HomeStackNavigator, {
-            screen: HomeStackName.LargeEmotionChart,
-          });
-        }
+        navigation.navigate(RootStackName.HomeStackNavigator, {
+          screen: HomeStackName.SmallEmotionChart,
+        });
       }}
       status={'emotion'}>
       <>
