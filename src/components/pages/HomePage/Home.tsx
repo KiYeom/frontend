@@ -4,7 +4,7 @@ import requestNotificationPermission from '../../../utils/NotificationToken';
 import EmotionBtn from '../../atoms/EmotionBtn/EmotionBtn';
 import HomeChatBtn from '../../atoms/HomeBtn/HomeChatBtn';
 import { HomeContainer } from './Home.style';
-
+import Header from './Homeheader';
 const Home: React.FC<any> = ({ navigation }) => {
   const [birth, setBirth] = React.useState('');
   const insets = useSafeAreaInsets();
@@ -15,6 +15,7 @@ const Home: React.FC<any> = ({ navigation }) => {
 
   return (
     <HomeContainer insets={insets}>
+      <Header navigation={navigation} />
       <HomeChatBtn navigation={navigation} />
       <EmotionBtn navigation={navigation} />
     </HomeContainer>

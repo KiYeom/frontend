@@ -11,7 +11,7 @@ import { DateLine, DateLineText } from './Chat.style';
 import ChatBubble from './ChatBubble';
 import ChatInput from './ChatInput';
 
-const Chat: React.FC = () => {
+const Chat: React.FC = ({ navigation }) => {
   const flatListRef = useRef<FlatList<any>>(null);
   const userName = getUserNickname();
   //const [data, setData] = useState<Message[]>(getChatting() ? JSON.parse(getChatting()) : []);
@@ -71,7 +71,12 @@ const Chat: React.FC = () => {
             <DateLineText>{item.date}</DateLineText>
           </DateLine>
         )}
-        <ChatBubble status={item.sender} text={item.text} time={item.time} />
+        <ChatBubble
+          status={item.sender}
+          text={item.text}
+          time={item.time}
+          navigation={navigation}
+        />
       </View>
     );
   };
