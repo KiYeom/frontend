@@ -4,6 +4,7 @@ import Header from '../components/header/header';
 import Chat from '../components/pages/HomePage/Chat';
 import LargeEmotionChart from '../components/pages/HomePage/LargeEmotionChart';
 import SmallEmotionChart from '../components/pages/HomePage/SmallEmotionChart';
+import Profile from '../components/pages/Profile/profile';
 import { HomeStackName } from '../constants/Constants';
 
 const HomeStack = createNativeStackNavigator();
@@ -24,6 +25,11 @@ const HomeStackNavigator: React.FC = () => {
       <HomeStack.Screen
         name={HomeStackName.SmallEmotionChart}
         component={SmallEmotionChart}
+        options={{ header: () => <Header /> }}
+      />
+      <HomeStack.Screen
+        name={HomeStackName.Profile}
+        component={Profile}
         options={{ header: () => <Header /> }}
       />
     </HomeStack.Navigator>
