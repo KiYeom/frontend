@@ -56,7 +56,6 @@ export enum TabBarLabel {
 
 export enum HomeStackName {
   Chat = 'Chat',
-  LargeEmotionChart = 'LargeEmotionChart',
   SmallEmotionChart = 'SmallEmotionChart',
   Profile = 'Profile',
 }

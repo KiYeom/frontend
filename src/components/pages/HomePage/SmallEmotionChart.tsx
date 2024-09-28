@@ -97,7 +97,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
           pageWidth={getWidth()} //캐러셀의 너비
           containerPaddingVertical={10 * rsHeight} //캐러셀 전체 화면이랑 요소 사이 마진값 (vertical)
           containerMarginHorizontal={12 * rsWidth} //캐러셀 전체 화면이랑 요소 사이에 마진값
-          initialPage={4 - page} //앱이 처음 실행되고 보여줄 초기 페이지
+          initialPage={2} //앱이 처음 실행되고 보여줄 초기 페이지
           containerStyle={{ flexGrow: 1 }} //캐러셀 전체 스타일링
           pageControlProps={{
             onPagePress,
