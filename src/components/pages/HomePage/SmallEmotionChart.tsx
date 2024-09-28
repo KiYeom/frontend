@@ -10,6 +10,7 @@ import { emotionData, emotions, TabScreenName } from '../../../constants/Constan
 import useRecordedEmotionStore from '../../../utils/emotion-recorded';
 import useEmotionStore from '../../../utils/emotion-status';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
+import { getUserNickname } from '../../../utils/storageUtils';
 import EmotionCard from '../../atoms/EmotionCard/EmotionCard';
 import EmotionChip from '../../atoms/EmotionChip/EmotionChip';
 import Button from '../../button/button';
@@ -84,11 +85,11 @@ const SmallEmotionChart = ({ navigation, route }) => {
     <Container>
       <Title
         style={css`
-          margin-left: ${rsWidth * 24 + 'px'};
-          text-align: left;
+          margin-horizontal: ${rsWidth * 24 + 'px'};
           padding-top: ${rsHeight * 40 + 'px'};
+          text-align: left;
         `}>
-        오늘의 감정을 알려주세요
+        {getUserNickname()}님,{'\n'}오늘 하루는 어떠셨나요?🐾
       </Title>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
         <Carousel
