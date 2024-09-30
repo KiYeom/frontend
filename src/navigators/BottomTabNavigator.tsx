@@ -25,6 +25,7 @@ const BottomTabNavigator: React.FC<any> = () => {
         component={StatisticStackNavigator}
         options={{
           tabBarLabel: TabBarLabel.Statistic,
+          headerShown: false,
         }}
       />
       <Tab.Screen

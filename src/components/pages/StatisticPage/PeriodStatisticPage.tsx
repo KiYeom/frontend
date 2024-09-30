@@ -98,8 +98,7 @@ const PeriodStatisticPage: React.FC<any> = () => {
           flex: 1; //통계 전체 컨테이너 (대시보드)
           flex-direction: column;
           background-color: ${palette.neutral[50]};
-          padding-vertical: ${rsHeight * 40 + 'px'};
-          padding-bottom: ${rsHeight * 50 + 'px'};
+          padding-bottom: ${rsHeight * 40 + 'px'};
         `}>
         <View
           style={css`
