@@ -11,7 +11,7 @@ const KeywordArea: React.FC<any> = (props: any) => {
 
   return (
     <Container>
-      <Title>쿠키와 나눈 이야기.</Title>
+      <Title>쿠키와 나눈 이야기</Title>
       {summaryList.length === 0 ? (
         <Empty type="채팅기록"></Empty>
       ) : (
