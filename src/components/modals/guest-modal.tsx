@@ -63,18 +63,18 @@ const GuestModal = ({
               </TouchableOpacity>
               <ButtonGroup>
                 <Button
-                  title="비회원 시작"
+                  title="뒤로가기"
                   primary={false}
-                  disabled={!legelAllowed}
                   onPress={() => {
-                    onSubmit?.();
                     onClose?.();
                   }}
                 />
                 <Button
-                  title="로그인 하러가기"
+                  title="비회원으로 시작하기"
                   primary={true}
+                  disabled={!legelAllowed}
                   onPress={() => {
+                    onSubmit?.();
                     onClose?.();
                   }}
                 />
