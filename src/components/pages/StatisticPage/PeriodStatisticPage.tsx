@@ -1,9 +1,10 @@
+import * as amplitude from '@amplitude/analytics-react-native';
 import { css } from '@emotion/native';
 import { useNavigation } from '@react-navigation/native';
 import dayjs from 'dayjs';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { periodChart, periodKeyword } from '../../../apis/analyze';
 import palette from '../../../assets/styles/theme';
 import { rsHeight } from '../../../utils/responsive-size';
@@ -32,6 +33,8 @@ const PeriodStatisticPage: React.FC<any> = () => {
   const [openModal, setOpenModal] = React.useState(false);
 
   const navigation = useNavigation();
+
+  const insets = useSafeAreaInsets();
 
   //날짜가 변경되는 경우
   useEffect(() => {
@@ -87,19 +90,19 @@ const PeriodStatisticPage: React.FC<any> = () => {
     );
   }
   return (
-    <SafeAreaView
+    <View
       style={{
         backgroundColor: palette.neutral[50],
         flex: 1,
-      }}
-      edges={['top']}>
+        paddingTop: insets.top,
+      }}>
       <ScrollView
         style={css`
           flex: 1; //통계 전체 컨테이너 (대시보드)
           flex-direction: column;
           background-color: ${palette.neutral[50]};
-          padding-vertical: ${rsHeight * 40 + 'px'};
-          padding-bottom: ${rsHeight * 50 + 'px'};
+          padding-bottom: ${rsHeight * 40 + 'px'};
+          padding-top: ${rsHeight * 12 + 'px'};
         `}>
         <View
           style={css`
@@ -111,8 +114,9 @@ const PeriodStatisticPage: React.FC<any> = () => {
             navigation={navigation}
             onPress={() => {
               setOpenModal(true);
+              amplitude.track('일일 리포트 버튼 클릭');
             }}></ReportType>
-          <PageName type="기간 리포트" />
+          <PageName type={`쿠키가 생각했던${'\n'}주인님의 모습이에요`} />
           <DateLine
             value={
               range.startDate && range.endDate
@@ -138,7 +142,7 @@ const PeriodStatisticPage: React.FC<any> = () => {
           />
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 export default PeriodStatisticPage;

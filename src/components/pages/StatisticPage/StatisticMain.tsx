@@ -1,7 +1,9 @@
+import * as amplitude from '@amplitude/analytics-react-native';
 import { css } from '@emotion/native';
 import { useNavigation } from '@react-navigation/native';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Platform, SafeAreaView, ScrollView, StatusBar, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { dailyAnalyze } from '../../../apis/analyze';
 import { TEmotionCheck, TLabel } from '../../../apis/analyze.type';
 import palette from '../../../assets/styles/theme';
@@ -67,6 +69,7 @@ const StatisticMain: React.FC<any> = () => {
   const [isNullRecordKeywordList, setIsNullRecordKeywordList] = useState(false);
   const [summaryList, setSummaryList] = useState<string[]>([]);
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
 
   const onChange = useCallback((newDate) => {
     //console.log('onchange', newDate);
@@ -93,41 +96,43 @@ const StatisticMain: React.FC<any> = () => {
   }, [date]);
 
   return (
-    <View style={{ flex: 1, backgroundColor: palette.neutral[50] }}>
-      <SafeAreaView
-        style={{ flex: 1, paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}>
-        <ScrollView>
-          <View
-            style={css`
-              flex: 1; //통계 전체 컨테이너 (대시보드)
-              flex-direction: column;
-              background-color: ${palette.neutral[50]};
-              padding-vertical: ${rsHeight * 20 + 'px'};
-              gap: ${rsHeight * 16 + 'px'};
-              padding-top: ${rsHeight * 40 + 'px'};
-            `}>
-            <ReportType
-              type="기간리포트"
-              navigation={navigation}
-              onPress={() => {
-                setOpenModal(true);
-              }}></ReportType>
-            <PageName type="일일 리포트" />
-            <DateLine value={getDateString(date ?? getServerYestoday())} />
-            <Container>
-              <DailyEmotionClassification
-                isNullClassification={isNullClassification}
-                labelsClassification={labelsClassification}
-              />
-              <EmotionArea
-                isRecordKeywordList={isRecordKeywordList}
-                isNullRecordKeywordList={isNullRecordKeywordList}
-              />
-              <KeywordArea isSummaryList={isSummaryList} summaryList={summaryList} />
-            </Container>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: palette.neutral[50],
+        paddingTop: insets.top,
+      }}>
+      <ScrollView style={{ paddingTop: rsHeight * 12 }}>
+        <View
+          style={css`
+            flex: 1; //통계 전체 컨테이너 (대시보드)
+            flex-direction: column;
+            background-color: ${palette.neutral[50]};
+            padding-bottom: ${rsHeight * 20 + 'px'};
+            gap: ${rsHeight * 16 + 'px'};
+          `}>
+          <ReportType
+            type="기간리포트"
+            navigation={navigation}
+            onPress={() => {
+              setOpenModal(true);
+              amplitude.track('기간 리포트 버튼 클릭');
+            }}></ReportType>
+          <PageName type={`쿠키가 생각했던${'\n'}주인님의 모습이에요`} />
+          <DateLine value={getDateString(date ?? getServerYestoday())} />
+          <Container>
+            <DailyEmotionClassification
+              isNullClassification={isNullClassification}
+              labelsClassification={labelsClassification}
+            />
+            <EmotionArea
+              isRecordKeywordList={isRecordKeywordList}
+              isNullRecordKeywordList={isNullRecordKeywordList}
+            />
+            <KeywordArea isSummaryList={isSummaryList} summaryList={summaryList} />
+          </Container>
+        </View>
+      </ScrollView>
       <SingleDatePickerModal
         modalVisible={openModal}
         onClose={() => setOpenModal(false)}

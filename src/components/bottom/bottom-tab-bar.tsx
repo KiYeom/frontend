@@ -1,3 +1,4 @@
+import * as amplitude from '@amplitude/analytics-react-native';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import palette from '../../assets/styles/theme';
@@ -5,7 +6,6 @@ import { TabBarLabel } from '../../constants/Constants';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import Icon from '../icons/icons';
 import { BottomTabBarCotainer, TabButtonContainer, TabLabel } from './bottom-tab-bar.style';
-
 const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
   const insets = useSafeAreaInsets();
   return (
@@ -32,6 +32,8 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
             target: route.key,
             canPreventDefault: true,
           });
+
+          amplitude.track(`${route.name} bottom tabbar button clicked`);
 
           //탭 클릭 시 이동
           if (!isFocused && !event.defaultPrevented) {

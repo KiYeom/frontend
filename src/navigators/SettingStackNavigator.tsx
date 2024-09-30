@@ -45,7 +45,7 @@ const SettingStackNavigator: React.FC = () => {
       <SettingStack.Screen
         name={SettingStackName.LicensePage}
         component={LicensePage}
-        options={{ header: () => <Header title="오픈 라이센스" /> }}
+        options={{ header: () => <Header title="오픈소스 라이센스" /> }}
       />
       <SettingStack.Screen
         name={SettingStackName.LicenseDetailPage}

@@ -10,6 +10,7 @@ import { emotionData, emotions, TabScreenName } from '../../../constants/Constan
 import useRecordedEmotionStore from '../../../utils/emotion-recorded';
 import useEmotionStore from '../../../utils/emotion-status';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
+import { getUserNickname } from '../../../utils/storageUtils';
 import EmotionCard from '../../atoms/EmotionCard/EmotionCard';
 import EmotionChip from '../../atoms/EmotionChip/EmotionChip';
 import Button from '../../button/button';
@@ -84,11 +85,11 @@ const SmallEmotionChart = ({ navigation, route }) => {
     <Container>
       <Title
         style={css`
-          margin-left: ${rsWidth * 24 + 'px'};
-          text-align: left;
+          margin-horizontal: ${rsWidth * 24 + 'px'};
           padding-top: ${rsHeight * 40 + 'px'};
+          text-align: left;
         `}>
-        오늘의 감정을 알려주세요
+        {getUserNickname()}님,{'\n'}오늘 하루는 어떠셨나요?🐾
       </Title>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
         <Carousel
@@ -97,7 +98,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
           pageWidth={getWidth()} //캐러셀의 너비
           containerPaddingVertical={10 * rsHeight} //캐러셀 전체 화면이랑 요소 사이 마진값 (vertical)
           containerMarginHorizontal={12 * rsWidth} //캐러셀 전체 화면이랑 요소 사이에 마진값
-          initialPage={4 - page} //앱이 처음 실행되고 보여줄 초기 페이지
+          initialPage={2} //앱이 처음 실행되고 보여줄 초기 페이지
           containerStyle={{ flexGrow: 1 }} //캐러셀 전체 스타일링
           pageControlProps={{
             onPagePress,

@@ -4,7 +4,7 @@ import { TChatAnswer } from './chatting.types';
 import { instance } from './interceptor';
 
 export const chatting = async (characterId: number, question: string): Promise<TChatAnswer> => {
-  console.log('chatting api 호출', question);
+  //console.log('chatting api 호출!!!', question);
   try {
     const res = await instance.post('/v1/chat/memory', {
       characterId,

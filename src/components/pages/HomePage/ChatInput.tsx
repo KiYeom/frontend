@@ -70,9 +70,15 @@ const ChatInput = ({ data, setData }: any) => {
     const userQuestion = userSend(text); //유저가 보낸 말을 말풍선으로 만들고
     setData((prevData: any) => {
       //말풍선 데이터에 저장
-      const newData = [userQuestion, ...prevData];
+      //console.log('------userQuestion-------', userQuestion);
+      //console.log('-----------prevData--------', prevData);
+      // prevData가 배열인지 확인
+      const newData = [userQuestion, ...(Array.isArray(prevData) ? prevData : [])];
       saveChatLogs(newData);
       return newData;
+      //const newData = [userQuestion, ...prevData];
+      //saveChatLogs(newData);
+      //return newData;
     });
   };
 
@@ -89,12 +95,12 @@ const ChatInput = ({ data, setData }: any) => {
   );
 
   //유저가 한 말을 모두 뭉쳐서 ai의 답변을 받는 함수
-  const testResponseFunc = async (userSentence: string[]) => {
-    const test = userSentence.join(' ');
-    const aiTestResponse = await aiSend(test);
-    saveAiResponse(aiTestResponse.text); //ai의 답변 저장
-    return aiTestResponse;
-  };
+  //const testResponseFunc = async (userSentence: string[]) => {
+  //const test = userSentence.join(' ');
+  //const aiTestResponse = await aiSend(test);
+  //saveAiResponse(aiTestResponse.text); //ai의 답변 저장
+  //return aiTestResponse;
+  //};
 
   return (
     <View>
