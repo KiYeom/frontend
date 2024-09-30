@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import dayjs from 'dayjs';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { periodChart, periodKeyword } from '../../../apis/analyze';
 import palette from '../../../assets/styles/theme';
 import { rsHeight } from '../../../utils/responsive-size';
@@ -33,6 +33,8 @@ const PeriodStatisticPage: React.FC<any> = () => {
   const [openModal, setOpenModal] = React.useState(false);
 
   const navigation = useNavigation();
+
+  const insets = useSafeAreaInsets();
 
   //날짜가 변경되는 경우
   useEffect(() => {
@@ -88,18 +90,19 @@ const PeriodStatisticPage: React.FC<any> = () => {
     );
   }
   return (
-    <SafeAreaView
+    <View
       style={{
         backgroundColor: palette.neutral[50],
         flex: 1,
-      }}
-      edges={['top']}>
+        paddingTop: insets.top,
+      }}>
       <ScrollView
         style={css`
           flex: 1; //통계 전체 컨테이너 (대시보드)
           flex-direction: column;
           background-color: ${palette.neutral[50]};
           padding-bottom: ${rsHeight * 40 + 'px'};
+          padding-top: ${rsHeight * 12 + 'px'};
         `}>
         <View
           style={css`
@@ -139,7 +142,7 @@ const PeriodStatisticPage: React.FC<any> = () => {
           />
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 export default PeriodStatisticPage;
