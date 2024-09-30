@@ -8,7 +8,7 @@ const StatisticStack = createNativeStackNavigator();
 
 const StatisticStackNavigator: React.FC = ({}) => {
   return (
-    <StatisticStack.Navigator>
+    <StatisticStack.Navigator screenOptions={{ headerShown: false }}>
       <StatisticStack.Screen
         name={StatisticStackName.Daily}
         component={StatisticMain}

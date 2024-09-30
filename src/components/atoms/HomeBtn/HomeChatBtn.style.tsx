@@ -2,12 +2,14 @@ import styled from '@emotion/native';
 import palette from '../../../assets/styles/theme';
 import { ratio, rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 
-export const HomeBtn = styled.TouchableOpacity<{ status: string }>`
+export const HomeBtn = styled.TouchableOpacity<{ status: string; os: string }>`
   height: ${rsHeight * 279 + 'px'};
   background-color: ${(props) =>
     props.status === 'home' ? palette.primary[50] : palette.neutral[50]};
   border-radius: ${ratio * 20 + 'px'};
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  //elevation in android and box-shadow in ios
+  ${(props) =>
+    props.os === 'android' ? 'elevation: 8;' : 'box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);'}
 `;
 
 export const HomeBtnTitle = styled.Text`
@@ -32,7 +34,7 @@ export const HomeBtnDescription = styled.View<{ color: string }>`
   height: auto;
   background-color: ${(props) => props.color};
   border-radius: 10px;
-  padding: 1px 6px;
+  padding: 2px 10px;
 `;
 
 export const HomeBtnText = styled.Text<{ status: string }>`

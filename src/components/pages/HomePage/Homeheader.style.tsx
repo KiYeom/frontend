@@ -6,8 +6,7 @@ export const Homeheader = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  //background-color: red;
-  height: ${rsHeight * 76 + 'px'};
+  height: ${rsHeight * 60 + 'px'};
 `;
 
 export const ProfileButton = styled.TouchableOpacity`

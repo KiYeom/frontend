@@ -103,9 +103,8 @@ const StatisticMain: React.FC<any> = () => {
               flex: 1; //통계 전체 컨테이너 (대시보드)
               flex-direction: column;
               background-color: ${palette.neutral[50]};
-              padding-vertical: ${rsHeight * 20 + 'px'};
+              padding-bottom: ${rsHeight * 20 + 'px'};
               gap: ${rsHeight * 16 + 'px'};
-              padding-top: ${rsHeight * 40 + 'px'};
             `}>
             <ReportType
               type="기간리포트"
