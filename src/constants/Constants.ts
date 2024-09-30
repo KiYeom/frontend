@@ -51,7 +51,7 @@ export enum TabScreenName {
 export enum TabBarLabel {
   Home = '홈',
   Setting = '설정',
-  Statistic = '통계',
+  Statistic = '보고서',
 }
 
 export enum HomeStackName {
