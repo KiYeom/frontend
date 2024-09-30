@@ -1,6 +1,8 @@
 import { Image } from 'expo-image';
+import { TouchableOpacity } from 'react-native';
 import { TypingAnimation } from 'react-native-typing-animation';
 import palette from '../../../assets/styles/theme';
+import { HomeStackName, RootStackName } from '../../../constants/Constants';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import {
   Bubble,
@@ -16,18 +18,26 @@ type ChatBubbleProps = {
   time?: string;
   userText?: string | undefined;
   isLoading?: boolean;
+  navigation?: any;
 };
 
 const ChatBubble = (props: ChatBubbleProps) => {
-  const { status, text, time } = props;
+  const { status, text, time, navigation } = props;
   return (
-    <Container status={status}>
+    <Container status={status} style={{ backgroundColor: 'transparent' }}>
       {status === 'bot' && (
         <ProfileImageContainer>
-          <Image
-            source={require('../../../assets/images/cookieprofile.png')}
-            style={{ objectFit: 'contain', width: 35 * rsWidth, height: 35 * rsHeight }}
-          />
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate(RootStackName.HomeStackNavigator, {
+                screen: HomeStackName.Profile,
+              })
+            }>
+            <Image
+              source={require('../../../assets/images/cookieprofile.png')}
+              style={{ objectFit: 'contain', width: 35 * rsWidth, height: 35 * rsHeight }}
+            />
+          </TouchableOpacity>
         </ProfileImageContainer>
       )}
       {status === 'bot' ? (

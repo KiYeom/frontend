@@ -1,3 +1,4 @@
+import * as amplitude from '@amplitude/analytics-react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import palette from '../../assets/styles/theme';
@@ -36,6 +37,7 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
     leftText = undefined,
     leftFunction = () => {
       navigation.goBack();
+      amplitude.track('뒤로가기 버튼 클릭');
     },
 
     isRight = false,

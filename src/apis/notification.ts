@@ -30,7 +30,7 @@ export const getNotificationStatus = async (): Promise<TAllowedNotifications | u
   }
 };
 
-//INFO: 토큰 권한 정보 받기
+//INFO: 토큰 권한 정보 설정하기
 export const setNotificationStatus = async (
   notificationName: string,
   isAllow: boolean,

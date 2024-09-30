@@ -1,6 +1,7 @@
+import * as amplitude from '@amplitude/analytics-react-native';
 import { css } from '@emotion/native';
 import React, { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 import { todayEmotionCheck } from '../../../apis/analyze';
 import palette from '../../../assets/styles/theme';
@@ -71,18 +72,12 @@ const EmotionBtn = ({ navigation }) => {
 
   return (
     <HomeBtn
+      os={Platform.OS}
       onPress={() => {
-        if (!isNULL) {
-          //입력한 감정을 수정하는 경우
-          navigation.navigate(RootStackName.HomeStackNavigator, {
-            screen: HomeStackName.SmallEmotionChart,
-          });
-        } else {
-          //아직 입력하지 않아, 감정을 입력해야 하는 경우
-          navigation.navigate(RootStackName.HomeStackNavigator, {
-            screen: HomeStackName.LargeEmotionChart,
-          });
-        }
+        navigation.navigate(RootStackName.HomeStackNavigator, {
+          screen: HomeStackName.SmallEmotionChart,
+        });
+        amplitude.track('감정 입력 버튼 클릭');
       }}
       status={'emotion'}>
       <>
@@ -91,13 +86,13 @@ const EmotionBtn = ({ navigation }) => {
             ? `${name}님,${'\n'}오늘의 마음을 확인해보세요!`
             : `${name}님,${'\n'}오늘의 마음은 어떤가요?`}
         </HomeBtnTitle>
-        <HomeBtnDescription>
+        <HomeBtnDescription color={palette.neutral[500]}>
           <HomeBtnText status={'mood'}>{!isNULL ? `감정 수정하기` : `감정 기록하기`}</HomeBtnText>
           <Icon
             name="arrow-right"
             width={rsWidth * 6 + 'px'}
             height={rsHeight * 12 + 'px'}
-            color={palette.neutral[500]}
+            color={palette.neutral[50]}
           />
         </HomeBtnDescription>
         <View

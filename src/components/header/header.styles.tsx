@@ -4,7 +4,7 @@ import palette from '../../assets/styles/theme';
 import { rsFont, rsHeight, rsWidth } from '../../utils/responsive-size';
 
 export const HeaderContainer = styled.View<{ isTitle: boolean; insets: EdgeInsets }>`
-  margin-top: ${rsHeight * 40 + 'px'};
+  margin-top: ${(props) => props.insets.top + 'px'};
   height: ${rsHeight * 56 + 'px'};
   display: flex;
   flex-direction: row;
@@ -12,15 +12,9 @@ export const HeaderContainer = styled.View<{ isTitle: boolean; insets: EdgeInset
   align-items: center;
   position: relative;
 
-  // Paddings to handle safe area
-  padding-top: ${(props) => props.insets.top};
-  padding-bottom: ${(props) => props.insets.bottom};
-  padding-left: ${(props) => props.insets.left};
-  padding-right: ${(props) => props.insets.right};
-
   border-color: ${palette.neutral[100]};
   border-bottom-width: ${(props) => (props.isTitle ? `${rsHeight * 1 + 'px'} ` : `0px`)};
-  background-color: #fff;
+  background-color: #ffffff;
 `;
 
 export const HeaderLeft = styled.TouchableOpacity<{ isTitle: boolean }>`

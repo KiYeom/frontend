@@ -5,7 +5,7 @@ import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 //제목
 export const Title = styled.Text`
   font-family: Pretendard-Semibold;
-  font-size: ${rsFont * 28 + 'px'};
+  font-size: ${rsFont * 24 + 'px'};
   color: ${palette.neutral[500]};
   text-align: center;
 `;

@@ -11,6 +11,7 @@ import DateIcon from './svg/date-icon';
 import HappyEmotion from './svg/happy-emotion';
 import HomeIcon from './svg/home-icon';
 import CalmEmotion from './svg/relax-emotion';
+import Remindlogo from './svg/remind-logo';
 import SadEmotion from './svg/sad-emotion';
 import SettingIcon from './svg/setting-icon';
 import StatisticIcon from './svg/statistic-icon';
@@ -31,7 +32,8 @@ export type TIconName =
   | 'calm-emotion'
   | 'check-icon'
   | 'cancel-icon'
-  | 'calendar';
+  | 'calendar'
+  | 'remind-logo';
 
 export default function Icon({
   width,
@@ -77,5 +79,7 @@ export default function Icon({
       return <CancelIcon width={width} height={height} color={color} />;
     case 'calendar':
       return <Calendar width={width} height={height} color={color} />;
+    case 'remind-logo':
+      return <Remindlogo width={width} height={height} color={color} />;
   }
 }
