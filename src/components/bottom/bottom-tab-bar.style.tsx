@@ -1,24 +1,25 @@
 import styled from '@emotion/native';
 import { EdgeInsets } from 'react-native-safe-area-context';
 import palette from '../../assets/styles/theme';
-import { rsFont, rsHeight, rsWidth } from '../../utils/responsive-size';
+import { rsFont, rsHeight } from '../../utils/responsive-size';
 
 export const BottomTabBarCotainer = styled.View<{ insets: EdgeInsets }>`
-  display: flex;
+  width: 100%;
   height: ${rsHeight * 90 + 'px'};
-  padding-horizontal: ${rsWidth * 60 + 'px'};
-  padding-vertical: ${rsHeight * 16 + 'px'};
+  padding-bottom: ${rsHeight * 10 + 'px'};
   flex-direction: row;
   justify-content: space-between;
-  align-items: top;
+  align-items: center;
   border-color: #ddd;
 `;
 
 export const TabButtonContainer = styled.TouchableOpacity`
-  width: auto;
-  height: ${rsHeight * 50 + 'px'};
+  flex: 1;
+  height: 100%;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
+  gap: ${rsHeight * 8 + 'px'};
+  align-items: center;
 `;
 
 export const TabLabel = styled.Text<{ isFocused: boolean }>`
