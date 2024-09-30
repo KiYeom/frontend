@@ -2,7 +2,7 @@ import styled from '@emotion/native';
 import palette from '../../../assets/styles/theme';
 import { ratio, rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 
-export const HomeBtn = styled.TouchableOpacity<{ status: string; isPressed: boolean }>`
+export const HomeBtn = styled.TouchableOpacity<{ status: string }>`
   height: ${rsHeight * 279 + 'px'};
   background-color: ${(props) =>
     props.status === 'home' ? palette.primary[50] : palette.neutral[50]};

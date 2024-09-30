@@ -49,7 +49,7 @@ const PeriodFlowChart = ({ emotionsData, setEmotionsData, startDate, endDate }) 
         style={css`
           padding-horizontal: ${rsWidth * 20 + 'px'};
         `}>
-        <Title>감정 변화 추이</Title>
+        <Title>주인님의 감정 변화</Title>
         <View
           style={css`
             flex-direction: row;

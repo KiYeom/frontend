@@ -1,3 +1,4 @@
+import * as amplitude from '@amplitude/analytics-react-native';
 import { css } from '@emotion/native';
 import { useNavigation } from '@react-navigation/native';
 import dayjs from 'dayjs';
@@ -111,8 +112,9 @@ const PeriodStatisticPage: React.FC<any> = () => {
             navigation={navigation}
             onPress={() => {
               setOpenModal(true);
+              amplitude.track('일일 리포트 버튼 클릭');
             }}></ReportType>
-          <PageName type="기간 리포트" />
+          <PageName type={`쿠키가 생각했던${'\n'}주인님의 모습이에요`} />
           <DateLine
             value={
               range.startDate && range.endDate
