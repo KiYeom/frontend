@@ -1,3 +1,4 @@
+import * as amplitude from '@amplitude/analytics-react-native';
 import React, { useEffect } from 'react';
 import { Platform, View } from 'react-native';
 import palette from '../../../assets/styles/theme';
@@ -35,9 +36,10 @@ const HomeChatBtn = ({ navigation }) => {
   return (
     <HomeBtn
       os={Platform.OS}
-      onPress={() =>
-        navigation.navigate(RootStackName.HomeStackNavigator, { screen: HomeStackName.Chat })
-      }
+      onPress={() => {
+        navigation.navigate(RootStackName.HomeStackNavigator, { screen: HomeStackName.Chat });
+        amplitude.track('채팅 버튼 클릭');
+      }}
       status={'home'}>
       <HomeBtnTitle>
         {name}님,{'\n'}

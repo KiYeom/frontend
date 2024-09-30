@@ -15,7 +15,7 @@ const PeriodKeywordArea: React.FC<any> = (props: any) => {
         gap: ${12 * rsHeight + 'px'};
         padding-horizontal: ${rsWidth * 20 + 'px'};
       `}>
-      <Title>나의 기간 토픽</Title>
+      <Title>쿠키와 나눈 이야기</Title>
       <View
         style={css`
           display: flex;

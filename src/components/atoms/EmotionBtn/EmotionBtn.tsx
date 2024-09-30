@@ -1,3 +1,4 @@
+import * as amplitude from '@amplitude/analytics-react-native';
 import { css } from '@emotion/native';
 import React, { useEffect, useState } from 'react';
 import { Platform, View } from 'react-native';
@@ -76,6 +77,7 @@ const EmotionBtn = ({ navigation }) => {
         navigation.navigate(RootStackName.HomeStackNavigator, {
           screen: HomeStackName.SmallEmotionChart,
         });
+        amplitude.track('감정 입력 버튼 클릭');
       }}
       status={'emotion'}>
       <>

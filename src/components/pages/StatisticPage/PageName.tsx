@@ -1,6 +1,6 @@
 import { css } from '@emotion/native';
 import { Text } from 'react-native';
-import { rsFont } from '../../../utils/responsive-size';
+import { rsFont, rsWidth } from '../../../utils/responsive-size';
 
 type TitleProps = {
   type: string;
@@ -12,7 +12,8 @@ const PageName = (props: TitleProps) => {
       style={css`
         font-size: ${rsFont * 24 + 'px'};
         font-family: Pretendard-SemiBold;
-        text-align: center;
+        text-align: left;
+        padding-left: ${rsWidth * 24 + 'px'};
       `}>
       {type}
     </Text>

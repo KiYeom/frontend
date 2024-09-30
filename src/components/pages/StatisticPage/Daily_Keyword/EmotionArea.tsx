@@ -9,7 +9,7 @@ const EmotionArea: React.FC<any> = (props: any) => {
   const { isRecordKeywordList, isNullRecordKeywordList } = props;
   return (
     <Container>
-      <Title>기록한 감정</Title>
+      <Title>주인님의 감정 일기</Title>
       {isNullRecordKeywordList ? (
         <Empty type="감정기록"></Empty>
       ) : (

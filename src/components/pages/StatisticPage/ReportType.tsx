@@ -21,7 +21,6 @@ const ReportType = (props: DateProps) => {
         flex: 1;
         justify-content: space-between;
         height: auto;
-        //margin-bottom: ${rsHeight * 16 + 'px'};
         padding-horizontal: ${rsWidth * 20 + 'px'};
       `}>
       <TouchableDateLine
@@ -31,13 +30,6 @@ const ReportType = (props: DateProps) => {
           align-items: center;
         `}>
         <Icon name="date-icon" width={rsWidth * 20} height={rsHeight * 22.86} color="black" />
-        {/*<Text
-          style={css`
-            font-family: Pretendard-SemiBold;
-            font-size: ${rsFont * 28 + 'px'};
-          `}>
-          {type === '기간리포트' ? '일일리포트' : '기간리포트'}
-        </Text>*/}
       </TouchableDateLine>
       <TouchableOpacity
         style={css`
