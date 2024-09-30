@@ -83,13 +83,13 @@ const EmotionBtn = ({ navigation }) => {
             ? `${name}님,${'\n'}오늘의 마음을 확인해보세요!`
             : `${name}님,${'\n'}오늘의 마음은 어떤가요?`}
         </HomeBtnTitle>
-        <HomeBtnDescription>
+        <HomeBtnDescription color={palette.neutral[500]}>
           <HomeBtnText status={'mood'}>{!isNULL ? `감정 수정하기` : `감정 기록하기`}</HomeBtnText>
           <Icon
             name="arrow-right"
             width={rsWidth * 6 + 'px'}
             height={rsHeight * 12 + 'px'}
-            color={palette.neutral[500]}
+            color={palette.neutral[50]}
           />
         </HomeBtnDescription>
         <View

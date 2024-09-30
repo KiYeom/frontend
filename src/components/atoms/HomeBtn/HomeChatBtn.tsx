@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { View } from 'react-native';
 import palette from '../../../assets/styles/theme';
 import { HomeStackName, RootStackName } from '../../../constants/Constants';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
@@ -34,17 +35,17 @@ const HomeChatBtn = ({ navigation }) => {
       <HomeBtnTitle>
         {name}님,{'\n'}오늘은 어떤 하루를 보내셨나요?
       </HomeBtnTitle>
-
-      <HomeBtnDescription>
-        <HomeBtnText status={'home'}>쿠키와 대화하러 가기</HomeBtnText>
-        <Icon
-          name="arrow-right"
-          width={rsWidth * 6 + 'px'}
-          height={rsHeight * 12 + 'px'}
-          color={palette.primary[500]}
-        />
-      </HomeBtnDescription>
-
+      <View>
+        <HomeBtnDescription color={palette.primary[400]}>
+          <HomeBtnText status={'home'}>쿠키와 대화하러 가기</HomeBtnText>
+          <Icon
+            name="arrow-right"
+            width={rsWidth * 6 + 'px'}
+            height={rsHeight * 12 + 'px'}
+            color={palette.primary[50]}
+          />
+        </HomeBtnDescription>
+      </View>
       <CookieImage
         style={{
           resizeMode: 'contain',
