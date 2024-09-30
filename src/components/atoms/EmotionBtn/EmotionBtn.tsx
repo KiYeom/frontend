@@ -1,6 +1,6 @@
 import { css } from '@emotion/native';
 import React, { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 import { todayEmotionCheck } from '../../../apis/analyze';
 import palette from '../../../assets/styles/theme';
@@ -71,6 +71,7 @@ const EmotionBtn = ({ navigation }) => {
 
   return (
     <HomeBtn
+      os={Platform.OS}
       onPress={() => {
         navigation.navigate(RootStackName.HomeStackNavigator, {
           screen: HomeStackName.SmallEmotionChart,

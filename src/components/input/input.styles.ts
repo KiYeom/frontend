@@ -49,11 +49,10 @@ export const WithMessage = styled.Text<{
 
 export const IconContainer = styled.TouchableOpacity`
   position: absolute;
-  right: ${rsWidth * 4 + 'px'};
-  top: ${rsHeight * 4 + 'px'};
-  width: ${rsWidth * 44 + 'px'};
-  height: ${rsHeight * 44 + 'px'};
+  right: ${rsWidth * 0 + 'px'};
+  top: ${rsHeight * 0 + 'px'};
+  width: ${rsWidth * 52 + 'px'};
+  height: ${rsHeight * 52 + 'px'};
   justify-content: center;
   align-items: center;
-  background-color: ${palette.neutral[50]};
 `;

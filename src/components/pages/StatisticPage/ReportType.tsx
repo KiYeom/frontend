@@ -23,7 +23,6 @@ const ReportType = (props: DateProps) => {
         height: auto;
         //margin-bottom: ${rsHeight * 16 + 'px'};
         padding-horizontal: ${rsWidth * 20 + 'px'};
-        //background-color: pink;
       `}>
       <TouchableDateLine
         onPress={onPress}
