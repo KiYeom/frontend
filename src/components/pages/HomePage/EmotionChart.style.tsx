@@ -48,12 +48,12 @@ export const LargeEmotionComponent = styled.TouchableOpacity<{ color: string }>`
 //전체 화면
 export const Container = styled.View`
   flex: 1;
+  //background-color: pink;
 `;
 
 //기록한 감정
 export const RecordedEmotion = styled.ScrollView`
   flex-direction: row;
-  background-color: purple;
 `;
 
 //감정 설명 창
@@ -61,4 +61,5 @@ export const EmotionDesc = styled.Text`
   font-size: ${rsFont * 18 + 'px'};
   font-family: Pretendard-Medium;
   text-align: center;
+  color: ${palette.neutral[400]};
 `;

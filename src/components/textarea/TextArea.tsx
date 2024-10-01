@@ -5,9 +5,10 @@ type TextAreaProps = {
   onChange?: (text: string) => void;
   placeholder?: string;
   multiline?: boolean;
+  style?: object;
 };
 const TextArea = (props: TextAreaProps) => {
-  const { placeholder, value, onChange = () => {} } = props;
+  const { placeholder, value, onChange = () => {}, style } = props;
   return (
     <TextAreaContainer>
       <TextAreaField
