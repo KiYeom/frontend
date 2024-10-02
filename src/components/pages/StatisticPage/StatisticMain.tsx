@@ -12,6 +12,7 @@ import DateLine from '../../atoms/DateLine/DateLine';
 import SingleDatePickerModal from '../../rangeCal/single-date-picker-modal';
 import DailyEmotionClassification from './Daily_EmotionClassification/DailyEmotionClassification';
 import EmotionArea from './Daily_Keyword/EmotionArea';
+import EmotionDariy from './Daily_Keyword/EmotionDairy';
 import KeywordArea from './Daily_Keyword/KeywordArea';
 import PageName from './PageName';
 import ReportType from './ReportType';
@@ -68,6 +69,7 @@ const StatisticMain: React.FC<any> = () => {
   const [isRecordKeywordList, setIsRecordKeywordList] = useState<TEmotionCheck[]>([]);
   const [isNullRecordKeywordList, setIsNullRecordKeywordList] = useState(false);
   const [summaryList, setSummaryList] = useState<string[]>([]);
+  const [todayFeeling, setTodayFeeling] = useState<string>('');
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
 
@@ -79,8 +81,7 @@ const StatisticMain: React.FC<any> = () => {
   useEffect(() => {
     const fetchData = async () => {
       const dailyStatistics = await dailyAnalyze(getApiDateString(date ?? getServerYestoday()));
-      //console.log('dailyStatistics', dailyStatistics);
-      //console.log('dailyStatistics ----', dailyStatistics?.record.Keywords);
+      console.log('dailyStatistics', dailyStatistics);
       if (!dailyStatistics) {
         alert('네트워크 연결이 불안정합니다. 잠시 후 다시 시도해주세요.');
         return;
@@ -91,6 +92,7 @@ const StatisticMain: React.FC<any> = () => {
       setSummaryList(dailyStatistics.summary.keywords);
       setIsRecordKeywordList(dailyStatistics.record.Keywords);
       setIsNullRecordKeywordList(dailyStatistics.record.isNULL);
+      setTodayFeeling(dailyStatistics.record.todayFeeling);
     };
     fetchData();
   }, [date]);
@@ -129,6 +131,7 @@ const StatisticMain: React.FC<any> = () => {
               isRecordKeywordList={isRecordKeywordList}
               isNullRecordKeywordList={isNullRecordKeywordList}
             />
+            <EmotionDariy todayFeeling={todayFeeling} />
             <KeywordArea isSummaryList={isSummaryList} summaryList={summaryList} />
           </Container>
         </View>

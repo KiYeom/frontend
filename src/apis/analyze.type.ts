@@ -8,6 +8,7 @@ export type TDailyAnalyze = {
 export type DailyRecordDto = {
   isNULL: boolean;
   Keywords: EmotionKeyword[];
+  todayFeeling: string | null;
 };
 
 export type EmotionKeyword = {
