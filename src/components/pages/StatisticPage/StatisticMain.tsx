@@ -12,7 +12,7 @@ import DateLine from '../../atoms/DateLine/DateLine';
 import SingleDatePickerModal from '../../rangeCal/single-date-picker-modal';
 import DailyEmotionClassification from './Daily_EmotionClassification/DailyEmotionClassification';
 import EmotionArea from './Daily_Keyword/EmotionArea';
-import EmotionDariy from './Daily_Keyword/EmotionDairy';
+import EmotionDairy from './Daily_Keyword/EmotionDairy';
 import KeywordArea from './Daily_Keyword/KeywordArea';
 import PageName from './PageName';
 import ReportType from './ReportType';
@@ -131,7 +131,7 @@ const StatisticMain: React.FC<any> = () => {
               isRecordKeywordList={isRecordKeywordList}
               isNullRecordKeywordList={isNullRecordKeywordList}
             />
-            <EmotionDariy todayFeeling={todayFeeling} />
+            <EmotionDairy todayFeeling={todayFeeling} />
             <KeywordArea isSummaryList={isSummaryList} summaryList={summaryList} />
           </Container>
         </View>

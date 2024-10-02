@@ -4,7 +4,7 @@ import { ScrollView } from 'react-native';
 import Toast from 'react-native-root-toast';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Carousel, Text, View } from 'react-native-ui-lib';
-import { todayEmotion } from '../../../apis/analyze';
+import { dailyAnalyze, todayEmotion } from '../../../apis/analyze';
 import palette from '../../../assets/styles/theme';
 import { emotionData, emotions, TabScreenName } from '../../../constants/Constants';
 import useRecordedEmotionStore from '../../../utils/emotion-recorded';
@@ -16,8 +16,19 @@ import EmotionChip from '../../atoms/EmotionChip/EmotionChip';
 import Button from '../../button/button';
 import Input from '../../input/input';
 import { Container, EmotionDesc, SmallTitle, Title } from './EmotionChart.style';
+const getApiDateString = (date: Date): string => {
+  return (
+    date?.getFullYear() +
+    '-' +
+    String(date.getMonth() + 1).padStart(2, '0') +
+    '-' +
+    String(date.getDate()).padStart(2, '0')
+  );
+};
+
 const SmallEmotionChart = ({ navigation, route }) => {
   const { page } = route.params || 0;
+  const [date, setDate] = useState<Date>(new Date());
   //console.log('Selected page:', page);
   //console.log(page);
   const insets = useSafeAreaInsets();
@@ -31,6 +42,14 @@ const SmallEmotionChart = ({ navigation, route }) => {
 
   useEffect(() => {
     setSelectedEmotions(recordedEmotions);
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await dailyAnalyze(getApiDateString(date));
+      setText(data?.record.todayFeeling);
+    };
+    fetchData();
   }, []);
 
   const handleEmotionListClick = async (emotion) => {
