@@ -196,7 +196,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
             disabled={selectedEmotions.length < 3 || selectedEmotions.length > 5}
             onPress={async () => {
               setRecordedEmotions(selectedEmotions); // 상태 업데이트
-              await todayEmotion(selectedEmotions); //
+              await todayEmotion(selectedEmotions, text); //
               navigation.navigate(TabScreenName.Home);
             }}
           />
