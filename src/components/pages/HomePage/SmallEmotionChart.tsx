@@ -98,8 +98,8 @@ const SmallEmotionChart = ({ navigation, route }) => {
             ref={carouselRef}
             onChangePage={onChangePage}
             pageWidth={getWidth()} //캐러셀의 너비
-            containerPaddingVertical={10 * rsHeight} //캐러셀 전체 화면이랑 요소 사이 마진값 (vertical)
-            containerMarginHorizontal={12 * rsWidth} //캐러셀 전체 화면이랑 요소 사이에 마진값
+            //containerPaddingVertical={10 * rsHeight} //캐러셀 전체 화면이랑 요소 사이 마진값 (vertical)
+            //containerMarginHorizontal={12 * rsWidth} //캐러셀 전체 화면이랑 요소 사이에 마진값
             initialPage={2} //앱이 처음 실행되고 보여줄 초기 페이지
             containerStyle={{ flexGrow: 1 }} //캐러셀 전체 스타일링
             pageControlProps={{
@@ -136,7 +136,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
             padding-vertical: ${rsHeight * 10 + 'px'};
             padding-horizontal: ${rsWidth * 24 + 'px'};
             flex-grow: 0;
-            gap: ${rsHeight * 8 + 'px'};
+            gap: ${rsHeight * 10 + 'px'};
             //background-color: blue;
           `}>
           <SmallTitle>기록한 감정 ({selectedEmotions.length}/5)</SmallTitle>
@@ -156,6 +156,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
             contentContainerStyle={{
               flexGrow: 1,
               flexDirection: 'row',
+              //backgroundColor: 'pink',
             }}>
             {selectedEmotions.length > 0 ? (
               selectedEmotions.map((emotion, index) => (
@@ -186,9 +187,10 @@ const SmallEmotionChart = ({ navigation, route }) => {
         </View>
         <View
           style={css`
+            padding-top: ${rsHeight * 10 + 'px'};
             padding-bottom: ${rsHeight * 40 + 'px'};
             padding-horizontal: ${rsWidth * 24 + 'px'};
-            gap: ${rsHeight * 8 + 'px'};
+            //background-color: red;
           `}>
           <Button
             title={selectedEmotions.length < 3 ? `3개 이상 감정을 골라주세요` : `감정 기록하기`}
