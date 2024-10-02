@@ -1,11 +1,12 @@
 import { css } from '@emotion/native';
 import React from 'react';
 import { Text, View } from 'react-native';
+import palette from '../../../../assets/styles/theme';
 import { rsHeight } from '../../../../utils/responsive-size';
 import { Title } from '../StatisticMain.style';
 import { Container } from './Keyword.style';
 
-const EmotionDariy: React.FC<any> = (props: any) => {
+const EmotionDairy: React.FC<any> = (props: any) => {
   const { todayFeeling } = props;
   return (
     <Container>
@@ -16,7 +17,10 @@ const EmotionDariy: React.FC<any> = (props: any) => {
           padding: ${rsHeight * 18 + 'px'};
           border-radius: 10px;
         `}>
-        <Text style={css``}>
+        <Text
+          style={css`
+            color: ${palette.neutral[500]};
+          `}>
           {todayFeeling === null
             ? '작성하신 일기가 없어요, 멍!🐶작성하신 일기가 없어요, 멍!🐶작성하신 일기가 없어요, 멍!🐶작성하신 일기가 없어요, 멍!🐶작성하신 일기가 없어요, 멍!🐶'
             : todayFeeling}
@@ -25,4 +29,4 @@ const EmotionDariy: React.FC<any> = (props: any) => {
     </Container>
   );
 };
-export default EmotionDariy;
+export default EmotionDairy;
