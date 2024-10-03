@@ -1,5 +1,4 @@
 import styled from '@emotion/native';
-import { EdgeInsets } from 'react-native-safe-area-context';
 import palette from '../../../assets/styles/theme';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 
@@ -10,17 +9,17 @@ export const SettingContainer = styled.ScrollView`
   padding-bottom: ${rsHeight * 40 + 'px'};
 `;
 
-export const UserInfoContainer = styled.TouchableOpacity<{ insets: EdgeInsets }>`
+export const UserInfoContainer = styled.TouchableOpacity`
   width: 100%;
   height: auto;
   flex-direction: row;
   align-items: center;
   justify-content: start;
   gap: ${rsWidth * 10 + 'px'};
-  padding-top: ${({ insets }) => insets.top + rsHeight * 32 + 'px'};
-  padding-bottom: ${rsHeight * 32 + 'px'};
-  padding-left: ${({ insets }) => insets.left + rsWidth * 20 + 'px'};
-  padding-right: ${({ insets }) => insets.right + rsWidth * 20 + 'px'};
+  padding-top: ${rsHeight * 28 + 'px'};
+  padding-bottom: ${rsHeight * 28 + 'px'};
+  padding-left: ${rsWidth * 20 + 'px'};
+  padding-right: ${rsWidth * 20 + 'px'};
 `;
 
 export const ProfileImage = styled.Image`
