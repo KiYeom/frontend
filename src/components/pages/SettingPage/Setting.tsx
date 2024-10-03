@@ -1,7 +1,7 @@
 import * as Linking from 'expo-linking';
 import * as Notifications from 'expo-notifications';
 import React, { useEffect } from 'react';
-import { Alert } from 'react-native';
+import { Alert, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getLatestVersion, logout } from '../../../apis/setting';
 import palette from '../../../assets/styles/theme';
@@ -100,91 +100,96 @@ const Setting: React.FC<any> = ({ navigation }) => {
   }, [navigation]);
 
   return (
-    <SettingContainer>
-      <UserInfoContainer
-        insets={insets}
-        activeOpacity={1}
-        onPress={() =>
-          navigation.navigate(RootStackName.SettingStackNavigator, {
-            screen: SettingStackName.EditUserInfo,
-          })
-        }>
-        <ProfileImage source={require('../../../assets/images/setting_default_profile.png')} />
-        <UserNickname>{getUserNickname()}</UserNickname>
-        <Icon
-          name="arrow-right"
-          width={rsWidth * 9}
-          height={rsHeight * 18}
-          color={palette.neutral[300]}
-        />
-      </UserInfoContainer>
-      <AppSettingContainer>
-        <MenuRow
-          text="알림설정"
+    <View
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+      }}>
+      <SettingContainer>
+        <UserInfoContainer
+          activeOpacity={1}
           onPress={() =>
             navigation.navigate(RootStackName.SettingStackNavigator, {
-              screen: SettingStackName.UserNotifications,
+              screen: SettingStackName.EditUserInfo,
             })
-          }
-        />
-        <MenuRow
-          text="문의하기"
-          onPress={() =>
-            // navigation.navigate(RootStackName.SettingStackNavigator, {
-            //   screen: SettingStackName.ChannelTalk,
-            // })
-            Linking.openURL('https://j2wk7.channel.io/home')
-          }
-        />
-        <MenuRow
-          text="서비스 이용약관"
-          onPress={
-            () =>
-              Linking.openURL(
-                'https://autumn-flier-d18.notion.site/reMIND-167ef1180e2d42b09d019e6d187fccfd',
-              )
-            // navigation.navigate(RootStackName.SettingStackNavigator, {
-            //   screen: SettingStackName.PrivacyPolicy,
-            // })
-          }
-        />
-        <MenuRow
-          text="개인정보 처리방침"
-          onPress={
-            () =>
-              Linking.openURL(
-                'https://autumn-flier-d18.notion.site/reMIND-167ef1180e2d42b09d019e6d187fccfd',
-              )
-            // navigation.navigate(RootStackName.SettingStackNavigator, {
-            //   screen: SettingStackName.PrivacyPolicy,
-            // })
-          }
-        />
-        <MenuRow
-          text="오픈소스 라이센스"
-          onPress={() =>
-            navigation.navigate(RootStackName.SettingStackNavigator, {
-              screen: SettingStackName.LicensePage,
-            })
-          }
-        />
-        <MenuRow text="앱 정보" showVersion={!loading} isLatest={isLatest} />
-      </AppSettingContainer>
-      <UserSettingContainer>
-        <SubjectTextContainer>
-          <SubjectText>계정 설정</SubjectText>
-        </SubjectTextContainer>
-        <MenuRow text="로그아옷" onPress={() => logoutAlert()} />
-        <MenuRow
-          text="회원탈퇴"
-          onPress={() =>
-            navigation.navigate(RootStackName.SettingStackNavigator, {
-              screen: SettingStackName.DeactivateAlert,
-            })
-          }
-        />
-      </UserSettingContainer>
-    </SettingContainer>
+          }>
+          <ProfileImage source={require('../../../assets/images/setting_default_profile.png')} />
+          <UserNickname>{getUserNickname()}</UserNickname>
+          <Icon
+            name="arrow-right"
+            width={rsWidth * 9}
+            height={rsHeight * 18}
+            color={palette.neutral[300]}
+          />
+        </UserInfoContainer>
+        <AppSettingContainer>
+          <MenuRow
+            text="알림설정"
+            onPress={() =>
+              navigation.navigate(RootStackName.SettingStackNavigator, {
+                screen: SettingStackName.UserNotifications,
+              })
+            }
+          />
+          <MenuRow
+            text="문의하기"
+            onPress={() =>
+              // navigation.navigate(RootStackName.SettingStackNavigator, {
+              //   screen: SettingStackName.ChannelTalk,
+              // })
+              Linking.openURL('https://j2wk7.channel.io/home')
+            }
+          />
+          <MenuRow
+            text="서비스 이용약관"
+            onPress={
+              () =>
+                Linking.openURL(
+                  'https://autumn-flier-d18.notion.site/reMIND-167ef1180e2d42b09d019e6d187fccfd',
+                )
+              // navigation.navigate(RootStackName.SettingStackNavigator, {
+              //   screen: SettingStackName.PrivacyPolicy,
+              // })
+            }
+          />
+          <MenuRow
+            text="개인정보 처리방침"
+            onPress={
+              () =>
+                Linking.openURL(
+                  'https://autumn-flier-d18.notion.site/reMIND-167ef1180e2d42b09d019e6d187fccfd',
+                )
+              // navigation.navigate(RootStackName.SettingStackNavigator, {
+              //   screen: SettingStackName.PrivacyPolicy,
+              // })
+            }
+          />
+          <MenuRow
+            text="오픈소스 라이센스"
+            onPress={() =>
+              navigation.navigate(RootStackName.SettingStackNavigator, {
+                screen: SettingStackName.LicensePage,
+              })
+            }
+          />
+          <MenuRow text="앱 정보" showVersion={!loading} isLatest={isLatest} />
+        </AppSettingContainer>
+        <UserSettingContainer>
+          <SubjectTextContainer>
+            <SubjectText>계정 설정</SubjectText>
+          </SubjectTextContainer>
+          <MenuRow text="로그아옷" onPress={() => logoutAlert()} />
+          <MenuRow
+            text="회원탈퇴"
+            onPress={() =>
+              navigation.navigate(RootStackName.SettingStackNavigator, {
+                screen: SettingStackName.DeactivateAlert,
+              })
+            }
+          />
+        </UserSettingContainer>
+      </SettingContainer>
+    </View>
   );
 };
 

@@ -21,7 +21,6 @@ const Header = ({ navigation }) => {
       </TouchableOpacity>*/}
       <TouchableOpacity
         style={css`
-          //background-color: red;
           height: ${rsHeight * 30 + 'px'};
           width: ${rsWidth * 143 + 'px'};
           gap: ${rsWidth * 8 + 'px'};

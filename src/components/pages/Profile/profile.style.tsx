@@ -5,8 +5,8 @@ export const Container = styled.View`
   flex: 1;
   //background-color: yellow;
   padding-horizontal: ${rsWidth * 20 + 'px'};
-  padding-vertical: ${rsHeight * 20 + 'px'};
-  gap: ${rsHeight * 15 + 'px'};
+  padding-bottom: ${rsHeight * 20 + 'px'};
+  gap: ${rsHeight * 12 + 'px'};
 `;
 export const ProfileTitleContainer = styled.View`
   width: ${rsWidth * 117 + 'px'};
