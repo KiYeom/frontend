@@ -23,44 +23,46 @@ const INFO = [
   { 인스타그램: '@reMIND_cookie' },
 ];
 
+const defaultProfileCarousel = [
+  {
+    page: 1,
+    image: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/story/story1.png',
+    url: 'https://www.instagram.com/remind_cookie/',
+  },
+  {
+    page: 2,
+    image: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/story/story2.png',
+    url: 'https://www.instagram.com/remind_cookie/',
+  },
+  {
+    page: 3,
+    image: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/story/story3.png',
+    url: 'https://www.instagram.com/remind_cookie/',
+  },
+  {
+    page: 4,
+    image: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/story/story4.png',
+    url: 'https://www.instagram.com/remind_cookie/',
+  },
+  {
+    page: 5,
+    image: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/story/story5.png',
+    url: 'https://www.instagram.com/remind_cookie/',
+  },
+  {
+    page: 6,
+    image: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/story/story6.png',
+    url: 'https://www.instagram.com/remind_cookie/',
+  },
+  {
+    page: 7,
+    image: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/story/story7.png',
+    url: 'https://www.instagram.com/remind_cookie/',
+  },
+];
+
 const Profile = () => {
-  const [carousels, setCarousels] = React.useState<TCarousel[]>([
-    {
-      page: 1,
-      image: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/story/story1.png',
-      url: 'https://www.instagram.com/remind_cookie/',
-    },
-    {
-      page: 2,
-      image: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/story/story2.png',
-      url: 'https://www.instagram.com/remind_cookie/',
-    },
-    {
-      page: 3,
-      image: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/story/story3.png',
-      url: 'https://www.instagram.com/remind_cookie/',
-    },
-    {
-      page: 4,
-      image: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/story/story4.png',
-      url: 'https://www.instagram.com/remind_cookie/',
-    },
-    {
-      page: 5,
-      image: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/story/story5.png',
-      url: 'https://www.instagram.com/remind_cookie/',
-    },
-    {
-      page: 6,
-      image: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/story/story6.png',
-      url: 'https://www.instagram.com/remind_cookie/',
-    },
-    {
-      page: 7,
-      image: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/story/story7.png',
-      url: 'https://www.instagram.com/remind_cookie/',
-    },
-  ]);
+  const [carousels, setCarousels] = React.useState<TCarousel[]>(defaultProfileCarousel);
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
