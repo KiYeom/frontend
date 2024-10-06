@@ -1,5 +1,24 @@
-import { TDailyAnalyze, TEmotionCheck, TPeriodChart, TPeriodKeywords } from './analyze.type';
+import {
+  TDailyAnalyze,
+  TDailyAnalyzeStatus,
+  TEmotionCheck,
+  TPeriodChart,
+  TPeriodKeywords,
+} from './analyze.type';
 import { instance } from './interceptor';
+
+//INFO : 일일 분석
+export const dailyAnalyzeStatus = async (
+  year: number,
+): Promise<TDailyAnalyzeStatus | undefined> => {
+  try {
+    const res = await instance.get('/v1/analyze/daily-status', { params: { year } });
+    return res.data; //record, summary, classification 리턴
+  } catch (error) {
+    console.log('[ERROR] daily analyze', error);
+    return;
+  }
+};
 
 //INFO : 일일 분석
 export const dailyAnalyze = async (today: string): Promise<TDailyAnalyze | undefined> => {

@@ -1,5 +1,7 @@
+import { css } from '@emotion/native';
 import React from 'react';
 import { ScrollView } from 'react-native';
+import { rsWidth } from '../../../../utils/responsive-size';
 import EmotionCard from '../../../atoms/EmotionCard/EmotionCard';
 import Empty from '../Empty';
 import { Title } from '../StatisticMain.style';
@@ -16,13 +18,14 @@ const EmotionArea: React.FC<any> = (props: any) => {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          style={{
-            flexGrow: 0,
-          }}
-          contentContainerStyle={{
-            flexGrow: 1,
-            flexDirection: 'row',
-          }}>
+          style={css`
+            flex-grow: 1;
+          `}
+          contentContainerStyle={css`
+            flex-grow: 1;
+            flex-direction: row;
+            gap: ${rsWidth * 8 + 'px'};
+          `}>
           {isRecordKeywordList.map((emotion, index) => (
             <EmotionCard key={index} emotion={emotion} onPress={() => {}} status={'default-view'} />
           ))}

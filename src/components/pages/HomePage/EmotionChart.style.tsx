@@ -4,7 +4,7 @@ import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 
 //제목
 export const Title = styled.Text`
-  font-family: Pretendard-Semibold;
+  font-family: Pretendard-SemiBold;
   font-size: ${rsFont * 24 + 'px'};
   color: ${palette.neutral[500]};
   text-align: center;
@@ -12,7 +12,7 @@ export const Title = styled.Text`
 
 //소제목
 export const SmallTitle = styled.Text`
-  font-family: Pretendard-Semibold;
+  font-family: Pretendard-SemiBold;
   font-size: ${rsFont * 20 + 'px'};
   color: ${palette.neutral[500]};
   text-align: left;
@@ -20,7 +20,7 @@ export const SmallTitle = styled.Text`
 
 //아래 설명 글
 export const Desc = styled.Text`
-  font-family: Pretendard-Semibold;
+  font-family: Pretendard-SemiBold;
   font-size: ${rsFont * 24 + 'px'};
   color: ${palette.neutral[500]};
   text-align: center;

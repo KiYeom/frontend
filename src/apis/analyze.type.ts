@@ -1,3 +1,7 @@
+export type TDailyAnalyzeStatus = {
+  dates: string[];
+};
+
 export type TDailyAnalyze = {
   date: string;
   record: DailyRecordDto;

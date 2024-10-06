@@ -82,7 +82,7 @@ export enum AuthStackName {
   InputProfile = 'InputProfile',
 }
 
-export const emotions = [
+export const emotionsByColumn = [
   [
     { group: 'angry', keyword: '격분한', desc: '몹시 분하고 화가 난' },
     { group: 'angry', keyword: '질투하는', desc: '남이 잘되는 것을 시기하는' },
