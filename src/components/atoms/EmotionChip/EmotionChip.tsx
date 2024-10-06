@@ -9,9 +9,8 @@ const EmotionChip = ({ group, keyword, onPress, isSelected }) => {
   return (
     <TouchableOpacity
       style={css`
-        display: flex;
         background-color: ${palette.neutral[100]};
-        height: ${45 * rsHeight + 'px'};
+        height: ${rsHeight * 45 + 'px'};
         flex-direction: row;
         align-items: center; /* 세로 중앙 정렬 */
         justify-content: center; /* 가로 중앙 정렬 */
@@ -30,7 +29,6 @@ const EmotionChip = ({ group, keyword, onPress, isSelected }) => {
           text-align: center;
           justify-content: center;
           align-self: center;
-          //background-color: gray;
           font-family: Pretendard-Regular;
           font-size: ${rsFont * 15 + 'px'};
         `}>

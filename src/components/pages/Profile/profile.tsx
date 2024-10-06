@@ -1,7 +1,7 @@
 import { css } from '@emotion/native';
 import { Image } from 'expo-image';
 import React, { useEffect } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { Linking, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Carousel, View } from 'react-native-ui-lib';
 import { getCarousel } from '../../../apis/carousel';
@@ -116,26 +116,34 @@ const Profile = () => {
               const key = Object.keys(item)[0]; // 객체의 첫 번째 키
               const value = item[key]; // 해당 키의 값
               return (
-                <View
-                  key={index}
-                  style={css`
-                    flex-direction: column;
-                    gap: ${rsHeight * 20 + 'px'};
-                    flex-direction: row;
-                    //background-color: pink;
-                  `}>
-                  <ProfileTitleContainer>
-                    <ProfileText color="white">{key}</ProfileText>
-                  </ProfileTitleContainer>
+                <TouchableOpacity
+                  activeOpacity={1}
+                  onPress={() => {
+                    if (key === '인스타그램') {
+                      Linking.openURL('https://www.instagram.com/remind_cookie/');
+                    }
+                  }}>
                   <View
+                    key={index}
                     style={css`
-                      flex: 1;
-                      //background-color: green;
-                      justify-content: center;
+                      flex-direction: column;
+                      gap: ${rsHeight * 20 + 'px'};
+                      flex-direction: row;
+                      //background-color: pink;
                     `}>
-                    <ProfileText color={palette.neutral[900]}>{value}</ProfileText>
+                    <ProfileTitleContainer>
+                      <ProfileText color="white">{key}</ProfileText>
+                    </ProfileTitleContainer>
+                    <View
+                      style={css`
+                        flex: 1;
+                        //background-color: green;
+                        justify-content: center;
+                      `}>
+                      <ProfileText color={palette.neutral[900]}>{value}</ProfileText>
+                    </View>
                   </View>
-                </View>
+                </TouchableOpacity>
               );
             })}
           </View>
