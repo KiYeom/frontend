@@ -22,7 +22,6 @@ const Header = ({ navigation }) => {
       <TouchableOpacity
         style={css`
           height: ${rsHeight * 30 + 'px'};
-          width: ${rsWidth * 143 + 'px'};
           gap: ${rsWidth * 8 + 'px'};
           flex-direction: row;
           justify-content: center;
