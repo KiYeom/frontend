@@ -40,6 +40,7 @@ export enum RootStackName {
   HomeStackNavigator = 'HomeStackNavigator',
   SettingStackNavigator = 'SettingStackNavigator',
   AuthStackNavigator = 'AuthStackNavigator',
+  DangerStackNavigator = 'DangerStackNavigator',
 }
 
 export enum TabScreenName {
@@ -69,6 +70,11 @@ export enum SettingStackName {
   DeactivateReason = 'DeactivateReason',
   LicensePage = 'LicensePage',
   LicenseDetailPage = 'LicenseDetailPage',
+}
+
+export enum DangerStackName {
+  Clinic = 'Clinic',
+  DangerAlert = 'DangerAlert',
 }
 
 export enum StatisticStackName {
