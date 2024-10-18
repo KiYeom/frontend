@@ -1,6 +1,5 @@
 import { css } from '@emotion/native';
 import { View } from 'react-native';
-import { rsWidth } from '../../../utils/responsive-size';
 import { DateLineText } from './DateLine.style';
 
 type DateProps = {
@@ -13,10 +12,8 @@ const DateLine = (props: DateProps) => {
       style={css`
         display: flex;
         flex: 1;
-        //align-items: flex-start;
         align-items: center;
         justify-content: center;
-        padding-horizontal: ${rsWidth * 20 + 'px'};
       `}>
       <DateLineText>{value}</DateLineText>
     </View>

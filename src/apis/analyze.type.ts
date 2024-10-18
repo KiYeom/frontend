@@ -58,6 +58,15 @@ export type TPeriodKeywords = {
   keywords: string[];
 };
 
+export type TPeriodRecordEmotions = {
+  records: TRecordEmotion[];
+};
+
+export type TRecordEmotion = {
+  date: string;
+  todayFeeling: string | null;
+  keywords: EmotionKeyword[];
+};
 export type TEmotions = {
   keywords: string[];
 };
