@@ -4,6 +4,7 @@ import ArrowDown from './svg/arrow-down';
 import ArrowLeft from './svg/arrow-left';
 import ArrowRight from './svg/arrow-right';
 import Calendar from './svg/calendar';
+import CallIcon from './svg/call';
 import CancelIcon from './svg/cancel-icon';
 import CheckIcon from './svg/check-icon';
 import CloverIcon from './svg/clover';
@@ -15,6 +16,7 @@ import Remindlogo from './svg/remind-logo';
 import SadEmotion from './svg/sad-emotion';
 import SettingIcon from './svg/setting-icon';
 import StatisticIcon from './svg/statistic-icon';
+import TextIcon from './svg/text';
 
 export type TIconName =
   | 'airplane'
@@ -33,7 +35,9 @@ export type TIconName =
   | 'check-icon'
   | 'cancel-icon'
   | 'calendar'
-  | 'remind-logo';
+  | 'remind-logo'
+  | 'call'
+  | 'text';
 
 export default function Icon({
   width,
@@ -81,5 +85,9 @@ export default function Icon({
       return <Calendar width={width} height={height} color={color} />;
     case 'remind-logo':
       return <Remindlogo width={width} height={height} color={color} />;
+    case 'call':
+      return <CallIcon width={width} height={height} color={color} />;
+    case 'text':
+      return <TextIcon width={width} height={height} color={color} />;
   }
 }
