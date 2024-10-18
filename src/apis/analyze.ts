@@ -4,6 +4,7 @@ import {
   TEmotionCheck,
   TPeriodChart,
   TPeriodKeywords,
+  TPeriodRecordEmotions,
 } from './analyze.type';
 import { instance } from './interceptor';
 
@@ -39,6 +40,22 @@ export const periodKeyword = async (
 ): Promise<TPeriodKeywords | undefined> => {
   try {
     const res = await instance.get('/v1/analyze/period/keywords', {
+      params: { start_date: start, end_date: end },
+    });
+    return res.data;
+  } catch (error) {
+    console.log('[ERROR] period keyword', error);
+    return undefined;
+  }
+};
+
+//기간 분석 : 기록한 감정들 조회
+export const periodRecordEmotions = async (
+  start: string,
+  end: string,
+): Promise<TPeriodRecordEmotions | undefined> => {
+  try {
+    const res = await instance.get('/v1/analyze/period/records', {
       params: { start_date: start, end_date: end },
     });
     return res.data;
