@@ -210,18 +210,32 @@ export const getAiResponse = () => {
   return storage.getString('AIRESPONSE');
 };
 
-// 위험 데이터 저장
-export const saveRiskData = (isChecked: boolean, timestamp: number) => {
+// INFO : 위험 신호
+// 위험 데이터 저장 {메세지 확인 여부, 타임스탬프}
+export const saveRiskData = (isChecked: boolean, timestamp: number): void => {
   const data = JSON.stringify({ isChecked, timestamp });
   storage.set(RISK, data);
 };
 
-// 위험 데이터 불러오기
-export const getRiskData = async () => {
+// 위험 데이터 삭제
+export const clearRiskData = (): void => {
+  storage.delete(RISK);
+};
+
+// 위험 데이터 불러오기 {메세지 확인 여부, 타임스탬프}
+export const getRiskData = (): { isCheked: boolean; timetamp: number } | null => {
   const data = storage.getString(RISK);
   console.log('data', data);
   if (data !== null) {
-    return JSON.parse(data);
+    //데이터가 존재한다면
+    const parseData = JSON.parse(data);
+    const currentTime = new Date().getTime();
+    if (currentTime - parseData.timestamp > 24 * 60 * 60 * 1000) {
+      //24시간이 경과한 경우
+      clearRiskData();
+      return null;
+    }
+    return parseData;
   }
   return null;
 };
