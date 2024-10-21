@@ -1,4 +1,5 @@
 import { MMKV } from 'react-native-mmkv';
+import { ONE_DAY_IN_MS } from '../constants/Constants';
 import { TGender, TNotice } from '../constants/types';
 
 export const storage = new MMKV();
@@ -222,20 +223,29 @@ export const clearRiskData = (): void => {
   storage.delete(RISK);
 };
 
-// 위험 데이터 불러오기 {메세지 확인 여부, 타임스탬프}
-export const getRiskData = (): { isCheked: boolean; timetamp: number } | null => {
-  const data = storage.getString(RISK);
-  console.log('data', data);
-  if (data !== null) {
-    //데이터가 존재한다면
-    const parseData = JSON.parse(data);
-    const currentTime = new Date().getTime();
-    if (currentTime - parseData.timestamp > 24 * 60 * 60 * 1000) {
-      //24시간이 경과한 경우
-      clearRiskData();
+// 데이터를 불러오는 함수
+//6시간 전 : 1729465494744
+//36시간 전 : 1729357537247
+// 데이터를 불러오는 함수
+export const getRiskData = (): { isChecked: boolean; timestamp: number } | null => {
+  const data = storage.getString(RISK); //isCheked, timestamp
+  if (data != null) {
+    try {
+      // 데이터가 존재한다면
+      const parsedData = JSON.parse(data);
+      parsedData.isChecked = Boolean(parsedData.isChecked); // 문자열 'true'를 boolean true로 변환
+      parsedData.timestamp = Number(parsedData.timestamp); // 문자열을 숫자로 변환
+      const currentTime = new Date().getTime();
+      if (currentTime - parsedData.timestamp > ONE_DAY_IN_MS) {
+        // 24시간이 경과한 경우 -> 로컬을 비운다
+        clearRiskData();
+        return null;
+      }
+      return parsedData;
+    } catch (error) {
+      console.error('Error parsing risk data:', error);
       return null;
     }
-    return parseData;
   }
   return null;
 };

@@ -20,7 +20,8 @@ const getRandomHello = (): string => {
   return helloTexts[randomIndex];
 };
 
-const HomeChatBtn = ({ navigation }) => {
+const HomeChatBtn = ({ navigation, riskScore }) => {
+  console.log('risk score' + riskScore);
   const [name, setName] = React.useState<string>('');
   const hello = getRandomHello();
 
@@ -40,13 +41,14 @@ const HomeChatBtn = ({ navigation }) => {
         navigation.navigate(RootStackName.HomeStackNavigator, { screen: HomeStackName.Chat });
         amplitude.track('채팅 버튼 클릭');
       }}
-      status={'home'}>
+      status={'home'}
+      riskScore={riskScore}>
       <HomeBtnTitle>
         {name}님,{'\n'}
         {hello}
       </HomeBtnTitle>
       <View>
-        <HomeBtnDescription color={palette.primary[400]}>
+        <HomeBtnDescription color={riskScore >= 85 ? palette.risk[200] : palette.primary[400]}>
           <HomeBtnText status={'home'}>쿠키와 대화하러 가기</HomeBtnText>
           <Icon
             name="arrow-right"

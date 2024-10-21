@@ -1,22 +1,12 @@
 import { css } from '@emotion/native';
 import { Text, TouchableOpacity } from 'react-native';
 import palette from '../../../assets/styles/theme';
-import { DangerStackName, RootStackName } from '../../../constants/Constants';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 import Icon from '../../icons/icons';
 import { Homeheader } from './Homeheader.style';
+
 const Header = ({ navigation, riskScore, icon, onIconPress }) => {
-  const handlePress = () => {
-    if (riskScore >= 85) {
-      navigation.navigate(RootStackName.DangerStackNavigator, {
-        screen: DangerStackName.DangerAlert,
-      });
-    } else {
-      navigation.navigate(RootStackName.DangerStackNavigator, {
-        screen: DangerStackName.Clinic,
-      });
-    }
-  };
+  console.log('=============', icon);
   return (
     <Homeheader>
       <Icon name="remind-logo" />
@@ -29,21 +19,23 @@ const Header = ({ navigation, riskScore, icon, onIconPress }) => {
           align-items: center;
         `}
         onPress={onIconPress}>
-        <Text
-          style={css`
-            color: ${palette.primary[500]};
-            font-size: ${rsFont * 20 + 'px'};
-            font-family: Pretendard-Bold;
-          `}>
-          {riskScore >= 85 ? '' : '상담기관 찾기'}
-        </Text>
-        {riskScore < 85 ? (
-          <Icon
-            name="arrow-right"
-            width={rsWidth * 6 + 'px'}
-            height={rsHeight * 12 + 'px'}
-            color={palette.primary[500]}
-          />
+        {icon == null ? (
+          <>
+            <Text
+              style={css`
+                color: ${palette.primary[500]};
+                font-size: ${rsFont * 20 + 'px'};
+                font-family: Pretendard-Bold;
+              `}>
+              상담 기관 찾기
+            </Text>
+            <Icon
+              name="arrow-right"
+              width={rsWidth * 6 + 'px'}
+              height={rsHeight * 12 + 'px'}
+              color={palette.primary[500]}
+            />
+          </>
         ) : (
           <Icon name={icon} />
         )}

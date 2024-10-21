@@ -6,16 +6,18 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Carousel } from 'react-native-ui-lib';
 import { getCarousel } from '../../../apis/carousel';
 import { TCarousel } from '../../../apis/carousel.types';
-import { DangerStackName, RootStackName } from '../../../constants/Constants';
+import {
+  DangerStackName,
+  ONE_DAY_IN_MS,
+  RISK_SCORE_THRESHOLD,
+  RootStackName,
+} from '../../../constants/Constants';
 import requestNotificationPermission from '../../../utils/NotificationToken';
 import { ratio, rsHeight, rsWidth } from '../../../utils/responsive-size';
-import { saveRiskData } from '../../../utils/storageUtils';
+import { getRiskData, saveRiskData } from '../../../utils/storageUtils';
 import EmotionBtn from '../../atoms/EmotionBtn/EmotionBtn';
 import HomeChatBtn from '../../atoms/HomeBtn/HomeChatBtn';
 import Header from './Homeheader';
-
-const RISK_SCORE_THRESHOLD = 85;
-const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
 
 const defaultHomeCarousel = [
   {
@@ -34,12 +36,11 @@ const defaultHomeCarousel = [
 
 const Home: React.FC<any> = ({ navigation }) => {
   const [riskScore, setRiskScore] = React.useState<number | null>(null);
-  const [icon, setIcon] = React.useState<string | null>('danger-sign');
+  const [icon, setIcon] = React.useState<string | null>();
   const [carousels, setCarousels] = React.useState<TCarousel[]>(defaultHomeCarousel);
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
-    //console.log('home 화면');
     requestNotificationPermission();
     getCarousel('home')
       .then((res) => {
@@ -50,94 +51,94 @@ const Home: React.FC<any> = ({ navigation }) => {
         console.error('[ERROR] homeCarousel: ', error);
       });
   }, []);
-  /*
-1. 앱을 켤 때 위험 점수를 가져온다.
-2. 위험 점수가 85점 이상이면:
-    * (False, 타임스탬프) : 24시간 내로 확인한 적이 없다면: 날아다니는 메시지 아이콘을 보여준다. 
-    * (True, 타임스탬프) : 24시간 내로 확인한 적이 있다면: 오픈한 메시지 아이콘을 보여준다.
-3. 위험 점수가 85점 이하이면: 
-    * 로컬스토리지에 값이 있으면 : 24시간 내에 위험 점수가 85점 이상인 적이 있었다면: 깐 메시지 아이콘을 보여준다. 
-        * 타임스탬프 <- 현재 시간과 24시간 차이가 나나 확인해서 24시간 이내인 경우
-    * 로컬스토리지 텅 : 24시간 내에 위험 점수가 85점 이상인 적이 없었다면: 하트 아이콘을 보여준다. 
-        * 로컬에 타임스탬프가 없다면
 
-로컬 스토리지 저장 방식 : 메세지 확인 시점의 UTC 타임스탬프를 저장한다 <- 객체 형태 (확인 여부, 타임스탬프)
-*/
-
+  //헤더 아이콘 클릭했을 때 이동 페이지
   const handleIconPress = async () => {
+    console.log('헤더 아이콘 점수', icon);
     if (icon === 'danger-sign') {
       //위험한 상태일 때 클릭을 했으면
-      //1. 아이콘을 danger-sign-opend로 바꾸고
-      //2. 현재 시간을 저장하고
-      //3. 화면을 이동한다 (쿠키 편지)
-      setIcon('danger-sign-opened');
+      setIcon('danger-sign-opened'); //아이콘을 danger-sign-opend로 바꾸고
       const currentTime = new Date().getTime();
-      saveRiskData(true, currentTime);
+      saveRiskData(true, currentTime); //확인했으니까 true로
       navigation.navigate(RootStackName.DangerStackNavigator, {
         screen: DangerStackName.DangerAlert,
-      });
-    } else {
-      //위험하지 않은 상태 혹은 확인한 상태일 때 클릭을 했으면
+      }); //쿠키 편지 화면으로 이동한다
+      return;
+    } else if (icon === 'danger-sign-opened') {
+      //이미 열어본 상태면
+      //const currentTime = new Date().getTime();
+      //saveRiskData(true, currentTime); //현재 시간을 저장하고
       navigation.navigate(RootStackName.DangerStackNavigator, {
-        screen: DangerStackName.Clinic,
-      });
+        screen: DangerStackName.DangerAlert,
+      }); //쿠키 편지 화면으로 이동한다
+    } else {
+      //상담 기관 안내
+      Linking.openURL(
+        'https://autumn-flier-d18.notion.site/1268e75d989680f7b4f2d63d66f4a08a?pvs=4',
+      ); //24시간 넘은 경우 -> 상담소로
     }
   };
 
   const getRiskScore = async (): Promise<number> => {
     // 위험 점수를 가져오는 API 호출
-    return 85;
-  };
-  const getRiskData = () => {
-    const jsonString = `{"checked": "false", "timestamp": "1729465494744"}`;
-    //6시간 전 : 1729465494744
-    //36시간 전 : 1729357537247
-    const parsedData = JSON.parse(jsonString);
-    parsedData.checked = parsedData.checked === 'true'; // 문자열 'true'를 boolean true로 변환
-    parsedData.timestamp = Number(parsedData.timestamp); // 문자열 '1630000000000'을 숫자로 변환
-    return parsedData;
+    return 95;
   };
 
+  //헤더 아이콘 설정하기
   useEffect(() => {
     const fetchRiskScore = async () => {
+      //clearRiskData();
       // 위험 점수 api 로 가져오기
-      const fetchedRiskScore = await getRiskScore();
+      const fetchedRiskScore = await getRiskScore(); //현재 위험 점수를 가지고 오는 api 호출
       setRiskScore(fetchedRiskScore);
+      console.log('점수', fetchedRiskScore);
 
-      const storedData = getRiskData(); // 저장됐던 데이터
+      const storedData = getRiskData();
+      console.log('storeageData', storedData); // 저장됐던 데이터 출력
       const currentTime = new Date().getTime(); // 현재 시간
-      console.log('currentTime', currentTime); // 예: 1729486534728
+      console.log('currentTime!!!', currentTime); // 예: 1729486534728
 
       // 위험 점수가 85점 이상인 경우
       if (fetchedRiskScore >= RISK_SCORE_THRESHOLD) {
+        console.log('하이');
         if (storedData) {
-          // 저장된 데이터가 있을 때
-          const { checked, timestamp } = storedData;
+          //로컬 스토리지 확인
+          //저장된 데이터가 있을 때
+          const { isChecked, timestamp } = storedData;
 
-          if (checked && currentTime - timestamp < ONE_DAY_IN_MS) {
+          //메세지를 24시간 내로 확인했으면 (isChecked == true : 이전에 확인한 적 있음)
+          if (isChecked && currentTime - timestamp < ONE_DAY_IN_MS) {
             setIcon('danger-sign-opened');
           } else {
-            // 24시간 내에 확인한 적이 없다면
-            saveRiskData(false, currentTime);
+            //메세지를 24시간 내로 확인을 안 했으면
             setIcon('danger-sign');
           }
         } else {
-          // 위험이 감지된 적이 없다면
-          setIcon(null);
+          console.log('로컬스토리지에 값이 없음');
+          //로컬스토리지 확인
+          //저장된 데이터가 없을 때 -> 위험 감지 안 된 상태 -> > 아이콘으로
+          setIcon('danger-sign');
         }
       } else {
         // 위험 점수가 85점 이하인 경우 (안 위험한 상태)
         if (storedData) {
           // 저장된 데이터가 있을 때 = 이전에 위험했을 때
-          const { timestamp } = storedData;
+          console.log('이전에 위험한 적이 있었다');
+          const { isChecked, timestamp } = storedData;
+          console.log('isChekced timestamp', isChecked, timestamp);
           if (currentTime - timestamp < ONE_DAY_IN_MS) {
-            setIcon('danger-sign-opened');
+            if (isChecked) {
+              //true 인 경우 = 확인한 경우
+              setIcon('danger-sign-opened');
+            } else {
+              //false인 경우 = 확인한 적 없는 경우
+              setIcon('danger-sign');
+            }
           } else {
-            setIcon('danger-sign');
+            //체크한 적 없었을 떄
+            console.log('이전에 위험한 적이 없었다');
+            setIcon(null);
           }
-        } else {
-          saveRiskData(false, currentTime);
-          setIcon(null);
         }
       }
     };
@@ -196,7 +197,7 @@ const Home: React.FC<any> = ({ navigation }) => {
             ))}
           </Carousel>
 
-          <HomeChatBtn navigation={navigation} />
+          <HomeChatBtn navigation={navigation} riskScore={riskScore} />
 
           <EmotionBtn navigation={navigation} />
         </View>

@@ -2,10 +2,14 @@ import styled from '@emotion/native';
 import palette from '../../../assets/styles/theme';
 import { ratio, rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 
-export const HomeBtn = styled.TouchableOpacity<{ status: string; os: string }>`
+export const HomeBtn = styled.TouchableOpacity<{ status: string; os: string; riskScore: number }>`
   height: ${rsHeight * 279 + 'px'};
   background-color: ${(props) =>
-    props.status === 'home' ? palette.primary[50] : palette.neutral[50]};
+    props.status === 'home'
+      ? props.riskScore >= 85
+        ? palette.risk[100]
+        : palette.primary[50]
+      : palette.neutral[50]};
   border-radius: ${ratio * 20 + 'px'};
   //elevation in android and box-shadow in ios
   ${(props) =>
