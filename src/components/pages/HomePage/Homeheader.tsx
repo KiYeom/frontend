@@ -1,8 +1,8 @@
 import { css } from '@emotion/native';
-import { TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity } from 'react-native';
 import palette from '../../../assets/styles/theme';
 import { DangerStackName, RootStackName } from '../../../constants/Constants';
-import { rsHeight, rsWidth } from '../../../utils/responsive-size';
+import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 import Icon from '../../icons/icons';
 import { Homeheader } from './Homeheader.style';
 const Header = ({ navigation }) => {
@@ -33,6 +33,14 @@ const Header = ({ navigation }) => {
             screen: DangerStackName.DangerAlert,
           })
         }>
+        <Text
+          style={css`
+            color: ${palette.primary[500]};
+            font-size: ${rsFont * 20 + 'px'};
+            font-family: Pretendard-Bold;
+          `}>
+          도움이 필요할 때는
+        </Text>
         <Icon
           name="arrow-right"
           width={rsWidth * 6 + 'px'}

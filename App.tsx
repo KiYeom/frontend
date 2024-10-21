@@ -51,6 +51,7 @@ const App: React.FC = () => {
     'Pretnedard-Thin': require('./src/assets/fonts/Pretendard-Thin.ttf'),
     'Pretendard-Black': require('./src/assets/fonts/Pretendard-Black.ttf'),
     'Pretendard-Medium': require('./src/assets/fonts/Pretendard-Medium.ttf'),
+    'Kyobo-handwriting': require('./src/assets/fonts/KyoboHandwriting2019.ttf'),
   });
 
   const checkSignIn = async (): Promise<boolean> => {

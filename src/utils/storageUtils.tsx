@@ -22,6 +22,9 @@ const CHATTING = 'chatting';
 //Notice
 const NOTICE = 'notice';
 
+//dangerSign
+const RISK = 'RISK';
+
 //setTokenInfo
 export const setTokenInfo = (accessToken: string, refreshToken: string): void => {
   setAccessToken(accessToken);
@@ -51,6 +54,7 @@ export const clearUserInfo = (): void => {
   storage.delete(USER_BIRTHDATE);
   storage.delete(USER_GENDER);
   storage.delete(NOTIFICATION_SENT);
+  storage.delete(DANDER_SIGN);
 };
 
 export const setInfoWhenLogin = (
@@ -204,4 +208,20 @@ export const saveAiResponse = (aiResponse: string) => {
 //ai 답변 가져오기
 export const getAiResponse = () => {
   return storage.getString('AIRESPONSE');
+};
+
+// 위험 데이터 저장
+export const saveRiskData = (isChecked: boolean, timestamp: number) => {
+  const data = JSON.stringify({ isChecked, timestamp });
+  storage.set(RISK, data);
+};
+
+// 위험 데이터 불러오기
+export const getRiskData = async () => {
+  const data = storage.getString(RISK);
+  console.log('data', data);
+  if (data !== null) {
+    return JSON.parse(data);
+  }
+  return null;
 };

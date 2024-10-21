@@ -8,6 +8,8 @@ import CallIcon from './svg/call';
 import CancelIcon from './svg/cancel-icon';
 import CheckIcon from './svg/check-icon';
 import CloverIcon from './svg/clover';
+import DangerSign from './svg/danger-sign';
+import DangerSignOpened from './svg/danger-sign-opened';
 import DateIcon from './svg/date-icon';
 import HappyEmotion from './svg/happy-emotion';
 import HomeIcon from './svg/home-icon';
@@ -37,7 +39,9 @@ export type TIconName =
   | 'calendar'
   | 'remind-logo'
   | 'call'
-  | 'text';
+  | 'text'
+  | 'danger-sign'
+  | 'danger-sign-opened';
 
 export default function Icon({
   width,
@@ -89,5 +93,9 @@ export default function Icon({
       return <CallIcon width={width} height={height} color={color} />;
     case 'text':
       return <TextIcon width={width} height={height} color={color} />;
+    case 'danger-sign':
+      return <DangerSign width={width} height={height} color={color} />;
+    case 'danger-sign-opened':
+      return <DangerSignOpened width={width} height={height} color={color} />;
   }
 }
