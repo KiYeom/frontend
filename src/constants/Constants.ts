@@ -40,6 +40,7 @@ export enum RootStackName {
   HomeStackNavigator = 'HomeStackNavigator',
   SettingStackNavigator = 'SettingStackNavigator',
   AuthStackNavigator = 'AuthStackNavigator',
+  DangerStackNavigator = 'DangerStackNavigator',
 }
 
 export enum TabScreenName {
@@ -71,6 +72,11 @@ export enum SettingStackName {
   LicenseDetailPage = 'LicenseDetailPage',
   OrganizationConnect = 'OrganizationConnect',
   OrganizationStatus = 'OrganizationStatus',
+}
+
+export enum DangerStackName {
+  Clinic = 'Clinic',
+  DangerAlert = 'DangerAlert',
 }
 
 export enum StatisticStackName {
@@ -240,3 +246,10 @@ export const helloTexts = [
   '환한 미소로 하루 시작하세요.',
   '오늘 하루도 빛나는 날 되세요.',
 ];
+
+export const RISK_SCORE_THRESHOLD = 85;
+export const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
+//export const ONE_DAY_IN_MS = 60 * 1000;
+export const PHONE_NUMBER = '109';
+
+export const KAKAO_MESSAGE = 'https://pf.kakao.com/_DAxbYG';

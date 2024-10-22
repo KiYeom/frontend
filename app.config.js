@@ -63,6 +63,7 @@ module.exports = {
             './src/assets/fonts/Pretendard-Regular.ttf',
             './src/assets/fonts/Pretendard-SemiBold.ttf',
             './src/assets/fonts/Pretendard-Thin.ttf',
+            './src/assets/fonts/KyoboHandwriting2019.ttf',
           ],
         },
       ],

@@ -14,6 +14,7 @@ import palette from './src/assets/styles/theme';
 import { RootStackName } from './src/constants/Constants';
 import AuthStackNavigator from './src/navigators/AuthStackNavigator';
 import BottomTabNavigator from './src/navigators/BottomTabNavigator';
+import DangerStackNavigator from './src/navigators/DangerStackNavigator';
 import HomeStackNavigator from './src/navigators/HomeStackNavigator';
 import SettingStackNavigator from './src/navigators/SettingStackNavigator';
 import StatisticStackNavigator from './src/navigators/StatisticStackNavigator';
@@ -55,6 +56,7 @@ const App: React.FC = () => {
     'Pretnedard-Thin': require('./src/assets/fonts/Pretendard-Thin.ttf'),
     'Pretendard-Black': require('./src/assets/fonts/Pretendard-Black.ttf'),
     'Pretendard-Medium': require('./src/assets/fonts/Pretendard-Medium.ttf'),
+    'Kyobo-handwriting': require('./src/assets/fonts/KyoboHandwriting2019.ttf'),
   });
 
   const checkSignIn = async (): Promise<boolean> => {
@@ -203,6 +205,10 @@ const App: React.FC = () => {
               <RootStack.Screen
                 name={RootStackName.SettingStackNavigator}
                 component={SettingStackNavigator}
+              />
+              <RootStack.Screen
+                name={RootStackName.DangerStackNavigator}
+                component={DangerStackNavigator}
               />
             </>
           ) : (
