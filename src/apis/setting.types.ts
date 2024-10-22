@@ -17,6 +17,7 @@ export type TUserInfo = {
   birthdate: string | null;
   gender: TGender | null;
   isUser: boolean;
+  organization: string | null;
 };
 
 export type TDisplayUserInfo = {

@@ -106,6 +106,7 @@ const EmotionBtn = ({ navigation }) => {
             align-items: center;
             flex-direction: row;
             padding-left: ${rsWidth * 8 + 'px'};
+            gap: ${rsWidth * 8 + 'px'};
           `}>
           {!isNULL ? (
             recordedEmotions.map((emotion, index) => (

@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { dailyAnalyze } from '../../../apis/analyze';
+import { dailyAnalyze, dailyAnalyzeStatus } from '../../../apis/analyze';
 import { TEmotionCheck, TLabel } from '../../../apis/analyze.type';
 import palette from '../../../assets/styles/theme';
 import { rsHeight } from '../../../utils/responsive-size';
@@ -12,6 +12,7 @@ import DateLine from '../../atoms/DateLine/DateLine';
 import SingleDatePickerModal from '../../rangeCal/single-date-picker-modal';
 import DailyEmotionClassification from './Daily_EmotionClassification/DailyEmotionClassification';
 import EmotionArea from './Daily_Keyword/EmotionArea';
+import EmotionDairy from './Daily_Keyword/EmotionDairy';
 import KeywordArea from './Daily_Keyword/KeywordArea';
 import PageName from './PageName';
 import ReportType from './ReportType';
@@ -19,7 +20,7 @@ import { Container } from './StatisticMain.style';
 
 const START_HOUR_OF_DAY = 6;
 
-const getServerYestoday = (currentDate: Date = new Date()) => {
+const getServerYesterday = (currentDate: Date = new Date()) => {
   let utc = currentDate.getTime() + currentDate.getTimezoneOffset() * 60000;
   let koreaTime = new Date(utc + 9 * 60 * 60 * 1000); // UTC+9 시간대
 
@@ -60,7 +61,7 @@ const getApiDateString = (date: Date): string => {
 
 //전체 통계 화면
 const StatisticMain: React.FC<any> = () => {
-  const [date, setDate] = useState<Date | undefined>(getServerYestoday()); //서버에서 계산하는 날짜
+  const [date, setDate] = useState<Date | undefined>(getServerYesterday()); //서버에서 계산하는 날짜
   const [openModal, setOpenModal] = React.useState(false);
   const [isNullClassification, setIsNullClassification] = useState(true);
   const [labelsClassification, setLabelsClassification] = useState<TLabel[]>([]);
@@ -68,6 +69,8 @@ const StatisticMain: React.FC<any> = () => {
   const [isRecordKeywordList, setIsRecordKeywordList] = useState<TEmotionCheck[]>([]);
   const [isNullRecordKeywordList, setIsNullRecordKeywordList] = useState(false);
   const [summaryList, setSummaryList] = useState<string[]>([]);
+  const [todayFeeling, setTodayFeeling] = useState<string>('');
+  const [availableDates, setAvailableDates] = useState<string[]>([]);
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
 
@@ -77,10 +80,16 @@ const StatisticMain: React.FC<any> = () => {
   }, []);
 
   useEffect(() => {
+    dailyAnalyzeStatus(2024).then((data) => {
+      if (!data) return;
+      setAvailableDates(data.dates);
+    });
+  }, []);
+
+  useEffect(() => {
     const fetchData = async () => {
-      const dailyStatistics = await dailyAnalyze(getApiDateString(date ?? getServerYestoday()));
-      //console.log('dailyStatistics', dailyStatistics);
-      //console.log('dailyStatistics ----', dailyStatistics?.record.Keywords);
+      const dailyStatistics = await dailyAnalyze(getApiDateString(date ?? getServerYesterday()));
+      console.log('dailyStatistics', dailyStatistics);
       if (!dailyStatistics) {
         alert('네트워크 연결이 불안정합니다. 잠시 후 다시 시도해주세요.');
         return;
@@ -91,6 +100,7 @@ const StatisticMain: React.FC<any> = () => {
       setSummaryList(dailyStatistics.summary.keywords);
       setIsRecordKeywordList(dailyStatistics.record.Keywords);
       setIsNullRecordKeywordList(dailyStatistics.record.isNULL);
+      setTodayFeeling(dailyStatistics.record.todayFeeling ?? '');
     };
     fetchData();
   }, [date]);
@@ -119,7 +129,7 @@ const StatisticMain: React.FC<any> = () => {
               amplitude.track('기간 리포트 버튼 클릭');
             }}></ReportType>
           <PageName type={`쿠키가 생각했던${'\n'}주인님의 모습이에요`} />
-          <DateLine value={getDateString(date ?? getServerYestoday())} />
+          <DateLine value={getDateString(date ?? getServerYesterday())} />
           <Container>
             <DailyEmotionClassification
               isNullClassification={isNullClassification}
@@ -129,6 +139,7 @@ const StatisticMain: React.FC<any> = () => {
               isRecordKeywordList={isRecordKeywordList}
               isNullRecordKeywordList={isNullRecordKeywordList}
             />
+            <EmotionDairy todayFeeling={todayFeeling} />
             <KeywordArea isSummaryList={isSummaryList} summaryList={summaryList} />
           </Container>
         </View>
@@ -137,6 +148,7 @@ const StatisticMain: React.FC<any> = () => {
         modalVisible={openModal}
         onClose={() => setOpenModal(false)}
         onChange={onChange}
+        availableDates={availableDates}
       />
     </View>
   );

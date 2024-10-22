@@ -273,3 +273,6 @@ google-services.json
 # build file
 android/
 ios/
+
+# ios firebase file
+GoogleService-Info.plist
