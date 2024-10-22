@@ -2,8 +2,13 @@ import styled from '@emotion/native';
 import palette from '../../assets/styles/theme';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';
 
-export const ButtonContainer = styled.TouchableOpacity<{ disabled?: boolean; primary?: boolean }>`
+export const ButtonContainer = styled.TouchableOpacity<{
+  disabled?: boolean;
+  primary?: boolean;
+  icon?: string;
+}>`
   display: flex;
+  flex-direction: ${(props) => (props.icon ? 'row' : 'column')};
   align-items: center;
   justify-content: center;
   gap: ${rsWidth * 10 + 'px'};

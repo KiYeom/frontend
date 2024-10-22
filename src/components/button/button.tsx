@@ -1,4 +1,5 @@
 import React from 'react';
+import Icon from '../icons/icons';
 import './button.styles';
 import { ButtonContainer, ButtonLabel } from './button.styles';
 
@@ -7,13 +8,20 @@ export type ButtonProps = {
   disabled?: boolean;
   primary: boolean;
   onPress?: () => void;
+  icon?: string | undefined;
 };
 
 const Button = (props: ButtonProps) => {
-  const { title, disabled = false, primary = true, onPress = () => {} } = props;
+  const { title, disabled = false, primary = true, onPress = () => {}, icon } = props;
 
   return (
-    <ButtonContainer disabled={disabled} primary={primary} activeOpacity={1} onPress={onPress}>
+    <ButtonContainer
+      disabled={disabled}
+      primary={primary}
+      activeOpacity={1}
+      onPress={onPress}
+      icon={icon}>
+      {icon && <Icon name={icon} width={24} height={25} color={'#ffffff'} />}
       <ButtonLabel disabled={disabled} primary={primary}>
         {title}
       </ButtonLabel>

@@ -2,10 +2,14 @@ import styled from '@emotion/native';
 import palette from '../../../assets/styles/theme';
 import { ratio, rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 
-export const HomeBtn = styled.TouchableOpacity<{ status: string; os: string }>`
+export const HomeBtn = styled.TouchableOpacity<{ status: string; os: string; riskScore: number }>`
   height: ${rsHeight * 279 + 'px'};
   background-color: ${(props) =>
-    props.status === 'home' ? palette.primary[50] : palette.neutral[50]};
+    props.status === 'home'
+      ? props.riskScore >= 85
+        ? palette.risk[100]
+        : palette.primary[50]
+      : palette.neutral[50]};
   border-radius: ${ratio * 20 + 'px'};
   //elevation in android and box-shadow in ios
   ${(props) =>
@@ -56,6 +60,15 @@ export const CookieImage = styled.Image`
   object-fit: contain;
 `;
 
+export const RiskCookieImage = styled.Image`
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: ${rsWidth * 240 + 'px'};
+  height: ${rsHeight * 170 + 'px'};
+  object-fit: contain;
+`;
+
 export const EmotionImage = styled.Image`
   //position: absolute;
   //right: 0;
@@ -63,12 +76,4 @@ export const EmotionImage = styled.Image`
   width: ${rsWidth * 300 + 'px'};
   height: ${rsHeight * 130 + 'px'};
   object-fit: contain;
-`;
-
-export const Leaf = styled.Image`
-  height: ${rsHeight * 155 + 'px'};
-  margin-left: ${rsHeight * 53 + 'px'};
-  object-fit: contain;
-  position: absolute;
-  margin-top: ${rsHeight * 92 + 'px'};
 `;
