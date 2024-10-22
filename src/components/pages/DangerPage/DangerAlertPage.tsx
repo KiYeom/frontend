@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { ImageBackground, Linking, Platform, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import palette from '../../../assets/styles/theme';
-import { PHONE_NUMBER } from '../../../constants/Constants';
+import { KAKAO_MESSAGE, PHONE_NUMBER } from '../../../constants/Constants';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { getUserNickname } from '../../../utils/storageUtils';
 import Button from '../../button/button';
@@ -44,16 +44,16 @@ const DangerAlertPage = () => {
                   color: `${palette.neutral[900]}`,
                   fontSize: 18,
                   paddingHorizontal: 20 * rsWidth,
-                  paddingVertical: 10 * rsHeight,
+                  //paddingVertical: 10 * rsHeight,
                   fontFamily: 'Kyobo-handwriting',
                 }}>
-                나김유정인데치킨피자샐러드먹어님께{'\n\n'}안녕하세요,
-                나김유정인데치킨피자샐러드먹어님! 쿠키가 주인님이 걱정이 되어서 이렇게 연락드렸어요.
-                요즘 나김유정인데치킨피자샐러드먹어님께서 너무 힘들어하시는 모습을 보면서 쿠키도
-                너무 마음이 아팠어요.. 쿠키가 꼭 하고 싶은 말은 나김유정인데치킨피자샐러드먹어님은
-                정말로 소중한 존재라는 것을 꼭 전해주고 싶어요. 조금 힘들때는 애써 감추지 않아도
-                괜찮아요. {'\n\n'}나김유정인데치킨피자샐러드님께 조금은 더 평온함이 오길, 쿠키가
-                진심으로 응원할게요. {'\n\n'}쿠키 드림
+                {userNickname}께{'\n\n'}안녕하세요, {userNickname}님! 쿠키가 주인님이 걱정이 되어서
+                이렇게 연락드렸어요. 요즘 {userNickname}께서 너무 힘들어하시는 모습을 보면서 쿠키도
+                너무 마음이 아팠어요.. 쿠키가 꼭 하고 싶은 말은 {userNickname}님은 정말로 소중한
+                존재라는 것을 꼭 전해주고 싶어요. 조금 힘들때는 애써 감추지 않아도 괜찮아요.{' '}
+                {'\n\n'}
+                {userNickname}님께 조금은 더 평온함이 오길, 쿠키가 진심으로 응원할게요. {'\n\n'}쿠키
+                드림
               </Text>
             </ImageBackground>
           </ImageContainer>
@@ -92,6 +92,7 @@ const DangerAlertPage = () => {
               icon="text"
               onPress={() => {
                 console.log('상담문자 버튼 클릭');
+                Linking.openURL(`${KAKAO_MESSAGE}`);
               }}
             />
             <Button
