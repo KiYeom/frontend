@@ -1,9 +1,11 @@
 import * as Sentry from '@sentry/react-native';
-import { ERRORMESSAGE } from '../constants/Constants';
 import { TChatAnswer } from './chatting.types';
 import { instance } from './interceptor';
 
-export const chatting = async (characterId: number, question: string): Promise<TChatAnswer> => {
+export const chatting = async (
+  characterId: number,
+  question: string,
+): Promise<TChatAnswer | undefined> => {
   //console.log('chatting api 호출!!!', question);
   try {
     const res = await instance.post('/v1/chat/memory', {
@@ -14,8 +16,6 @@ export const chatting = async (characterId: number, question: string): Promise<T
   } catch (error) {
     Sentry.captureException(error); // Sentry에 에러 전송
     console.log('ERRORMESSAGE', error);
-    return {
-      answer: ERRORMESSAGE,
-    };
+    return;
   }
 };
