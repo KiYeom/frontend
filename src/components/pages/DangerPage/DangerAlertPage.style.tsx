@@ -41,3 +41,10 @@ export const BtnContainer = styled.View`
   flex-direction: column;
   width: 100%;
 `;
+
+export const CookieLetterText = styled.Text`
+  color: ${palette.neutral[900]};
+  font-size: ${18 * rsFont + 'px'};
+  padding-horizontal: ${20 * rsWidth + 'px'};
+  font-family: 'Kyobo-handwriting';
+`;

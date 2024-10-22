@@ -18,7 +18,7 @@ const DangerStackNavigator: React.FC = () => {
       <DangerStack.Screen
         name={DangerStackName.DangerAlert}
         component={DangerAlertPage}
-        options={{ header: () => <Header title="위험 알림" /> }}
+        options={{ header: () => <Header /> }}
       />
     </DangerStack.Navigator>
   );

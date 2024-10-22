@@ -1,12 +1,18 @@
 import React, { useEffect } from 'react';
-import { ImageBackground, Linking, Platform, ScrollView, Text, View } from 'react-native';
+import { ImageBackground, Linking, Platform, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import palette from '../../../assets/styles/theme';
 import { KAKAO_MESSAGE, PHONE_NUMBER } from '../../../constants/Constants';
-import { rsHeight, rsWidth } from '../../../utils/responsive-size';
+import { rsHeight } from '../../../utils/responsive-size';
 import { getUserNickname } from '../../../utils/storageUtils';
 import Button from '../../button/button';
-import { BtnContainer, Container, Desc, ImageContainer, Title } from './DangerAlertPage.style';
+import {
+  BtnContainer,
+  Container,
+  CookieLetterText,
+  Desc,
+  ImageContainer,
+  Title,
+} from './DangerAlertPage.style';
 
 const cookieLetter = {
   image:
@@ -20,6 +26,7 @@ const DangerAlertPage = () => {
     const nickname = getUserNickname();
     setUserNickname(nickname ? nickname : '주인님');
   }, []);
+
   return (
     <View style={{ flex: 1, paddingBottom: insets.bottom }}>
       <ScrollView>
@@ -39,14 +46,7 @@ const DangerAlertPage = () => {
               }}
               source={{ uri: cookieLetter.image }}
               resizeMode="cover">
-              <Text
-                style={{
-                  color: `${palette.neutral[900]}`,
-                  fontSize: 18,
-                  paddingHorizontal: 20 * rsWidth,
-                  //paddingVertical: 10 * rsHeight,
-                  fontFamily: 'Kyobo-handwriting',
-                }}>
+              <CookieLetterText>
                 {userNickname}께{'\n\n'}안녕하세요, {userNickname}님! 쿠키가 주인님이 걱정이 되어서
                 이렇게 연락드렸어요. 요즘 {userNickname}께서 너무 힘들어하시는 모습을 보면서 쿠키도
                 너무 마음이 아팠어요.. 쿠키가 꼭 하고 싶은 말은 {userNickname}님은 정말로 소중한
@@ -54,7 +54,7 @@ const DangerAlertPage = () => {
                 {'\n\n'}
                 {userNickname}님께 조금은 더 평온함이 오길, 쿠키가 진심으로 응원할게요. {'\n\n'}쿠키
                 드림
-              </Text>
+              </CookieLetterText>
             </ImageBackground>
           </ImageContainer>
 
@@ -68,14 +68,6 @@ const DangerAlertPage = () => {
               primary={true}
               icon="call"
               onPress={() => {
-                //Linking.openURL('tel://01094114068');
-                /*Linking.canOpenURL('tel://01094114068').then((supported) => {
-                  if (supported) {
-                    Linking.openURL('tel://01094114068');
-                  } else {
-                    console.log('전화 기능은 시뮬레이터에서 사용할 수 없습니다');
-                  }
-                });*/
                 if (Platform.OS === 'android') {
                   console.log('android');
                   Linking.openURL(`tel:${PHONE_NUMBER}`);
