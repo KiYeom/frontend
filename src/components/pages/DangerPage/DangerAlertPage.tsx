@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import { ImageBackground, Linking, Platform, ScrollView, View } from 'react-native';
+import { ActivityIndicator } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { KAKAO_MESSAGE, PHONE_NUMBER } from '../../../constants/Constants';
-import { rsHeight } from '../../../utils/responsive-size';
+import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { getUserNickname } from '../../../utils/storageUtils';
 import Button from '../../button/button';
 import {
@@ -21,6 +22,7 @@ const cookieLetter = {
 
 const DangerAlertPage = () => {
   const [userNickname, setUserNickname] = React.useState<string | null>(null);
+  const [isLoaded, setIsLoaded] = React.useState<boolean>(false);
   const insets = useSafeAreaInsets();
   useEffect(() => {
     const nickname = getUserNickname();
@@ -36,25 +38,37 @@ const DangerAlertPage = () => {
             쿠키가 편지를 보냈어요.
           </Title>
           <ImageContainer>
+            {/*<Icon name="letter" />*/}
             <ImageBackground
               style={{
-                width: '100%',
-                height: '100%',
-                minHeight: rsHeight * 400,
+                width: 350 * rsWidth,
+                height: 400 * rsHeight,
+                display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
               }}
-              source={{ uri: cookieLetter.image }}
-              resizeMode="cover">
-              <CookieLetterText>
-                {userNickname}께{'\n\n'}안녕하세요, {userNickname}님! 쿠키가 주인님이 걱정이 되어서
-                이렇게 연락드렸어요. 요즘 {userNickname}께서 너무 힘들어하시는 모습을 보면서 쿠키도
-                너무 마음이 아팠어요.. 쿠키가 꼭 하고 싶은 말은 {userNickname}님은 정말로 소중한
-                존재라는 것을 꼭 전해주고 싶어요. 조금 힘들때는 애써 감추지 않아도 괜찮아요.{' '}
-                {'\n\n'}
-                {userNickname}님께 조금은 더 평온함이 오길, 쿠키가 진심으로 응원할게요. {'\n\n'}쿠키
-                드림
-              </CookieLetterText>
+              onLoadStart={() => {
+                // setIsLoaded(false);
+                console.log('이미지 로딩 시작: ', new Date().getTime());
+              }}
+              onLoadEnd={() => {
+                setIsLoaded(true);
+                console.log('이미지 로딩 완료: ', new Date().getTime());
+              }}
+              source={{ uri: cookieLetter.image }}>
+              {!isLoaded ? (
+                <ActivityIndicator size="large" color="#D1B385" />
+              ) : (
+                <CookieLetterText>
+                  {userNickname}께{'\n\n'}안녕하세요, {userNickname}님! 쿠키가 주인님이 걱정이
+                  되어서 이렇게 연락드렸어요. 요즘 {userNickname}께서 너무 힘들어하시는 모습을
+                  보면서 쿠키도 너무 마음이 아팠어요.. 쿠키가 꼭 하고 싶은 말은 {userNickname}님은
+                  정말로 소중한 존재라는 것을 꼭 전해주고 싶어요. 조금 힘들때는 애써 감추지 않아도
+                  괜찮아요. {'\n\n'}
+                  {userNickname}님께 조금은 더 평온함이 오길, 쿠키가 진심으로 응원할게요. {'\n\n'}
+                  쿠키 드림
+                </CookieLetterText>
+              )}
             </ImageBackground>
           </ImageContainer>
 

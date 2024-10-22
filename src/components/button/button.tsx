@@ -21,7 +21,7 @@ const Button = (props: ButtonProps) => {
       activeOpacity={1}
       onPress={onPress}
       icon={icon}>
-      icon && <Icon name={icon} width={24} height={25} color={'#ffffff'} />
+      {icon && <Icon name={icon} width={24} height={25} color={'#ffffff'} />}
       <ButtonLabel disabled={disabled} primary={primary}>
         {title}
       </ButtonLabel>

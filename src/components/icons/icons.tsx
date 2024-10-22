@@ -13,6 +13,7 @@ import DangerSignOpened from './svg/danger-sign-opened';
 import DateIcon from './svg/date-icon';
 import HappyEmotion from './svg/happy-emotion';
 import HomeIcon from './svg/home-icon';
+import Letter from './svg/letter';
 import CalmEmotion from './svg/relax-emotion';
 import Remindlogo from './svg/remind-logo';
 import SadEmotion from './svg/sad-emotion';
@@ -43,7 +44,8 @@ export type TIconName =
   | 'text'
   | 'danger-sign'
   | 'danger-sign-opened'
-  | 'search';
+  | 'search'
+  | 'letter';
 
 export default function Icon({
   width,
@@ -101,5 +103,7 @@ export default function Icon({
       return <DangerSignOpened width={width} height={height} color={color} />;
     case 'search':
       return <Search width={width} height={height} color={color} />;
+    case 'letter':
+      return <Letter width={width} height={height} color={color} />;
   }
 }

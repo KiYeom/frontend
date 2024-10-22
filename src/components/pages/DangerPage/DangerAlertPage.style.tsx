@@ -45,6 +45,8 @@ export const BtnContainer = styled.View`
 export const CookieLetterText = styled.Text`
   color: ${palette.neutral[900]};
   font-size: ${18 * rsFont + 'px'};
+  //position: absolute;
+  //top: ${rsHeight * 10 + 'px'};
   padding-horizontal: ${20 * rsWidth + 'px'};
   font-family: 'Kyobo-handwriting';
 `;
