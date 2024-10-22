@@ -1,6 +1,7 @@
 import styled, { css } from '@emotion/native';
+import * as WebBrowser from 'expo-web-browser';
 import React from 'react';
-import { Linking, Modal, Text, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { Modal, Text, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { Checkbox } from 'react-native-ui-lib';
 import palette from '../../assets/styles/theme';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';
@@ -46,7 +47,7 @@ const GuestModal = ({
               <TouchableOpacity
                 activeOpacity={1}
                 onPress={() =>
-                  Linking.openURL(
+                  WebBrowser.openBrowserAsync(
                     'https://autumn-flier-d18.notion.site/reMIND-167ef1180e2d42b09d019e6d187fccfd',
                   )
                 }>
@@ -70,7 +71,7 @@ const GuestModal = ({
                   }}
                 />
                 <Button
-                  title="비회원으로 시작하기"
+                  title="비회원 시작"
                   primary={true}
                   disabled={!legelAllowed}
                   onPress={() => {

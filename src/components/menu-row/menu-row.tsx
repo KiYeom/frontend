@@ -1,4 +1,4 @@
-import * as Linking from 'expo-linking';
+import * as WebBrowser from 'expo-web-browser';
 import React from 'react';
 import { Platform } from 'react-native';
 import palette from '../../assets/styles/theme';
@@ -30,9 +30,11 @@ const linkingToStore = (
   if (showVersion === true && isLatest === false) {
     //버전 표시 하고, 업데이트 필요할 때
     if (Platform.OS === 'ios') {
-      Linking.openURL('https://apps.apple.com/app/remind/id6544783154');
+      WebBrowser.openBrowserAsync('https://apps.apple.com/app/remind/id6544783154');
     } else if (Platform.OS === 'android') {
-      Linking.openURL('https://play.google.com/store/apps/details?id=com.ceunnseo.reMIND');
+      WebBrowser.openBrowserAsync(
+        'https://play.google.com/store/apps/details?id=com.ceunnseo.reMIND',
+      );
     }
     return;
   }

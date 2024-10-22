@@ -15,6 +15,7 @@ module.exports = {
       supportsTablet: false,
       bundleIdentifier: 'com.ceunnseo.reMIND',
       usesAppleSignIn: true,
+      // googleServicesFile: process.env.GOOGLE_SERVICES_IOS_FILE,
     },
     android: {
       adaptiveIcon: {

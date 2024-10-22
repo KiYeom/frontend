@@ -2,14 +2,20 @@ import * as amplitude from '@amplitude/analytics-react-native';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import palette from '../../assets/styles/theme';
-import { TabBarLabel } from '../../constants/Constants';
+import {
+  RootStackName,
+  SettingStackName,
+  TabBarLabel,
+  TabScreenName,
+} from '../../constants/Constants';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import Icon from '../icons/icons';
-import { BottomTabBarCotainer, TabButtonContainer, TabLabel } from './bottom-tab-bar.style';
+import { BottomTabBarContainer, TabButtonContainer, TabLabel } from './bottom-tab-bar.style';
+
 const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
   const insets = useSafeAreaInsets();
   return (
-    <BottomTabBarCotainer insets={insets}>
+    <BottomTabBarContainer insets={insets}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
 
@@ -41,12 +47,27 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
           }
         };
 
+        const onLongPress = () => {
+          if (route.name === TabScreenName.Setting && isFocused) {
+            //상담사 연결 페이지 진입.
+            console.log('상담사 연결 페이지 진입');
+            navigation.navigate(RootStackName.SettingStackNavigator, {
+              screen: SettingStackName.OrganizationStatus,
+            });
+            return;
+          } else {
+            onPress();
+            return;
+          }
+        };
+
         return (
           <TabButtonContainer
             key={index}
             accessibilityState={isFocused ? { selected: true } : {}}
             accessibilityLabel={options.tabBarAccessibilityLabel}
-            onPress={onPress}>
+            onPress={onPress}
+            onLongPress={onLongPress}>
             {label === TabBarLabel.Statistic ? (
               <Icon
                 name={'statistic-icon'}
@@ -81,82 +102,7 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
           </TabButtonContainer>
         );
       })}
-    </BottomTabBarCotainer>
+    </BottomTabBarContainer>
   );
 };
 export default BottomTabBar;
-
-/*
-function MyTabBar({ state, descriptors, navigation }) {
-  return (
-    //탭 바 메뉴들을 가로로 정렬해두는 View 컴포넌트
-    <BottomCotainer>
-      {state.routes.map((route, index) => {
-        const { options } = descriptors[route.key];
-        const label =
-          options.tabBarLabel !== undefined
-            ? options.tabBarLabel
-            : options.title !== undefined
-              ? options.title
-              : route.name;
-        console.log('tabbarlabel있음', options.tabBarLabel);
-        const isFocused = state.index === index;
-
-        //탭 버튼 클릭 시 호출되는 함수
-        const onPress = () => {
-          console.log('눌림!');
-          console.log(route.name); //route.name을 통해 setting 클릭 시 api 호출하도록
-          const event = navigation.emit({
-            type: 'tabPress',
-            target: route.key,
-            canPreventDefault: true,
-          });
-
-          if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name, route.params);
-          }
-        };
-
-        return (
-          <>
-            <TouchableOpacity
-              accessibilityRole="button"
-              accessibilityState={isFocused ? { selected: true } : {}}
-              accessibilityLabel={options.tabBarAccessibilityLabel}
-              testID={options.tabBarTestID}
-              onPress={onPress}
-              //onLongPress={onLongPress}
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: rsHeight * 50,
-              }}>
-              {options.tabBarLabel === '홈' ? (
-                <HomeIcon
-                  style={{ color: isFocused ? palette.primary[500] : palette.neutral[300] }}
-                />
-              ) : (
-                <SettingIcon
-                  style={{ color: isFocused ? palette.primary[500] : palette.neutral[300] }}
-                />
-              )}
-
-              <Text
-                style={{
-                  color: isFocused ? palette.primary[500] : palette.neutral[300],
-                  fontSize: 13 * rsFont,
-                  fontFamily: 'Pretendard-Medium',
-                  marginTop: 4 * rsHeight,
-                }}>
-                {label}
-              </Text>
-            </TouchableOpacity>
-          </>
-        );
-      })}
-    </BottomCotainer>
-  );
-}
-export default MyTabBar;
-*/

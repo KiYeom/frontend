@@ -1,7 +1,8 @@
 import { css } from '@emotion/native';
 import { Image } from 'expo-image';
+import * as WebBrowser from 'expo-web-browser';
 import React, { useEffect } from 'react';
-import { Linking, ScrollView, TouchableOpacity, View } from 'react-native';
+import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Carousel } from 'react-native-ui-lib';
 import { getCarousel } from '../../../apis/carousel';
@@ -34,6 +35,7 @@ const defaultHomeCarousel = [
     url: 'https://www.instagram.com/remind_cookie/',
   },
 ];
+
 const getApiDateString = (date: Date): string => {
   return (
     date?.getFullYear() +
@@ -46,7 +48,7 @@ const getApiDateString = (date: Date): string => {
 
 const Home: React.FC<any> = ({ navigation }) => {
   const [riskScore, setRiskScore] = React.useState<number>(0);
-  const [icon, setIcon] = React.useState<string | null>();
+  const [riskStatus, setRiskStatus] = React.useState<'safe' | 'danger' | 'danger-opened'>('safe');
   const [carousels, setCarousels] = React.useState<TCarousel[]>(defaultHomeCarousel);
   const insets = useSafeAreaInsets();
 
@@ -63,49 +65,34 @@ const Home: React.FC<any> = ({ navigation }) => {
   }, []);
 
   //헤더 아이콘 클릭했을 때 이동 페이지
-  const handleIconPress = async () => {
-    console.log('헤더 아이콘 점수', icon);
-    if (icon === 'danger-sign') {
+  const handleDangerPress = () => {
+    console.log('위험 아이콘 클릭: ', riskStatus);
+    if (riskStatus === 'danger' || riskStatus === 'danger-opened') {
       //위험한 상태일 때 클릭을 했으면
-      setIcon('danger-sign-opened'); //아이콘을 danger-sign-opend로 바꾸고
-      const currentTime = new Date().getTime();
-      saveRiskData(true, currentTime); //확인했으니까 true로
+      saveRiskData(true, new Date().getTime());
       navigation.navigate(RootStackName.DangerStackNavigator, {
         screen: DangerStackName.DangerAlert,
       }); //쿠키 편지 화면으로 이동한다
       return;
-    } else if (icon === 'danger-sign-opened') {
-      //이미 열어본 상태면
-      //const currentTime = new Date().getTime();
-      //saveRiskData(true, currentTime); //현재 시간을 저장하고
-      navigation.navigate(RootStackName.DangerStackNavigator, {
-        screen: DangerStackName.DangerAlert,
-      }); //쿠키 편지 화면으로 이동한다
-    } else {
+    }
+    if (riskStatus === 'safe') {
       //상담 기관 안내
-      Linking.openURL(
+      WebBrowser.openBrowserAsync(
         'https://autumn-flier-d18.notion.site/1268e75d989680f7b4f2d63d66f4a08a?pvs=4',
-      ); //24시간 넘은 경우 -> 상담소로
+      );
     }
   };
 
   //헤더 아이콘 설정하기
   useEffect(() => {
     const fetchRiskScore = async () => {
-      //clearRiskData();
       // 위험 점수 api 로 가져오기
       const date = getApiDateString(new Date());
-      console.log('날짜!!', date);
       const fetchedRiskScore = await getRiskScore(date); //현재 위험 점수를 가지고 오는 api 호출
       setRiskScore(fetchedRiskScore);
-      //console.log('점수', fetchedRiskScore);
-      console.log('날짜', getApiDateString(new Date()));
 
       const storedData = getRiskData();
-      //console.log('현재 위험 점수', fetchedRiskScore);
-      //console.log('storeageData', storedData); // 저장됐던 데이터 출력
       const currentTime = new Date().getTime(); // 현재 시간
-      //console.log('currentTime!!!', currentTime); // 예: 1729486534728
 
       // 위험 점수가 85점 이상인 경우
       if (fetchedRiskScore >= RISK_SCORE_THRESHOLD) {
@@ -117,18 +104,17 @@ const Home: React.FC<any> = ({ navigation }) => {
 
           //메세지를 24시간 내로 확인했으면 (isChecked == true : 이전에 확인한 적 있음)
           if (isChecked && currentTime - timestamp < ONE_DAY_IN_MS) {
-            setIcon('danger-sign-opened');
+            setRiskStatus('danger-opened');
           } else {
             //메세지를 24시간 내로 확인을 안 했으면
-            setIcon('danger-sign');
+            setRiskStatus('danger');
           }
         } else {
           console.log('로컬스토리지에 값이 없음');
           //로컬스토리지 확인
           //85점 이상인데 로컬스토리지에 값이 없음 => 타임스탬프 저장해야 함
-          setIcon('danger-sign');
-          const currentTime = new Date().getTime();
-          saveRiskData(false, currentTime); //확인했으니까 true로
+          setRiskStatus('danger');
+          saveRiskData(false, new Date().getTime()); //확인했으니까 true로
         }
       } else {
         // 위험 점수가 85점 이하인 경우 (안 위험한 상태)
@@ -140,15 +126,14 @@ const Home: React.FC<any> = ({ navigation }) => {
           if (currentTime - timestamp < ONE_DAY_IN_MS) {
             if (isChecked) {
               //true 인 경우 = 확인한 경우
-              setIcon('danger-sign-opened');
+              setRiskStatus('danger-opened');
             } else {
               //false인 경우 = 확인한 적 없는 경우
-              setIcon('danger-sign');
+              setRiskStatus('danger');
             }
           } else {
             //체크한 적 없었을 떄
             //console.log('이전에 위험한 적이 없었다');
-            setIcon(null);
           }
         }
       }
@@ -156,6 +141,7 @@ const Home: React.FC<any> = ({ navigation }) => {
 
     // 화면이 focus될 때마다 실행
     const handleFocus = () => {
+      console.log('홈화면 focus');
       fetchRiskScore(); // 데이터 fetch
     };
 
@@ -180,12 +166,7 @@ const Home: React.FC<any> = ({ navigation }) => {
             flex: 1;
             gap: ${rsHeight * 20 + 'px'};
           `}>
-          <Header
-            navigation={navigation}
-            riskScore={riskScore}
-            icon={icon}
-            onIconPress={handleIconPress}
-          />
+          <Header navigation={navigation} riskStatus={riskStatus} onIconPress={handleDangerPress} />
 
           <Carousel
             key={carousels.length}
@@ -203,7 +184,7 @@ const Home: React.FC<any> = ({ navigation }) => {
                 key={i}
                 activeOpacity={1}
                 onPress={() => {
-                  Linking.openURL(carousel.url);
+                  WebBrowser.openBrowserAsync(carousel.url);
                 }}>
                 <Image
                   style={{
