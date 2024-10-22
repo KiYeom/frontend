@@ -3,7 +3,7 @@ import { EdgeInsets } from 'react-native-safe-area-context';
 import palette from '../../assets/styles/theme';
 import { rsFont, rsHeight } from '../../utils/responsive-size';
 
-export const BottomTabBarCotainer = styled.View<{ insets: EdgeInsets }>`
+export const BottomTabBarContainer = styled.View<{ insets: EdgeInsets }>`
   width: 100%;
   height: ${rsHeight * 90 + 'px'};
   padding-bottom: ${rsHeight * 10 + 'px'};

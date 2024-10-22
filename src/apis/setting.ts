@@ -102,3 +102,29 @@ export const getLatestVersion = async (): Promise<TLatestVersion | undefined> =>
     return;
   }
 };
+
+//INFO: 기관 연결하기
+export const connectOrganizationApi = async (
+  code: string,
+): Promise<{ result: boolean } | undefined> => {
+  try {
+    const res = await instance.post('/v1/users/connect', {
+      organization: code,
+    });
+    return res.data;
+  } catch (error) {
+    console.error('[ERROR]connect organization: ', error);
+    return;
+  }
+};
+
+//INFO: 기관 연결 해제하기
+export const disconnectOrganizationApi = async (): Promise<{ result: boolean } | undefined> => {
+  try {
+    const res = await instance.delete('/v1/users/connect');
+    return res.data;
+  } catch (error) {
+    console.error('[ERROR]connect organization: ', error);
+    return;
+  }
+};

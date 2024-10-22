@@ -69,6 +69,8 @@ export enum SettingStackName {
   DeactivateReason = 'DeactivateReason',
   LicensePage = 'LicensePage',
   LicenseDetailPage = 'LicenseDetailPage',
+  OrganizationConnect = 'OrganizationConnect',
+  OrganizationStatus = 'OrganizationStatus',
 }
 
 export enum StatisticStackName {
