@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Carousel } from 'react-native-ui-lib';
 import { getCarousel } from '../../../apis/carousel';
 import { TCarousel } from '../../../apis/carousel.types';
+import { getRiskScore } from '../../../apis/riskscore';
 import {
   DangerStackName,
   ONE_DAY_IN_MS,
@@ -33,9 +34,18 @@ const defaultHomeCarousel = [
     url: 'https://www.instagram.com/remind_cookie/',
   },
 ];
+const getApiDateString = (date: Date): string => {
+  return (
+    date?.getFullYear() +
+    '-' +
+    String(date.getMonth() + 1).padStart(2, '0') +
+    '-' +
+    String(date.getDate()).padStart(2, '0')
+  );
+};
 
 const Home: React.FC<any> = ({ navigation }) => {
-  const [riskScore, setRiskScore] = React.useState<number | null>(null);
+  const [riskScore, setRiskScore] = React.useState<number>(0);
   const [icon, setIcon] = React.useState<string | null>();
   const [carousels, setCarousels] = React.useState<TCarousel[]>(defaultHomeCarousel);
   const insets = useSafeAreaInsets();
@@ -79,25 +89,23 @@ const Home: React.FC<any> = ({ navigation }) => {
     }
   };
 
-  const getRiskScore = async (): Promise<number> => {
-    // 위험 점수를 가져오는 API 호출
-    return 95;
-  };
-
   //헤더 아이콘 설정하기
   useEffect(() => {
     const fetchRiskScore = async () => {
       //clearRiskData();
       // 위험 점수 api 로 가져오기
-      const fetchedRiskScore = await getRiskScore(); //현재 위험 점수를 가지고 오는 api 호출
+      const date = getApiDateString(new Date());
+      console.log('날짜!!', date);
+      const fetchedRiskScore = await getRiskScore(date); //현재 위험 점수를 가지고 오는 api 호출
       setRiskScore(fetchedRiskScore);
-      console.log('점수', fetchedRiskScore);
+      //console.log('점수', fetchedRiskScore);
+      console.log('날짜', getApiDateString(new Date()));
 
       const storedData = getRiskData();
-      console.log('현재 위험 점수', fetchedRiskScore);
-      console.log('storeageData', storedData); // 저장됐던 데이터 출력
+      //console.log('현재 위험 점수', fetchedRiskScore);
+      //console.log('storeageData', storedData); // 저장됐던 데이터 출력
       const currentTime = new Date().getTime(); // 현재 시간
-      console.log('currentTime!!!', currentTime); // 예: 1729486534728
+      //console.log('currentTime!!!', currentTime); // 예: 1729486534728
 
       // 위험 점수가 85점 이상인 경우
       if (fetchedRiskScore >= RISK_SCORE_THRESHOLD) {
@@ -126,9 +134,9 @@ const Home: React.FC<any> = ({ navigation }) => {
         // 위험 점수가 85점 이하인 경우 (안 위험한 상태)
         if (storedData) {
           // 저장된 데이터가 있을 때 = 이전에 위험했을 때
-          console.log('이전에 위험한 적이 있었다');
+          //console.log('이전에 위험한 적이 있었다');
           const { isChecked, timestamp } = storedData;
-          console.log('isChekced timestamp', isChecked, timestamp);
+          //console.log('isChekced timestamp', isChecked, timestamp);
           if (currentTime - timestamp < ONE_DAY_IN_MS) {
             if (isChecked) {
               //true 인 경우 = 확인한 경우
@@ -139,15 +147,24 @@ const Home: React.FC<any> = ({ navigation }) => {
             }
           } else {
             //체크한 적 없었을 떄
-            console.log('이전에 위험한 적이 없었다');
+            //console.log('이전에 위험한 적이 없었다');
             setIcon(null);
           }
         }
       }
     };
 
-    fetchRiskScore();
-  }, []);
+    // 화면이 focus될 때마다 실행
+    const handleFocus = () => {
+      fetchRiskScore(); // 데이터 fetch
+    };
+
+    const unsubscribe = navigation.addListener('focus', handleFocus);
+    // 컴포넌트 unmount 시 리스너를 해제
+    return () => {
+      unsubscribe();
+    };
+  }, [navigation]);
 
   return (
     <View
