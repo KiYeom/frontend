@@ -5,12 +5,14 @@ import dayjs from 'dayjs';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { periodChart, periodKeyword } from '../../../apis/analyze';
+import { periodChart, periodKeyword, periodRecordEmotions } from '../../../apis/analyze';
+import { TPeriodRecordEmotions } from '../../../apis/analyze.type';
 import palette from '../../../assets/styles/theme';
 import { rsHeight } from '../../../utils/responsive-size';
 import DateLine from '../../atoms/DateLine/DateLine';
 import RangeDatePickerModal from '../../rangeCal/range-date-picker-modal';
 import PageName from './PageName';
+import PeriodRecord from './Period-records/period-record';
 import PeriodFlowChart from './Period_FlowChart/PeriodFlowChartArea';
 import PeriodKeywordArea from './Period_keyword/PeriodKeywordArea';
 import ReportType from './ReportType';
@@ -21,6 +23,9 @@ const PeriodStatisticPage: React.FC<any> = () => {
   const [visible, setVisible] = React.useState(false);
   const [periodKeywordList, setPeriodKeywordList] = useState([]);
   const [locale, setLocale] = useState('ko');
+  const [recordEmotions, setRecordEmotions] = useState<TPeriodRecordEmotions | undefined>(
+    undefined,
+  );
 
   const [range, setRange] = React.useState<{
     startDate: DateType;
@@ -47,9 +52,10 @@ const PeriodStatisticPage: React.FC<any> = () => {
         const startDateFormatted = dayjs(range.startDate).format('YYYY-MM-DD');
         const endDateFormatted = dayjs(range.endDate).format('YYYY-MM-DD');
 
-        const [res, res2] = await Promise.all([
+        const [res, res2, res3] = await Promise.all([
           periodChart(startDateFormatted, endDateFormatted), //기간 감정 차트
           periodKeyword(startDateFormatted, endDateFormatted), //기간 키워드 리스트
+          periodRecordEmotions(startDateFormatted, endDateFormatted), //기간 기록한 감정들
         ]);
         //console.log('기간 감정 차트', res);
         if (res && res.charts) {
@@ -57,6 +63,10 @@ const PeriodStatisticPage: React.FC<any> = () => {
         }
         if (res2 && res2.keywords) {
           setPeriodKeywordList(res2.keywords);
+        }
+        if (res3) {
+          console.log('기간 기록한 감정들', res3);
+          setRecordEmotions(res3);
         }
         //console.log('시작 날짜 ', startDateFormatted);
         //console.log('종료 날짜 ', endDateFormatted);
@@ -91,23 +101,16 @@ const PeriodStatisticPage: React.FC<any> = () => {
   }
   return (
     <View
-      style={{
-        backgroundColor: palette.neutral[50],
-        flex: 1,
-        paddingTop: insets.top,
-      }}>
-      <ScrollView
-        style={css`
-          flex: 1; //통계 전체 컨테이너 (대시보드)
-          flex-direction: column;
-          background-color: ${palette.neutral[50]};
-          padding-bottom: ${rsHeight * 40 + 'px'};
-          padding-top: ${rsHeight * 12 + 'px'};
-        `}>
+      style={css`
+        /* background-color: ${palette.neutral[50]}; */
+        flex: 1;
+        margin-top: ${insets.top + 'px'};
+      `}>
+      <ScrollView>
         <View
           style={css`
-            padding-bottom: ${rsHeight * 50 + 'px'};
             gap: ${rsHeight * 16 + 'px'};
+            margin-vertical: ${rsHeight * 12 + 'px'};
           `}>
           <ReportType
             type="일일리포트"
@@ -134,14 +137,15 @@ const PeriodStatisticPage: React.FC<any> = () => {
             periodKeywordList={periodKeywordList}
             setPeriodKeywordList={setPeriodKeywordList}
           />
-          <RangeDatePickerModal
-            modalVisible={openModal}
-            onClose={() => setOpenModal(false)}
-            onChange={onChange}
-            range={range}
-          />
+          <PeriodRecord records={recordEmotions ? recordEmotions.records : []} />
         </View>
       </ScrollView>
+      <RangeDatePickerModal
+        modalVisible={openModal}
+        onClose={() => setOpenModal(false)}
+        onChange={onChange}
+        range={range}
+      />
     </View>
   );
 };

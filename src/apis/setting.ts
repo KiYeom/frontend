@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import { TCommonResult } from './common.types';
 import { instance } from './interceptor';
 import { TAllowedNotifications, TSetNotification } from './notification.types';
@@ -95,10 +96,40 @@ export const setNotificationStatus = async (
 //INFO: 최신 버전 받기
 export const getLatestVersion = async (): Promise<TLatestVersion | undefined> => {
   try {
-    const res = await instance.get('/v1/users/check-version');
+    const res = await instance.get('/v1/users/check-version', {
+      params: {
+        platform: Platform.OS,
+      },
+    });
     return res.data;
   } catch (error) {
     console.error('[ERROR] getlatest version', error);
+    return;
+  }
+};
+
+//INFO: 기관 연결하기
+export const connectOrganizationApi = async (
+  code: string,
+): Promise<{ result: boolean } | undefined> => {
+  try {
+    const res = await instance.post('/v1/users/connect', {
+      organization: code,
+    });
+    return res.data;
+  } catch (error) {
+    console.error('[ERROR]connect organization: ', error);
+    return;
+  }
+};
+
+//INFO: 기관 연결 해제하기
+export const disconnectOrganizationApi = async (): Promise<{ result: boolean } | undefined> => {
+  try {
+    const res = await instance.delete('/v1/users/connect');
+    return res.data;
+  } catch (error) {
+    console.error('[ERROR]connect organization: ', error);
     return;
   }
 };

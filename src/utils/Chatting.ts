@@ -1,4 +1,5 @@
 import { chatting } from '../apis/chatting';
+import { ERRORMESSAGE } from '../constants/Constants';
 import { getChatting, setChatting } from './storageUtils';
 
 //채팅을 보낸 현재 시간 (date)을 리턴하는 함수
@@ -55,11 +56,12 @@ export const botAnswer = () => {
 
 //ai가 한 말을 여러 정보를 가진 ojbect로 리턴해주는 함수
 export const aiSend = async (userQuestion: string) => {
-  const cookieAnswer = (await chatting(1, userQuestion)).answer; //1번 챗봇(=쿠키)에게 질문을 보냄
+  const cookieAnswerResponse = await chatting(1, userQuestion); //1번 챗봇(=쿠키)에게 질문을 보냄
+  const coolieAnswer = cookieAnswerResponse ? cookieAnswerResponse.answer : ERRORMESSAGE;
   const today = getTime();
   const aiData = {
     sender: 'bot',
-    text: `${cookieAnswer}`,
+    text: `${coolieAnswer}`,
     id: `${today}`,
     time: `${formatTime(today)}`,
     date: `${formatDate(today)}`,

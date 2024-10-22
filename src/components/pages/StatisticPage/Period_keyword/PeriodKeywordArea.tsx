@@ -8,7 +8,7 @@ import { Title } from '../StatisticMain.style';
 
 const PeriodKeywordArea: React.FC<any> = (props: any) => {
   const { periodKeywordList, setPeriodKeywordList } = props;
-  //console.log('데이터 확인', periodKeywordList);
+
   return (
     <View
       style={css`
@@ -24,7 +24,6 @@ const PeriodKeywordArea: React.FC<any> = (props: any) => {
           justify-content: space-between;
           width: 100%;
           height: auto;
-          max-height: 197px;
           gap: ${rsHeight * 8 + 'px'};
         `}>
         {periodKeywordList && periodKeywordList.length > 0 ? (

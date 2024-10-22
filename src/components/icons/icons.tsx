@@ -4,17 +4,23 @@ import ArrowDown from './svg/arrow-down';
 import ArrowLeft from './svg/arrow-left';
 import ArrowRight from './svg/arrow-right';
 import Calendar from './svg/calendar';
+import CallIcon from './svg/call';
 import CancelIcon from './svg/cancel-icon';
 import CheckIcon from './svg/check-icon';
 import CloverIcon from './svg/clover';
+import DangerSign from './svg/danger-sign';
+import DangerSignOpened from './svg/danger-sign-opened';
 import DateIcon from './svg/date-icon';
 import HappyEmotion from './svg/happy-emotion';
 import HomeIcon from './svg/home-icon';
+import Letter from './svg/letter';
 import CalmEmotion from './svg/relax-emotion';
 import Remindlogo from './svg/remind-logo';
 import SadEmotion from './svg/sad-emotion';
+import Search from './svg/search';
 import SettingIcon from './svg/setting-icon';
 import StatisticIcon from './svg/statistic-icon';
+import TextIcon from './svg/text';
 
 export type TIconName =
   | 'airplane'
@@ -33,7 +39,13 @@ export type TIconName =
   | 'check-icon'
   | 'cancel-icon'
   | 'calendar'
-  | 'remind-logo';
+  | 'remind-logo'
+  | 'call'
+  | 'text'
+  | 'danger-sign'
+  | 'danger-sign-opened'
+  | 'search'
+  | 'letter';
 
 export default function Icon({
   width,
@@ -81,5 +93,17 @@ export default function Icon({
       return <Calendar width={width} height={height} color={color} />;
     case 'remind-logo':
       return <Remindlogo width={width} height={height} color={color} />;
+    case 'call':
+      return <CallIcon width={width} height={height} color={color} />;
+    case 'text':
+      return <TextIcon width={width} height={height} color={color} />;
+    case 'danger-sign':
+      return <DangerSign width={width} height={height} color={color} />;
+    case 'danger-sign-opened':
+      return <DangerSignOpened width={width} height={height} color={color} />;
+    case 'search':
+      return <Search width={width} height={height} color={color} />;
+    case 'letter':
+      return <Letter width={width} height={height} color={color} />;
   }
 }

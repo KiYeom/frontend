@@ -16,7 +16,6 @@ const BottomTabNavigator: React.FC<any> = () => {
       initialRouteName={TabScreenName.Home}
       tabBar={(props) => <BottomTabBar {...props} />}
       screenOptions={{
-        headerShown: false,
         tabBarActiveTintColor: palette.primary[500], //tab bar focuse 색상
       }}
       detachInactiveScreens={false}>
@@ -33,6 +32,7 @@ const BottomTabNavigator: React.FC<any> = () => {
         component={Home}
         options={{
           tabBarLabel: TabBarLabel.Home, //탭 바 아래에 보일 이름
+          headerShown: false,
         }}
       />
       <Tab.Screen
@@ -40,6 +40,7 @@ const BottomTabNavigator: React.FC<any> = () => {
         component={Setting}
         options={{
           tabBarLabel: TabBarLabel.Setting,
+          headerShown: false,
         }}
       />
     </Tab.Navigator>

@@ -27,5 +27,10 @@ const palette = {
     500: '#FBF5B9',
     600: '#ababab',
   },
+  risk: {
+    50: '#ffffff',
+    100: '#ECF6FF',
+    200: '#70BFFF',
+  },
 };
 export default palette;

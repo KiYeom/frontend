@@ -8,8 +8,8 @@ export const TextAreaField = styled.TextInput`
   background-color: #f6f6f6;
   padding-horizontal: ${rsWidth * 18 + 'px'};
   padding-vertical: ${rsHeight * 18 + 'px'};
-  placeholder-textcolor = ${palette.neutral[300]};
-  placeholder-textcolor = ${palette.neutral[300]}
+  placeholder-textcolor: ${palette.neutral[300]};
+  placeholder-textcolor: ${palette.neutral[300]};
 `;
 
 export const TextAreaContainer = styled.View`

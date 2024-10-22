@@ -2,7 +2,7 @@ module.exports = {
   expo: {
     name: 'reMIND',
     slug: 'reMIND',
-    version: '1.1.5',
+    version: '1.2.0',
     orientation: 'portrait',
     icon: './src/assets/images/appicon.png',
     userInterfaceStyle: 'light',
@@ -15,6 +15,7 @@ module.exports = {
       supportsTablet: false,
       bundleIdentifier: 'com.ceunnseo.reMIND',
       usesAppleSignIn: true,
+      // googleServicesFile: process.env.GOOGLE_SERVICES_IOS_FILE,
     },
     android: {
       adaptiveIcon: {
@@ -62,6 +63,7 @@ module.exports = {
             './src/assets/fonts/Pretendard-Regular.ttf',
             './src/assets/fonts/Pretendard-SemiBold.ttf',
             './src/assets/fonts/Pretendard-Thin.ttf',
+            './src/assets/fonts/KyoboHandwriting2019.ttf',
           ],
         },
       ],

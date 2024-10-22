@@ -3,15 +3,18 @@ import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as Sentry from '@sentry/react-native';
 import { useFonts } from 'expo-font';
+import * as Linking from 'expo-linking';
+import * as Notifications from 'expo-notifications';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { reissueAccessToken } from './src/apis/interceptor';
 import palette from './src/assets/styles/theme';
-import { RootStackName } from './src/constants/Constants';
+import { HomeStackName, RootStackName, TabScreenName } from './src/constants/Constants';
 import AuthStackNavigator from './src/navigators/AuthStackNavigator';
 import BottomTabNavigator from './src/navigators/BottomTabNavigator';
+import DangerStackNavigator from './src/navigators/DangerStackNavigator';
 import HomeStackNavigator from './src/navigators/HomeStackNavigator';
 import SettingStackNavigator from './src/navigators/SettingStackNavigator';
 import StatisticStackNavigator from './src/navigators/StatisticStackNavigator';
@@ -37,6 +40,9 @@ if (process.env.EXPO_PUBLIC_AMPLITUDE) {
 SplashScreen.preventAutoHideAsync();
 const RootStack = createNativeStackNavigator();
 
+//set Deep Linking
+const prefix = Linking.createURL('/');
+
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true); //로딩중이면 true, 로딩이 끝났으면 false
   const { SigninStatus, setSigninStatus } = UseSigninStatus(); //store에서 가지고 온 전역 state
@@ -50,6 +56,7 @@ const App: React.FC = () => {
     'Pretnedard-Thin': require('./src/assets/fonts/Pretendard-Thin.ttf'),
     'Pretendard-Black': require('./src/assets/fonts/Pretendard-Black.ttf'),
     'Pretendard-Medium': require('./src/assets/fonts/Pretendard-Medium.ttf'),
+    'Kyobo-handwriting': require('./src/assets/fonts/KyoboHandwriting2019.ttf'),
   });
 
   const checkSignIn = async (): Promise<boolean> => {
@@ -112,7 +119,71 @@ const App: React.FC = () => {
 
   return (
     <SafeAreaProvider>
-      <NavigationContainer theme={navTheme}>
+      <NavigationContainer
+        theme={navTheme}
+        linking={{
+          prefixes: [prefix],
+          config: {
+            // Configuration for linking
+            screens: {
+              // Define the linking configuration
+              [RootStackName.HomeStackNavigator]: {
+                screens: {
+                  [HomeStackName.Chat]: 'chat', //{"url": "remind://chat" }
+                },
+              },
+              [RootStackName.BottomTabNavigator]: {
+                screens: {
+                  [TabScreenName.Statistic]: 'statistic/daily', //{"url": "remind://statistic/daily" }
+                },
+              },
+            },
+          },
+          async getInitialURL() {
+            // First, you may want to do the default deep link handling
+            // Check if app was opened from a deep link
+            const url = await Linking.getInitialURL();
+
+            if (url != null) {
+              return url;
+            }
+
+            // Handle URL from expo push notifications
+            const response = await Notifications.getLastNotificationResponseAsync();
+
+            return response?.notification.request.content.data.url;
+          },
+          subscribe(listener) {
+            const onReceiveURL = ({ url }: { url: string }) => listener(url);
+
+            // Listen to incoming links from deep linking
+            const eventListenerSubscription = Linking.addEventListener('url', onReceiveURL);
+
+            // Listen to expo push notifications
+            const subscription = Notifications.addNotificationResponseReceivedListener(
+              (response) => {
+                const url = response.notification.request.content.data.url;
+
+                // Any custom logic to see whether the URL needs to be handled
+                //...
+
+                // Let React Navigation handle the URL
+                listener(url);
+              },
+            );
+
+            return () => {
+              // Clean up the event listeners
+              eventListenerSubscription.remove();
+              subscription.remove();
+            };
+          },
+        }}
+        fallback={
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color={palette.primary[500]} />
+          </View>
+        }>
         <RootStack.Navigator
           screenOptions={{
             headerShown: false,
@@ -134,6 +205,10 @@ const App: React.FC = () => {
               <RootStack.Screen
                 name={RootStackName.SettingStackNavigator}
                 component={SettingStackNavigator}
+              />
+              <RootStack.Screen
+                name={RootStackName.DangerStackNavigator}
+                component={DangerStackNavigator}
               />
             </>
           ) : (

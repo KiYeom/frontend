@@ -1,3 +1,7 @@
+export type TDailyAnalyzeStatus = {
+  dates: string[];
+};
+
 export type TDailyAnalyze = {
   date: string;
   record: DailyRecordDto;
@@ -8,6 +12,7 @@ export type TDailyAnalyze = {
 export type DailyRecordDto = {
   isNULL: boolean;
   Keywords: EmotionKeyword[];
+  todayFeeling: string | null;
 };
 
 export type EmotionKeyword = {
@@ -53,6 +58,15 @@ export type TPeriodKeywords = {
   keywords: string[];
 };
 
+export type TPeriodRecordEmotions = {
+  records: TRecordEmotion[];
+};
+
+export type TRecordEmotion = {
+  date: string;
+  todayFeeling: string | null;
+  keywords: EmotionKeyword[];
+};
 export type TEmotions = {
   keywords: string[];
 };

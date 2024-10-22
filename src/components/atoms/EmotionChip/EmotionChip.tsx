@@ -9,14 +9,14 @@ const EmotionChip = ({ group, keyword, onPress, isSelected }) => {
   return (
     <TouchableOpacity
       style={css`
-        display: flex;
         background-color: ${palette.neutral[100]};
-        height: ${45 * rsHeight + 'px'};
+        height: ${rsHeight * 45 + 'px'};
         flex-direction: row;
         align-items: center; /* 세로 중앙 정렬 */
         justify-content: center; /* 가로 중앙 정렬 */
         padding-horizontal: ${rsWidth * 5 + 'px'};
         padding-vertical: ${rsHeight * 10 + 'px'};
+        margin-vertical: ${rsHeight * 5 + 'px'};
         border-radius: 10px;
         gap: ${rsWidth * 10 + 'px'};
         border: 3px solid ${isSelected ? palette.primary[500] : 'transparent'};
@@ -29,7 +29,6 @@ const EmotionChip = ({ group, keyword, onPress, isSelected }) => {
           text-align: center;
           justify-content: center;
           align-self: center;
-          //background-color: gray;
           font-family: Pretendard-Regular;
           font-size: ${rsFont * 15 + 'px'};
         `}>

@@ -1,12 +1,3 @@
 import styled from '@emotion/native';
-import { EdgeInsets } from 'react-native-safe-area-context';
-import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 
-export const HomeContainer = styled.View<{ insets: EdgeInsets }>`
-  flex: 1;
-  align-items: start;
-  padding-horizontal: ${rsWidth * 20 + 'px'};
-  padding-top: ${({ insets }) => insets.top + rsHeight * 12 + 'px'};
-  padding-bottom: ${rsHeight * 30 + 'px'};
-  gap: ${rsHeight * 20 + 'px'};
-`;
+export const HomeContainer = styled.View``;

@@ -4,6 +4,8 @@ import Header from '../components/header/header';
 import ChannelTalk from '../components/pages/SettingPage/ChannelTalk'; //채널톡 페이지
 import DeactivateReason from '../components/pages/SettingPage/deactivate/deactivate-reason/DeactivateReason';
 import DeactivateAlert from '../components/pages/SettingPage/deactivate/dedactivate-alert/DeactivateAlert';
+import OrganizationConnect from '../components/pages/SettingPage/deactivate/organization-connect/organization-connect';
+import OrganizationStatus from '../components/pages/SettingPage/deactivate/organization-status/organization-status';
 import EditUserInfo from '../components/pages/SettingPage/EditUserInfo'; //개인정보 수정 페이지
 import LicenseDetailPage from '../components/pages/SettingPage/LicenseDetailPage'; //오픈소스 라이센스 상세 페이지
 import LicensePage from '../components/pages/SettingPage/LicensePage'; //오픈소스 라이센스 페이지
@@ -59,6 +61,16 @@ const SettingStackNavigator: React.FC = () => {
       <SettingStack.Screen
         name={SettingStackName.DeactivateReason}
         component={DeactivateReason}
+        options={{ header: () => <Header /> }}
+      />
+      <SettingStack.Screen
+        name={SettingStackName.OrganizationConnect}
+        component={OrganizationConnect}
+        options={{ header: () => <Header /> }}
+      />
+      <SettingStack.Screen
+        name={SettingStackName.OrganizationStatus}
+        component={OrganizationStatus}
         options={{ header: () => <Header /> }}
       />
     </SettingStack.Navigator>
