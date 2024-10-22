@@ -11,7 +11,7 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { reissueAccessToken } from './src/apis/interceptor';
 import palette from './src/assets/styles/theme';
-import { RootStackName } from './src/constants/Constants';
+import { HomeStackName, RootStackName, TabScreenName } from './src/constants/Constants';
 import AuthStackNavigator from './src/navigators/AuthStackNavigator';
 import BottomTabNavigator from './src/navigators/BottomTabNavigator';
 import DangerStackNavigator from './src/navigators/DangerStackNavigator';
