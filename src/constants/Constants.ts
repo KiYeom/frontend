@@ -252,4 +252,4 @@ export const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
 //export const ONE_DAY_IN_MS = 60 * 1000;
 export const PHONE_NUMBER = '109';
 
-export const KAKAO_MESSAGE = 'https://pf.kakao.com/_DAxbYG';
+export const KAKAO_MESSAGE = 'https://pf.kakao.com/_DAxbYG/chat';

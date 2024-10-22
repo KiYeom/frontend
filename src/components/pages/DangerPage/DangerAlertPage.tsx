@@ -1,3 +1,5 @@
+import * as amplitude from '@amplitude/analytics-react-native';
+import * as WebBrowser from 'expo-web-browser';
 import React, { useEffect } from 'react';
 import { ImageBackground, Linking, Platform, ScrollView, View } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
@@ -82,12 +84,11 @@ const DangerAlertPage = () => {
               primary={true}
               icon="call"
               onPress={() => {
+                amplitude.track('위험 신호 - 전화 버튼 클릭');
                 if (Platform.OS === 'android') {
-                  console.log('android');
                   Linking.openURL(`tel:${PHONE_NUMBER}`);
                 } else {
                   // iOS에서 전화 걸기
-                  console.log('ios');
                   Linking.openURL(`tel://${PHONE_NUMBER}`);
                 }
               }}
@@ -97,8 +98,8 @@ const DangerAlertPage = () => {
               primary={true}
               icon="text"
               onPress={() => {
-                console.log('상담문자 버튼 클릭');
-                Linking.openURL(`${KAKAO_MESSAGE}`);
+                amplitude.track('위험 신호 - 상담 카톡 클릭');
+                WebBrowser.openBrowserAsync(`${KAKAO_MESSAGE}`);
               }}
             />
             <Button
@@ -106,9 +107,8 @@ const DangerAlertPage = () => {
               primary={true}
               icon="search"
               onPress={() => {
-                console.log('상담 기관 버튼 클릭');
-                //상담 기관 안내
-                Linking.openURL(
+                amplitude.track('위험 신호 - 상담 관련 노션 클릭');
+                WebBrowser.openBrowserAsync(
                   'https://autumn-flier-d18.notion.site/1268e75d989680f7b4f2d63d66f4a08a?pvs=4',
                 ); //24시간 넘은 경우 -> 상담소로
               }}

@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import { TCommonResult } from './common.types';
 import { instance } from './interceptor';
 import { TAllowedNotifications, TSetNotification } from './notification.types';
@@ -95,7 +96,11 @@ export const setNotificationStatus = async (
 //INFO: 최신 버전 받기
 export const getLatestVersion = async (): Promise<TLatestVersion | undefined> => {
   try {
-    const res = await instance.get('/v1/users/check-version');
+    const res = await instance.get('/v1/users/check-version', {
+      params: {
+        platform: Platform.OS,
+      },
+    });
     return res.data;
   } catch (error) {
     console.error('[ERROR] getlatest version', error);

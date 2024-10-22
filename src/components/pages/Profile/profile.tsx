@@ -1,7 +1,8 @@
 import { css } from '@emotion/native';
 import { Image } from 'expo-image';
+import * as WebBrowser from 'expo-web-browser';
 import React, { useEffect } from 'react';
-import { Linking, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Carousel, View } from 'react-native-ui-lib';
 import { getCarousel } from '../../../apis/carousel';
@@ -120,7 +121,7 @@ const Profile = () => {
                   activeOpacity={1}
                   onPress={() => {
                     if (key === '인스타그램') {
-                      Linking.openURL('https://www.instagram.com/remind_cookie/');
+                      WebBrowser.openBrowserAsync('https://www.instagram.com/remind_cookie/');
                     }
                   }}>
                   <View

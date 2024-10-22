@@ -1,5 +1,5 @@
-import * as Linking from 'expo-linking';
 import * as Notifications from 'expo-notifications';
+import * as WebBrowser from 'expo-web-browser';
 import React, { useEffect } from 'react';
 import { Alert, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -137,14 +137,14 @@ const Setting: React.FC<any> = ({ navigation }) => {
               // navigation.navigate(RootStackName.SettingStackNavigator, {
               //   screen: SettingStackName.ChannelTalk,
               // })
-              Linking.openURL('https://j2wk7.channel.io/home')
+              WebBrowser.openBrowserAsync('https://j2wk7.channel.io/home')
             }
           />
           <MenuRow
             text="서비스 이용약관"
             onPress={
               () =>
-                Linking.openURL(
+                WebBrowser.openBrowserAsync(
                   'https://autumn-flier-d18.notion.site/reMIND-167ef1180e2d42b09d019e6d187fccfd',
                 )
               // navigation.navigate(RootStackName.SettingStackNavigator, {
@@ -156,7 +156,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
             text="개인정보 처리방침"
             onPress={
               () =>
-                Linking.openURL(
+                WebBrowser.openBrowserAsync(
                   'https://autumn-flier-d18.notion.site/reMIND-167ef1180e2d42b09d019e6d187fccfd',
                 )
               // navigation.navigate(RootStackName.SettingStackNavigator, {

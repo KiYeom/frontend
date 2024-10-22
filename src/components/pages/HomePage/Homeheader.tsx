@@ -5,8 +5,7 @@ import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 import Icon from '../../icons/icons';
 import { Homeheader } from './Homeheader.style';
 
-const Header = ({ navigation, riskScore, icon, onIconPress }) => {
-  console.log('=============', icon);
+const Header = ({ navigation, riskStatus, onIconPress }) => {
   return (
     <Homeheader>
       <Icon name="remind-logo" />
@@ -19,7 +18,11 @@ const Header = ({ navigation, riskScore, icon, onIconPress }) => {
           align-items: center;
         `}
         onPress={onIconPress}>
-        {icon == null ? (
+        {riskStatus === 'danger' ? (
+          <Icon name="danger-sign" />
+        ) : riskStatus === 'danger-opened' ? (
+          <Icon name="danger-sign-opened" />
+        ) : (
           <>
             <Text
               style={css`
@@ -36,8 +39,6 @@ const Header = ({ navigation, riskScore, icon, onIconPress }) => {
               color={palette.primary[500]}
             />
           </>
-        ) : (
-          <Icon name={icon} />
         )}
       </TouchableOpacity>
     </Homeheader>
