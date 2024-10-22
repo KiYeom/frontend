@@ -1,11 +1,18 @@
 import React, { useEffect } from 'react';
-import { ImageBackground, ScrollView, Text, View } from 'react-native';
+import { ImageBackground, Linking, Platform, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import palette from '../../../assets/styles/theme';
+import { PHONE_NUMBER } from '../../../constants/Constants';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { getUserNickname } from '../../../utils/storageUtils';
 import Button from '../../button/button';
 import { BtnContainer, Container, Desc, ImageContainer, Title } from './DangerAlertPage.style';
+
+const cookieLetter = {
+  image:
+    'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/home/letter/cookieletter.png',
+};
+
 const DangerAlertPage = () => {
   const [userNickname, setUserNickname] = React.useState<string | null>(null);
   const insets = useSafeAreaInsets();
@@ -30,7 +37,7 @@ const DangerAlertPage = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
               }}
-              source={require('../../../assets/images/letterss.png')}
+              source={{ uri: cookieLetter.image }}
               resizeMode="cover">
               <Text
                 style={{
@@ -56,8 +63,49 @@ const DangerAlertPage = () => {
               24시간 무료 비밀 보장 상담 센터를 알아왔어요.{'\n'}
               쿠키랑 같이 연락해볼까요?
             </Desc>
-            <Button title="상담선생님과 전화하기 (109)" primary={true} icon="call" />
-            <Button title="상담선생님과 문자하기 (카카오톡)" primary={true} icon="text" />
+            <Button
+              title="상담선생님과 전화하기 (109)"
+              primary={true}
+              icon="call"
+              onPress={() => {
+                //Linking.openURL('tel://01094114068');
+                /*Linking.canOpenURL('tel://01094114068').then((supported) => {
+                  if (supported) {
+                    Linking.openURL('tel://01094114068');
+                  } else {
+                    console.log('전화 기능은 시뮬레이터에서 사용할 수 없습니다');
+                  }
+                });*/
+                if (Platform.OS === 'android') {
+                  console.log('android');
+                  Linking.openURL(`tel:${PHONE_NUMBER}`);
+                } else {
+                  // iOS에서 전화 걸기
+                  console.log('ios');
+                  Linking.openURL(`tel://${PHONE_NUMBER}`);
+                }
+              }}
+            />
+            <Button
+              title="상담선생님과 문자하기 (카카오톡)"
+              primary={true}
+              icon="text"
+              onPress={() => {
+                console.log('상담문자 버튼 클릭');
+              }}
+            />
+            <Button
+              title="다른 상담 기관 알아보기"
+              primary={true}
+              icon="search"
+              onPress={() => {
+                console.log('상담 기관 버튼 클릭');
+                //상담 기관 안내
+                Linking.openURL(
+                  'https://autumn-flier-d18.notion.site/1268e75d989680f7b4f2d63d66f4a08a?pvs=4',
+                ); //24시간 넘은 경우 -> 상담소로
+              }}
+            />
           </BtnContainer>
         </Container>
       </ScrollView>

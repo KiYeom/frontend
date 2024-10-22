@@ -55,7 +55,7 @@ export const clearUserInfo = (): void => {
   storage.delete(USER_BIRTHDATE);
   storage.delete(USER_GENDER);
   storage.delete(NOTIFICATION_SENT);
-  storage.delete(DANDER_SIGN);
+  storage.delete(RISK);
 };
 
 export const setInfoWhenLogin = (
@@ -238,6 +238,7 @@ export const getRiskData = (): { isChecked: boolean; timestamp: number } | null 
       const currentTime = new Date().getTime();
       if (currentTime - parsedData.timestamp > ONE_DAY_IN_MS) {
         // 24시간이 경과한 경우 -> 로컬을 비운다
+        console.log('24시간 경과');
         clearRiskData();
         return null;
       }

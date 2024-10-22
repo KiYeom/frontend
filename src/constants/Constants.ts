@@ -247,3 +247,5 @@ export const helloTexts = [
 
 export const RISK_SCORE_THRESHOLD = 85;
 export const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
+//export const ONE_DAY_IN_MS = 60 * 1000;
+export const PHONE_NUMBER = '02-1234-5678';

@@ -6,13 +6,13 @@ import { helloTexts, HomeStackName, RootStackName } from '../../../constants/Con
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { getUserNickname } from '../../../utils/storageUtils';
 import Icon from '../../icons/icons';
-import './HomeChatBtn.style';
 import {
   CookieImage,
   HomeBtn,
   HomeBtnDescription,
   HomeBtnText,
   HomeBtnTitle,
+  RiskCookieImage,
 } from './HomeChatBtn.style';
 
 const getRandomHello = (): string => {
@@ -58,12 +58,21 @@ const HomeChatBtn = ({ navigation, riskScore }) => {
           />
         </HomeBtnDescription>
       </View>
-      <CookieImage
-        style={{
-          resizeMode: 'contain',
-        }}
-        source={require('../../../assets/images/homebuttonimage.png')}
-      />
+      {riskScore >= 85 ? (
+        <RiskCookieImage
+          style={{
+            resizeMode: 'contain',
+          }}
+          source={require('../../../assets/images/homebuttonrainbowimage.png')}
+        />
+      ) : (
+        <CookieImage
+          style={{
+            resizeMode: 'contain',
+          }}
+          source={require('../../../assets/images/homebuttonimage.png')}
+        />
+      )}
     </HomeBtn>
   );
 };

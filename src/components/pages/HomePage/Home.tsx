@@ -94,13 +94,14 @@ const Home: React.FC<any> = ({ navigation }) => {
       console.log('점수', fetchedRiskScore);
 
       const storedData = getRiskData();
+      console.log('현재 위험 점수', fetchedRiskScore);
       console.log('storeageData', storedData); // 저장됐던 데이터 출력
       const currentTime = new Date().getTime(); // 현재 시간
       console.log('currentTime!!!', currentTime); // 예: 1729486534728
 
       // 위험 점수가 85점 이상인 경우
       if (fetchedRiskScore >= RISK_SCORE_THRESHOLD) {
-        console.log('하이');
+        console.log('85점 이상임');
         if (storedData) {
           //로컬 스토리지 확인
           //저장된 데이터가 있을 때
@@ -116,8 +117,10 @@ const Home: React.FC<any> = ({ navigation }) => {
         } else {
           console.log('로컬스토리지에 값이 없음');
           //로컬스토리지 확인
-          //저장된 데이터가 없을 때 -> 위험 감지 안 된 상태 -> > 아이콘으로
+          //85점 이상인데 로컬스토리지에 값이 없음 => 타임스탬프 저장해야 함
           setIcon('danger-sign');
+          const currentTime = new Date().getTime();
+          saveRiskData(false, currentTime); //확인했으니까 true로
         }
       } else {
         // 위험 점수가 85점 이하인 경우 (안 위험한 상태)
