@@ -67,9 +67,16 @@ const Home: React.FC<any> = ({ navigation }) => {
   //헤더 아이콘 클릭했을 때 이동 페이지
   const handleDangerPress = () => {
     console.log('위험 아이콘 클릭: ', riskStatus);
-    if (riskStatus === 'danger' || riskStatus === 'danger-opened') {
+    if (riskStatus === 'danger') {
       //위험한 상태일 때 클릭을 했으면
       saveRiskData(true, new Date().getTime());
+      navigation.navigate(RootStackName.DangerStackNavigator, {
+        screen: DangerStackName.DangerAlert,
+      }); //쿠키 편지 화면으로 이동한다
+      return;
+    }
+    if (riskStatus === 'danger-opened') {
+      //위험한 상태일 때 확인을 했으면
       navigation.navigate(RootStackName.DangerStackNavigator, {
         screen: DangerStackName.DangerAlert,
       }); //쿠키 편지 화면으로 이동한다
