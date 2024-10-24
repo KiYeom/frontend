@@ -33,3 +33,14 @@ export const ContentContainer = styled.View`
 
   padding: ${rsHeight * 40 + 'px'} ${rsWidth * 24 + 'px'};
 `;
+
+export const TermsContainer = styled.View`
+  gap: ${rsHeight * 20 + 'px'};
+  padding: ${rsHeight * 30 + 'px'} ${rsWidth * 24 + 'px'};
+`;
+
+export const AlertMessage = styled.Text`
+  font-size: ${rsFont * 18 + 'px'};
+  font-family: Pretendard-Regular;
+  color: ${palette.neutral[400]};
+`;

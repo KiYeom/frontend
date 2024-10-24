@@ -23,9 +23,32 @@ export default class Analytics {
     this.sendEvent('로그인 화면 진입', 'loginScreen');
   };
 
+  //회원가입 - 게스트모드 버튼 클릭
+  public static clickGuestModeButton = (): void => {
+    this.sendEvent('로그인 화면 - <비회원으로 바로 시작하기> 버튼 클릭', 'guestModeButton');
+  };
+
+  //회원가입 - 구글 로그인 버튼 클릭
+  public static clickGoogleLoginButton = (): void => {
+    this.sendEvent('로그인 화면 - <구글로 로그인> 버튼 클릭', 'googleLoginButton');
+  };
+
+  //회원가입 - 애플 로그인 버튼 클릭
+  public static clickAppleLoginButton = (): void => {
+    this.sendEvent('로그인 화면 - <애플로 로그인> 버튼 클릭', 'appleLoginButton');
+  };
+
   //회원가입 - 닉네임+약관 화면
   public static watchSignUpScreen = (): void => {
     this.sendEvent('회원가입 화면(닉네임+약관) 진입', 'signUpScreen');
+  };
+
+  //회원가입 - 저장 버튼 클릭
+  public static clickSignUpSaveButton = (): void => {
+    this.sendEvent(
+      '회원가입 화면(닉네임+약관) - 회원가입 완료(저장) 버튼 클릭',
+      'signUpSaveButton',
+    );
   };
 
   //탭바 클릭

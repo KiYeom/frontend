@@ -10,10 +10,9 @@ import { Platform } from 'react-native';
 import { ssoLogin } from '../../../apis/auth';
 import { AuthStackName } from '../../../constants/Constants';
 import { TVender } from '../../../constants/types';
+import Analytics from '../../../utils/analytics';
 import { UseSigninStatus } from '../../../utils/signin-status';
 import { getDeviceIdFromMMKV, setInfoWhenLogin, setTokenInfo } from '../../../utils/storageUtils';
-import GuestModal from '../../modals/guest-modal';
-import PrivacyModal from '../../modals/privacy-modal';
 import {
   ButtonContainer,
   Container,
@@ -227,7 +226,9 @@ const Login: React.FC<any> = ({ navigation }) => {
           activeOpacity={1}
           onPress={() => {
             setLastVendor('guest');
-            setGuestModal(true);
+            //setGuestModal(true);
+            Analytics.clickGuestModeButton();
+            if (lastVendor) onHandleLogin(lastVendor);
           }}
           disabled={loading}>
           <LoginBtnLabel vendor="guest">비회원으로 바로 시작하기</LoginBtnLabel>
@@ -237,7 +238,9 @@ const Login: React.FC<any> = ({ navigation }) => {
           activeOpacity={1}
           onPress={() => {
             setLastVendor('google');
-            setPrivacyModal(true);
+            //setPrivacyModal(true);
+            Analytics.clickGoogleLoginButton();
+            if (lastVendor) onHandleLogin(lastVendor);
           }}
           disabled={loading}>
           <LoginBtnIcon source={require('../../../assets/images/google.png')} />
@@ -249,7 +252,9 @@ const Login: React.FC<any> = ({ navigation }) => {
             activeOpacity={1}
             onPress={() => {
               setLastVendor('apple');
-              setPrivacyModal(true);
+              //setPrivacyModal(true);
+              Analytics.clickAppleLoginButton();
+              if (lastVendor) onHandleLogin(lastVendor);
             }}
             disabled={loading}>
             <LoginBtnIcon source={require('../../../assets/images/apple.png')} />
@@ -257,20 +262,6 @@ const Login: React.FC<any> = ({ navigation }) => {
           </LoginBtn>
         )}
       </ButtonContainer>
-      <PrivacyModal
-        modalVisible={privacyModal}
-        onSubmit={() => {
-          if (lastVendor) onHandleLogin(lastVendor);
-        }}
-        onClose={() => setPrivacyModal(false)}
-      />
-      <GuestModal
-        modalVisible={guestModal}
-        onSubmit={() => {
-          onHandleLogin('guest');
-        }}
-        onClose={() => setGuestModal(false)}
-      />
     </Container>
   );
 };

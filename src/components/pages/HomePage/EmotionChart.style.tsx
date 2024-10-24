@@ -18,6 +18,12 @@ export const SmallTitle = styled.Text`
   text-align: left;
 `;
 
+export const AlertMessage = styled.Text`
+  font-size: ${rsFont * 15 + 'px'};
+  font-family: Pretendard-SemiBold;
+  color: ${palette.neutral[500]};
+`;
+
 //아래 설명 글
 export const Desc = styled.Text`
   font-family: Pretendard-SemiBold;

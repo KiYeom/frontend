@@ -24,7 +24,7 @@ const Chat: React.FC = ({ navigation }) => {
     } else {
       //console.log('처음 대화를 시작함');
       const welcomeMessage = [botAnswer()];
-      welcomeMessage[0].text = `안녕하세요, ${userName}님! 저는 항상 ${userName}님 곁에서 항상 힘이 되어드리고 싶은 리트리버 쿠키예요🐶💚 함께 있는 동안 ${userName}님에게 작은 위로와 행복을 전해드리고 싶어요!🍀💕`;
+      welcomeMessage[0].text = `반가워요, ${userName}님!💚 저는 ${userName}님 곁에서 힘이 되어드리고 싶은 골든 리트리버 쿠키예요🐶 이 곳은 ${userName}님과 저만의 비밀 공간이니, 어떤 이야기도 편하게 나눠주세요!\n\n반말이 편할까요, 아니면 존댓말이 좋으실까요? 원하는 말투로 대화할게요! 🍀💕`;
       saveChatLogs(welcomeMessage);
       return welcomeMessage;
     }
