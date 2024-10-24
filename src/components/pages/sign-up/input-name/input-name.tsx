@@ -198,7 +198,7 @@ const InputName = ({ route, navigation }) => {
                 text-family: 'Prentendard-Regular';
                 color: ${palette.neutral[900]};
               `}>
-              서비스 전체 약관
+              서비스 전체 약관 보기
             </Text>
           </TouchableOpacity>
         </TermsContainer>

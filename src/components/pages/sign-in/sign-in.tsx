@@ -227,7 +227,8 @@ const Login: React.FC<any> = ({ navigation }) => {
           activeOpacity={1}
           onPress={() => {
             setLastVendor('guest');
-            setGuestModal(true);
+            //setGuestModal(true);
+            if (lastVendor) onHandleLogin(lastVendor);
           }}
           disabled={loading}>
           <LoginBtnLabel vendor="guest">비회원으로 바로 시작하기</LoginBtnLabel>
@@ -237,7 +238,8 @@ const Login: React.FC<any> = ({ navigation }) => {
           activeOpacity={1}
           onPress={() => {
             setLastVendor('google');
-            setPrivacyModal(true);
+            //setPrivacyModal(true);
+            if (lastVendor) onHandleLogin(lastVendor);
           }}
           disabled={loading}>
           <LoginBtnIcon source={require('../../../assets/images/google.png')} />
@@ -249,7 +251,8 @@ const Login: React.FC<any> = ({ navigation }) => {
             activeOpacity={1}
             onPress={() => {
               setLastVendor('apple');
-              setPrivacyModal(true);
+              //setPrivacyModal(true);
+              if (lastVendor) onHandleLogin(lastVendor);
             }}
             disabled={loading}>
             <LoginBtnIcon source={require('../../../assets/images/apple.png')} />
