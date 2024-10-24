@@ -2,7 +2,6 @@ import { css } from '@emotion/native';
 import React from 'react';
 import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
 import { updateUserProfile } from '../../../../apis/auth';
-import { AuthStackName } from '../../../../constants/Constants';
 import { UseSigninStatus } from '../../../../utils/signin-status';
 import { setInfoWhenLogin, setUserNickname } from '../../../../utils/storageUtils';
 import Button from '../../../button/button';
@@ -56,10 +55,25 @@ const InputName = ({ route, navigation }) => {
     console.log('isGuestMode', isGuestMode);
     setLoading(true);
     setUserNickname(nickname);
+    guestModeSignUp()
+      .then((res) => {
+        if (!res) {
+          alert('닉네임을 저장하는데 실패했습니다. 잠시 후 다시 시도해주세요.');
+        }
+      })
+      .catch((error) => {
+        alert('닉네임을 저장하는데 실패했습니다. 잠시 후 다시 시도해주세요.');
+        console.error(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+    /*
     if (!isGuestMode) {
       navigation.navigate(AuthStackName.InputProfile);
       setLoading(false);
     } else {
+      //게스트모드이면
       guestModeSignUp()
         .then((res) => {
           if (!res) {
@@ -73,7 +87,7 @@ const InputName = ({ route, navigation }) => {
         .finally(() => {
           setLoading(false);
         });
-    }
+    }*/
   };
 
   return (
@@ -83,14 +97,14 @@ const InputName = ({ route, navigation }) => {
           flex: 1;
         `}>
         <TitleContaienr>
-          <Annotation>만나서 반가워요!</Annotation>
-          <Title>쿠키에게 당신의{'\n'}닉네임을 알려주세요.</Title>
+          <Annotation>만나서 반가워요🐾</Annotation>
+          <Title>쿠키가 불러드릴{'\n'}멋진 별명을 알려주세요!🐶</Title>
         </TitleContaienr>
         <ContentContainer>
           <Input
             placeholder="내용을 입력해주세요."
             status={validateName(name)}
-            message="2~15 글자 사이의 닉네임을 지어주세요!"
+            message="2~15 글자 사이의 별명을 지어주세요!🐕"
             withMessage={true}
             onChange={(text) => {
               if (text.length < 15) setName(text);
