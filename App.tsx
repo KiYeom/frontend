@@ -18,6 +18,7 @@ import DangerStackNavigator from './src/navigators/DangerStackNavigator';
 import HomeStackNavigator from './src/navigators/HomeStackNavigator';
 import SettingStackNavigator from './src/navigators/SettingStackNavigator';
 import StatisticStackNavigator from './src/navigators/StatisticStackNavigator';
+import Analytics from './src/utils/analytics';
 import { getDeviceId } from './src/utils/device-info';
 import { UseSigninStatus } from './src/utils/signin-status';
 import {
@@ -103,6 +104,10 @@ const App: React.FC = () => {
       });
     }
   }, [loaded, error]);
+
+  useEffect(() => {
+    Analytics.watchLoginScreen();
+  }, []);
 
   if (!loaded && !error) {
     return null;

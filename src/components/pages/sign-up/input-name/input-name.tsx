@@ -108,7 +108,6 @@ const InputName = ({ route, navigation }) => {
           {isGuestMode && (
             <TouchableOpacity
               style={{
-                //backgroundColor: 'pink',
                 flexDirection: 'row',
                 justifyContent: 'space-between',
               }}
@@ -130,7 +129,6 @@ const InputName = ({ route, navigation }) => {
           )}
           <TouchableOpacity
             style={{
-              //backgroundColor: 'pink',
               flexDirection: 'row',
               justifyContent: 'space-between',
             }}

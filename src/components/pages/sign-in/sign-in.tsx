@@ -10,10 +10,9 @@ import { Platform } from 'react-native';
 import { ssoLogin } from '../../../apis/auth';
 import { AuthStackName } from '../../../constants/Constants';
 import { TVender } from '../../../constants/types';
+import Analytics from '../../../utils/analytics';
 import { UseSigninStatus } from '../../../utils/signin-status';
 import { getDeviceIdFromMMKV, setInfoWhenLogin, setTokenInfo } from '../../../utils/storageUtils';
-import GuestModal from '../../modals/guest-modal';
-import PrivacyModal from '../../modals/privacy-modal';
 import {
   ButtonContainer,
   Container,
@@ -228,6 +227,7 @@ const Login: React.FC<any> = ({ navigation }) => {
           onPress={() => {
             setLastVendor('guest');
             //setGuestModal(true);
+            Analytics.clickGuestModeButton();
             if (lastVendor) onHandleLogin(lastVendor);
           }}
           disabled={loading}>
@@ -239,6 +239,7 @@ const Login: React.FC<any> = ({ navigation }) => {
           onPress={() => {
             setLastVendor('google');
             //setPrivacyModal(true);
+            Analytics.clickGoogleLoginButton();
             if (lastVendor) onHandleLogin(lastVendor);
           }}
           disabled={loading}>
@@ -252,6 +253,7 @@ const Login: React.FC<any> = ({ navigation }) => {
             onPress={() => {
               setLastVendor('apple');
               //setPrivacyModal(true);
+              Analytics.clickAppleLoginButton();
               if (lastVendor) onHandleLogin(lastVendor);
             }}
             disabled={loading}>
@@ -260,20 +262,6 @@ const Login: React.FC<any> = ({ navigation }) => {
           </LoginBtn>
         )}
       </ButtonContainer>
-      <PrivacyModal
-        modalVisible={privacyModal}
-        onSubmit={() => {
-          if (lastVendor) onHandleLogin(lastVendor);
-        }}
-        onClose={() => setPrivacyModal(false)}
-      />
-      <GuestModal
-        modalVisible={guestModal}
-        onSubmit={() => {
-          onHandleLogin('guest');
-        }}
-        onClose={() => setGuestModal(false)}
-      />
     </Container>
   );
 };
