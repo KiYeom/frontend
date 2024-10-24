@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { getNotificationStatus, setNotificationStatus } from '../../../../apis/notification';
+import Analytics from '../../../../utils/analytics';
 import SwitchRow from '../../../switch-row/switch-row';
 import { ScrollContainer } from './notifications.styles';
 
@@ -28,6 +29,7 @@ const Notifications = () => {
   };
 
   useEffect(() => {
+    Analytics.watchNotificationSettingScreen();
     getNotificationStatus()
       .then((res) => {
         if (res) {
@@ -56,14 +58,20 @@ const Notifications = () => {
         desc="업데이트 공지, 시스템 점검 등 서비스 제공과 관련된 알림을 드립니다. "
         isEnabled={systemSwitchState}
         disabled={systemLoading}
-        onPress={() => setSystemNotification(!systemSwitchState)}
+        onPress={() => {
+          Analytics.clickNotificationSettingSwitch('system', !systemSwitchState);
+          setSystemNotification(!systemSwitchState);
+        }}
       />
       <SwitchRow
         title="쿠키 채팅 알림"
         desc="쿠기가 사용자에게 메시지를 보낼 때 알림을 드립니다. "
         isEnabled={cookieSwitchState}
         disabled={cookieLoading}
-        onPress={() => setCookieNotification(!cookieSwitchState)}
+        onPress={() => {
+          Analytics.clickNotificationSettingSwitch('cookie', !cookieSwitchState);
+          setCookieNotification(!cookieSwitchState);
+        }}
       />
     </ScrollContainer>
   );

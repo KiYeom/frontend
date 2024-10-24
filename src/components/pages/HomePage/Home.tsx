@@ -14,6 +14,7 @@ import {
   RISK_SCORE_THRESHOLD,
   RootStackName,
 } from '../../../constants/Constants';
+import Analytics from '../../../utils/analytics';
 import requestNotificationPermission from '../../../utils/NotificationToken';
 import { ratio, rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { getRiskData, saveRiskData } from '../../../utils/storageUtils';
@@ -53,6 +54,7 @@ const Home: React.FC<any> = ({ navigation }) => {
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
+    Analytics.watchTabHomeScreen();
     requestNotificationPermission();
     getCarousel('home')
       .then((res) => {
@@ -69,6 +71,7 @@ const Home: React.FC<any> = ({ navigation }) => {
     console.log('위험 아이콘 클릭: ', riskStatus);
     if (riskStatus === 'danger') {
       //위험한 상태일 때 클릭을 했으면
+      Analytics.clickDangerLetterButton(riskScore);
       saveRiskData(true, new Date().getTime());
       navigation.navigate(RootStackName.DangerStackNavigator, {
         screen: DangerStackName.DangerAlert,
@@ -77,6 +80,7 @@ const Home: React.FC<any> = ({ navigation }) => {
     }
     if (riskStatus === 'danger-opened') {
       //위험한 상태일 때 확인을 했으면
+      Analytics.clickOpenedDangerLetterButton(riskScore);
       navigation.navigate(RootStackName.DangerStackNavigator, {
         screen: DangerStackName.DangerAlert,
       }); //쿠키 편지 화면으로 이동한다
@@ -84,6 +88,7 @@ const Home: React.FC<any> = ({ navigation }) => {
     }
     if (riskStatus === 'safe') {
       //상담 기관 안내
+      Analytics.clickClinicInfoButton(riskScore);
       WebBrowser.openBrowserAsync(
         'https://autumn-flier-d18.notion.site/1268e75d989680f7b4f2d63d66f4a08a?pvs=4',
       );
@@ -191,6 +196,7 @@ const Home: React.FC<any> = ({ navigation }) => {
                 key={i}
                 activeOpacity={1}
                 onPress={() => {
+                  Analytics.clickTabHomeCarousel(carousel.image);
                   WebBrowser.openBrowserAsync(carousel.url);
                 }}>
                 <Image

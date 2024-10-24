@@ -2,6 +2,7 @@ import { css } from '@emotion/native';
 import { Text, TouchableOpacity, View } from 'react-native';
 import palette from '../../../assets/styles/theme';
 import { StatisticStackName } from '../../../constants/Constants';
+import Analytics from '../../../utils/analytics';
 import { ratio, rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { TouchableDateLine } from '../../atoms/DateLine/DateLine.style';
 import Icon from '../../icons/icons';
@@ -44,11 +45,15 @@ const ReportType = (props: DateProps) => {
           padding-horizontal: ${rsWidth * 16 + 'px'};
           padding-vertical: ${rsHeight * 10 + 'px'};
         `}
-        onPress={() =>
-          navigation.navigate(
-            type === '일일리포트' ? StatisticStackName.Daily : StatisticStackName.Period,
-          )
-        }>
+        onPress={() => {
+          if (type === '기간리포트') {
+            Analytics.clickPeriodButton();
+            navigation.replace(StatisticStackName.Period);
+          } else {
+            Analytics.clickDailyButton();
+            navigation.replace(StatisticStackName.Daily);
+          }
+        }}>
         <Text
           style={css`
             font-size: ${rsFont * 16 + 'px'};

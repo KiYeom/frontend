@@ -1,5 +1,5 @@
-import * as amplitude from '@amplitude/analytics-react-native';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { AppEventsLogger } from 'react-native-fbsdk-next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import palette from '../../assets/styles/theme';
 import {
@@ -8,6 +8,7 @@ import {
   TabBarLabel,
   TabScreenName,
 } from '../../constants/Constants';
+import Analytics from '../../utils/analytics';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import Icon from '../icons/icons';
 import { BottomTabBarContainer, TabButtonContainer, TabLabel } from './bottom-tab-bar.style';
@@ -39,18 +40,19 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
             canPreventDefault: true,
           });
 
-          amplitude.track(`${route.name} bottom tabbar button clicked`);
-
           //탭 클릭 시 이동
           if (!isFocused && !event.defaultPrevented) {
+            Analytics.clickTabButton(label);
             navigation.navigate(route.name, route.params);
           }
         };
 
         const onLongPress = () => {
           if (route.name === TabScreenName.Setting && isFocused) {
-            //상담사 연결 페이지 진입.
-            console.log('상담사 연결 페이지 진입');
+            Analytics.clickTabSettingConnectButton();
+            AppEventsLogger.logEvent(AppEventsLogger.AppEvents.CompletedRegistration, {
+              [AppEventsLogger.AppEventParams.RegistrationMethod]: 'email',
+            });
             navigation.navigate(RootStackName.SettingStackNavigator, {
               screen: SettingStackName.OrganizationStatus,
             });

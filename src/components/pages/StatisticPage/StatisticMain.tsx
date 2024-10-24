@@ -1,4 +1,3 @@
-import * as amplitude from '@amplitude/analytics-react-native';
 import { css } from '@emotion/native';
 import { useNavigation } from '@react-navigation/native';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -7,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { dailyAnalyze, dailyAnalyzeStatus } from '../../../apis/analyze';
 import { TEmotionCheck, TLabel } from '../../../apis/analyze.type';
 import palette from '../../../assets/styles/theme';
+import Analytics from '../../../utils/analytics';
 import { rsHeight } from '../../../utils/responsive-size';
 import DateLine from '../../atoms/DateLine/DateLine';
 import SingleDatePickerModal from '../../rangeCal/single-date-picker-modal';
@@ -80,6 +80,7 @@ const StatisticMain: React.FC<any> = () => {
   }, []);
 
   useEffect(() => {
+    Analytics.watchDailyStatisticScreen();
     dailyAnalyzeStatus(2024).then((data) => {
       if (!data) return;
       setAvailableDates(data.dates);
@@ -125,8 +126,8 @@ const StatisticMain: React.FC<any> = () => {
             type="기간리포트"
             navigation={navigation}
             onPress={() => {
+              Analytics.clickDailyCalendarButton();
               setOpenModal(true);
-              amplitude.track('기간 리포트 버튼 클릭');
             }}></ReportType>
           <PageName type={`쿠키가 생각했던${'\n'}주인님의 모습이에요`} />
           <DateLine value={getDateString(date ?? getServerYesterday())} />

@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getLatestVersion, logout } from '../../../apis/setting';
 import palette from '../../../assets/styles/theme';
 import { CHATLOG, RootStackName, SettingStackName } from '../../../constants/Constants';
+import Analytics from '../../../utils/analytics';
 import { getAppVersion } from '../../../utils/device-info';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { UseSigninStatus } from '../../../utils/signin-status';
@@ -68,12 +69,25 @@ const Setting: React.FC<any> = ({ navigation }) => {
         {
           text: '아니오', // 버튼 제목
           style: 'cancel',
+          onPress: () => {
+            Analytics.clickTabSettingLogoutCancelButton();
+          },
         },
-        { text: '네', onPress: () => logoutRequest() },
+        {
+          text: '네',
+          onPress: () => {
+            Analytics.clickTabSettingLogoutConfirmButton();
+            logoutRequest();
+          },
+        },
       ],
       { cancelable: false }, //alert 밖에 눌렀을 때 alert 안 없어지도록
     );
   };
+
+  useEffect(() => {
+    Analytics.watchTabSettingScreen();
+  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -108,11 +122,12 @@ const Setting: React.FC<any> = ({ navigation }) => {
       <SettingContainer>
         <UserInfoContainer
           activeOpacity={1}
-          onPress={() =>
+          onPress={() => {
+            Analytics.clickTabSettingEditInfoButton();
             navigation.navigate(RootStackName.SettingStackNavigator, {
               screen: SettingStackName.EditUserInfo,
-            })
-          }>
+            });
+          }}>
           <ProfileImage source={require('../../../assets/images/setting_default_profile.png')} />
           <UserNickname>{getUserNickname()}</UserNickname>
           <Icon
@@ -125,40 +140,38 @@ const Setting: React.FC<any> = ({ navigation }) => {
         <AppSettingContainer>
           <MenuRow
             text="알림설정"
-            onPress={() =>
+            onPress={() => {
+              Analytics.clickTabSettingNotificationButton();
               navigation.navigate(RootStackName.SettingStackNavigator, {
                 screen: SettingStackName.UserNotifications,
-              })
-            }
+              });
+            }}
           />
           <MenuRow
             text="문의하기"
-            onPress={() =>
-              // navigation.navigate(RootStackName.SettingStackNavigator, {
-              //   screen: SettingStackName.ChannelTalk,
-              // })
-              WebBrowser.openBrowserAsync('https://j2wk7.channel.io/home')
-            }
+            onPress={() => {
+              Analytics.clickTabSettingInquiryButton();
+              WebBrowser.openBrowserAsync('https://j2wk7.channel.io/home');
+            }}
           />
           <MenuRow
             text="서비스 이용약관"
-            onPress={
-              () =>
-                WebBrowser.openBrowserAsync(
-                  'https://autumn-flier-d18.notion.site/reMIND-167ef1180e2d42b09d019e6d187fccfd',
-                )
-              // navigation.navigate(RootStackName.SettingStackNavigator, {
-              //   screen: SettingStackName.PrivacyPolicy,
-              // })
-            }
+            onPress={() => {
+              Analytics.clickTabSettingServiceTermsButton();
+              WebBrowser.openBrowserAsync(
+                'https://autumn-flier-d18.notion.site/reMIND-167ef1180e2d42b09d019e6d187fccfd',
+              );
+            }}
           />
           <MenuRow
             text="개인정보 처리방침"
             onPress={
-              () =>
+              () => {
+                Analytics.clickTabSettingPrivacyPolicyButton();
                 WebBrowser.openBrowserAsync(
                   'https://autumn-flier-d18.notion.site/reMIND-167ef1180e2d42b09d019e6d187fccfd',
-                )
+                );
+              }
               // navigation.navigate(RootStackName.SettingStackNavigator, {
               //   screen: SettingStackName.PrivacyPolicy,
               // })
@@ -166,11 +179,12 @@ const Setting: React.FC<any> = ({ navigation }) => {
           />
           <MenuRow
             text="오픈소스 라이센스"
-            onPress={() =>
+            onPress={() => {
+              Analytics.clickTabSettingOpenSourceButton();
               navigation.navigate(RootStackName.SettingStackNavigator, {
                 screen: SettingStackName.LicensePage,
-              })
-            }
+              });
+            }}
           />
           <MenuRow text="앱 정보" showVersion={!loading} isLatest={isLatest} />
         </AppSettingContainer>
@@ -178,14 +192,21 @@ const Setting: React.FC<any> = ({ navigation }) => {
           <SubjectTextContainer>
             <SubjectText>계정 설정</SubjectText>
           </SubjectTextContainer>
-          <MenuRow text="로그아옷" onPress={() => logoutAlert()} />
+          <MenuRow
+            text="로그아옷"
+            onPress={() => {
+              Analytics.clickTabSettingLogoutButton();
+              logoutAlert();
+            }}
+          />
           <MenuRow
             text="회원탈퇴"
-            onPress={() =>
+            onPress={() => {
+              Analytics.clickTabSettingWithdrawalButton();
               navigation.navigate(RootStackName.SettingStackNavigator, {
                 screen: SettingStackName.DeactivateAlert,
-              })
-            }
+              });
+            }}
           />
         </UserSettingContainer>
       </SettingContainer>
