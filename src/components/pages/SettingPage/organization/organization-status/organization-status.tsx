@@ -3,6 +3,7 @@ import { ActivityIndicator, Alert, View } from 'react-native';
 import { disconnectOrganizationApi, getUserInfo } from '../../../../../apis/setting';
 import palette from '../../../../../assets/styles/theme';
 import { SettingStackName } from '../../../../../constants/Constants';
+import Analytics from '../../../../../utils/analytics';
 import Button from '../../../../button/button';
 import {
   AlertText,
@@ -41,11 +42,11 @@ const OrganizationStatus: React.FC = ({ navigation }) => {
     getUserInfo()
       .then((res) => {
         if (res && res.organization) {
+          Analytics.watchOrganizationInfoScreen();
           setOrganization(res.organization);
           setLoading(false);
           return;
         } else {
-          console.log('res: ', res);
           navigation.replace(SettingStackName.OrganizationConnect);
         }
       })
@@ -85,6 +86,7 @@ const OrganizationStatus: React.FC = ({ navigation }) => {
           disabled={loading}
           primary={false}
           onPress={() => {
+            Analytics.clickDisconnectButton();
             Alert.alert(
               '기관 연결 해제', // 첫번째 text: 타이틀 큰 제목
               '연결 해제 시, 기관에서 요약을 포함한 모든 정보을 접근할 수 없게 됩니다.\n\n기관 연결을 해제하시겠습니까?', // 두번째 text: 작은 제목
@@ -93,8 +95,17 @@ const OrganizationStatus: React.FC = ({ navigation }) => {
                 {
                   text: '연결유지', // 버튼 제목
                   style: 'cancel',
+                  onPress: () => {
+                    Analytics.clickDisconnectModalCancelButton();
+                  },
                 },
-                { text: '연결해제', onPress: () => disconnectOrganization() },
+                {
+                  text: '연결해제',
+                  onPress: () => {
+                    Analytics.clickDisconnectModalConfirmButton();
+                    disconnectOrganization();
+                  },
+                },
               ],
             );
           }}

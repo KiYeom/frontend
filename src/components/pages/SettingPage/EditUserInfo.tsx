@@ -1,10 +1,11 @@
 import { css } from '@emotion/native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { userEditInfo } from '../../../apis/userEditInfo'; //api 수정해야 함
 import palette from '../../../assets/styles/theme';
 import { TGender } from '../../../constants/types';
+import Analytics from '../../../utils/analytics';
 import {
   getUserBirthdate,
   getUserGender,
@@ -85,6 +86,10 @@ const EditUserInfo: React.FC = ({ navigation }) => {
       });
   };
 
+  useEffect(() => {
+    Analytics.watchUserInfoEditScreen();
+  }, []);
+
   return (
     <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <View
@@ -145,7 +150,10 @@ const EditUserInfo: React.FC = ({ navigation }) => {
               !(validateBirth(birthDate) === 'correct')
             }
             primary={true}
-            onPress={() => editUserInfo()}
+            onPress={() => {
+              Analytics.clickUserInfoEditInfoButton();
+              editUserInfo();
+            }}
           />
         </CTAContainer>
       </View>

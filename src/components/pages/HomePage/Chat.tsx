@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useRef, useState } from 'react';
 import { FlatList, Keyboard, KeyboardAvoidingView, Platform, View } from 'react-native';
 import { Message } from '../../../constants/Constants';
+import Analytics from '../../../utils/analytics';
 import { botAnswer, loadChatLogs, saveChatLogs } from '../../../utils/Chatting';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { getAiResponse, getChatting, getUserNickname } from '../../../utils/storageUtils';
@@ -32,6 +33,7 @@ const Chat: React.FC = ({ navigation }) => {
   const headerHeight = useHeaderHeight();
 
   useEffect(() => {
+    Analytics.watchChatScreen();
     loadChatLogs({ data, setData });
     //console.log('===채팅창 시작===', data);
     if (Array.isArray(data) && data.length > 1) {

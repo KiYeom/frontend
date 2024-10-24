@@ -1,8 +1,8 @@
-import * as amplitude from '@amplitude/analytics-react-native';
 import React, { useEffect } from 'react';
 import { Platform, View } from 'react-native';
 import palette from '../../../assets/styles/theme';
 import { helloTexts, HomeStackName, RootStackName } from '../../../constants/Constants';
+import Analytics from '../../../utils/analytics';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { getUserNickname } from '../../../utils/storageUtils';
 import Icon from '../../icons/icons';
@@ -38,8 +38,8 @@ const HomeChatBtn = ({ navigation, riskScore }) => {
     <HomeBtn
       os={Platform.OS}
       onPress={() => {
+        Analytics.clickTabHomeChatButton(riskScore);
         navigation.navigate(RootStackName.HomeStackNavigator, { screen: HomeStackName.Chat });
-        amplitude.track('채팅 버튼 클릭');
       }}
       status={'home'}
       riskScore={riskScore}>

@@ -1,4 +1,3 @@
-import * as amplitude from '@amplitude/analytics-react-native';
 import { css } from '@emotion/native';
 import React, { useEffect, useState } from 'react';
 import { Platform, View } from 'react-native';
@@ -6,6 +5,7 @@ import { ActivityIndicator } from 'react-native-paper';
 import { todayEmotionCheck } from '../../../apis/analyze';
 import palette from '../../../assets/styles/theme';
 import { HomeStackName, RootStackName } from '../../../constants/Constants';
+import Analytics from '../../../utils/analytics';
 import useRecordedEmotionStore from '../../../utils/emotion-recorded';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { getUserNickname } from '../../../utils/storageUtils';
@@ -74,10 +74,10 @@ const EmotionBtn = ({ navigation }) => {
     <HomeBtn
       os={Platform.OS}
       onPress={() => {
+        Analytics.clickTabHomeEmotionRecordButton(isNULL);
         navigation.navigate(RootStackName.HomeStackNavigator, {
           screen: HomeStackName.SmallEmotionChart,
         });
-        amplitude.track('감정 입력 버튼 클릭');
       }}
       status={'emotion'}>
       <>

@@ -15,7 +15,7 @@ module.exports = {
       supportsTablet: false,
       bundleIdentifier: 'com.ceunnseo.reMIND',
       usesAppleSignIn: true,
-      // googleServicesFile: process.env.GOOGLE_SERVICES_IOS_FILE,
+      googleServicesFile: process.env.GOOGLE_SERVICES_IOS_FILE,
     },
     android: {
       adaptiveIcon: {
@@ -83,16 +83,30 @@ module.exports = {
           },
           ios: {
             newArchEnabled: true,
+            useFrameworks: 'static',
           },
         },
       ],
       'expo-apple-authentication',
       'expo-localization',
+      '@react-native-firebase/app',
       'expo-build-properties',
       [
         'expo-asset',
         {
           assets: ['./src/assets/images/'],
+        },
+      ],
+      [
+        'react-native-fbsdk-next',
+        {
+          appID: process.env.FACEBOOK_APP_ID,
+          displayName: 'reMIND',
+          clientToken: process.env.FACEBOOK_CLIENT_TOKEN,
+          scheme: process.env.FACEBOOK_SCHEME,
+          isAutoInitEnabled: true,
+          advertiserIDCollectionEnabled: false,
+          autoLogAppEventsEnabled: false,
         },
       ],
     ],
