@@ -1,10 +1,11 @@
 import { css } from '@emotion/native';
 import * as WebBrowser from 'expo-web-browser';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Keyboard, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import { Checkbox } from 'react-native-ui-lib';
 import { updateUserProfile } from '../../../../apis/auth';
 import palette from '../../../../assets/styles/theme';
+import Analytics from '../../../../utils/analytics';
 import { UseSigninStatus } from '../../../../utils/signin-status';
 import { setInfoWhenLogin, setUserNickname } from '../../../../utils/storageUtils';
 import Button from '../../../button/button';
@@ -81,6 +82,10 @@ const InputName = ({ route, navigation }) => {
   const isButtonEnabled = isGuestMode
     ? validateName(name) === 'correct' && !loading && legelAllowed
     : validateName(name) === 'correct' && !loading && legelAllowed && pricacyAllowed && fourth;
+
+  useEffect(() => {
+    Analytics.watchSignUpScreen();
+  }, []);
 
   return (
     <TouchableWithoutFeedback onPressIn={Keyboard.dismiss}>
@@ -206,7 +211,10 @@ const InputName = ({ route, navigation }) => {
             title="저장"
             disabled={!isButtonEnabled}
             primary={true}
-            onPress={() => saveNickName(name)}
+            onPress={() => {
+              Analytics.clickSignUpSaveButton();
+              saveNickName(name);
+            }}
           />
         </CTAContainer>
       </View>

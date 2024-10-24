@@ -43,6 +43,14 @@ export default class Analytics {
     this.sendEvent('회원가입 화면(닉네임+약관) 진입', 'signUpScreen');
   };
 
+  //회원가입 - 저장 버튼 클릭
+  public static clickSignUpSaveButton = (): void => {
+    this.sendEvent(
+      '회원가입 화면(닉네임+약관) - 회원가입 완료(저장) 버튼 클릭',
+      'signUpSaveButton',
+    );
+  };
+
   //탭바 클릭
   public static clickTabButton = (tabLabel: string = '없음'): void => {
     this.sendEvent(`탭바 - ${tabLabel} 클릭`, `tabButton`, { tabLabel });
