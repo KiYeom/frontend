@@ -20,6 +20,7 @@ import {
   MINIMUM_EMOTION_COUNT,
   TabScreenName,
 } from '../../../constants/Constants';
+import Analytics from '../../../utils/analytics';
 import useRecordedEmotionStore from '../../../utils/emotion-recorded';
 import useEmotionStore from '../../../utils/emotion-status';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
@@ -75,6 +76,10 @@ const SmallEmotionChart = ({ navigation }) => {
       addEmotion(emotion);
     }
   };
+
+  useEffect(() => {
+    Analytics.watchEmotionRecordScreen();
+  }, []);
 
   useEffect(() => {
     // 스크롤 움직임을 약간 지연시키기 위해 setTimeout 사용
@@ -207,6 +212,7 @@ const SmallEmotionChart = ({ navigation }) => {
                 selectedEmotions.length > MAXIMUM_EMOTION_COUNT
               }
               onPress={async () => {
+                Analytics.clickRecordButton();
                 setRecordedEmotions(selectedEmotions); // 상태 업데이트
                 await todayEmotion(selectedEmotions, text); //
                 navigation.navigate(TabScreenName.Home);
