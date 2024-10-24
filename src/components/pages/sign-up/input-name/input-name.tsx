@@ -1,7 +1,10 @@
 import { css } from '@emotion/native';
+import * as WebBrowser from 'expo-web-browser';
 import React from 'react';
-import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
+import { Keyboard, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { Checkbox } from 'react-native-ui-lib';
 import { updateUserProfile } from '../../../../apis/auth';
+import palette from '../../../../assets/styles/theme';
 import { UseSigninStatus } from '../../../../utils/signin-status';
 import { setInfoWhenLogin, setUserNickname } from '../../../../utils/storageUtils';
 import Button from '../../../button/button';
@@ -10,6 +13,7 @@ import {
   Annotation,
   ContentContainer,
   CTAContainer,
+  TermsContainer,
   Title,
   TitleContaienr,
 } from './input-name.styles';
@@ -25,6 +29,11 @@ const InputName = ({ route, navigation }) => {
   const [loading, setLoading] = React.useState(false);
   const { setSigninStatus } = UseSigninStatus();
   const { isGuestMode } = route.params;
+
+  const [legelAllowed, setLegelAllowed] = React.useState<boolean>(false);
+  const [pricacyAllowed, setPricacyAllowed] = React.useState<boolean>(false);
+  const [fourth, setFourth] = React.useState<boolean>(false);
+  const [allowGuestMode, setAllowGuestMode] = React.useState<boolean>(true);
 
   const guestModeSignUp = async () => {
     if (name) {
@@ -68,27 +77,10 @@ const InputName = ({ route, navigation }) => {
       .finally(() => {
         setLoading(false);
       });
-    /*
-    if (!isGuestMode) {
-      navigation.navigate(AuthStackName.InputProfile);
-      setLoading(false);
-    } else {
-      //게스트모드이면
-      guestModeSignUp()
-        .then((res) => {
-          if (!res) {
-            alert('닉네임을 저장하는데 실패했습니다. 잠시 후 다시 시도해주세요.');
-          }
-        })
-        .catch((error) => {
-          alert('닉네임을 저장하는데 실패했습니다. 잠시 후 다시 시도해주세요.');
-          console.error(error);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }*/
   };
+  const isButtonEnabled = isGuestMode
+    ? validateName(name) === 'correct' && !loading && legelAllowed
+    : validateName(name) === 'correct' && !loading && legelAllowed && pricacyAllowed && fourth;
 
   return (
     <TouchableWithoutFeedback onPressIn={Keyboard.dismiss}>
@@ -112,10 +104,109 @@ const InputName = ({ route, navigation }) => {
             value={name}
           />
         </ContentContainer>
+        <TermsContainer>
+          {isGuestMode && (
+            <TouchableOpacity
+              style={{
+                //backgroundColor: 'pink',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}
+              activeOpacity={1}
+              onPress={() => {
+                console.log('legelAllowed', legelAllowed);
+                setLegelAllowed(!legelAllowed);
+              }}>
+              <Checkbox
+                value={allowGuestMode}
+                onValueChange={() => {
+                  setAllowGuestMode(!allowGuestMode);
+                }}
+                label={'비회원 사용자는 앱 삭제 시 모든 데이터가 소멸됩니다'}
+                color={allowGuestMode ? palette.primary[400] : palette.neutral[200]}
+                labelStyle={{ fontSize: 14 }} //라벨 스타일링
+              />
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity
+            style={{
+              //backgroundColor: 'pink',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}
+            activeOpacity={1}
+            onPress={() => {
+              console.log('legelAllowed', legelAllowed);
+              setLegelAllowed(!legelAllowed);
+            }}>
+            <Checkbox
+              value={legelAllowed}
+              onValueChange={() => {
+                setLegelAllowed(!legelAllowed);
+              }}
+              label={'서비스 이용약관에 동의합니다.'}
+              color={legelAllowed ? palette.primary[400] : palette.neutral[200]}
+              labelStyle={{ fontSize: 14 }} //라벨 스타일링
+            />
+          </TouchableOpacity>
+
+          {!isGuestMode && (
+            <>
+              <TouchableOpacity
+                activeOpacity={1}
+                onPress={() => {
+                  setPricacyAllowed(!pricacyAllowed);
+                }}>
+                <Checkbox
+                  value={pricacyAllowed}
+                  onValueChange={() => {
+                    setPricacyAllowed(!pricacyAllowed);
+                  }}
+                  label={'개인정보 처리방침에 동의합니다.'}
+                  color={pricacyAllowed ? palette.primary[400] : palette.neutral[200]}
+                  labelStyle={{ fontSize: 14 }} //라벨 스타일링
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={1}
+                onPress={() => {
+                  setFourth(!fourth);
+                }}>
+                <Checkbox
+                  value={fourth}
+                  onValueChange={() => {
+                    setFourth(!fourth);
+                  }}
+                  label={'만 14세 이상입니다'}
+                  color={fourth ? palette.primary[400] : palette.neutral[200]}
+                  labelStyle={{ fontSize: 14 }} //라벨 스타일링
+                />
+              </TouchableOpacity>
+            </>
+          )}
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={() =>
+              WebBrowser.openBrowserAsync(
+                'https://autumn-flier-d18.notion.site/reMIND-167ef1180e2d42b09d019e6d187fccfd',
+              )
+            }>
+            <Text
+              style={css`
+                justify-content: flex-start;
+                align-items: end;
+                text-family: 'Prentendard-Regular';
+                color: ${palette.neutral[900]};
+              `}>
+              서비스 전체 약관
+            </Text>
+          </TouchableOpacity>
+        </TermsContainer>
+
         <CTAContainer>
           <Button
             title="저장"
-            disabled={!(validateName(name) === 'correct') || loading}
+            disabled={!isButtonEnabled}
             primary={true}
             onPress={() => saveNickName(name)}
           />
