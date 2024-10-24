@@ -1,5 +1,6 @@
 import * as amplitude from '@amplitude/analytics-react-native';
 import analytics from '@react-native-firebase/analytics';
+import { AppEventsLogger } from 'react-native-fbsdk-next';
 
 export default class Analytics {
   private static sendEvent = (
@@ -11,6 +12,9 @@ export default class Analytics {
     analytics().logEvent(eventKeyword, {
       eventName,
       ...eventData,
+    });
+    AppEventsLogger.logEvent(AppEventsLogger.AppEvents.CompletedRegistration, {
+      [AppEventsLogger.AppEventParams.RegistrationMethod]: eventName,
     });
   };
 

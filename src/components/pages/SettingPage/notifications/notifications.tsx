@@ -59,6 +59,7 @@ const Notifications = () => {
         isEnabled={systemSwitchState}
         disabled={systemLoading}
         onPress={() => {
+          Analytics.clickNotificationSettingSwitch('system', !systemSwitchState);
           setSystemNotification(!systemSwitchState);
         }}
       />
