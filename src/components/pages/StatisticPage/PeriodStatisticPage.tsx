@@ -1,4 +1,3 @@
-import * as amplitude from '@amplitude/analytics-react-native';
 import { css } from '@emotion/native';
 import { useNavigation } from '@react-navigation/native';
 import dayjs from 'dayjs';
@@ -8,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { periodChart, periodKeyword, periodRecordEmotions } from '../../../apis/analyze';
 import { TPeriodRecordEmotions } from '../../../apis/analyze.type';
 import palette from '../../../assets/styles/theme';
+import Analytics from '../../../utils/analytics';
 import { rsHeight } from '../../../utils/responsive-size';
 import DateLine from '../../atoms/DateLine/DateLine';
 import RangeDatePickerModal from '../../rangeCal/range-date-picker-modal';
@@ -43,6 +43,7 @@ const PeriodStatisticPage: React.FC<any> = () => {
 
   //날짜가 변경되는 경우
   useEffect(() => {
+    Analytics.watchPeriodStatisticScreen();
     const fetchData = async () => {
       //console.log('날짜가 변경됨');
       try {
@@ -116,8 +117,8 @@ const PeriodStatisticPage: React.FC<any> = () => {
             type="일일리포트"
             navigation={navigation}
             onPress={() => {
+              Analytics.clickPeriodCalendarButton();
               setOpenModal(true);
-              amplitude.track('일일 리포트 버튼 클릭');
             }}></ReportType>
           <PageName type={`쿠키가 생각했던${'\n'}주인님의 모습이에요`} />
           <DateLine

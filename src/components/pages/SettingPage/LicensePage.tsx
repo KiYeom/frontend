@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'react-native-paper';
 import { TLicense } from '../../../constants/types';
+import Analytics from '../../../utils/analytics';
 
 const LicensePage: React.FC<any> = ({ navigation }) => {
   const [data, setData] = useState<TLicense[]>([]);
@@ -23,6 +24,7 @@ const LicensePage: React.FC<any> = ({ navigation }) => {
   );
 
   useEffect(() => {
+    Analytics.watchOpenSourceScreen();
     const OpenLinceseObject = require('../../../constants/OpenSourceLicense.json');
     setData(OpenLinceseObject);
   }, []);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { getChatting } from '../../../../../utils/storageUtils';
 import Button from '../../../../button/button';
 import Calendar from '../../../../icons/svg/calendar';
@@ -12,6 +12,7 @@ import {
 } from './DeactivateAlert.style';
 
 import { SettingStackName } from '../../../../../constants/Constants';
+import Analytics from '../../../../../utils/analytics';
 
 const DeactivateAlert: React.FC = ({ navigation }) => {
   const chats = getChatting();
@@ -21,6 +22,10 @@ const DeactivateAlert: React.FC = ({ navigation }) => {
     const chatArray = JSON.parse(chats);
     chatCount = chatArray.length - 1;
   }
+
+  useEffect(() => {
+    Analytics.watchWithdrawalDefenseScreen();
+  }, []);
 
   //console.log('chats ========', chatCount);
   return (
@@ -43,7 +48,7 @@ const DeactivateAlert: React.FC = ({ navigation }) => {
         disabled={false}
         primary={true}
         onPress={() => {
-          //console.log('탈퇴 버튼 누름');
+          Analytics.clickWithdrawalButton();
           navigation.navigate(SettingStackName.DeactivateReason);
         }}
       />

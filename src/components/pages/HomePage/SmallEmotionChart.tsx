@@ -14,6 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Carousel } from 'react-native-ui-lib';
 import { dailyAnalyze, todayEmotion } from '../../../apis/analyze';
 import { emotionData, emotionsByColumn, TabScreenName } from '../../../constants/Constants';
+import Analytics from '../../../utils/analytics';
 import useRecordedEmotionStore from '../../../utils/emotion-recorded';
 import useEmotionStore from '../../../utils/emotion-status';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
@@ -43,6 +44,7 @@ const SmallEmotionChart = ({ navigation }) => {
   const headerHeight = useHeaderHeight();
 
   useEffect(() => {
+    Analytics.watchEmotionRecordScreen();
     if (Platform.OS === 'ios') {
       const { StatusBarManager } = NativeModules;
     }
@@ -191,6 +193,7 @@ const SmallEmotionChart = ({ navigation }) => {
               primary={true}
               disabled={selectedEmotions.length < 3 || selectedEmotions.length > 5}
               onPress={async () => {
+                Analytics.clickRecordButton();
                 setRecordedEmotions(selectedEmotions); // 상태 업데이트
                 await todayEmotion(selectedEmotions, text); //
                 navigation.navigate(TabScreenName.Home);
