@@ -212,7 +212,7 @@ const InputName = ({ route, navigation }) => {
                   align-items: flex-end;
                   text-family: 'Prentendard-Regular';
                   color: ${palette.neutral[900]};
-                  font-size: 11px;
+                  font-size: 10px;
                 `}>
                 서비스 전체 약관 보기
               </Text>
