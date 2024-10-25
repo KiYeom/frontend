@@ -20,6 +20,7 @@ import {
   LoginBtn,
   LoginBtnIcon,
   LoginBtnLabel,
+  WelcomeDesc,
   WelcomeTitle,
 } from './sing-in.styles';
 
@@ -217,6 +218,7 @@ const Login: React.FC<any> = ({ navigation }) => {
         <CookieImage source={require('../../../assets/images/cookielogin.png')} />
       </ImageContainer>
       <ButtonContainer>
+        <WelcomeDesc>🚀이메일 하나로 3초만에 가입하기🚀</WelcomeDesc>
         <LoginBtn
           vendor="guest"
           activeOpacity={1}

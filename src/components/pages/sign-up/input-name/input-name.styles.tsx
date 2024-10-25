@@ -14,6 +14,12 @@ export const Annotation = styled.Text`
   color: ${palette.primary[400]};
 `;
 
+export const Description = styled.Text`
+  font-size: ${rsFont * 18 + 'px'};
+  font-family: Pretendard-SemiBold;
+  color: ${palette.neutral[500]};
+`;
+
 export const Title = styled.Text`
   font-size: ${rsFont * 30 + 'px'};
   font-family: Pretendard-SemiBold;

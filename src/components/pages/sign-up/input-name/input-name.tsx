@@ -104,14 +104,14 @@ const InputName = ({ route, navigation }) => {
         `}>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
           <TitleContaienr>
-            <Annotation>만나서 반가워요🐾</Annotation>
-            <Title>쿠키가 불러드릴{'\n'}멋진 별명을 알려주세요!🐶</Title>
+            <Annotation>만나서 반가워요💚</Annotation>
+            <Title>쿠키가 불러드릴{'\n'}닉네임만 알려주세요🐶</Title>
           </TitleContaienr>
           <ContentContainer>
             <Input
-              placeholder="쿠키가 불러드릴 이름"
+              placeholder="닉네임만 입력하면 바로 시작!🚀"
               status={validateName(name)}
-              message="2~15 글자 사이의 별명을 지어주세요!🐕"
+              message="2~15 글자 사이의 닉네임을 지어주세요"
               withMessage={true}
               onChange={(text) => {
                 if (text.length < 15) setName(text);
@@ -219,7 +219,7 @@ const InputName = ({ route, navigation }) => {
 
           <CTAContainer>
             <Button
-              title="저장"
+              title="비밀 채팅하러 가기"
               disabled={!isButtonEnabled}
               primary={true}
               onPress={() => {
