@@ -36,7 +36,7 @@ export const ContentContainer = styled.View`
 
 export const TermsContainer = styled.View`
   gap: ${rsHeight * 20 + 'px'};
-  padding: ${rsHeight * 30 + 'px'} ${rsWidth * 24 + 'px'};
+  padding: ${rsHeight * 0 + 'px'} ${rsWidth * 24 + 'px'};
 `;
 
 export const AlertMessage = styled.Text`

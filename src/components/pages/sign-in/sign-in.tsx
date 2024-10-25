@@ -1,4 +1,3 @@
-import { css } from '@emotion/native';
 import {
   GoogleSignin,
   isErrorWithCode,
@@ -155,8 +154,8 @@ const Login: React.FC<any> = ({ navigation }) => {
   const { SigninStatus, setSigninStatus } = UseSigninStatus();
   const [loading, setLoading] = React.useState<boolean>(false);
   const [lastVendor, setLastVendor] = React.useState<TVender | undefined>();
-  const [privacyModal, setPrivacyModal] = React.useState(false);
-  const [guestModal, setGuestModal] = React.useState(false);
+  //const [privacyModal, setPrivacyModal] = React.useState(false);
+  //const [guestModal, setGuestModal] = React.useState(false);
 
   const onHandleLogin = async (vendor: TVender) => {
     setLoading(true);
@@ -215,12 +214,7 @@ const Login: React.FC<any> = ({ navigation }) => {
       <ImageContainer>
         <CookieImage source={require('../../../assets/images/cookielogin.png')} />
       </ImageContainer>
-      <ButtonContainer style={css``}>
-        {/* <LoginBtn vendor="kakao" activeOpacity={1} onPress={() => {}}>
-          <LoginBtnIcon source={require('../../../assets/images/kakao.png')} />
-          <LoginBtnLabel vendor="kakao">카카오 로그인</LoginBtnLabel>
-        </LoginBtn> */}
-
+      <ButtonContainer>
         <LoginBtn
           vendor="guest"
           activeOpacity={1}
