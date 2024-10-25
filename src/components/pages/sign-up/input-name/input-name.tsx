@@ -200,6 +200,7 @@ const InputName = ({ route, navigation }) => {
             )}
             <TouchableOpacity
               activeOpacity={1}
+              style={{ alignSelf: 'flex-start' }}
               onPress={() =>
                 WebBrowser.openBrowserAsync(
                   'https://autumn-flier-d18.notion.site/reMIND-167ef1180e2d42b09d019e6d187fccfd',
@@ -208,9 +209,10 @@ const InputName = ({ route, navigation }) => {
               <Text
                 style={css`
                   justify-content: flex-start;
-                  align-items: end;
+                  align-items: flex-end;
                   text-family: 'Prentendard-Regular';
                   color: ${palette.neutral[900]};
+                  font-size: 11px;
                 `}>
                 서비스 전체 약관 보기
               </Text>
