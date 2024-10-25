@@ -153,7 +153,6 @@ const Home: React.FC<any> = ({ navigation }) => {
 
     // 화면이 focus될 때마다 실행
     const handleFocus = () => {
-      console.log('홈화면 focus');
       fetchRiskScore(); // 데이터 fetch
     };
 

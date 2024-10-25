@@ -109,7 +109,7 @@ const InputName = ({ route, navigation }) => {
           </TitleContaienr>
           <ContentContainer>
             <Input
-              placeholder="내용을 입력해주세요."
+              placeholder="쿠키가 불러드릴 이름"
               status={validateName(name)}
               message="2~15 글자 사이의 별명을 지어주세요!🐕"
               withMessage={true}
