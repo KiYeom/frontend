@@ -21,7 +21,7 @@ const getRandomHello = (): string => {
 };
 
 const HomeChatBtn = ({ navigation, riskScore }) => {
-  console.log('risk score' + riskScore);
+  //console.log('risk score' + riskScore);
   const [name, setName] = React.useState<string>('');
   const hello = getRandomHello();
 

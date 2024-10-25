@@ -1,4 +1,3 @@
-import { css } from '@emotion/native';
 import {
   GoogleSignin,
   isErrorWithCode,
@@ -21,6 +20,7 @@ import {
   LoginBtn,
   LoginBtnIcon,
   LoginBtnLabel,
+  WelcomeDesc,
   WelcomeTitle,
 } from './sing-in.styles';
 
@@ -64,6 +64,7 @@ const guestLogin = async (): Promise<OauthResult> => {
 };
 
 const googleLogin = async (): Promise<OauthResult> => {
+  console.log('googleLogin 함수');
   GoogleSignin.configure({
     iosClientId: process.env.EXPO_PUBLIC_IOS_CLIENT_ID,
   });
@@ -74,7 +75,6 @@ const googleLogin = async (): Promise<OauthResult> => {
     await GoogleSignin.signIn();
     const googleTokens = await GoogleSignin.getTokens();
     googleToken = googleTokens.accessToken;
-    console.log('---googleToken---', googleToken);
   } catch (error) {
     if (isErrorWithCode(error) && error.code === statusCodes.SIGN_IN_CANCELLED) {
       return OauthResult.UserCancel;
@@ -154,11 +154,13 @@ const appleLogin = async (): Promise<OauthResult> => {
 const Login: React.FC<any> = ({ navigation }) => {
   const { SigninStatus, setSigninStatus } = UseSigninStatus();
   const [loading, setLoading] = React.useState<boolean>(false);
-  const [lastVendor, setLastVendor] = React.useState<TVender | undefined>();
-  const [privacyModal, setPrivacyModal] = React.useState(false);
-  const [guestModal, setGuestModal] = React.useState(false);
+  //const [lastVendor, setLastVendor] = React.useState<TVender | undefined>();
+  //const [privacyModal, setPrivacyModal] = React.useState(false);
+  //const [guestModal, setGuestModal] = React.useState(false);
+  //console.log('lastVendor?', lastVendor);
 
   const onHandleLogin = async (vendor: TVender) => {
+    console.log('로딩 시작');
     setLoading(true);
     let oauthResult: OauthResult = OauthResult.UnknownError;
     try {
@@ -215,20 +217,16 @@ const Login: React.FC<any> = ({ navigation }) => {
       <ImageContainer>
         <CookieImage source={require('../../../assets/images/cookielogin.png')} />
       </ImageContainer>
-      <ButtonContainer style={css``}>
-        {/* <LoginBtn vendor="kakao" activeOpacity={1} onPress={() => {}}>
-          <LoginBtnIcon source={require('../../../assets/images/kakao.png')} />
-          <LoginBtnLabel vendor="kakao">카카오 로그인</LoginBtnLabel>
-        </LoginBtn> */}
-
+      <ButtonContainer>
+        <WelcomeDesc>🚀이메일 하나로 3초만에 가입하기🚀</WelcomeDesc>
         <LoginBtn
           vendor="guest"
           activeOpacity={1}
           onPress={() => {
-            setLastVendor('guest');
+            //setLastVendor('guest');
             //setGuestModal(true);
             Analytics.clickGuestModeButton();
-            if (lastVendor) onHandleLogin(lastVendor);
+            onHandleLogin('guest');
           }}
           disabled={loading}>
           <LoginBtnLabel vendor="guest">비회원으로 바로 시작하기</LoginBtnLabel>
@@ -237,10 +235,12 @@ const Login: React.FC<any> = ({ navigation }) => {
           vendor="google"
           activeOpacity={1}
           onPress={() => {
-            setLastVendor('google');
+            console.log('버튼 누름');
+            //setLastVendor('google');
             //setPrivacyModal(true);
             Analytics.clickGoogleLoginButton();
-            if (lastVendor) onHandleLogin(lastVendor);
+            onHandleLogin('google');
+            //if (lastVendor) onHandleLogin(lastVendor);
           }}
           disabled={loading}>
           <LoginBtnIcon source={require('../../../assets/images/google.png')} />
@@ -251,10 +251,11 @@ const Login: React.FC<any> = ({ navigation }) => {
             vendor="apple"
             activeOpacity={1}
             onPress={() => {
-              setLastVendor('apple');
+              //setLastVendor('apple');
               //setPrivacyModal(true);
               Analytics.clickAppleLoginButton();
-              if (lastVendor) onHandleLogin(lastVendor);
+              onHandleLogin('apple');
+              //if (lastVendor) onHandleLogin(lastVendor);
             }}
             disabled={loading}>
             <LoginBtnIcon source={require('../../../assets/images/apple.png')} />

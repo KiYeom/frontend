@@ -57,6 +57,15 @@ export const WelcomeTitle = styled.Text`
   letter-spacing: ${rsWidth * 0.5 + 'px'};
   line-height: ${rsHeight * 40 + 'px'};
 `;
+export const WelcomeDesc = styled.Text`
+  font-size: ${rsFont * 16 + 'px'};
+  color: ${palette.neutral[500]};
+  font-family: Pretendard-Bold;
+  letter-spacing: ${rsWidth * -0.41 + 'px'};
+  line-height: ${rsHeight * 24 + 'px'};
+  text-align: center;
+  //background-color: ${palette.primary[50]};
+`;
 
 export const ImageContainer = styled.View`
   margin-top: ${rsHeight * 124 + 'px'};
