@@ -1,3 +1,7 @@
+import 'dotenv/config';
+const dotenv = require('dotenv');
+dotenv.config();
+
 module.exports = {
   expo: {
     name: 'reMIND',
@@ -15,7 +19,7 @@ module.exports = {
       supportsTablet: false,
       bundleIdentifier: 'com.ceunnseo.reMIND',
       usesAppleSignIn: true,
-      googleServicesFile: process.env.GOOGLE_SERVICES_IOS_FILE,
+      googleServicesFile: process.env.GOOGLE_SERVICES_INFO,
     },
     android: {
       adaptiveIcon: {
@@ -24,7 +28,8 @@ module.exports = {
       },
       package: 'com.ceunnseo.reMIND',
       permissions: ['INTERNET'],
-      googleServicesFile: process.env.GOOGLE_SERVICES_FILE,
+      //googleServicesFile: process.env.GOOGLE_SERVICES_FILE,
+      googleServicesFile: process.env.GOOGLE_SERVICES_JSON,
     },
     scheme: 'remind',
     web: {
@@ -101,6 +106,7 @@ module.exports = {
         'react-native-fbsdk-next',
         {
           appID: process.env.FACEBOOK_APP_ID,
+          //appID: '545312754691462',
           displayName: 'reMIND',
           clientToken: process.env.FACEBOOK_CLIENT_TOKEN,
           scheme: process.env.FACEBOOK_SCHEME,
