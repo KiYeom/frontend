@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { deavtivate } from '../../../../../apis/setting';
 import { reasons } from '../../../../../constants/Constants';
+import Analytics from '../../../../../utils/analytics';
 import { UseSigninStatus } from '../../../../../utils/signin-status';
 import { clearInfoWhenLogout, getUserNickname } from '../../../../../utils/storageUtils';
 import Button from '../../../../button/button';
@@ -54,6 +55,10 @@ const DeactivateReason: React.FC = () => {
     console.log('text', text);
   }, [isChecked, text]); // 의존성 배열에 etcText 추가
 
+  useEffect(() => {
+    Analytics.watchWithdrawalReasonScreen();
+  }, []);
+
   // 체크된 인덱스를 찾아 해당 이유를 추출
   const saveReason = (): string => {
     const selectedReasons = isChecked
@@ -91,15 +96,24 @@ const DeactivateReason: React.FC = () => {
             disabled={btnDisable}
             primary={true}
             onPress={() => {
+              Analytics.clickWithdrawalFinalButton();
               Alert.alert(
                 '정말 탈퇴하시겠어요?', // 첫번째 text: 타이틀 큰 제목
                 '탈퇴 버튼 선택 시, 계정은 삭제되며 복구되지 않습니다', // 두번째 text: 작은 제목
                 [
-                  { text: '취소', onPress: () => console.log('탈퇴 취소함') },
+                  {
+                    text: '취소',
+                    onPress: () => {
+                      Analytics.clickWithdrawalModalCancelButton();
+                    },
+                  },
                   {
                     text: '탈퇴', // 버튼 제목
 
-                    onPress: () => deactiveUser(),
+                    onPress: () => {
+                      Analytics.clickWithdrawalModalConfirmButton();
+                      deactiveUser();
+                    },
                   },
                 ],
                 { cancelable: false }, //alert 밖에 눌렀을 때 alert 안 없어지도록

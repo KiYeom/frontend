@@ -14,6 +14,7 @@ import {
   RISK_SCORE_THRESHOLD,
   RootStackName,
 } from '../../../constants/Constants';
+import Analytics from '../../../utils/analytics';
 import requestNotificationPermission from '../../../utils/NotificationToken';
 import { ratio, rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { getRiskData, saveRiskData } from '../../../utils/storageUtils';
@@ -53,6 +54,7 @@ const Home: React.FC<any> = ({ navigation }) => {
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
+    Analytics.watchTabHomeScreen();
     requestNotificationPermission();
     getCarousel('home')
       .then((res) => {
@@ -67,9 +69,18 @@ const Home: React.FC<any> = ({ navigation }) => {
   //헤더 아이콘 클릭했을 때 이동 페이지
   const handleDangerPress = () => {
     console.log('위험 아이콘 클릭: ', riskStatus);
-    if (riskStatus === 'danger' || riskStatus === 'danger-opened') {
+    if (riskStatus === 'danger') {
       //위험한 상태일 때 클릭을 했으면
+      Analytics.clickDangerLetterButton(riskScore);
       saveRiskData(true, new Date().getTime());
+      navigation.navigate(RootStackName.DangerStackNavigator, {
+        screen: DangerStackName.DangerAlert,
+      }); //쿠키 편지 화면으로 이동한다
+      return;
+    }
+    if (riskStatus === 'danger-opened') {
+      //위험한 상태일 때 확인을 했으면
+      Analytics.clickOpenedDangerLetterButton(riskScore);
       navigation.navigate(RootStackName.DangerStackNavigator, {
         screen: DangerStackName.DangerAlert,
       }); //쿠키 편지 화면으로 이동한다
@@ -77,6 +88,7 @@ const Home: React.FC<any> = ({ navigation }) => {
     }
     if (riskStatus === 'safe') {
       //상담 기관 안내
+      Analytics.clickClinicInfoButton(riskScore);
       WebBrowser.openBrowserAsync(
         'https://autumn-flier-d18.notion.site/1268e75d989680f7b4f2d63d66f4a08a?pvs=4',
       );
@@ -141,7 +153,6 @@ const Home: React.FC<any> = ({ navigation }) => {
 
     // 화면이 focus될 때마다 실행
     const handleFocus = () => {
-      console.log('홈화면 focus');
       fetchRiskScore(); // 데이터 fetch
     };
 
@@ -184,6 +195,7 @@ const Home: React.FC<any> = ({ navigation }) => {
                 key={i}
                 activeOpacity={1}
                 onPress={() => {
+                  Analytics.clickTabHomeCarousel(carousel.image);
                   WebBrowser.openBrowserAsync(carousel.url);
                 }}>
                 <Image

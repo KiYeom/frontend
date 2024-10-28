@@ -2,6 +2,7 @@ import { debounce } from 'lodash';
 import React, { useRef, useState } from 'react';
 import { View } from 'react-native';
 import { Message } from '../../../constants/Constants';
+import Analytics from '../../../utils/analytics';
 import { aiSend, botAnswer, saveChatLogs, userSend } from '../../../utils/Chatting';
 import { saveAiResponse } from '../../../utils/storageUtils';
 import Input from '../../input/input';
@@ -25,6 +26,7 @@ const ChatInput = ({ data, setData }: any) => {
     });
     //2. ai의 답변을 가지고 온다.
     //const aiResponse = await testResponseFunc(sentenceRef.current);
+    Analytics.aiRequestSentStatus();
     const aiResponse = await apiTestResponseFunc(sentenceRef.current);
     saveAiResponse(aiResponse.text);
     //3. 답변을 받아오면 (...)을 받아온 답변으로 변경해준다

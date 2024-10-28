@@ -18,6 +18,7 @@ import DangerStackNavigator from './src/navigators/DangerStackNavigator';
 import HomeStackNavigator from './src/navigators/HomeStackNavigator';
 import SettingStackNavigator from './src/navigators/SettingStackNavigator';
 import StatisticStackNavigator from './src/navigators/StatisticStackNavigator';
+import Analytics from './src/utils/analytics';
 import { getDeviceId } from './src/utils/device-info';
 import { UseSigninStatus } from './src/utils/signin-status';
 import {
@@ -29,7 +30,6 @@ import {
 
 Sentry.init({
   dsn: 'https://038362834934b1090d94fe368fdbcbf7@o4507944128020480.ingest.us.sentry.io/4507944132870145',
-  debug: true, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
 });
 
 if (process.env.EXPO_PUBLIC_AMPLITUDE) {
@@ -104,6 +104,10 @@ const App: React.FC = () => {
       });
     }
   }, [loaded, error]);
+
+  useEffect(() => {
+    Analytics.watchLoginScreen();
+  }, []);
 
   if (!loaded && !error) {
     return null;

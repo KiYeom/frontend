@@ -1,10 +1,10 @@
-import * as amplitude from '@amplitude/analytics-react-native';
 import * as WebBrowser from 'expo-web-browser';
 import React, { useEffect } from 'react';
 import { ImageBackground, Linking, Platform, ScrollView, View } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { KAKAO_MESSAGE, PHONE_NUMBER } from '../../../constants/Constants';
+import Analytics from '../../../utils/analytics';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { getUserNickname } from '../../../utils/storageUtils';
 import Button from '../../button/button';
@@ -26,9 +26,11 @@ const DangerAlertPage = () => {
   const [userNickname, setUserNickname] = React.useState<string | null>(null);
   const [isLoaded, setIsLoaded] = React.useState<boolean>(false);
   const insets = useSafeAreaInsets();
+
   useEffect(() => {
     const nickname = getUserNickname();
     setUserNickname(nickname ? nickname : '주인님');
+    Analytics.watchDangerLetterScreen();
   }, []);
 
   return (
@@ -84,7 +86,7 @@ const DangerAlertPage = () => {
               primary={true}
               icon="call"
               onPress={() => {
-                amplitude.track('위험 신호 - 전화 버튼 클릭');
+                Analytics.clickDangerLetterCallButton();
                 if (Platform.OS === 'android') {
                   Linking.openURL(`tel:${PHONE_NUMBER}`);
                 } else {
@@ -98,7 +100,7 @@ const DangerAlertPage = () => {
               primary={true}
               icon="text"
               onPress={() => {
-                amplitude.track('위험 신호 - 상담 카톡 클릭');
+                Analytics.clickDangerLetterChatButton();
                 WebBrowser.openBrowserAsync(`${KAKAO_MESSAGE}`);
               }}
             />
@@ -107,7 +109,7 @@ const DangerAlertPage = () => {
               primary={true}
               icon="search"
               onPress={() => {
-                amplitude.track('위험 신호 - 상담 관련 노션 클릭');
+                Analytics.clickDangerLetterOtherClinicButton();
                 WebBrowser.openBrowserAsync(
                   'https://autumn-flier-d18.notion.site/1268e75d989680f7b4f2d63d66f4a08a?pvs=4',
                 ); //24시간 넘은 경우 -> 상담소로

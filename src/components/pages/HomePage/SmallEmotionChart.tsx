@@ -13,7 +13,14 @@ import Toast from 'react-native-root-toast';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Carousel } from 'react-native-ui-lib';
 import { dailyAnalyze, todayEmotion } from '../../../apis/analyze';
-import { emotionData, emotionsByColumn, TabScreenName } from '../../../constants/Constants';
+import {
+  emotionData,
+  emotionsByColumn,
+  MAXIMUM_EMOTION_COUNT,
+  MINIMUM_EMOTION_COUNT,
+  TabScreenName,
+} from '../../../constants/Constants';
+import Analytics from '../../../utils/analytics';
 import useRecordedEmotionStore from '../../../utils/emotion-recorded';
 import useEmotionStore from '../../../utils/emotion-status';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
@@ -59,8 +66,8 @@ const SmallEmotionChart = ({ navigation }) => {
       removeEmotion(emotion.keyword);
     } else {
       // 선택된 감정 추가
-      if (selectedEmotions.length >= 5) {
-        Toast.show('감정은 5개까지 선택할 수 있습니다!', {
+      if (selectedEmotions.length >= MAXIMUM_EMOTION_COUNT) {
+        Toast.show(`감정은 ${MAXIMUM_EMOTION_COUNT}개까지 선택할 수 있습니다!`, {
           duration: Toast.durations.SHORT,
           position: Toast.positions.CENTER,
         });
@@ -69,6 +76,10 @@ const SmallEmotionChart = ({ navigation }) => {
       addEmotion(emotion);
     }
   };
+
+  useEffect(() => {
+    Analytics.watchEmotionRecordScreen();
+  }, []);
 
   useEffect(() => {
     // 스크롤 움직임을 약간 지연시키기 위해 setTimeout 사용
@@ -133,7 +144,10 @@ const SmallEmotionChart = ({ navigation }) => {
               gap: ${rsHeight * 10 + 'px'};
               //background-color: blue;
             `}>
-            <SmallTitle>기록한 감정 ({selectedEmotions.length}/5)</SmallTitle>
+            <SmallTitle>
+              {selectedEmotions.length}개의 감정을 담았어요🐶 (최대 {MAXIMUM_EMOTION_COUNT}개)
+            </SmallTitle>
+
             <EmotionDesc>
               {selectedEmotions.length > 0
                 ? `${selectedEmotions[selectedEmotions.length - 1].keyword} : ${emotionData[selectedEmotions[selectedEmotions.length - 1].keyword].desc}`
@@ -187,10 +201,18 @@ const SmallEmotionChart = ({ navigation }) => {
               padding-horizontal: ${rsWidth * 24 + 'px'};
             `}>
             <Button
-              title={selectedEmotions.length < 3 ? `3개 이상 감정을 골라주세요` : `감정 기록하기`}
+              title={
+                selectedEmotions.length < MINIMUM_EMOTION_COUNT
+                  ? `오늘의 마음을 알려주세요`
+                  : `쿠키에게 알려주기`
+              }
               primary={true}
-              disabled={selectedEmotions.length < 3 || selectedEmotions.length > 5}
+              disabled={
+                selectedEmotions.length < MINIMUM_EMOTION_COUNT ||
+                selectedEmotions.length > MAXIMUM_EMOTION_COUNT
+              }
               onPress={async () => {
+                Analytics.clickRecordButton();
                 setRecordedEmotions(selectedEmotions); // 상태 업데이트
                 await todayEmotion(selectedEmotions, text); //
                 navigation.navigate(TabScreenName.Home);

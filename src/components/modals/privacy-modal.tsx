@@ -88,6 +88,7 @@ const PrivacyModal = ({
                   약관 확인
                 </Text>
               </TouchableOpacity>
+
               <Button
                 title="로그인하기"
                 primary={true}
