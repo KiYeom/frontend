@@ -1,8 +1,9 @@
 import { css } from '@emotion/native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
 import { connectOrganizationApi } from '../../../../../apis/setting';
 import { SettingStackName } from '../../../../../constants/Constants';
+import Analytics from '../../../../../utils/analytics';
 import Button from '../../../../button/button';
 import Input from '../../../../input/input';
 import {
@@ -50,6 +51,10 @@ const OrganizationConnect: React.FC = ({ navigation }) => {
       });
   };
 
+  useEffect(() => {
+    Analytics.watchConnectScreen();
+  }, []);
+
   return (
     <TouchableWithoutFeedback onPressIn={Keyboard.dismiss}>
       <View
@@ -78,7 +83,10 @@ const OrganizationConnect: React.FC = ({ navigation }) => {
             title={loading ? '연결 중...' : '연결하기'}
             disabled={!(validateCode(code) === 'correct') || loading}
             primary={true}
-            onPress={() => connectOrganization(code)}
+            onPress={() => {
+              Analytics.clickConnectButton(code);
+              connectOrganization(code);
+            }}
           />
         </CTAContainer>
       </View>

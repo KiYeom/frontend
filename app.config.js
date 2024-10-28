@@ -1,8 +1,12 @@
+import 'dotenv/config';
+const dotenv = require('dotenv');
+dotenv.config();
+
 module.exports = {
   expo: {
     name: 'reMIND',
     slug: 'reMIND',
-    version: '1.2.0',
+    version: '1.2.1',
     orientation: 'portrait',
     icon: './src/assets/images/appicon.png',
     userInterfaceStyle: 'light',
@@ -15,7 +19,7 @@ module.exports = {
       supportsTablet: false,
       bundleIdentifier: 'com.ceunnseo.reMIND',
       usesAppleSignIn: true,
-      // googleServicesFile: process.env.GOOGLE_SERVICES_IOS_FILE,
+      googleServicesFile: process.env.GOOGLE_SERVICES_INFO,
     },
     android: {
       adaptiveIcon: {
@@ -24,7 +28,8 @@ module.exports = {
       },
       package: 'com.ceunnseo.reMIND',
       permissions: ['INTERNET'],
-      googleServicesFile: process.env.GOOGLE_SERVICES_FILE,
+      //googleServicesFile: process.env.GOOGLE_SERVICES_FILE,
+      googleServicesFile: process.env.GOOGLE_SERVICES_JSON,
     },
     scheme: 'remind',
     web: {
@@ -83,16 +88,31 @@ module.exports = {
           },
           ios: {
             newArchEnabled: true,
+            useFrameworks: 'static',
           },
         },
       ],
       'expo-apple-authentication',
       'expo-localization',
+      '@react-native-firebase/app',
       'expo-build-properties',
       [
         'expo-asset',
         {
           assets: ['./src/assets/images/'],
+        },
+      ],
+      [
+        'react-native-fbsdk-next',
+        {
+          appID: process.env.FACEBOOK_APP_ID,
+          //appID: '545312754691462',
+          displayName: 'reMIND',
+          clientToken: process.env.FACEBOOK_CLIENT_TOKEN,
+          scheme: process.env.FACEBOOK_SCHEME,
+          isAutoInitEnabled: true,
+          advertiserIDCollectionEnabled: false,
+          autoLogAppEventsEnabled: false,
         },
       ],
     ],

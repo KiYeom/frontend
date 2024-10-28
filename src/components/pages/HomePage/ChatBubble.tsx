@@ -3,6 +3,7 @@ import { TouchableOpacity } from 'react-native';
 import { TypingAnimation } from 'react-native-typing-animation';
 import palette from '../../../assets/styles/theme';
 import { HomeStackName, RootStackName } from '../../../constants/Constants';
+import Analytics from '../../../utils/analytics';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import {
   Bubble,
@@ -28,11 +29,12 @@ const ChatBubble = (props: ChatBubbleProps) => {
       {status === 'bot' && (
         <ProfileImageContainer>
           <TouchableOpacity
-            onPress={() =>
+            onPress={() => {
+              Analytics.clickChatCharacterAvatar();
               navigation.navigate(RootStackName.HomeStackNavigator, {
                 screen: HomeStackName.Profile,
-              })
-            }>
+              });
+            }}>
             <Image
               source={require('../../../assets/images/cookieprofile.png')}
               style={{ objectFit: 'contain', width: 35 * rsWidth, height: 35 * rsHeight }}

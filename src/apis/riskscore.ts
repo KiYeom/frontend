@@ -7,7 +7,7 @@ export const getRiskScore = async (today: string): Promise<number> => {
     if (res.data.score === null) {
       return 0;
     }
-    return res.data;
+    return res.data.score;
   } catch (error) {
     console.error('[ERROR] getRiskScore function error', error);
     return;

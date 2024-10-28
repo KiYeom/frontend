@@ -2,6 +2,7 @@ import * as WebBrowser from 'expo-web-browser';
 import React from 'react';
 import { Platform } from 'react-native';
 import palette from '../../assets/styles/theme';
+import Analytics from '../../utils/analytics';
 import { getAppVersion } from '../../utils/device-info';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import Icon from '../icons/icons';
@@ -29,6 +30,7 @@ const linkingToStore = (
 ) => {
   if (showVersion === true && isLatest === false) {
     //버전 표시 하고, 업데이트 필요할 때
+    Analytics.clickTabSettingUpdateButton();
     if (Platform.OS === 'ios') {
       WebBrowser.openBrowserAsync('https://apps.apple.com/app/remind/id6544783154');
     } else if (Platform.OS === 'android') {
