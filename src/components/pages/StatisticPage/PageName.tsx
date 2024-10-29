@@ -14,6 +14,7 @@ const PageName = (props: TitleProps) => {
         font-family: Pretendard-SemiBold;
         text-align: left;
         padding-left: ${rsWidth * 24 + 'px'};
+        //background-color: red;
       `}>
       {type}
     </Text>

@@ -4,14 +4,14 @@ import { Text, View } from 'react-native';
 import palette from '../../../../assets/styles/theme';
 import { rsHeight } from '../../../../utils/responsive-size';
 import Empty from '../Empty';
-import { Title } from '../StatisticMain.style';
+import { SectionTitle } from '../StatisticMain.style';
 import { Container } from './Keyword.style';
 
 const EmotionDairy: React.FC<any> = (props: any) => {
   const { todayFeeling } = props;
   return (
     <Container>
-      <Title>주인님의 한 줄 일기</Title>
+      <SectionTitle>그 때의 나는 어떤 생각을 했을까요?</SectionTitle>
       {!todayFeeling ? (
         <Empty type="한줄일기"></Empty>
       ) : (

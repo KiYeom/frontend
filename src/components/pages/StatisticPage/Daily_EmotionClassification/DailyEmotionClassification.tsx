@@ -5,8 +5,9 @@ import { Text, View } from 'react-native-ui-lib';
 import { TLabel } from '../../../../apis/analyze.type';
 import palette from '../../../../assets/styles/theme';
 import { rsFont, rsHeight, rsWidth } from '../../../../utils/responsive-size';
+import { Container } from '../Daily_Keyword/Keyword.style';
 import Empty from '../Empty';
-
+import { SectionTitle } from '../StatisticMain.style';
 type TLabelWithColor = {
   label: string;
   value: number;
@@ -83,19 +84,21 @@ const DailyEmotionClassification: React.FC<any> = (props: any) => {
     );
   };
   return (
-    <View
-      style={css`
-        background-color: ${palette.neutral[50]};
-        flex: 1; //전체 배경
-        background-color: white; //통계 차트 박스
-        border-radius: 20px;
-        flex: 1;
-        justify-content: center;
-        align-items: center;
-        gap: ${24 * rsHeight + 'px'};
-        padding-horizontal: ${rsWidth * 10 + 'px'};
-        padding-vertical: ${rsHeight * 32 + 'px'};
-      `}>
+    <Container>
+      <SectionTitle>쿠키가 생각했을 때의 모습이에요</SectionTitle>
+      {/*<View
+        style={css`
+          background-color: ${palette.neutral[50]};
+          flex: 1; //전체 배경
+          background-color: pink; //통계 차트 박스
+          border-radius: 20px;
+          flex: 1;
+          justify-content: center;
+          align-items: center;
+          gap: ${24 * rsHeight + 'px'};
+          padding-horizontal: ${rsWidth * 10 + 'px'};
+          padding-vertical: ${rsHeight * 32 + 'px'};
+        `}>*/}
       {pieData.length !== 0 ? (
         <>
           <PieChart
@@ -141,7 +144,8 @@ const DailyEmotionClassification: React.FC<any> = (props: any) => {
       ) : (
         <Empty type="채팅기록"></Empty>
       )}
-    </View>
+      {/*</View>*/}
+    </Container>
   );
 };
 export default DailyEmotionClassification;

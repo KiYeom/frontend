@@ -1,5 +1,6 @@
 import { css } from '@emotion/native';
 import { useNavigation } from '@react-navigation/native';
+import { Image } from 'expo-image';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -7,16 +8,14 @@ import { dailyAnalyze, dailyAnalyzeStatus } from '../../../apis/analyze';
 import { TEmotionCheck, TLabel } from '../../../apis/analyze.type';
 import palette from '../../../assets/styles/theme';
 import Analytics from '../../../utils/analytics';
-import { rsHeight } from '../../../utils/responsive-size';
-import DateLine from '../../atoms/DateLine/DateLine';
+import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 import SingleDatePickerModal from '../../rangeCal/single-date-picker-modal';
 import DailyEmotionClassification from './Daily_EmotionClassification/DailyEmotionClassification';
 import EmotionArea from './Daily_Keyword/EmotionArea';
 import EmotionDairy from './Daily_Keyword/EmotionDairy';
 import KeywordArea from './Daily_Keyword/KeywordArea';
-import PageName from './PageName';
 import ReportType from './ReportType';
-import { Container } from './StatisticMain.style';
+import { Container, DateLineText, StatisticTitle } from './StatisticMain.style';
 
 const START_HOUR_OF_DAY = 6;
 
@@ -129,19 +128,35 @@ const StatisticMain: React.FC<any> = () => {
               Analytics.clickDailyCalendarButton();
               setOpenModal(true);
             }}></ReportType>
-          <PageName type={`쿠키가 생각했던${'\n'}주인님의 모습이에요`} />
-          <DateLine value={getDateString(date ?? getServerYesterday())} />
+          <View
+            style={{
+              backgroundColor: 'yellow',
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Image
+              style={{ flex: 1, width: 70 * rsWidth, height: 70 * rsHeight }}
+              source={{
+                uri: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/statistic/reportlogo.png',
+              }}
+            />
+            <View style={{ marginVertical: 10 * rsFont }}>
+              <DateLineText>{getDateString(date ?? getServerYesterday())}</DateLineText>
+              <StatisticTitle>쿠키와의 대화에서{'\n'}마음을 살펴보았어요</StatisticTitle>
+            </View>
+          </View>
           <Container>
             <DailyEmotionClassification
               isNullClassification={isNullClassification}
               labelsClassification={labelsClassification}
             />
+            <KeywordArea isSummaryList={isSummaryList} summaryList={summaryList} />
             <EmotionArea
               isRecordKeywordList={isRecordKeywordList}
               isNullRecordKeywordList={isNullRecordKeywordList}
             />
             <EmotionDairy todayFeeling={todayFeeling} />
-            <KeywordArea isSummaryList={isSummaryList} summaryList={summaryList} />
           </Container>
         </View>
       </ScrollView>

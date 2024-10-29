@@ -3,7 +3,7 @@ import palette from '../../../../assets/styles/theme';
 import { rsHeight, rsWidth } from '../../../../utils/responsive-size';
 import Icon from '../../../icons/icons';
 import Empty from '../Empty';
-import { Title } from '../StatisticMain.style';
+import { SectionTitle } from '../StatisticMain.style';
 import { Container, KeywordContainer, KeywordIcon, KeywordText } from './Keyword.style';
 
 const KeywordArea: React.FC<any> = (props: any) => {
@@ -11,7 +11,7 @@ const KeywordArea: React.FC<any> = (props: any) => {
 
   return (
     <Container>
-      <Title>쿠키와 나눈 이야기</Title>
+      <SectionTitle>쿠키와 이런 이야기를 했어요</SectionTitle>
       {summaryList.length === 0 ? (
         <Empty type="채팅기록"></Empty>
       ) : (

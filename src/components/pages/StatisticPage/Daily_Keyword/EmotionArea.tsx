@@ -4,14 +4,14 @@ import { ScrollView } from 'react-native';
 import { rsWidth } from '../../../../utils/responsive-size';
 import EmotionCard from '../../../atoms/EmotionCard/EmotionCard';
 import Empty from '../Empty';
-import { Title } from '../StatisticMain.style';
+import { SectionTitle } from '../StatisticMain.style';
 import { Container } from './Keyword.style';
 
 const EmotionArea: React.FC<any> = (props: any) => {
   const { isRecordKeywordList, isNullRecordKeywordList } = props;
   return (
     <Container>
-      <Title>주인님의 감정 일기</Title>
+      <SectionTitle>그 때의 나는 어떤 감정이었나요?</SectionTitle>
       {isNullRecordKeywordList ? (
         <Empty type="감정기록"></Empty>
       ) : (
