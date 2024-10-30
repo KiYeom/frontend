@@ -87,7 +87,7 @@ const StatisticMain: React.FC<any> = () => {
   }, []);
 
   useEffect(() => {
-    console.log('useEffect 화면 진입');
+    console.log('date 바뀜');
     const fetchData = async () => {
       const dailyStatistics = await dailyAnalyze(getApiDateString(date ?? getServerYesterday()));
       if (!dailyStatistics) {
@@ -100,7 +100,8 @@ const StatisticMain: React.FC<any> = () => {
       setSummaryList(dailyStatistics.summary.keywords);
       setIsRecordKeywordList(dailyStatistics.record.Keywords);
       setIsNullRecordKeywordList(dailyStatistics.record.isNULL);
-      //console.log('!*@&*#&@#', dailyStatistics.record.Keywords, dailyStatistics.record.isNULL);
+      //빈 값 [] 이면 false를 넘겨주기 때문에 !을 붙여서 true로 만들어줌
+      console.log('!*@&*#&@#', dailyStatistics.record.Keywords, dailyStatistics.record.isNULL);
       setTodayFeeling(dailyStatistics.record.todayFeeling ?? '');
     };
     fetchData();
@@ -169,7 +170,20 @@ const StatisticMain: React.FC<any> = () => {
                   }
                   text={'쿠키와 대화하고\n나의 마음을 알아보세요'}
                   buttonText="쿠키랑 대화하기"
-                  onPress={() => console.log('클릭함')}
+                  onPress={async () => {
+                    console.log('클릭함');
+                    const dailyStatistics = await dailyAnalyze(
+                      getApiDateString(date ?? getServerYesterday()),
+                    );
+                    console.log('클릭 결과' + dailyStatistics);
+                    console.log('키워드 확인', isRecordKeywordList);
+                    console.log('키워드 입력 안헀을 때 조건식 확인', isNullRecordKeywordList);
+                    console.log('조건식 확인', !isNullRecordKeywordList || todayFeeling !== '');
+                    console.log('조건식 확인', !isNullRecordKeywordList);
+                    console.log('조건식 확인', todayFeeling !== '');
+                    console.log('키워드 보기', isRecordKeywordList);
+                    console.log('조건식 확인', todayFeeling !== '');
+                  }}
                 />
               </>
             )}
@@ -187,7 +201,7 @@ const StatisticMain: React.FC<any> = () => {
                   blurredImageUri={
                     'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/statistic/sampleemotionkeyword.png'
                   }
-                  text={'나의 감정을\n일기로 남겨보세요'}
+                  text={'지금 내 마음속\n목소리를 들어볼까요?'}
                   buttonText="감정 일기 작성하기"
                   onPress={() => console.log('클릭함')}
                 />

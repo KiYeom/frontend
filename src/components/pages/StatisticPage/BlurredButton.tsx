@@ -4,6 +4,7 @@ import React from 'react';
 import { ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import palette from '../../../assets/styles/theme';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
+
 const BlurredButton = ({ blurredImageUri, text, buttonText, onPress }) => {
   return (
     <TouchableOpacity onPress={onPress}>
@@ -37,7 +38,7 @@ const BlurredButton = ({ blurredImageUri, text, buttonText, onPress }) => {
             {/* 쿠키 이미지*/}
             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
               {buttonText === '쿠키랑 대화하기' ? (
-                <View style={{ width: 140, height: 112, backgroundColor: 'black' }}>
+                <View style={{ width: 140, height: 112 }}>
                   <Image
                     style={{ flex: 1, width: '100%', height: '100%' }}
                     source={{
@@ -46,7 +47,7 @@ const BlurredButton = ({ blurredImageUri, text, buttonText, onPress }) => {
                   />
                 </View>
               ) : (
-                <View style={{ width: 220, height: 76, backgroundColor: 'pink' }}>
+                <View style={{ width: 220, height: 76 }}>
                   <Image
                     style={{ flex: 1, width: '100%', height: '100%' }}
                     source={{
