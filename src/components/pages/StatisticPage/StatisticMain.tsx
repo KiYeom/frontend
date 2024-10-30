@@ -8,7 +8,7 @@ import { dailyAnalyze, dailyAnalyzeStatus } from '../../../apis/analyze';
 import { TEmotionCheck, TLabel } from '../../../apis/analyze.type';
 import palette from '../../../assets/styles/theme';
 import Analytics from '../../../utils/analytics';
-import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
+import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import SingleDatePickerModal from '../../rangeCal/single-date-picker-modal';
 import DailyEmotionClassification from './Daily_EmotionClassification/DailyEmotionClassification';
 import EmotionArea from './Daily_Keyword/EmotionArea';
@@ -16,7 +16,6 @@ import EmotionDairy from './Daily_Keyword/EmotionDairy';
 import KeywordArea from './Daily_Keyword/KeywordArea';
 import ReportType from './ReportType';
 import { Container, DateLineText, StatisticTitle } from './StatisticMain.style';
-
 const START_HOUR_OF_DAY = 6;
 
 const getServerYesterday = (currentDate: Date = new Date()) => {
@@ -130,18 +129,23 @@ const StatisticMain: React.FC<any> = () => {
             }}></ReportType>
           <View
             style={{
-              backgroundColor: 'yellow',
+              //backgroundColor: 'yellow',
               flex: 1,
               justifyContent: 'center',
               alignItems: 'center',
             }}>
             <Image
-              style={{ flex: 1, width: 70 * rsWidth, height: 70 * rsHeight }}
+              style={{
+                width: 70 * rsWidth,
+                height: 70 * rsHeight,
+                aspectRatio: 1, // 가로 세로 비율을 고정
+                resizeMode: 'contain', // 이미지를 잘리지 않게 표시
+              }}
               source={{
                 uri: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/statistic/reportlogo.png',
               }}
             />
-            <View style={{ marginVertical: 10 * rsFont }}>
+            <View style={{ marginVertical: 10 * rsHeight }}>
               <DateLineText>{getDateString(date ?? getServerYesterday())}</DateLineText>
               <StatisticTitle>쿠키와의 대화에서{'\n'}마음을 살펴보았어요</StatisticTitle>
             </View>

@@ -2,10 +2,9 @@ import React from 'react';
 import palette from '../../../../assets/styles/theme';
 import { rsHeight, rsWidth } from '../../../../utils/responsive-size';
 import Icon from '../../../icons/icons';
-import Empty from '../Empty';
+import BlurredButton from '../BlurredButton';
 import { SectionTitle } from '../StatisticMain.style';
 import { Container, KeywordContainer, KeywordIcon, KeywordText } from './Keyword.style';
-
 const KeywordArea: React.FC<any> = (props: any) => {
   const { value, isSummaryList, summaryList } = props;
 
@@ -13,7 +12,20 @@ const KeywordArea: React.FC<any> = (props: any) => {
     <Container>
       <SectionTitle>쿠키와 이런 이야기를 했어요</SectionTitle>
       {summaryList.length === 0 ? (
-        <Empty type="채팅기록"></Empty>
+        <BlurredButton
+          blurredImageUri={
+            'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/statistic/samplekeyword.png'
+          } // 로컬에 저장된 블러 이미지 경로
+          text={'쿠키와 대화하고\n나의 마음을 알아보세요'}
+          buttonText="지금 대화하기"
+          onPress={() => {
+            // 버튼 클릭 시 실행될 함수
+            console.log('두번째 버튼 클릭됨');
+            //navigation.replace(RootStackName.HomeStackNavigator, { screen: HomeStackName.Chat });
+            // 채팅 화면으로 가는데, 채팅 화면의 뒤로가기 버튼을 누르면 이 화면 말고 홈 화면으로 가야할 것 같음..
+            console.log('버튼 클릭함');
+          }}
+        />
       ) : (
         summaryList.map((keyword, index) => (
           <KeywordContainer key={index}>
