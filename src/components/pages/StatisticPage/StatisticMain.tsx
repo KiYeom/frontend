@@ -10,6 +10,7 @@ import palette from '../../../assets/styles/theme';
 import Analytics from '../../../utils/analytics';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import SingleDatePickerModal from '../../rangeCal/single-date-picker-modal';
+import BlurredButton from './BlurredButton';
 import DailyEmotionClassification from './Daily_EmotionClassification/DailyEmotionClassification';
 import EmotionArea from './Daily_Keyword/EmotionArea';
 import EmotionDairy from './Daily_Keyword/EmotionDairy';
@@ -161,15 +162,29 @@ const StatisticMain: React.FC<any> = () => {
               </>
             ) : (
               <>
-                <Text>데이터가 없습니다.</Text>
+                <BlurredButton
+                  blurredImageUri={
+                    'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/statistic/reportlogo.png'
+                  }
+                  text="텍스트"
+                  buttonText="버튼텍스트"
+                  onPress={() => console.log('클릭함')}
+                />
               </>
             )}
-
-            <EmotionArea
-              isRecordKeywordList={isRecordKeywordList}
-              isNullRecordKeywordList={isNullRecordKeywordList}
-            />
-            <EmotionDairy todayFeeling={todayFeeling} />
+            {!isNullRecordKeywordList && !todayFeeling ? (
+              <>
+                <EmotionArea
+                  isRecordKeywordList={isRecordKeywordList}
+                  isNullRecordKeywordList={isNullRecordKeywordList}
+                />
+                <EmotionDairy todayFeeling={todayFeeling} />
+              </>
+            ) : (
+              <>
+                <Text>감정 일기를 안썼어요</Text>
+              </>
+            )}
           </Container>
         </View>
       </ScrollView>

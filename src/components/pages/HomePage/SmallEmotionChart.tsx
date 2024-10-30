@@ -114,7 +114,7 @@ const SmallEmotionChart = ({ navigation }) => {
               margin-horizontal: ${rsWidth * 24 + 'px'};
               text-align: left;
             `}>
-            {getUserNickname()}님,{'\n'}오늘 하루는 어떠셨나요?🐾
+            {getUserNickname()}님,{'\n'}지금 기분은 어떠세요?🐾
           </Title>
 
           <Carousel
@@ -144,9 +144,7 @@ const SmallEmotionChart = ({ navigation }) => {
               gap: ${rsHeight * 10 + 'px'};
               //background-color: blue;
             `}>
-            <SmallTitle>
-              {selectedEmotions.length}개의 감정을 담았어요🐶 (최대 {MAXIMUM_EMOTION_COUNT}개)
-            </SmallTitle>
+            <SmallTitle>{selectedEmotions.length}개의 감정을 담았어요🐶</SmallTitle>
 
             <EmotionDesc>
               {selectedEmotions.length > 0
@@ -190,7 +188,7 @@ const SmallEmotionChart = ({ navigation }) => {
                 </View>
               )}
             </ScrollView>
-            <SmallTitle>오늘의 한 줄 일기</SmallTitle>
+            <SmallTitle>오늘 하루는 어떠셨나요?💭</SmallTitle>
             <Input value={text} onChange={(text) => setText(text)} />
           </View>
 
@@ -208,7 +206,7 @@ const SmallEmotionChart = ({ navigation }) => {
               }
               primary={true}
               disabled={
-                selectedEmotions.length < MINIMUM_EMOTION_COUNT ||
+                (selectedEmotions.length < MINIMUM_EMOTION_COUNT && text.trim() === '') ||
                 selectedEmotions.length > MAXIMUM_EMOTION_COUNT
               }
               onPress={async () => {
