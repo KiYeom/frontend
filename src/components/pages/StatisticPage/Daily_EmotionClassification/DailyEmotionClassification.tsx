@@ -6,7 +6,6 @@ import { Text, View } from 'react-native-ui-lib';
 import { TLabel } from '../../../../apis/analyze.type';
 import palette from '../../../../assets/styles/theme';
 import { rsFont, rsHeight, rsWidth } from '../../../../utils/responsive-size';
-import BlurredButton from '../BlurredButton';
 import { Container } from '../Daily_Keyword/Keyword.style';
 import { SectionTitle } from '../StatisticMain.style';
 type TLabelWithColor = {
@@ -131,22 +130,8 @@ const DailyEmotionClassification: React.FC<any> = (props: any) => {
           {renderLegendComponent(pieData)}
         </>
       ) : (
-        <BlurredButton
-          blurredImageUri={
-            'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/statistic/samplegraph.png'
-          } // 로컬에 저장된 블러 이미지 경로
-          text={'쿠키와 대화하고\n나의 마음을 알아보세요'}
-          buttonText="지금 대화하기"
-          onPress={() => {
-            // 버튼 클릭 시 실행될 함수
-            console.log('첫번째 버튼 클릭됨');
-            //navigation.replace(RootStackName.HomeStackNavigator, { screen: HomeStackName.Chat });
-            // 채팅 화면으로 가는데, 채팅 화면의 뒤로가기 버튼을 누르면 이 화면 말고 홈 화면으로 가야할 것 같음..
-            console.log('버튼 클릭함');
-          }}
-        />
+        <></>
       )}
-      {/*</View>*/}
     </Container>
   );
 };

@@ -2,7 +2,7 @@ import { css } from '@emotion/native';
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import React, { useCallback, useEffect, useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { dailyAnalyze, dailyAnalyzeStatus } from '../../../apis/analyze';
 import { TEmotionCheck, TLabel } from '../../../apis/analyze.type';
@@ -151,11 +151,20 @@ const StatisticMain: React.FC<any> = () => {
             </View>
           </View>
           <Container>
-            <DailyEmotionClassification
-              isNullClassification={isNullClassification}
-              labelsClassification={labelsClassification}
-            />
-            <KeywordArea isSummaryList={isSummaryList} summaryList={summaryList} />
+            {!isNullClassification ? (
+              <>
+                <DailyEmotionClassification
+                  isNullClassification={isNullClassification}
+                  labelsClassification={labelsClassification}
+                />
+                <KeywordArea isSummaryList={isSummaryList} summaryList={summaryList} />
+              </>
+            ) : (
+              <>
+                <Text>데이터가 없습니다.</Text>
+              </>
+            )}
+
             <EmotionArea
               isRecordKeywordList={isRecordKeywordList}
               isNullRecordKeywordList={isNullRecordKeywordList}
