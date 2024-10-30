@@ -11,7 +11,7 @@ const EmotionDairy: React.FC<any> = (props: any) => {
   return (
     <Container>
       <SectionTitle>그 때의 나는 어떤 생각을 했을까요?</SectionTitle>
-      {!todayFeeling ? (
+      {todayFeeling == '' ? (
         <KeywordContainer>
           <Icon name={'empty-icon'} />
           <KeywordText>나의 생각은 기록하지 않았어요</KeywordText>

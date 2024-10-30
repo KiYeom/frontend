@@ -2,7 +2,7 @@ import { css } from '@emotion/native';
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import React, { useCallback, useEffect, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { dailyAnalyze, dailyAnalyzeStatus } from '../../../apis/analyze';
 import { TEmotionCheck, TLabel } from '../../../apis/analyze.type';
@@ -66,7 +66,7 @@ const StatisticMain: React.FC<any> = () => {
   const [labelsClassification, setLabelsClassification] = useState<TLabel[]>([]);
   const [isSummaryList, setIsSummaryList] = useState(true);
   const [isRecordKeywordList, setIsRecordKeywordList] = useState<TEmotionCheck[]>([]);
-  const [isNullRecordKeywordList, setIsNullRecordKeywordList] = useState(false);
+  const [isNullRecordKeywordList, setIsNullRecordKeywordList] = useState(true);
   const [summaryList, setSummaryList] = useState<string[]>([]);
   const [todayFeeling, setTodayFeeling] = useState<string>('');
   const [availableDates, setAvailableDates] = useState<string[]>([]);
@@ -87,9 +87,9 @@ const StatisticMain: React.FC<any> = () => {
   }, []);
 
   useEffect(() => {
+    console.log('useEffect 화면 진입');
     const fetchData = async () => {
       const dailyStatistics = await dailyAnalyze(getApiDateString(date ?? getServerYesterday()));
-      console.log('dailyStatistics', dailyStatistics);
       if (!dailyStatistics) {
         alert('네트워크 연결이 불안정합니다. 잠시 후 다시 시도해주세요.');
         return;
@@ -100,6 +100,7 @@ const StatisticMain: React.FC<any> = () => {
       setSummaryList(dailyStatistics.summary.keywords);
       setIsRecordKeywordList(dailyStatistics.record.Keywords);
       setIsNullRecordKeywordList(dailyStatistics.record.isNULL);
+      //console.log('!*@&*#&@#', dailyStatistics.record.Keywords, dailyStatistics.record.isNULL);
       setTodayFeeling(dailyStatistics.record.todayFeeling ?? '');
     };
     fetchData();
@@ -164,15 +165,15 @@ const StatisticMain: React.FC<any> = () => {
               <>
                 <BlurredButton
                   blurredImageUri={
-                    'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/statistic/reportlogo.png'
+                    'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/statistic/blurgraph.png'
                   }
-                  text="텍스트"
-                  buttonText="버튼텍스트"
+                  text={'쿠키와 대화하고\n나의 마음을 알아보세요'}
+                  buttonText="쿠키랑 대화하기"
                   onPress={() => console.log('클릭함')}
                 />
               </>
             )}
-            {!isNullRecordKeywordList && !todayFeeling ? (
+            {!isNullRecordKeywordList || todayFeeling !== '' ? (
               <>
                 <EmotionArea
                   isRecordKeywordList={isRecordKeywordList}
@@ -182,7 +183,14 @@ const StatisticMain: React.FC<any> = () => {
               </>
             ) : (
               <>
-                <Text>감정 일기를 안썼어요</Text>
+                <BlurredButton
+                  blurredImageUri={
+                    'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/statistic/sampleemotionkeyword.png'
+                  }
+                  text={'나의 감정을\n일기로 남겨보세요'}
+                  buttonText="감정 일기 작성하기"
+                  onPress={() => console.log('클릭함')}
+                />
               </>
             )}
           </Container>
