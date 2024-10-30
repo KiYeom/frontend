@@ -39,7 +39,7 @@ const HomeChatBtn = ({ navigation, riskScore }) => {
       os={Platform.OS}
       onPress={() => {
         Analytics.clickTabHomeChatButton(riskScore);
-        navigation.navigate(RootStackName.HomeStackNavigator, { screen: HomeStackName.Chat });
+        navigation.navigate(RootStackName.HomeStackNavigator, { screen: HomeStackName.NewChat });
       }}
       status={'home'}
       riskScore={riskScore}>
