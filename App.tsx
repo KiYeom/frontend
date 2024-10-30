@@ -27,6 +27,7 @@ import {
   getRefreshToken,
   setDeviceId,
 } from './src/utils/storageUtils';
+import { setStatusBarStyle } from 'expo-status-bar';
 
 Sentry.init({
   dsn: 'https://038362834934b1090d94fe368fdbcbf7@o4507944128020480.ingest.us.sentry.io/4507944132870145',
@@ -80,6 +81,7 @@ const App: React.FC = () => {
   };
 
   const bootstrap = async (): Promise<void> => {
+    setStatusBarStyle('dark');
     const deviceId = await getDeviceId();
     if (deviceId === null) {
       console.error('DeviceId is undefined');

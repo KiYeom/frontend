@@ -3,5 +3,6 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "java.compile.nullAnalysis.mode": "disabled",
-  "java.configuration.updateBuildConfiguration": "disabled"
+  "java.configuration.updateBuildConfiguration": "disabled",
+  "cSpell.words": ["Birthdate", "deactive", "Pretendard", "Signin"]
 }

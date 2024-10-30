@@ -26,6 +26,9 @@ const NOTICE = 'notice';
 //dangerSign
 const RISK = 'RISK';
 
+//refreshChattingPageTimes
+const REFRESH_CHAT = 'refresh_chat';
+
 //setTokenInfo
 export const setTokenInfo = (accessToken: string, refreshToken: string): void => {
   setAccessToken(accessToken);
@@ -200,6 +203,25 @@ export const setNotice = (notice: TNotice): void => {
 
 export const deleteNotice = (): void => {
   storage.delete(NOTICE);
+};
+
+//refreshChattingPageTimes
+export const getRefreshChat = (): number => {
+  return storage.getNumber(REFRESH_CHAT) ?? 0;
+};
+
+export const setRefreshChat = (refreshChat: number): void => {
+  storage.set(REFRESH_CHAT, refreshChat);
+};
+
+export const deleteRefreshChat = (): void => {
+  storage.delete(REFRESH_CHAT);
+};
+
+export const addRefreshChat = (times: number): number => {
+  const refreshChat = getRefreshChat();
+  setRefreshChat(refreshChat + times);
+  return refreshChat + times;
 };
 
 //ai 답변 저장하기

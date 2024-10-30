@@ -1,5 +1,4 @@
 import { css } from '@emotion/native';
-import { useHeaderHeight } from '@react-navigation/elements';
 import * as WebBrowser from 'expo-web-browser';
 import React, { useEffect } from 'react';
 import {
@@ -21,11 +20,12 @@ import Input from '../../../input/input';
 import {
   Annotation,
   ContentContainer,
-  CTAContainer,
   TermsContainer,
   Title,
-  TitleContaienr,
+  TitleContainer,
 } from './input-name.styles';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { rsWidth } from '../../../../utils/responsive-size';
 
 const validateName = (name: string): 'error' | 'default' | 'correct' => {
   if (name.length !== 0 && (name.length < 2 || name.length > 15)) return 'error';
@@ -38,10 +38,10 @@ const InputName = ({ route, navigation }) => {
   const [loading, setLoading] = React.useState(false);
   const { setSigninStatus } = UseSigninStatus();
   const { isGuestMode } = route.params;
-  const headerHeight = useHeaderHeight();
+  const insets = useSafeAreaInsets();
 
-  const [legelAllowed, setLegelAllowed] = React.useState<boolean>(false);
-  const [pricacyAllowed, setPricacyAllowed] = React.useState<boolean>(false);
+  const [legalAllowed, setLegalAllowed] = React.useState<boolean>(false);
+  const [privacyAllowed, setPrivacyAllowed] = React.useState<boolean>(false);
   const [fourth, setFourth] = React.useState<boolean>(false);
   const [allowGuestMode, setAllowGuestMode] = React.useState<boolean>(true);
 
@@ -88,9 +88,10 @@ const InputName = ({ route, navigation }) => {
         setLoading(false);
       });
   };
+
   const isButtonEnabled = isGuestMode
-    ? validateName(name) === 'correct' && !loading && legelAllowed
-    : validateName(name) === 'correct' && !loading && legelAllowed && pricacyAllowed && fourth;
+    ? validateName(name) === 'correct' && !loading && legalAllowed
+    : validateName(name) === 'correct' && !loading && legalAllowed && privacyAllowed && fourth;
 
   useEffect(() => {
     Analytics.watchSignUpScreen();
@@ -101,12 +102,13 @@ const InputName = ({ route, navigation }) => {
       <View
         style={css`
           flex: 1;
+          margin-bottom: ${insets.bottom + 'px'};
         `}>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
-          <TitleContaienr>
+          <TitleContainer>
             <Annotation>만나서 반가워요💚</Annotation>
             <Title>쿠키가 불러드릴{'\n'}닉네임만 알려주세요🐶</Title>
-          </TitleContaienr>
+          </TitleContainer>
           <ContentContainer>
             <Input
               placeholder="닉네임만 입력하면 바로 시작!🚀"
@@ -129,8 +131,7 @@ const InputName = ({ route, navigation }) => {
                 }}
                 activeOpacity={1}
                 onPress={() => {
-                  console.log('legelAllowed', legelAllowed);
-                  setLegelAllowed(!legelAllowed);
+                  setLegalAllowed(!legalAllowed);
                 }}>
                 <Checkbox
                   value={allowGuestMode}
@@ -150,16 +151,15 @@ const InputName = ({ route, navigation }) => {
               }}
               activeOpacity={1}
               onPress={() => {
-                console.log('legelAllowed', legelAllowed);
-                setLegelAllowed(!legelAllowed);
+                setLegalAllowed(!legalAllowed);
               }}>
               <Checkbox
-                value={legelAllowed}
+                value={legalAllowed}
                 onValueChange={() => {
-                  setLegelAllowed(!legelAllowed);
+                  setLegalAllowed(!legalAllowed);
                 }}
                 label={'서비스 이용약관에 동의합니다.'}
-                color={legelAllowed ? palette.primary[400] : palette.neutral[200]}
+                color={legalAllowed ? palette.primary[400] : palette.neutral[200]}
                 labelStyle={{ fontSize: 14 }} //라벨 스타일링
               />
             </TouchableOpacity>
@@ -169,15 +169,15 @@ const InputName = ({ route, navigation }) => {
                 <TouchableOpacity
                   activeOpacity={1}
                   onPress={() => {
-                    setPricacyAllowed(!pricacyAllowed);
+                    setPrivacyAllowed(!privacyAllowed);
                   }}>
                   <Checkbox
-                    value={pricacyAllowed}
+                    value={privacyAllowed}
                     onValueChange={() => {
-                      setPricacyAllowed(!pricacyAllowed);
+                      setPrivacyAllowed(!privacyAllowed);
                     }}
                     label={'개인정보 처리방침에 동의합니다.'}
-                    color={pricacyAllowed ? palette.primary[400] : palette.neutral[200]}
+                    color={privacyAllowed ? palette.primary[400] : palette.neutral[200]}
                     labelStyle={{ fontSize: 14 }} //라벨 스타일링
                   />
                 </TouchableOpacity>
@@ -210,16 +210,21 @@ const InputName = ({ route, navigation }) => {
                 style={css`
                   justify-content: flex-start;
                   align-items: flex-end;
-                  text-family: 'Prentendard-Regular';
+                  text-family: Pretendard-Regular;
                   color: ${palette.neutral[900]};
-                  font-size: 10px;
+                  font-size: 12px;
                 `}>
                 서비스 전체 약관 보기
               </Text>
             </TouchableOpacity>
           </TermsContainer>
 
-          <CTAContainer>
+          <View
+            style={css`
+              display: flex;
+              justify-content: center;
+              padding: ${rsWidth * 24 + 'px'};
+            `}>
             <Button
               title="비밀 채팅하러 가기"
               disabled={!isButtonEnabled}
@@ -229,7 +234,7 @@ const InputName = ({ route, navigation }) => {
                 saveNickName(name);
               }}
             />
-          </CTAContainer>
+          </View>
         </ScrollView>
       </View>
     </TouchableWithoutFeedback>
