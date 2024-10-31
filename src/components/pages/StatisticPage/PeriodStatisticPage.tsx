@@ -1,6 +1,7 @@
 import { css } from '@emotion/native';
 import { useNavigation } from '@react-navigation/native';
 import dayjs from 'dayjs';
+import { Image } from 'expo-image';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -8,15 +9,13 @@ import { periodChart, periodKeyword, periodRecordEmotions } from '../../../apis/
 import { TPeriodRecordEmotions } from '../../../apis/analyze.type';
 import palette from '../../../assets/styles/theme';
 import Analytics from '../../../utils/analytics';
-import { rsHeight } from '../../../utils/responsive-size';
-import DateLine from '../../atoms/DateLine/DateLine';
+import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import RangeDatePickerModal from '../../rangeCal/range-date-picker-modal';
-import PageName from './PageName';
 import PeriodRecord from './Period-records/period-record';
 import PeriodFlowChart from './Period_FlowChart/PeriodFlowChartArea';
 import PeriodKeywordArea from './Period_keyword/PeriodKeywordArea';
 import ReportType from './ReportType';
-
+import { DateLineText, StatisticTitle } from './StatisticMain.style';
 const PeriodStatisticPage: React.FC<any> = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -120,14 +119,35 @@ const PeriodStatisticPage: React.FC<any> = () => {
               Analytics.clickPeriodCalendarButton();
               setOpenModal(true);
             }}></ReportType>
-          <PageName type={`쿠키가 생각했던${'\n'}주인님의 모습이에요`} />
-          <DateLine
-            value={
-              range.startDate && range.endDate
-                ? `${dayjs(range.startDate).locale(locale).format('YYYY년 M월 D일')} ~ ${dayjs(range.endDate).locale(locale).format('YYYY년 M월 D일')}`
-                : '날짜를 선택해주세요'
-            }
-          />
+          <View
+            style={{
+              //backgroundColor: 'yellow',
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Image
+              style={{
+                width: 70 * rsWidth,
+                height: 70 * rsHeight,
+                aspectRatio: 1, // 가로 세로 비율을 고정
+                resizeMode: 'contain', // 이미지를 잘리지 않게 표시
+              }}
+              source={{
+                uri: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/statistic/reportlogo.png',
+              }}
+            />
+            <View style={{ marginVertical: 10 * rsHeight }}>
+              {/*<DateLineText>{getDateString(date ?? getServerYesterday())}</DateLineText>*/}
+              <DateLineText>
+                {range.startDate && range.endDate
+                  ? `${dayjs(range.startDate).locale(locale).format('YYYY년 M월 D일')}부터 ${dayjs(range.endDate).locale(locale).format('YYYY년 M월 D일')}까지`
+                  : '날짜를 선택해주세요'}
+              </DateLineText>
+              <StatisticTitle>쿠키와의 대화에서{'\n'}마음을 살펴보았어요</StatisticTitle>
+            </View>
+          </View>
+          {/*<PageName type={`쿠키가 생각했던${'\n'}주인님의 모습이에요`} />*/}
           <PeriodFlowChart
             emotionsData={emotionsData}
             setEmotionsData={setEmotionsData}

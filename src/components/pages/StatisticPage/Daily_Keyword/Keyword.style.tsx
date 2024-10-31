@@ -58,6 +58,6 @@ export const Container = styled.View`
   width: 100%;
   max-width: ${350 * rsWidth + 'px'};
   height: auto;
-  max-height: ${253 * rsHeight + 'px'};
+  //max-height: ${253 * rsHeight + 'px'};
   gap: ${12 * rsHeight + 'px'};
 `;

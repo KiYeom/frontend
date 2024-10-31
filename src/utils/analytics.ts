@@ -135,7 +135,7 @@ export default class Analytics {
   public static clickTabSettingWithdrawalButton = (): void => {
     this.sendEvent('탭 - 설정 화면 - 회원탈퇴 버튼 클릭', 'tabSettingWithdrawalButton');
   };
-  //탭 - 설정 화면 - 로그아옷 버튼 클릭
+  //탭 - 설정 화면 - 로그아웃 버튼 클릭
   public static clickTabSettingLogoutButton = (): void => {
     this.sendEvent('탭 - 설정 화면 - 로그아웃 버튼 클릭', 'tabSettingLogoutButton');
   };
@@ -143,11 +143,11 @@ export default class Analytics {
   public static clickTabSettingConnectButton = (): void => {
     this.sendEvent('탭 - 설정 화면 - 기관 연결 버튼 클릭', 'tabSettingConnectButton');
   };
-  //로그아옷 취소 버튼 클릭
+  //로그아웃 취소 버튼 클릭
   public static clickTabSettingLogoutCancelButton = (): void => {
     this.sendEvent('로그아웃 취소 버튼 클릭', 'TabSettingLogoutCancelButton');
   };
-  //로그아옷 확인 버튼 클릭
+  //로그아웃 확인 버튼 클릭
   public static clickTabSettingLogoutConfirmButton = (): void => {
     this.sendEvent('로그아웃 확인 버튼 클릭', 'TabSettingLogoutConfirmButton');
   };
@@ -163,6 +163,15 @@ export default class Analytics {
   //일일 분석 화면 - 기간 분석 버튼 클릭
   public static clickPeriodButton = (): void => {
     this.sendEvent('일일 분석 화면 - 기간 분석 버튼 클릭', 'PeriodButton');
+  };
+
+  //일일 분석 화면 - 채팅 바로가기 버튼 클릭 (CTA)
+  public static clickCTAChatButton = (): void => {
+    this.sendEvent('일일 분석 화면 - CTA 채팅 버튼 클릭', 'dailyCTAChatButton');
+  };
+  //일일 분석 화면 - 일기 작성 바로가기 버튼 클릭 (CTA)
+  public static clickCTADiaryButton = (): void => {
+    this.sendEvent('일일 분석 화면 - CTA 일기 버튼 클릭', 'dailyCTADiaryButton');
   };
 
   //분석 그룹 - 기간 분석 화면
