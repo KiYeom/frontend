@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { dailyAnalyze, dailyAnalyzeStatus } from '../../../apis/analyze';
 import { TEmotionCheck, TLabel } from '../../../apis/analyze.type';
 import palette from '../../../assets/styles/theme';
+import { HomeStackName, RootStackName } from '../../../constants/Constants';
 import Analytics from '../../../utils/analytics';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import SingleDatePickerModal from '../../rangeCal/single-date-picker-modal';
@@ -175,14 +176,17 @@ const StatisticMain: React.FC<any> = () => {
                     const dailyStatistics = await dailyAnalyze(
                       getApiDateString(date ?? getServerYesterday()),
                     );
-                    console.log('클릭 결과' + dailyStatistics);
+                    /*console.log('클릭 결과' + dailyStatistics);
                     console.log('키워드 확인', isRecordKeywordList);
                     console.log('키워드 입력 안헀을 때 조건식 확인', isNullRecordKeywordList);
                     console.log('조건식 확인', !isNullRecordKeywordList || todayFeeling !== '');
                     console.log('조건식 확인', !isNullRecordKeywordList);
                     console.log('조건식 확인', todayFeeling !== '');
                     console.log('키워드 보기', isRecordKeywordList);
-                    console.log('조건식 확인', todayFeeling !== '');
+                    console.log('조건식 확인', todayFeeling !== '');*/
+                    navigation.navigate(RootStackName.HomeStackNavigator, {
+                      screen: HomeStackName.Chat,
+                    });
                   }}
                 />
               </>
@@ -203,7 +207,12 @@ const StatisticMain: React.FC<any> = () => {
                   }
                   text={'지금 내 마음속\n목소리를 들어볼까요?'}
                   buttonText="감정 일기 작성하기"
-                  onPress={() => console.log('클릭함')}
+                  onPress={() => {
+                    console.log('감정 일기 버튼 클릭함');
+                    navigation.navigate(RootStackName.HomeStackNavigator, {
+                      screen: HomeStackName.SmallEmotionChart,
+                    });
+                  }}
                 />
               </>
             )}

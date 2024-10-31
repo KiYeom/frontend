@@ -6,8 +6,19 @@ import palette from '../../../assets/styles/theme';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 
 const BlurredButton = ({ blurredImageUri, text, buttonText, onPress }) => {
+  const pagemove = () => {
+    {
+      buttonText === '쿠키랑 대화하기'
+        ? console.log('두번째 버튼 클릭됨')
+        : console.log('첫번째 버튼 클릭됨');
+    }
+  };
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity
+      onPress={() => {
+        onPress();
+        pagemove();
+      }}>
       <View
         style={css`
           justify-content: center;
