@@ -172,18 +172,7 @@ const StatisticMain: React.FC<any> = () => {
                   text={'지금 쿠키와 대화하고\n내일 나의 마음을 확인해보세요'}
                   buttonText="쿠키랑 대화하기"
                   onPress={async () => {
-                    console.log('클릭함');
-                    //const dailyStatistics = await dailyAnalyze(
-                    //getApiDateString(date ?? getServerYesterday()),
-                    //);
-                    /*console.log('클릭 결과' + dailyStatistics);
-                    console.log('키워드 확인', isRecordKeywordList);
-                    console.log('키워드 입력 안헀을 때 조건식 확인', isNullRecordKeywordList);
-                    console.log('조건식 확인', !isNullRecordKeywordList || todayFeeling !== '');
-                    console.log('조건식 확인', !isNullRecordKeywordList);
-                    console.log('조건식 확인', todayFeeling !== '');
-                    console.log('키워드 보기', isRecordKeywordList);
-                    console.log('조건식 확인', todayFeeling !== '');*/
+                    Analytics.clickCTAChatButton();
                     navigation.navigate(RootStackName.HomeStackNavigator, {
                       screen: HomeStackName.Chat,
                     });
@@ -208,7 +197,7 @@ const StatisticMain: React.FC<any> = () => {
                   text={'지금 내 마음속\n목소리를 들어볼까요?'}
                   buttonText="감정 일기 작성하기"
                   onPress={() => {
-                    //console.log('감정 일기 버튼 클릭함');
+                    Analytics.clickCTADiaryButton();
                     navigation.navigate(RootStackName.HomeStackNavigator, {
                       screen: HomeStackName.SmallEmotionChart,
                     });

@@ -165,6 +165,15 @@ export default class Analytics {
     this.sendEvent('일일 분석 화면 - 기간 분석 버튼 클릭', 'PeriodButton');
   };
 
+  //일일 분석 화면 - 채팅 바로가기 버튼 클릭 (CTA)
+  public static clickCTAChatButton = (): void => {
+    this.sendEvent('일일 분석 화면 - CTA 채팅 버튼 클릭', 'dailyCTAChatButton');
+  };
+  //일일 분석 화면 - 일기 작성 바로가기 버튼 클릭 (CTA)
+  public static clickCTADiaryButton = (): void => {
+    this.sendEvent('일일 분석 화면 - CTA 일기 버튼 클릭', 'dailyCTADiaryButton');
+  };
+
   //분석 그룹 - 기간 분석 화면
   public static watchPeriodStatisticScreen = (): void => {
     this.sendEvent('분석 그룹 - 기간 분석 화면 진입', 'periodStatisticScreen');
