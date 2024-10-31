@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import Header from '../components/header/header';
 import Chat from '../components/pages/HomePage/Chat';
+import ChatList from '../components/pages/HomePage/ChatList';
 import SmallEmotionChart from '../components/pages/HomePage/SmallEmotionChart';
 import Profile from '../components/pages/Profile/profile';
 import { HomeStackName, TabScreenName } from '../constants/Constants';
@@ -36,6 +37,11 @@ const HomeStackNavigator: React.FC = () => {
         name={HomeStackName.Profile}
         component={Profile}
         options={{ header: () => <Header /> }}
+      />
+      <HomeStack.Screen
+        name={HomeStackName.ChatList}
+        component={ChatList}
+        options={{ header: () => <Header title="채팅 목록" /> }}
       />
     </HomeStack.Navigator>
   );
