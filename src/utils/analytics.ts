@@ -135,7 +135,7 @@ export default class Analytics {
   public static clickTabSettingWithdrawalButton = (): void => {
     this.sendEvent('탭 - 설정 화면 - 회원탈퇴 버튼 클릭', 'tabSettingWithdrawalButton');
   };
-  //탭 - 설정 화면 - 로그아옷 버튼 클릭
+  //탭 - 설정 화면 - 로그아웃 버튼 클릭
   public static clickTabSettingLogoutButton = (): void => {
     this.sendEvent('탭 - 설정 화면 - 로그아웃 버튼 클릭', 'tabSettingLogoutButton');
   };
@@ -143,11 +143,11 @@ export default class Analytics {
   public static clickTabSettingConnectButton = (): void => {
     this.sendEvent('탭 - 설정 화면 - 기관 연결 버튼 클릭', 'tabSettingConnectButton');
   };
-  //로그아옷 취소 버튼 클릭
+  //로그아웃 취소 버튼 클릭
   public static clickTabSettingLogoutCancelButton = (): void => {
     this.sendEvent('로그아웃 취소 버튼 클릭', 'TabSettingLogoutCancelButton');
   };
-  //로그아옷 확인 버튼 클릭
+  //로그아웃 확인 버튼 클릭
   public static clickTabSettingLogoutConfirmButton = (): void => {
     this.sendEvent('로그아웃 확인 버튼 클릭', 'TabSettingLogoutConfirmButton');
   };

@@ -193,7 +193,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
             <SubjectText>계정 설정</SubjectText>
           </SubjectTextContainer>
           <MenuRow
-            text="로그아옷"
+            text="로그아웃"
             onPress={() => {
               Analytics.clickTabSettingLogoutButton();
               logoutAlert();
