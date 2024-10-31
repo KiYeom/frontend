@@ -41,6 +41,7 @@
     "expo-linear-gradient": "~13.0.2",
     "expo-linking": "~6.3.1",
     "expo-localization": "~15.0.3",
+    "expo-navigation-bar": "~3.0.7",
     "expo-notifications": "~0.28.9",
     "expo-random": "~14.0.1",
     "expo-splash-screen": "~0.27.5",
@@ -52,6 +53,7 @@
     "install": "^0.13.0",
     "ios": "^0.0.1",
     "json-parse-better-errors": "^1.0.2",
+    "jwt-decode": "^4.0.0",
     "patch-package": "^8.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -78,8 +80,7 @@
     "react-native-ui-lib": "^7.27.0",
     "react-native-web": "~0.19.10",
     "react-native-webview": "13.8.6",
-    "zustand": "^4.5.4",
-    "expo-navigation-bar": "~3.0.7"
+    "zustand": "^4.5.4"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",

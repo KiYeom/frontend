@@ -54,6 +54,7 @@ const InputName = ({ route, navigation }) => {
       });
 
       if (res) {
+        Analytics.setUser(res.accessToken);
         setInfoWhenLogin(
           '' + res.nickname,
           res.birthdate,

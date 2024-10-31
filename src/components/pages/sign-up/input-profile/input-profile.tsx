@@ -19,6 +19,7 @@ import {
   TitleContainer,
 } from '../input-name/input-name.styles';
 import { BtnLabel, ButtonGroup, FormContainer, GenderButton, Label } from './input-profile.styles';
+import Analytics from '../../../../utils/analytics';
 
 const InputProfile: React.FC<any> = ({ navigation }) => {
   const [name, setName] = React.useState('');
@@ -52,6 +53,7 @@ const InputProfile: React.FC<any> = ({ navigation }) => {
       });
 
       if (res) {
+        Analytics.setUser(res.accessToken);
         setInfoWhenLogin(
           '' + res.nickname,
           res.birthdate,

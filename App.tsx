@@ -34,8 +34,9 @@ Sentry.init({
 });
 
 if (process.env.EXPO_PUBLIC_AMPLITUDE) {
-  amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE);
-  amplitude.track('Sign Up');
+  amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE, undefined, {
+    minIdLength: 1,
+  });
 }
 
 SplashScreen.preventAutoHideAsync();
@@ -93,6 +94,8 @@ const App: React.FC = () => {
     if (!signinResult) {
       clearInfoWhenLogout();
     }
+    const accessToken = getAccessToken();
+    if (accessToken) Analytics.setUser(accessToken);
     setSigninStatus(signinResult);
   };
 
