@@ -6,18 +6,13 @@ import palette from '../../../assets/styles/theme';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 
 const BlurredButton = ({ blurredImageUri, text, buttonText, onPress }) => {
-  const pagemove = () => {
-    {
-      buttonText === '쿠키랑 대화하기'
-        ? console.log('두번째 버튼 클릭됨')
-        : console.log('첫번째 버튼 클릭됨');
-    }
-  };
+  const regex = /(나의 마음)/;
+  const [beforeHighlight, highlight, afterHighlight] = text.split(regex);
+
   return (
     <TouchableOpacity
       onPress={() => {
         onPress();
-        pagemove();
       }}>
       <View
         style={css`
@@ -45,7 +40,12 @@ const BlurredButton = ({ blurredImageUri, text, buttonText, onPress }) => {
               align-items: center;
             `}>
             {/* 텍스트 */}
-            <Text style={styles.text}>{text}</Text>
+            <Text style={styles.text}>
+              {beforeHighlight}
+              <Text style={[styles.text, { color: '#D8FF75' }]}>{highlight}</Text>
+              {afterHighlight}
+            </Text>
+
             {/* 쿠키 이미지*/}
             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
               {buttonText === '쿠키랑 대화하기' ? (
@@ -89,12 +89,6 @@ const BlurredButton = ({ blurredImageUri, text, buttonText, onPress }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%', // EmptyContainer의 너비에 맞춤
-    height: 630, // EmptyContainer 높이에 맞춤
-  },
   imageBackground: {
     width: '100%',
     height: '100%',
@@ -103,25 +97,11 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     overflow: 'hidden',
   },
-  overlay: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(0, 0, 0, 0.4)', // 검정색 40% 불투명도
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   text: {
     color: 'white',
     fontSize: 24,
     textAlign: 'center',
     fontFamily: 'Pretendard-Bold',
-  },
-  button: {
-    backgroundColor: palette.primary[500],
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    width: 220,
   },
   buttonText: {
     color: 'white',
