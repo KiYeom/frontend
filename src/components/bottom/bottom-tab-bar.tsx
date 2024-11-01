@@ -3,6 +3,7 @@ import { AppEventsLogger } from 'react-native-fbsdk-next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import palette from '../../assets/styles/theme';
 import {
+  HomeStackName,
   RootStackName,
   SettingStackName,
   TabBarLabel,
@@ -12,6 +13,7 @@ import Analytics from '../../utils/analytics';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import Icon from '../icons/icons';
 import { BottomTabBarContainer, TabButtonContainer, TabLabel } from './bottom-tab-bar.style';
+import Home from '../pages/HomePage/Home';
 
 const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
   const insets = useSafeAreaInsets();
@@ -40,11 +42,18 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
             target: route.key,
             canPreventDefault: true,
           });
+          console.log(route.key);
 
           //탭 클릭 시 이동
           if (!isFocused && !event.defaultPrevented) {
             Analytics.clickTabButton(label);
-            navigation.navigate(route.name, route.params);
+            if (route.name === TabScreenName.NewChat) {
+              navigation.navigate(RootStackName.HomeStackNavigator, {
+                screen: HomeStackName.NewChat,
+              });
+            } else {
+              navigation.navigate(route.name, route.params);
+            }
           }
         };
 

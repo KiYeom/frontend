@@ -13,8 +13,7 @@ const BottomTabNavigator: React.FC<any> = () => {
   //console.log('채팅 화면 새로 그려짐..');
   return (
     <Tab.Navigator
-      //initialRouteName={TabScreenName.NewChat}
-      initialRouteName={HomeStackName.NewChat}
+      initialRouteName={TabScreenName.Home}
       tabBar={(props) => <BottomTabBar {...props} />}
       screenOptions={{
         tabBarActiveTintColor: palette.primary[500], //tab bar focuse 색상

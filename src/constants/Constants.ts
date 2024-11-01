@@ -47,7 +47,7 @@ export enum TabScreenName {
   Home = 'Home',
   Setting = 'Setting',
   Statistic = 'Statistic',
-  NewChat = 'NewChat',
+  NewChat = 'TabNewChat',
 }
 
 export enum TabBarLabel {
