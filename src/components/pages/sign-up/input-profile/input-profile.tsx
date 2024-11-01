@@ -16,14 +16,14 @@ import {
   ContentContainer,
   CTAContainer,
   Title,
-  TitleContaienr,
+  TitleContainer,
 } from '../input-name/input-name.styles';
 import { BtnLabel, ButtonGroup, FormContainer, GenderButton, Label } from './input-profile.styles';
+import Analytics from '../../../../utils/analytics';
 
 const InputProfile: React.FC<any> = ({ navigation }) => {
   const [name, setName] = React.useState('');
   const [gender, setGender] = React.useState<TGender>();
-  const [openModal, setOpenModal] = React.useState(false);
   const [birthDate, setBirthdate] = React.useState<string>('');
   const [loading, setLoading] = React.useState(false);
   const [firstLoaded, setFirstLoaded] = React.useState(false);
@@ -53,6 +53,7 @@ const InputProfile: React.FC<any> = ({ navigation }) => {
       });
 
       if (res) {
+        Analytics.setUser(res.accessToken);
         setInfoWhenLogin(
           '' + res.nickname,
           res.birthdate,
@@ -121,10 +122,10 @@ const InputProfile: React.FC<any> = ({ navigation }) => {
         style={css`
           flex: 1;
         `}>
-        <TitleContaienr>
+        <TitleContainer>
           <Annotation>{name}님을 더 잘 이해하고 싶어요.</Annotation>
           <Title>쿠키에게{'\n'}정보를 알려주세요.</Title>
-        </TitleContaienr>
+        </TitleContainer>
         <ContentContainer>
           <FormContainer>
             <Label>생년월일</Label>

@@ -59,6 +59,7 @@ export enum HomeStackName {
   Chat = 'Chat',
   SmallEmotionChart = 'SmallEmotionChart',
   Profile = 'Profile',
+  NewChat = 'NewChat',
   ChatList = 'ChatList',
 }
 

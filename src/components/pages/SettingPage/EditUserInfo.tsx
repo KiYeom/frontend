@@ -16,7 +16,7 @@ import { validateBirth } from '../../../utils/ValidateBirth';
 import { validateName } from '../../../utils/ValidateName';
 import Button from '../../button/button';
 import Input from '../../input/input';
-import { ContentContainer, CTAContainer } from '../sign-up/input-name/input-name.styles';
+import { ContentContainer } from '../sign-up/input-name/input-name.styles';
 import {
   BtnLabel,
   ButtonGroup,
@@ -24,6 +24,8 @@ import {
   GenderButton,
   Label,
 } from '../sign-up/input-profile/input-profile.styles';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { rsWidth } from '../../../utils/responsive-size';
 //설정 - 프로필 수정 화면
 
 //date가 존재할 경우 'yyyy.mm.dd' 형태로 바꾸는 함수
@@ -35,14 +37,13 @@ const formatBirthDate = (dateString: string | undefined): string | undefined => 
 };
 
 const EditUserInfo: React.FC = ({ navigation }) => {
-  //FIX: 생년월일 클릭 시 에러 발생
   const [name, setName] = React.useState<string>(getUserNickname() + '');
   const [gender, setGender] = React.useState<TGender | undefined>(getUserGender());
   const [birthDate, setBirthDate] = React.useState<string | undefined>(
     formatBirthDate(getUserBirthdate()),
   );
-  const [openModal, setOpenModal] = React.useState<boolean>(false);
   const [loading, setLoading] = React.useState<boolean>(false);
+  const insets = useSafeAreaInsets();
 
   const handleDateChange = (text: string) => {
     let formatted = text.replace(/\D/g, '');
@@ -91,7 +92,13 @@ const EditUserInfo: React.FC = ({ navigation }) => {
   }, []);
 
   return (
-    <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <KeyboardAwareScrollView
+      contentContainerStyle={{
+        flexGrow: 1,
+        marginBottom: insets.bottom,
+        // borderColor: 'red',
+        // borderWidth: 10,
+      }}>
       <View
         style={css`
           flex: 1;
@@ -141,7 +148,12 @@ const EditUserInfo: React.FC = ({ navigation }) => {
             </ButtonGroup>
           </FormContainer>
         </ContentContainer>
-        <CTAContainer>
+        <View
+          style={css`
+            display: flex;
+            justify-content: center;
+            padding: 0 ${rsWidth * 24 + 'px'} ${rsWidth * 24 + 'px'} ${rsWidth * 24 + 'px'};
+          `}>
           <Button
             title="저장"
             disabled={
@@ -155,7 +167,7 @@ const EditUserInfo: React.FC = ({ navigation }) => {
               editUserInfo();
             }}
           />
-        </CTAContainer>
+        </View>
       </View>
     </KeyboardAwareScrollView>
   );

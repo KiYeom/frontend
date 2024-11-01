@@ -1,6 +1,7 @@
 import * as amplitude from '@amplitude/analytics-react-native';
 import analytics from '@react-native-firebase/analytics';
 import { AppEventsLogger } from 'react-native-fbsdk-next';
+import { jwtDecode } from 'jwt-decode';
 
 export default class Analytics {
   private static sendEvent = (
@@ -16,6 +17,13 @@ export default class Analytics {
     AppEventsLogger.logEvent(AppEventsLogger.AppEvents.CompletedRegistration, {
       [AppEventsLogger.AppEventParams.RegistrationMethod]: eventName,
     });
+  };
+
+  public static setUser = (accessToken: string): void => {
+    const decodedToken = jwtDecode<{ userId: string }>(accessToken);
+    const userId = decodedToken.userId;
+    amplitude.setUserId(String(userId));
+    analytics().setUserId(String(userId));
   };
 
   //로그인 화면

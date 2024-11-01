@@ -104,7 +104,7 @@ const PeriodStatisticPage: React.FC<any> = () => {
       style={css`
         /* background-color: ${palette.neutral[50]}; */
         flex: 1;
-        margin-top: ${insets.top + 'px'};
+        padding-top: ${insets.top + 'px'};
       `}>
       <ScrollView>
         <View

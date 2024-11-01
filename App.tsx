@@ -27,14 +27,16 @@ import {
   getRefreshToken,
   setDeviceId,
 } from './src/utils/storageUtils';
+import { setStatusBarStyle } from 'expo-status-bar';
 
 Sentry.init({
   dsn: 'https://038362834934b1090d94fe368fdbcbf7@o4507944128020480.ingest.us.sentry.io/4507944132870145',
 });
 
 if (process.env.EXPO_PUBLIC_AMPLITUDE) {
-  amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE);
-  amplitude.track('Sign Up');
+  amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE, undefined, {
+    minIdLength: 1,
+  });
 }
 
 SplashScreen.preventAutoHideAsync();
@@ -80,6 +82,7 @@ const App: React.FC = () => {
   };
 
   const bootstrap = async (): Promise<void> => {
+    setStatusBarStyle('dark');
     const deviceId = await getDeviceId();
     if (deviceId === null) {
       console.error('DeviceId is undefined');
@@ -91,6 +94,8 @@ const App: React.FC = () => {
     if (!signinResult) {
       clearInfoWhenLogout();
     }
+    const accessToken = getAccessToken();
+    if (accessToken) Analytics.setUser(accessToken);
     setSigninStatus(signinResult);
   };
 
