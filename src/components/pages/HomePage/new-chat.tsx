@@ -204,7 +204,12 @@ const NewChat: React.FC = ({ navigation }) => {
           decideRefreshScreen(height);
         }
       }}>
-      <Header title="쿠키의 채팅방" leftFunction={() => navigation.navigate(TabScreenName.Home)} />
+      <Header
+        title="쿠키의 채팅방"
+        leftFunction={() => {
+          navigation.navigate(TabScreenName.Home);
+        }}
+      />
       <GiftedChat
         messages={messages}
         onSend={(messages) => onSend(messages)}
