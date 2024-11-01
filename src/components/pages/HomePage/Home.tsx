@@ -179,16 +179,6 @@ const Home: React.FC<any> = ({ navigation }) => {
             gap: ${rsHeight * 20 + 'px'};
           `}>
           <Header navigation={navigation} riskStatus={riskStatus} onIconPress={handleDangerPress} />
-          <Button
-            onPress={() => {
-              //navigation.navigate(HomeStackName.ChatList);
-              navigation.navigate(RootStackName.HomeStackNavigator, {
-                screen: HomeStackName.ChatList,
-              }); //쿠키 편지 화면으로 이동한다
-              console.log('버튼 누름');
-            }}>
-            <Text>버튼</Text>
-          </Button>
           <Carousel
             key={carousels.length}
             containerStyle={css`

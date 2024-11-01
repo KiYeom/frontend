@@ -29,6 +29,7 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
         align-items: end;
         justify-content: start;
         gap: ${rsWidth * 8 + 'px'};
+        background-color: pink;
       `}>
       <View>
         <Bubble
