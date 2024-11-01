@@ -174,7 +174,7 @@ const StatisticMain: React.FC<any> = () => {
                   onPress={async () => {
                     Analytics.clickCTAChatButton();
                     navigation.navigate(RootStackName.HomeStackNavigator, {
-                      screen: HomeStackName.Chat,
+                      screen: HomeStackName.NewChat,
                     });
                   }}
                 />

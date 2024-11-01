@@ -5,7 +5,11 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import palette from '../../../assets/styles/theme';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import Icon from '../../icons/icons';
+import { useNavigation } from '@react-navigation/native';
+import { RootStackName, HomeStackName } from '../../../constants/Constants';
+import { useEffect } from 'react';
 const ChatList = () => {
+  const navigation = useNavigation();
   return (
     <View
       style={css`
@@ -15,7 +19,12 @@ const ChatList = () => {
         //background-color: pink;
       `}>
       <TouchableOpacity
-        onPress={() => console.log('터치함')}
+        onPress={() => {
+          navigation.navigate(RootStackName.HomeStackNavigator, {
+            screen: HomeStackName.NewChat,
+          });
+          console.log('터치함');
+        }}
         style={css`
           //background-color: red;
           flex-direction: row;

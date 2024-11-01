@@ -47,16 +47,18 @@ export enum TabScreenName {
   Home = 'Home',
   Setting = 'Setting',
   Statistic = 'Statistic',
+  NewChat = 'NewChat',
 }
 
 export enum TabBarLabel {
   Home = '홈',
+  NewChat = '채팅',
   Setting = '설정',
   Statistic = '보고서',
 }
 
 export enum HomeStackName {
-  Chat = 'Chat',
+  //Chat = 'Chat',
   SmallEmotionChart = 'SmallEmotionChart',
   Profile = 'Profile',
   NewChat = 'NewChat',
