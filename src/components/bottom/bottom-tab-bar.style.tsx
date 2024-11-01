@@ -1,7 +1,7 @@
 import styled from '@emotion/native';
 import { EdgeInsets } from 'react-native-safe-area-context';
 import palette from '../../assets/styles/theme';
-import { rsFont, rsHeight } from '../../utils/responsive-size';
+import { rsFont, rsHeight, rsWidth } from '../../utils/responsive-size';
 import { Platform } from 'react-native';
 
 export const BottomTabBarContainer = styled.View<{ insets: EdgeInsets }>`
@@ -15,6 +15,8 @@ export const BottomTabBarContainer = styled.View<{ insets: EdgeInsets }>`
   justify-content: space-between;
   align-items: center;
   border-color: #ddd;
+  //background-color: red;
+  padding-horizontal: ${rsWidth * 30 + 'px'};
 `;
 
 export const TabButtonContainer = styled.TouchableOpacity`
@@ -24,6 +26,8 @@ export const TabButtonContainer = styled.TouchableOpacity`
   justify-content: center;
   gap: ${rsHeight * 8 + 'px'};
   align-items: center;
+  //padding-horizontal: ${rsWidth * 10 + 'px'};
+  //background-color: pink;
 `;
 
 export const TabLabel = styled.Text<{ isFocused: boolean }>`

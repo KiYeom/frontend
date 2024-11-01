@@ -90,6 +90,16 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
             ) : (
               <></>
             )}
+            {label === TabBarLabel.Chat ? (
+              <Icon
+                name={'chat-icon'}
+                width={rsWidth * 34}
+                height={rsHeight * 30}
+                color={isFocused ? palette.primary[500] : palette.neutral[300]}
+              />
+            ) : (
+              <></>
+            )}
             {label === TabBarLabel.Setting ? (
               <Icon
                 name={'setting-icon'}

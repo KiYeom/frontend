@@ -6,7 +6,7 @@ import Home from '../components/pages/HomePage/Home';
 import Setting from '../components/pages/SettingPage/Setting';
 import { TabBarLabel, TabScreenName } from '../constants/Constants';
 import StatisticStackNavigator from './StatisticStackNavigator';
-
+import NewChat from '../components/pages/HomePage/new-chat';
 const Tab = createBottomTabNavigator();
 
 const BottomTabNavigator: React.FC<any> = () => {
@@ -32,6 +32,14 @@ const BottomTabNavigator: React.FC<any> = () => {
         component={Home}
         options={{
           tabBarLabel: TabBarLabel.Home, //탭 바 아래에 보일 이름
+          headerShown: false,
+        }}
+      />
+      <Tab.Screen
+        name={TabScreenName.Chat}
+        component={NewChat}
+        options={{
+          tabBarLabel: TabBarLabel.Chat, //탭 바 아래에 보일 이름
           headerShown: false,
         }}
       />

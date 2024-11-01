@@ -21,6 +21,7 @@ import {
   RenderDay,
   RenderInputToolbar,
   RenderLoading,
+  RenderMessage,
   RenderSend,
   RenderSystemMessage,
   RenderTime,
@@ -232,6 +233,7 @@ const NewChat: React.FC = ({ navigation }) => {
         keyboardShouldPersistTaps="never"
         renderSend={(sendProps: SendProps<IMessage>) => RenderSend(sendProps, sending)}
         alwaysShowSend
+        renderMessage={RenderMessage}
       />
     </SafeAreaView>
   );
