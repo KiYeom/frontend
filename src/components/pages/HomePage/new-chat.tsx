@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { Dimensions, LayoutAnimation, Platform, Text, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Dimensions, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GiftedChat, IMessage, SendProps } from 'react-native-gifted-chat';
 import Header from '../../header/header';
@@ -15,10 +15,10 @@ import {
 import Analytics from '../../../utils/analytics';
 import { rsWidth } from '../../../utils/responsive-size';
 import { chatting } from '../../../apis/chatting';
+import { TabScreenName } from '../../../constants/Constants';
 import {
   RenderAvatar,
   RenderBubble,
-  RenderCustomView,
   RenderDay,
   RenderFooter,
   RenderInputToolbar,
@@ -191,7 +191,7 @@ const NewChat: React.FC = ({ navigation }) => {
   useEffect(() => {
     setInit(true);
     if (getRefreshChat() === 0) {
-      Analytics.watchChatScreen();
+      Analytics.watchNewChatScreen();
     }
     const messageHistory: IMessage[] = getHistory();
     setMessages(([]) => GiftedChat.append([], messageHistory));
@@ -199,6 +199,7 @@ const NewChat: React.FC = ({ navigation }) => {
   }, []);
 
   const onSend = (newMessages: IMessage[] = []) => {
+    Analytics.clickChatSendButton();
     if (newMessages.length !== 1 || !newMessages[0].text.trim()) return;
     setHistory(messages, newMessages);
     setBuffer(buffer ? buffer + newMessages[0].text + '\n' : newMessages[0].text + '\n');
@@ -227,7 +228,13 @@ const NewChat: React.FC = ({ navigation }) => {
           setRefreshTimerMS(refreshTimerMS / 2);
         }
       }}>
-      <Header title="쿠키의 채팅방" />
+      <Header
+        title="쿠키의 채팅방"
+        leftFunction={() => {
+          Analytics.clickHeaderBackButton();
+          navigation.navigate(TabScreenName.Home);
+        }}
+      />
       <GiftedChat
         messages={messages}
         onSend={(messages) => onSend(messages)}

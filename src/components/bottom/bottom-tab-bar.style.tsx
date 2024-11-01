@@ -1,7 +1,7 @@
 import styled from '@emotion/native';
 import { EdgeInsets } from 'react-native-safe-area-context';
 import palette from '../../assets/styles/theme';
-import { rsFont, rsHeight } from '../../utils/responsive-size';
+import { rsFont, rsHeight, rsWidth } from '../../utils/responsive-size';
 import { Platform } from 'react-native';
 
 export const BottomTabBarContainer = styled.View<{ insets: EdgeInsets }>`
@@ -15,6 +15,7 @@ export const BottomTabBarContainer = styled.View<{ insets: EdgeInsets }>`
   justify-content: space-between;
   align-items: center;
   border-color: #ddd;
+  padding-horizontal: ${rsWidth * 30 + 'px'};
 `;
 
 export const TabButtonContainer = styled.TouchableOpacity`

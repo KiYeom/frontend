@@ -22,6 +22,7 @@ import Search from './svg/search';
 import SettingIcon from './svg/setting-icon';
 import StatisticIcon from './svg/statistic-icon';
 import TextIcon from './svg/text';
+import ChatIcon from './svg/chat';
 
 export type TIconName =
   | 'airplane'
@@ -47,7 +48,8 @@ export type TIconName =
   | 'danger-sign-opened'
   | 'search'
   | 'letter'
-  | 'empty-icon';
+  | 'empty-icon'
+  | 'chat-icon';
 
 export default function Icon({
   width,
@@ -77,6 +79,8 @@ export default function Icon({
       return <SettingIcon width={width} height={height} color={color} />;
     case 'statistic-icon':
       return <StatisticIcon width={width} height={height} color={color} />;
+    case 'chat-icon':
+      return <ChatIcon width={width} height={height} color={color} />;
     case 'clover-icon':
       return <CloverIcon width={width} height={height} color={color} />;
     case 'happy-emotion':
