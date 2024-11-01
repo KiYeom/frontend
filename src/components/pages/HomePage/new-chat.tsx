@@ -19,6 +19,7 @@ import { TabScreenName } from '../../../constants/Constants';
 import {
   RenderAvatar,
   RenderBubble,
+  RenderComposer,
   RenderDay,
   RenderFooter,
   RenderInputToolbar,
@@ -299,6 +300,7 @@ const NewChat: React.FC = ({ navigation }) => {
         renderDay={RenderDay}
         renderSystemMessage={RenderSystemMessage}
         renderInputToolbar={RenderInputToolbar}
+        renderComposer={RenderComposer}
         textInputProps={{
           placeholder: '메시지 입력',
           marginLeft: rsWidth * 15,

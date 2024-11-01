@@ -15,6 +15,8 @@ import {
   Time,
   TimeProps,
   Message,
+  ComposerProps,
+  Composer,
 } from 'react-native-gifted-chat';
 import palette from '../../../assets/styles/theme';
 import { css } from '@emotion/native';
@@ -211,6 +213,8 @@ export const RenderInputToolbar = (props: InputToolbarProps<IMessage>) => (
     }}
   />
 );
+
+export const RenderComposer = (props: ComposerProps) => <Composer {...props} multiline={false} />;
 
 export const RenderLoading = () => (
   <View
