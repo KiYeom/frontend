@@ -32,12 +32,15 @@ const EmotionBtn = ({ navigation }) => {
       setLoading(true); // 로딩 시작
       try {
         const data = await todayEmotionCheck(); // 데이터를 비동기로 가져옴
-        if (!data.isNULL) {
-          //console.log('데이터가 있음');
-          // Keyword가 있으면 state 업데이트 {keyword : "키워드", group : "group"} 형태
+        if (data.Keywords.length > 0) {
+          //감정 기록을 한 경우
           setRecordedEmotions(data.Keywords);
-          setIsNULL(false); // 데이터가 있으면 false로 설정
+          setIsNULL(false);
+        } else if (data.todayFeeling.length > 0) {
+          //감정 기록 안했는데 일기는 씀
+          setIsNULL(true); // 데이터가 있으면
         } else {
+          //아무것도 기록을 안 했으면
           setRecordedEmotions([]);
           setIsNULL(true); // 데이터가 없으면 true로 설정
         }
@@ -69,6 +72,7 @@ const EmotionBtn = ({ navigation }) => {
       </View>
     );
   }
+  console.log('isnull', isNULL);
 
   return (
     <HomeBtn

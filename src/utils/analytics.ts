@@ -199,6 +199,12 @@ export default class Analytics {
   public static watchChatScreen = (): void => {
     this.sendEvent('채팅 화면 진입', 'chatScreen');
   };
+
+  //업데이트된 채팅 화면
+  public static watchNewChatScreen = (): void => {
+    this.sendEvent('업데이트된 채팅 화면 진입', 'newChatScreen');
+  };
+
   //채팅 - 채팅 전송 버튼 클릭
   public static clickChatSendButton = (): void => {
     this.sendEvent('채팅 - 채팅 전송 버튼 클릭', 'chatSendButton');
@@ -210,6 +216,10 @@ export default class Analytics {
   //채팅 - 캐릭터 아바타 아이콘 클릭
   public static clickChatCharacterAvatar = (character: string = 'cookie'): void => {
     this.sendEvent('채팅 - 아바타 아이콘 클릭', 'chatAvatarButton', { character });
+  };
+  //채팅 - 헤더 좌측 뒤로가기 버튼 클릭
+  public static clickHeaderBackButton = (): void => {
+    this.sendEvent('채팅 - 헤더의 좌측 뒤로가기 버튼 클릭', 'headerBackButton');
   };
 
   //감정 기록 화면

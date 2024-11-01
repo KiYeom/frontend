@@ -3,7 +3,7 @@ import { Dimensions, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GiftedChat, IMessage, SendProps } from 'react-native-gifted-chat';
 import Header from '../../header/header';
-import { ERRORMESSAGE, HomeStackName, Message } from '../../../constants/Constants';
+import { ERRORMESSAGE, HomeStackName, Message, RootStackName } from '../../../constants/Constants';
 import * as NavigationBar from 'expo-navigation-bar';
 import {
   addRefreshChat,
@@ -27,6 +27,7 @@ import {
   RenderSystemMessage,
   RenderTime,
 } from './chat-render';
+import Home from './Home';
 
 const userObject = {
   _id: 0,
@@ -46,6 +47,10 @@ const NewChat: React.FC = ({ navigation }) => {
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [buffer, setBuffer] = useState<string | null>(null);
 
+  useEffect(() => {
+    Analytics.watchNewChatScreen();
+  }, []);
+
   const decideRefreshScreen = (viewHeight: number) => {
     NavigationBar.getVisibilityAsync().then((navBarStatus) => {
       if (navBarStatus === 'visible') {
@@ -56,7 +61,8 @@ const NewChat: React.FC = ({ navigation }) => {
           getRefreshChat() <= 4
         ) {
           addRefreshChat(1);
-          navigation.replace(HomeStackName.NewChat);
+          //navigation.replace(HomeStackName.NewChat);
+          navigation.replace(RootStackName.HomeStackNavigator, { screen: HomeStackName.NewChat });
         }
       }
     });
@@ -178,6 +184,7 @@ const NewChat: React.FC = ({ navigation }) => {
   }, []);
 
   const onSend = (newMessages: IMessage[] = []) => {
+    Analytics.clickChatSendButton();
     if (newMessages.length !== 1 || !newMessages[0].text.trim()) return;
     setHistory(messages, newMessages);
     setBuffer(buffer ? buffer + newMessages[0].text + '\n' : newMessages[0].text + '\n');
@@ -207,6 +214,7 @@ const NewChat: React.FC = ({ navigation }) => {
       <Header
         title="쿠키의 채팅방"
         leftFunction={() => {
+          Analytics.clickHeaderBackButton();
           navigation.navigate(TabScreenName.Home);
         }}
       />
