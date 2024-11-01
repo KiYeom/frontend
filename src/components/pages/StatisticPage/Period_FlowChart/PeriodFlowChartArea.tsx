@@ -5,7 +5,7 @@ import { Dimensions, View } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 import { rsFont, rsHeight, rsWidth } from '../../../../utils/responsive-size';
 import MoodButton from '../../../button/MoodButton';
-import { Title } from '../StatisticMain.style';
+import { SectionTitle } from '../StatisticMain.style';
 
 const fillMissingDates = (data, startDate, endDate) => {
   const result = [];
@@ -49,7 +49,7 @@ const PeriodFlowChart = ({ emotionsData, setEmotionsData, startDate, endDate }) 
         style={css`
           padding-horizontal: ${rsWidth * 20 + 'px'};
         `}>
-        <Title>주인님의 감정 변화</Title>
+        <SectionTitle>얼마나 많은 감정 변화가 있었을까요?</SectionTitle>
         <View
           style={css`
             flex-direction: row;

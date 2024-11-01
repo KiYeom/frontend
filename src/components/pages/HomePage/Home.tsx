@@ -2,14 +2,15 @@ import { css } from '@emotion/native';
 import { Image } from 'expo-image';
 import * as WebBrowser from 'expo-web-browser';
 import React, { useEffect } from 'react';
-import { ScrollView, TouchableOpacity, View } from 'react-native';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Carousel } from 'react-native-ui-lib';
+import { Button, Carousel } from 'react-native-ui-lib';
 import { getCarousel } from '../../../apis/carousel';
 import { TCarousel } from '../../../apis/carousel.types';
 import { getRiskScore } from '../../../apis/riskscore';
 import {
   DangerStackName,
+  HomeStackName,
   ONE_DAY_IN_MS,
   RISK_SCORE_THRESHOLD,
   RootStackName,
@@ -178,7 +179,16 @@ const Home: React.FC<any> = ({ navigation }) => {
             gap: ${rsHeight * 20 + 'px'};
           `}>
           <Header navigation={navigation} riskStatus={riskStatus} onIconPress={handleDangerPress} />
-
+          <Button
+            onPress={() => {
+              //navigation.navigate(HomeStackName.ChatList);
+              navigation.navigate(RootStackName.HomeStackNavigator, {
+                screen: HomeStackName.ChatList,
+              }); //쿠키 편지 화면으로 이동한다
+              console.log('버튼 누름');
+            }}>
+            <Text>버튼</Text>
+          </Button>
           <Carousel
             key={carousels.length}
             containerStyle={css`
