@@ -99,8 +99,6 @@ export const RenderAvatar = (props: AvatarProps<IMessage>) => {
       }}
       containerStyle={{
         left: {
-          borderWidth: 2,
-          //backgroundColor: 'red',
           marginRight: 8 * rsWidth,
         },
       }}

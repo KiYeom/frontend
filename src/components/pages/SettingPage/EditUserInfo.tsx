@@ -96,8 +96,6 @@ const EditUserInfo: React.FC = ({ navigation }) => {
       contentContainerStyle={{
         flexGrow: 1,
         marginBottom: insets.bottom,
-        // borderColor: 'red',
-        // borderWidth: 10,
       }}>
       <View
         style={css`
