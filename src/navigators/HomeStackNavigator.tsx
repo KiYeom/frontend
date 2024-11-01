@@ -6,10 +6,8 @@ import Chat from '../components/pages/HomePage/Chat';
 import ChatList from '../components/pages/HomePage/ChatList';
 import SmallEmotionChart from '../components/pages/HomePage/SmallEmotionChart';
 import Profile from '../components/pages/Profile/profile';
-import { HomeStackName } from '../constants/Constants';
 import { HomeStackName, TabScreenName } from '../constants/Constants';
 import NewChat from '../components/pages/HomePage/new-chat';
- 
 
 const HomeStack = createNativeStackNavigator();
 

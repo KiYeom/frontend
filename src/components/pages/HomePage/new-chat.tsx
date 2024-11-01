@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Dimensions, Platform } from 'react-native';
+import { Dimensions, LayoutAnimation, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GiftedChat, IMessage, SendProps } from 'react-native-gifted-chat';
 import Header from '../../header/header';
@@ -18,7 +18,9 @@ import { chatting } from '../../../apis/chatting';
 import {
   RenderAvatar,
   RenderBubble,
+  RenderCustomView,
   RenderDay,
+  RenderFooter,
   RenderInputToolbar,
   RenderLoading,
   RenderSend,
@@ -119,22 +121,29 @@ const NewChat: React.FC = ({ navigation }) => {
   };
 
   const sendMessageToServer = () => {
+    if (!buffer) return;
     setSending(true);
     const question = buffer ?? '';
     const messageDate = new Date();
     chatting(1, question)
       .then((res) => {
         if (res && res.answer) {
-          const newMessages: IMessage[] = [
-            {
-              _id: messageDate.getTime(),
-              text: res.answer,
-              createdAt: messageDate,
+          const answers =
+            res.answer.match(/\s*([^.!?;:…。？！~…」»]+[.!?;:…。？！~…」»])\s*/g) || [];
+          const newMessages: IMessage[] = [];
+          console.log('sendMessageToServer', answers);
+          for (let i = 0; i < answers.length; i++) {
+            newMessages.push({
+              _id: messageDate.getTime() + i,
+              text: answers[i],
+              createdAt: new Date(messageDate.getTime() + i),
               user: botObject,
-            },
-          ];
+            });
+          }
           setHistory(messages, newMessages);
-          setMessages((previousMessages) => GiftedChat.append(previousMessages, newMessages));
+          setMessages((previousMessages) =>
+            GiftedChat.append(previousMessages, newMessages.reverse()),
+          );
         }
       })
       .catch((err) => {
@@ -184,6 +193,7 @@ const NewChat: React.FC = ({ navigation }) => {
 
   useEffect(() => {
     if (buffer) {
+      console.log('useEffect: ', buffer);
       resetTimer();
     }
   }, [buffer]);
@@ -221,6 +231,8 @@ const NewChat: React.FC = ({ navigation }) => {
           navigation.navigate(HomeStackName.Profile);
         }}
         renderBubble={RenderBubble}
+        renderChatFooter={() => RenderFooter(sending)}
+        isCustomViewBottom
         renderTime={RenderTime}
         renderDay={RenderDay}
         renderSystemMessage={RenderSystemMessage}
