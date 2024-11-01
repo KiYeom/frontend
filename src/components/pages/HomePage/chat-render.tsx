@@ -30,7 +30,7 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
         align-items: end;
         justify-content: start;
         gap: ${rsWidth * 8 + 'px'};
-        background-color: pink;
+        //background-color: pink;
       `}>
       <View>
         <Bubble
@@ -96,7 +96,7 @@ export const RenderAvatar = (props: AvatarProps<IMessage>) => {
       containerStyle={{
         left: {
           borderWidth: 2,
-          backgroundColor: 'red',
+          //backgroundColor: 'red',
           marginRight: 8 * rsWidth,
         },
       }}
