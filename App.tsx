@@ -138,7 +138,7 @@ const App: React.FC = () => {
               // Define the linking configuration
               [RootStackName.HomeStackNavigator]: {
                 screens: {
-                  [HomeStackName.Chat]: 'chat', //{"url": "remind://chat" }
+                  [HomeStackName.NewChat]: 'chat', //{"url": "remind://chat" }
                 },
               },
               [RootStackName.BottomTabNavigator]: {
