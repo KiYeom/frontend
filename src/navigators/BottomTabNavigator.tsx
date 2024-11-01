@@ -36,10 +36,10 @@ const BottomTabNavigator: React.FC<any> = () => {
         }}
       />
       <Tab.Screen
-        name={TabScreenName.Chat}
+        name={TabScreenName.NewChat}
         component={NewChat}
         options={{
-          tabBarLabel: TabBarLabel.Chat, //탭 바 아래에 보일 이름
+          tabBarLabel: TabBarLabel.NewChat, //탭 바 아래에 보일 이름
           headerShown: false,
         }}
       />

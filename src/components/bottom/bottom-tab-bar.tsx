@@ -90,7 +90,7 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
             ) : (
               <></>
             )}
-            {label === TabBarLabel.Chat ? (
+            {label === TabBarLabel.NewChat ? (
               <Icon
                 name={'chat-icon'}
                 width={rsWidth * 34}

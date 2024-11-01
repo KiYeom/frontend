@@ -15,7 +15,6 @@ export const BottomTabBarContainer = styled.View<{ insets: EdgeInsets }>`
   justify-content: space-between;
   align-items: center;
   border-color: #ddd;
-  //background-color: red;
   padding-horizontal: ${rsWidth * 30 + 'px'};
 `;
 
@@ -26,8 +25,6 @@ export const TabButtonContainer = styled.TouchableOpacity`
   justify-content: center;
   gap: ${rsHeight * 8 + 'px'};
   align-items: center;
-  //padding-horizontal: ${rsWidth * 10 + 'px'};
-  //background-color: pink;
 `;
 
 export const TabLabel = styled.Text<{ isFocused: boolean }>`

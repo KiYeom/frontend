@@ -15,6 +15,7 @@ import {
 import Analytics from '../../../utils/analytics';
 import { rsWidth } from '../../../utils/responsive-size';
 import { chatting } from '../../../apis/chatting';
+import { TabScreenName } from '../../../constants/Constants';
 import {
   RenderAvatar,
   RenderBubble,
@@ -203,7 +204,7 @@ const NewChat: React.FC = ({ navigation }) => {
           decideRefreshScreen(height);
         }
       }}>
-      <Header title="쿠키의 채팅방" />
+      <Header title="쿠키의 채팅방" leftFunction={() => navigation.navigate(TabScreenName.Home)} />
       <GiftedChat
         messages={messages}
         onSend={(messages) => onSend(messages)}
