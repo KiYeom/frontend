@@ -41,7 +41,7 @@ const HomeChatBtn = ({ navigation, riskScore }) => {
         Analytics.clickTabHomeChatButton(riskScore);
         setRefreshChat(0);
         navigation.navigate(RootStackName.HomeStackNavigator, {
-          screen: HomeStackName.ChatList,
+          screen: HomeStackName.NewChat,
         }); //쿠키 편지 화면으로 이동한다
         //navigation.navigate(RootStackName.HomeStackNavigator, { screen: HomeStackName.NewChat });
       }}
