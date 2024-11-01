@@ -7,6 +7,7 @@ import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import Icon from '../../icons/icons';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackName, HomeStackName } from '../../../constants/Constants';
+import { useEffect } from 'react';
 const ChatList = () => {
   const navigation = useNavigation();
   return (
@@ -19,7 +20,9 @@ const ChatList = () => {
       `}>
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate(RootStackName.HomeStackNavigator, { screen: HomeStackName.NewChat });
+          navigation.navigate(RootStackName.HomeStackNavigator, {
+            screen: HomeStackName.NewChat,
+          });
           console.log('터치함');
         }}
         style={css`

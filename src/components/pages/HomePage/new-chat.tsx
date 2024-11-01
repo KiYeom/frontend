@@ -12,6 +12,7 @@ import {
   getUserNickname,
   setChatting,
 } from '../../../utils/storageUtils';
+import { useFocusEffect } from '@react-navigation/native';
 import Analytics from '../../../utils/analytics';
 import { rsWidth } from '../../../utils/responsive-size';
 import { chatting } from '../../../apis/chatting';
@@ -22,7 +23,6 @@ import {
   RenderDay,
   RenderInputToolbar,
   RenderLoading,
-  RenderMessage,
   RenderSend,
   RenderSystemMessage,
   RenderTime,
@@ -234,7 +234,6 @@ const NewChat: React.FC = ({ navigation }) => {
         keyboardShouldPersistTaps="never"
         renderSend={(sendProps: SendProps<IMessage>) => RenderSend(sendProps, sending)}
         alwaysShowSend
-        renderMessage={RenderMessage}
       />
     </SafeAreaView>
   );

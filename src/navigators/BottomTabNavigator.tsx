@@ -19,14 +19,7 @@ const BottomTabNavigator: React.FC<any> = () => {
         tabBarActiveTintColor: palette.primary[500], //tab bar focuse 색상
       }}
       detachInactiveScreens={false}>
-      <Tab.Screen
-        name={TabScreenName.Statistic}
-        component={StatisticStackNavigator}
-        options={{
-          tabBarLabel: TabBarLabel.Statistic,
-          headerShown: false,
-        }}
-      />
+      {/* 탭 바 순서 : 홈 - 채팅 - 보고서 - 설정 */}
       <Tab.Screen
         name={TabScreenName.Home}
         component={Home}
@@ -43,6 +36,15 @@ const BottomTabNavigator: React.FC<any> = () => {
           headerShown: false,
         }}
       />
+      <Tab.Screen
+        name={TabScreenName.Statistic}
+        component={StatisticStackNavigator}
+        options={{
+          tabBarLabel: TabBarLabel.Statistic,
+          headerShown: false,
+        }}
+      />
+
       <Tab.Screen
         name={TabScreenName.Setting}
         component={Setting}

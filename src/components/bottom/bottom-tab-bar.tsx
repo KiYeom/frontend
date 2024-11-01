@@ -15,8 +15,9 @@ import { BottomTabBarContainer, TabButtonContainer, TabLabel } from './bottom-ta
 
 const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
   const insets = useSafeAreaInsets();
+  const isNewChatFocused = state.routes[state.index].name === TabScreenName.NewChat;
   return (
-    <BottomTabBarContainer insets={insets}>
+    <BottomTabBarContainer insets={insets} style={{ display: isNewChatFocused ? 'none' : 'flex' }}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
 
@@ -70,16 +71,6 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
             accessibilityLabel={options.tabBarAccessibilityLabel}
             onPress={onPress}
             onLongPress={onLongPress}>
-            {label === TabBarLabel.Statistic ? (
-              <Icon
-                name={'statistic-icon'}
-                width={rsWidth * 32}
-                height={rsHeight * 30}
-                color={isFocused ? palette.primary[500] : palette.neutral[300]}
-              />
-            ) : (
-              <></>
-            )}
             {label === TabBarLabel.Home ? (
               <Icon
                 name={'home-icon'}
@@ -100,6 +91,17 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
             ) : (
               <></>
             )}
+            {label === TabBarLabel.Statistic ? (
+              <Icon
+                name={'statistic-icon'}
+                width={rsWidth * 32}
+                height={rsHeight * 30}
+                color={isFocused ? palette.primary[500] : palette.neutral[300]}
+              />
+            ) : (
+              <></>
+            )}
+
             {label === TabBarLabel.Setting ? (
               <Icon
                 name={'setting-icon'}
