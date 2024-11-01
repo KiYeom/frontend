@@ -45,6 +45,11 @@ const HomeStackNavigator: React.FC = () => {
         options={{ headerShown: false }}
       />
       <HomeStack.Screen
+        name={HomeStackName.NewChatRefresh}
+        component={NewChat}
+        options={{ headerShown: false, animation: 'none' }}
+      />
+      <HomeStack.Screen
         name={HomeStackName.ChatList}
         component={ChatList}
         options={{ header: () => <Header title="채팅 목록" /> }}

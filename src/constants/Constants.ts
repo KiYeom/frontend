@@ -60,6 +60,7 @@ export enum HomeStackName {
   SmallEmotionChart = 'SmallEmotionChart',
   Profile = 'Profile',
   NewChat = 'NewChat',
+  NewChatRefresh = 'NewChatRefresh',
   ChatList = 'ChatList',
 }
 

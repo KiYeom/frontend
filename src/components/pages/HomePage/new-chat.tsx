@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Dimensions, LayoutAnimation, Platform } from 'react-native';
+import { Dimensions, LayoutAnimation, Platform, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GiftedChat, IMessage, SendProps } from 'react-native-gifted-chat';
 import Header from '../../header/header';
@@ -40,11 +40,15 @@ const botObject = {
 };
 
 const NewChat: React.FC = ({ navigation }) => {
-  const [init, setInit] = useState<boolean>(true);
+  const [init, setInit] = useState<boolean>(false);
+  const [refreshTimerMS, setRefreshTimerMS] = useState<number>(500);
+
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [sending, setSending] = useState<boolean>(false);
-  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [buffer, setBuffer] = useState<string | null>(null);
+
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const refreshTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const decideRefreshScreen = (viewHeight: number) => {
     NavigationBar.getVisibilityAsync().then((navBarStatus) => {
@@ -53,10 +57,10 @@ const NewChat: React.FC = ({ navigation }) => {
         if (
           screenHeight - 2 < viewHeight &&
           viewHeight < screenHeight + 2 &&
-          getRefreshChat() <= 4
+          getRefreshChat() <= 3
         ) {
           addRefreshChat(1);
-          navigation.replace(HomeStackName.NewChat);
+          navigation.replace(HomeStackName.NewChatRefresh);
         }
       }
     });
@@ -174,6 +178,16 @@ const NewChat: React.FC = ({ navigation }) => {
     }, 2 * 1000);
   };
 
+  const resetRefreshTimer = (height: number, ms: number) => {
+    if (refreshTimeoutRef.current) {
+      clearTimeout(refreshTimeoutRef.current);
+    }
+
+    refreshTimeoutRef.current = setTimeout(() => {
+      decideRefreshScreen(height);
+    }, Math.floor(ms));
+  };
+
   useEffect(() => {
     setInit(true);
     if (getRefreshChat() === 0) {
@@ -209,7 +223,8 @@ const NewChat: React.FC = ({ navigation }) => {
       onLayout={(event) => {
         if (Platform.OS === 'android') {
           const { height } = event.nativeEvent.layout;
-          decideRefreshScreen(height);
+          resetRefreshTimer(height, refreshTimerMS);
+          setRefreshTimerMS(refreshTimerMS / 2);
         }
       }}>
       <Header title="쿠키의 채팅방" />
