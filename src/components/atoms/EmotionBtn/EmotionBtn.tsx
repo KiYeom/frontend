@@ -72,7 +72,6 @@ const EmotionBtn = ({ navigation }) => {
       </View>
     );
   }
-  console.log('isnull', isNULL);
 
   return (
     <HomeBtn

@@ -14,7 +14,7 @@ import {
 } from '../../../utils/storageUtils';
 import Analytics from '../../../utils/analytics';
 import { rsWidth } from '../../../utils/responsive-size';
-import { chatting } from '../../../apis/chatting';
+import { chatting, getOldChatting } from '../../../apis/chatting';
 import { TabScreenName } from '../../../constants/Constants';
 import {
   RenderAvatar,
@@ -66,7 +66,7 @@ const NewChat: React.FC = ({ navigation }) => {
     });
   };
 
-  const getHistory = (): IMessage[] => {
+  const getHistory = async (): Promise<IMessage[]> => {
     //대화 내역을 가져오는 함수
     const messageArray: IMessage[] = [];
     const chatJSON = getChatting();
@@ -74,7 +74,6 @@ const NewChat: React.FC = ({ navigation }) => {
       const chatArray = JSON.parse(chatJSON);
       for (let i = 0; i < chatArray.length; i++) {
         const chat = chatArray[i];
-        console.log('getHistory-chat', chat);
         messageArray.push({
           _id: Number(chat.id),
           text: chat.text,
@@ -83,6 +82,42 @@ const NewChat: React.FC = ({ navigation }) => {
         });
       }
     }
+    //서버에서 그동안의 대화를 가져온다.
+    const lastMessageDate: Date =
+      messageArray.length > 0
+        ? new Date(Number(messageArray[messageArray.length - 1]._id) + 1000)
+        : new Date(0);
+    const oldMessages = await getOldChatting(1, lastMessageDate.toISOString());
+
+    if (oldMessages && oldMessages.chats && oldMessages.chats.length > 0) {
+      for (let i = 0; i < oldMessages.chats.length; i++) {
+        const chat = oldMessages.chats[i];
+        const text = chat.text;
+        const texts = text.split('\n');
+        for (let j = 0; j < texts.length; j++) {
+          const text = texts[j];
+          const splitTexts = text.match(/\s*([^.!?;:…。？！~…」»]+[.!?;:…。？！~…」»]?)\s*/g) || [];
+          for (let k = 0; k < splitTexts.length; k++) {
+            messageArray.push({
+              _id:
+                new Date(chat.utcTime).getTime() +
+                j * 100 +
+                k * 10 +
+                Math.floor(Math.random() * 10),
+              text: splitTexts[k],
+              createdAt: new Date(
+                new Date(chat.utcTime).getTime() +
+                  j * 100 +
+                  k * 10 +
+                  Math.floor(Math.random() * 10),
+              ),
+              user: chat.status === 'user' ? userObject : botObject,
+            });
+          }
+        }
+      }
+    }
+    //대화 내역이 없을 경우, 환영 메시지를 추가
     if (messageArray.length === 0) {
       const welcomeMessage = {
         _id: new Date().getTime(),
@@ -128,19 +163,17 @@ const NewChat: React.FC = ({ navigation }) => {
     if (!buffer) return;
     setSending(true);
     const question = buffer ?? '';
-    const messageDate = new Date();
     chatting(1, question)
       .then((res) => {
         if (res && res.answer) {
           const answers =
-            res.answer.match(/\s*([^.!?;:…。？！~…」»]+[.!?;:…。？！~…」»])\s*/g) || [];
+            res.answer.match(/\s*([^.!?;:…。？！~…」»]+[.!?;:…。？！~…」»]?)\s*/g) || [];
           const newMessages: IMessage[] = [];
-          console.log('sendMessageToServer', answers);
           for (let i = 0; i < answers.length; i++) {
             newMessages.push({
-              _id: messageDate.getTime() + i,
+              _id: new Date().getTime() + i,
               text: answers[i],
-              createdAt: new Date(messageDate.getTime() + i),
+              createdAt: new Date(new Date().getTime() + i),
               user: botObject,
             });
           }
@@ -153,9 +186,9 @@ const NewChat: React.FC = ({ navigation }) => {
       .catch((err) => {
         const newMessages: IMessage[] = [
           {
-            _id: messageDate.getTime(),
+            _id: new Date().getTime(),
             text: ERRORMESSAGE,
-            createdAt: messageDate,
+            createdAt: new Date(),
             user: botObject,
           },
         ];
@@ -193,9 +226,16 @@ const NewChat: React.FC = ({ navigation }) => {
     if (getRefreshChat() === 0) {
       Analytics.watchNewChatScreen();
     }
-    const messageHistory: IMessage[] = getHistory();
-    setMessages(([]) => GiftedChat.append([], messageHistory));
-    setInit(false);
+    getHistory()
+      .then((messageHistory) => {
+        setMessages((pre) => GiftedChat.append(pre, messageHistory));
+        setInit(false);
+      })
+      .catch((err) => {
+        console.log('getHistoryError: ', err);
+        alert('대화 내역을 불러오는 중 오류가 발생했어요. 다시 시도해주세요.');
+        navigation.navigate(TabScreenName.Home);
+      });
   }, []);
 
   const onSend = (newMessages: IMessage[] = []) => {
