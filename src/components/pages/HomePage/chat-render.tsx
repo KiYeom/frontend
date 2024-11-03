@@ -97,6 +97,7 @@ export const RenderAvatar = (props: AvatarProps<IMessage>) => {
         left: {
           width: AVATAR_SIZE * rsWidth,
           height: AVATAR_SIZE * rsHeight,
+          objectFit: 'cover',
         },
       }}
       containerStyle={{
@@ -214,7 +215,9 @@ export const RenderInputToolbar = (props: InputToolbarProps<IMessage>) => (
   />
 );
 
-export const RenderComposer = (props: ComposerProps) => <Composer {...props} multiline={false} />;
+export const RenderComposer = (props: ComposerProps, disable: boolean = false) => (
+  <Composer {...props} multiline={false} disableComposer={disable} />
+);
 
 export const RenderLoading = () => (
   <View

@@ -1,16 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
-import { Dimensions, Platform } from 'react-native';
+import { Dimensions, Platform, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GiftedChat, IMessage, SendProps } from 'react-native-gifted-chat';
 import Header from '../../header/header';
-import { ERRORMESSAGE, HomeStackName, Message } from '../../../constants/Constants';
+import { ERRORMESSAGE, HomeStackName } from '../../../constants/Constants';
 import * as NavigationBar from 'expo-navigation-bar';
 import {
   addRefreshChat,
-  getChatting,
+  getNewIMessages,
   getRefreshChat,
   getUserNickname,
-  setChatting,
+  setNewIMessages,
 } from '../../../utils/storageUtils';
 import Analytics from '../../../utils/analytics';
 import { rsWidth } from '../../../utils/responsive-size';
@@ -28,6 +28,8 @@ import {
   RenderSystemMessage,
   RenderTime,
 } from './chat-render';
+import { css } from '@emotion/native';
+import uuid from 'react-native-uuid';
 
 const userObject = {
   _id: 0,
@@ -42,6 +44,7 @@ const botObject = {
 
 const NewChat: React.FC = ({ navigation }) => {
   const [init, setInit] = useState<boolean>(false);
+  const [screenLoading, setScreenLoading] = useState<boolean>(false);
   const [refreshTimerMS, setRefreshTimerMS] = useState<number>(500);
 
   const [messages, setMessages] = useState<IMessage[]>([]);
@@ -58,106 +61,74 @@ const NewChat: React.FC = ({ navigation }) => {
         if (
           screenHeight - 2 < viewHeight &&
           viewHeight < screenHeight + 2 &&
-          getRefreshChat() <= 3
+          getRefreshChat() <= 2
         ) {
           addRefreshChat(1);
           navigation.replace(HomeStackName.NewChatRefresh);
         }
       }
+      setScreenLoading(false);
     });
   };
 
-  const getHistory = async (): Promise<IMessage[]> => {
-    //대화 내역을 가져오는 함수
-    const messageArray: IMessage[] = [];
-    const chatJSON = getChatting();
-    if (chatJSON) {
-      const chatArray = JSON.parse(chatJSON);
-      for (let i = 0; i < chatArray.length; i++) {
-        const chat = chatArray[i];
-        messageArray.push({
-          _id: Number(chat.id),
-          text: chat.text,
-          createdAt: new Date(Number(chat.id)),
-          user: chat.sender === 'user' ? userObject : botObject,
-        });
-      }
-    }
-    //서버에서 그동안의 대화를 가져온다.
-    const lastMessageDate: Date =
-      messageArray.length > 0
-        ? new Date(Number(messageArray[messageArray.length - 1]._id) + 1000)
-        : new Date(0);
-    const oldMessages = await getOldChatting(1, lastMessageDate.toISOString());
+  const getIMessageFromServer = async (lastMessageDate: Date): Promise<IMessage[]> => {
+    const messages: IMessage[] = [];
+    const lastDateAdd1s = new Date(lastMessageDate.getTime() + 1000);
+    const serverMessages = await getOldChatting(botObject._id, lastDateAdd1s.toISOString());
 
-    if (oldMessages && oldMessages.chats && oldMessages.chats.length > 0) {
-      for (let i = 0; i < oldMessages.chats.length; i++) {
-        const chat = oldMessages.chats[i];
+    if (serverMessages && serverMessages.chats && serverMessages.chats.length > 0) {
+      for (let i = 0; i < serverMessages.chats.length; i++) {
+        const chat = serverMessages.chats[i];
         const text = chat.text;
         const texts = text.split('\n');
         for (let j = 0; j < texts.length; j++) {
           const text = texts[j];
           const splitTexts = text.match(/\s*([^.!?;:…。？！~…」»]+[.!?;:…。？！~…」»]?)\s*/g) || [];
           for (let k = 0; k < splitTexts.length; k++) {
-            messageArray.push({
-              _id:
-                new Date(chat.utcTime).getTime() +
-                j * 100 +
-                k * 10 +
-                Math.floor(Math.random() * 10),
+            messages.push({
+              _id: uuid.v4().toString(),
               text: splitTexts[k],
-              createdAt: new Date(
-                new Date(chat.utcTime).getTime() +
-                  j * 100 +
-                  k * 10 +
-                  Math.floor(Math.random() * 10),
-              ),
+              createdAt: new Date(new Date(chat.utcTime).getTime()),
               user: chat.status === 'user' ? userObject : botObject,
             });
           }
         }
       }
     }
+    return messages.reverse();
+  };
+
+  const getHistory = async (): Promise<IMessage[]> => {
+    //대화 내역을 가져오는 함수
+    let messages: IMessage[] = [];
+    const deviceHistory = getNewIMessages();
+    if (deviceHistory) {
+      const deviceArray = JSON.parse(deviceHistory);
+      messages.push(...deviceArray);
+    }
+
+    //서버에서 그동안의 대화를 가져온다.
+    const lastMessageDate: Date =
+      messages.length > 0 ? new Date(messages[0].createdAt) : new Date(0);
+    const serverMessages = await getIMessageFromServer(lastMessageDate);
+    messages = [...serverMessages, ...messages];
+
     //대화 내역이 없을 경우, 환영 메시지를 추가
-    if (messageArray.length === 0) {
+    if (messages.length === 0) {
       const welcomeMessage = {
         _id: new Date().getTime(),
         text: `반가워요, ${getUserNickname()}님!💚 저는 ${getUserNickname()}님 곁에서 힘이 되어드리고 싶은 골든 리트리버 쿠키예요🐶 이 곳은 ${getUserNickname()}님과 저만의 비밀 공간이니, 어떤 이야기도 편하게 나눠주세요!\n\n반말이 편할까요, 아니면 존댓말이 좋으실까요? 원하는 말투로 대화할게요! 🍀💕`,
         createdAt: new Date(),
         user: botObject,
       };
-      console.log('add welcome');
-      messageArray.push(welcomeMessage);
+      messages.push(welcomeMessage);
     }
-    return messageArray.reverse();
+    return messages;
   };
 
-  const setHistory = (previousMessages: IMessage[], newMessages: IMessage[]) => {
-    //대화 내역을 저장하는 함수
-    const chatArray: Message[] = [];
-    for (let i = 0; i < newMessages.length; i++) {
-      const message = newMessages[i];
-      chatArray.push({
-        id: new Date(message.createdAt).getTime().toString(),
-        sender: message.user._id === 0 ? 'user' : 'bot',
-        text: message.text,
-        time: new Date(message.createdAt).toLocaleTimeString(),
-        date: new Date(message.createdAt).toLocaleDateString(),
-      });
-    }
-    chatArray.reverse();
-    for (let i = 0; i < previousMessages.length; i++) {
-      const message = previousMessages[i];
-      chatArray.push({
-        id: new Date(message.createdAt).getTime().toString(),
-        sender: message.user._id === 0 ? 'user' : 'bot',
-        text: message.text,
-        time: new Date(message.createdAt).toLocaleTimeString(),
-        date: new Date(message.createdAt).toLocaleDateString(),
-      });
-    }
-
-    setChatting(JSON.stringify(chatArray.reverse()));
+  const setIMessages = (previousMessages: IMessage[], newMessages: IMessage[]) => {
+    const messagesString = JSON.stringify([...newMessages, ...previousMessages]);
+    setNewIMessages(messagesString);
   };
 
   const sendMessageToServer = () => {
@@ -172,29 +143,31 @@ const NewChat: React.FC = ({ navigation }) => {
           const newMessages: IMessage[] = [];
           for (let i = 0; i < answers.length; i++) {
             newMessages.push({
-              _id: new Date().getTime() + i,
+              _id: uuid.v4().toString(),
               text: answers[i],
               createdAt: new Date(new Date().getTime() + i),
               user: botObject,
             });
           }
-          setHistory(messages, newMessages);
-          setMessages((previousMessages) =>
-            GiftedChat.append(previousMessages, newMessages.reverse()),
-          );
+          setMessages((previousMessages) => {
+            setIMessages(previousMessages, newMessages.reverse());
+            return GiftedChat.append(previousMessages, newMessages);
+          });
         }
       })
       .catch((err) => {
         const newMessages: IMessage[] = [
           {
-            _id: new Date().getTime(),
+            _id: uuid.v4().toString(),
             text: ERRORMESSAGE,
             createdAt: new Date(),
             user: botObject,
           },
         ];
-        setHistory(messages, newMessages);
-        setMessages((previousMessages) => GiftedChat.append(previousMessages, newMessages));
+        setMessages((previousMessages) => {
+          setIMessages(previousMessages, newMessages.reverse());
+          return GiftedChat.append(previousMessages, newMessages);
+        });
       })
       .finally(() => {
         setBuffer(null);
@@ -217,6 +190,7 @@ const NewChat: React.FC = ({ navigation }) => {
       clearTimeout(refreshTimeoutRef.current);
     }
 
+    setScreenLoading(true);
     refreshTimeoutRef.current = setTimeout(() => {
       decideRefreshScreen(height);
     }, Math.floor(ms));
@@ -229,11 +203,10 @@ const NewChat: React.FC = ({ navigation }) => {
     }
     getHistory()
       .then((messageHistory) => {
-        setMessages((pre) => GiftedChat.append(pre, messageHistory));
+        setMessages(messageHistory);
         setInit(false);
       })
       .catch((err) => {
-        console.log('getHistoryError: ', err);
         alert('대화 내역을 불러오는 중 오류가 발생했어요. 다시 시도해주세요.');
         navigation.navigate(TabScreenName.Home);
       });
@@ -242,21 +215,18 @@ const NewChat: React.FC = ({ navigation }) => {
   const onSend = (newMessages: IMessage[] = []) => {
     Analytics.clickChatSendButton();
     if (newMessages.length !== 1 || !newMessages[0].text.trim()) return;
-    setHistory(messages, newMessages);
     setBuffer(buffer ? buffer + newMessages[0].text + '\n' : newMessages[0].text + '\n');
-    setMessages((previousMessages) => GiftedChat.append(previousMessages, newMessages));
+    setMessages((previousMessages) => {
+      setIMessages(previousMessages, newMessages.reverse());
+      return GiftedChat.append(previousMessages, newMessages);
+    });
   };
 
   useEffect(() => {
     if (buffer) {
-      console.log('useEffect: ', buffer);
       resetTimer();
     }
   }, [buffer]);
-
-  if (init) {
-    return <RenderLoading />;
-  }
 
   return (
     <SafeAreaView
@@ -267,8 +237,26 @@ const NewChat: React.FC = ({ navigation }) => {
           const { height } = event.nativeEvent.layout;
           resetRefreshTimer(height, refreshTimerMS);
           setRefreshTimerMS(refreshTimerMS / 2);
+        } else {
+          setScreenLoading(false);
         }
       }}>
+      {(screenLoading || init) && (
+        <View
+          style={css`
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 10;
+            pointer-events: none;
+            background-color: #ffffff;
+          `}>
+          <RenderLoading />
+        </View>
+      )}
+
       <Header
         title="쿠키의 채팅방"
         leftFunction={() => {
