@@ -4,7 +4,7 @@ import { View } from 'react-native';
 import { rsHeight, rsWidth } from '../../../../utils/responsive-size';
 import PeriodKeyword from '../../../periodKeyword/PeriodKeyword';
 import Empty from '../Empty';
-import { Title } from '../StatisticMain.style';
+import { SectionTitle } from '../StatisticMain.style';
 
 const PeriodKeywordArea: React.FC<any> = (props: any) => {
   const { periodKeywordList, setPeriodKeywordList } = props;
@@ -15,7 +15,7 @@ const PeriodKeywordArea: React.FC<any> = (props: any) => {
         gap: ${12 * rsHeight + 'px'};
         padding-horizontal: ${rsWidth * 20 + 'px'};
       `}>
-      <Title>쿠키와 나눈 이야기</Title>
+      <SectionTitle>그 동안 이런 이야기를 나눴어요</SectionTitle>
       <View
         style={css`
           display: flex;

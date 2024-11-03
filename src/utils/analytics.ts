@@ -1,6 +1,7 @@
 import * as amplitude from '@amplitude/analytics-react-native';
 import analytics from '@react-native-firebase/analytics';
 import { AppEventsLogger } from 'react-native-fbsdk-next';
+import { jwtDecode } from 'jwt-decode';
 
 export default class Analytics {
   private static sendEvent = (
@@ -16,6 +17,13 @@ export default class Analytics {
     AppEventsLogger.logEvent(AppEventsLogger.AppEvents.CompletedRegistration, {
       [AppEventsLogger.AppEventParams.RegistrationMethod]: eventName,
     });
+  };
+
+  public static setUser = (accessToken: string): void => {
+    const decodedToken = jwtDecode<{ userId: string }>(accessToken);
+    const userId = decodedToken.userId;
+    amplitude.setUserId(String(userId));
+    analytics().setUserId(String(userId));
   };
 
   //로그인 화면
@@ -135,7 +143,7 @@ export default class Analytics {
   public static clickTabSettingWithdrawalButton = (): void => {
     this.sendEvent('탭 - 설정 화면 - 회원탈퇴 버튼 클릭', 'tabSettingWithdrawalButton');
   };
-  //탭 - 설정 화면 - 로그아옷 버튼 클릭
+  //탭 - 설정 화면 - 로그아웃 버튼 클릭
   public static clickTabSettingLogoutButton = (): void => {
     this.sendEvent('탭 - 설정 화면 - 로그아웃 버튼 클릭', 'tabSettingLogoutButton');
   };
@@ -143,11 +151,11 @@ export default class Analytics {
   public static clickTabSettingConnectButton = (): void => {
     this.sendEvent('탭 - 설정 화면 - 기관 연결 버튼 클릭', 'tabSettingConnectButton');
   };
-  //로그아옷 취소 버튼 클릭
+  //로그아웃 취소 버튼 클릭
   public static clickTabSettingLogoutCancelButton = (): void => {
     this.sendEvent('로그아웃 취소 버튼 클릭', 'TabSettingLogoutCancelButton');
   };
-  //로그아옷 확인 버튼 클릭
+  //로그아웃 확인 버튼 클릭
   public static clickTabSettingLogoutConfirmButton = (): void => {
     this.sendEvent('로그아웃 확인 버튼 클릭', 'TabSettingLogoutConfirmButton');
   };
@@ -163,6 +171,15 @@ export default class Analytics {
   //일일 분석 화면 - 기간 분석 버튼 클릭
   public static clickPeriodButton = (): void => {
     this.sendEvent('일일 분석 화면 - 기간 분석 버튼 클릭', 'PeriodButton');
+  };
+
+  //일일 분석 화면 - 채팅 바로가기 버튼 클릭 (CTA)
+  public static clickCTAChatButton = (): void => {
+    this.sendEvent('일일 분석 화면 - CTA 채팅 버튼 클릭', 'dailyCTAChatButton');
+  };
+  //일일 분석 화면 - 일기 작성 바로가기 버튼 클릭 (CTA)
+  public static clickCTADiaryButton = (): void => {
+    this.sendEvent('일일 분석 화면 - CTA 일기 버튼 클릭', 'dailyCTADiaryButton');
   };
 
   //분석 그룹 - 기간 분석 화면
@@ -182,6 +199,12 @@ export default class Analytics {
   public static watchChatScreen = (): void => {
     this.sendEvent('채팅 화면 진입', 'chatScreen');
   };
+
+  //업데이트된 채팅 화면
+  public static watchNewChatScreen = (): void => {
+    this.sendEvent('업데이트된 채팅 화면 진입', 'newChatScreen');
+  };
+
   //채팅 - 채팅 전송 버튼 클릭
   public static clickChatSendButton = (): void => {
     this.sendEvent('채팅 - 채팅 전송 버튼 클릭', 'chatSendButton');
@@ -193,6 +216,10 @@ export default class Analytics {
   //채팅 - 캐릭터 아바타 아이콘 클릭
   public static clickChatCharacterAvatar = (character: string = 'cookie'): void => {
     this.sendEvent('채팅 - 아바타 아이콘 클릭', 'chatAvatarButton', { character });
+  };
+  //채팅 - 헤더 좌측 뒤로가기 버튼 클릭
+  public static clickHeaderBackButton = (): void => {
+    this.sendEvent('채팅 - 헤더의 좌측 뒤로가기 버튼 클릭', 'headerBackButton');
   };
 
   //감정 기록 화면

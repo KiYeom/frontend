@@ -11,6 +11,7 @@ import CloverIcon from './svg/clover';
 import DangerSign from './svg/danger-sign';
 import DangerSignOpened from './svg/danger-sign-opened';
 import DateIcon from './svg/date-icon';
+import EmptyIcon from './svg/emptyicon';
 import HappyEmotion from './svg/happy-emotion';
 import HomeIcon from './svg/home-icon';
 import Letter from './svg/letter';
@@ -21,6 +22,7 @@ import Search from './svg/search';
 import SettingIcon from './svg/setting-icon';
 import StatisticIcon from './svg/statistic-icon';
 import TextIcon from './svg/text';
+import ChatIcon from './svg/chat';
 
 export type TIconName =
   | 'airplane'
@@ -45,7 +47,9 @@ export type TIconName =
   | 'danger-sign'
   | 'danger-sign-opened'
   | 'search'
-  | 'letter';
+  | 'letter'
+  | 'empty-icon'
+  | 'chat-icon';
 
 export default function Icon({
   width,
@@ -75,6 +79,8 @@ export default function Icon({
       return <SettingIcon width={width} height={height} color={color} />;
     case 'statistic-icon':
       return <StatisticIcon width={width} height={height} color={color} />;
+    case 'chat-icon':
+      return <ChatIcon width={width} height={height} color={color} />;
     case 'clover-icon':
       return <CloverIcon width={width} height={height} color={color} />;
     case 'happy-emotion':
@@ -105,5 +111,7 @@ export default function Icon({
       return <Search width={width} height={height} color={color} />;
     case 'letter':
       return <Letter width={width} height={height} color={color} />;
+    case 'empty-icon':
+      return <EmptyIcon width={width} height={height} color={color} />;
   }
 }

@@ -3,6 +3,7 @@ import { AppEventsLogger } from 'react-native-fbsdk-next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import palette from '../../assets/styles/theme';
 import {
+  HomeStackName,
   RootStackName,
   SettingStackName,
   TabBarLabel,
@@ -12,11 +13,13 @@ import Analytics from '../../utils/analytics';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import Icon from '../icons/icons';
 import { BottomTabBarContainer, TabButtonContainer, TabLabel } from './bottom-tab-bar.style';
+import Home from '../pages/HomePage/Home';
 
 const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
   const insets = useSafeAreaInsets();
+  const isNewChatFocused = state.routes[state.index].name === TabScreenName.NewChat;
   return (
-    <BottomTabBarContainer insets={insets}>
+    <BottomTabBarContainer insets={insets} style={{ display: isNewChatFocused ? 'none' : 'flex' }}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
 
@@ -43,7 +46,13 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
           //탭 클릭 시 이동
           if (!isFocused && !event.defaultPrevented) {
             Analytics.clickTabButton(label);
-            navigation.navigate(route.name, route.params);
+            if (route.name === TabScreenName.NewChat) {
+              navigation.navigate(RootStackName.HomeStackNavigator, {
+                screen: HomeStackName.NewChat,
+              });
+            } else {
+              navigation.navigate(route.name, route.params);
+            }
           }
         };
 
@@ -70,16 +79,6 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
             accessibilityLabel={options.tabBarAccessibilityLabel}
             onPress={onPress}
             onLongPress={onLongPress}>
-            {label === TabBarLabel.Statistic ? (
-              <Icon
-                name={'statistic-icon'}
-                width={rsWidth * 32}
-                height={rsHeight * 30}
-                color={isFocused ? palette.primary[500] : palette.neutral[300]}
-              />
-            ) : (
-              <></>
-            )}
             {label === TabBarLabel.Home ? (
               <Icon
                 name={'home-icon'}
@@ -90,6 +89,27 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
             ) : (
               <></>
             )}
+            {label === TabBarLabel.NewChat ? (
+              <Icon
+                name={'chat-icon'}
+                width={rsWidth * 34}
+                height={rsHeight * 30}
+                color={isFocused ? palette.primary[500] : palette.neutral[300]}
+              />
+            ) : (
+              <></>
+            )}
+            {label === TabBarLabel.Statistic ? (
+              <Icon
+                name={'statistic-icon'}
+                width={rsWidth * 32}
+                height={rsHeight * 30}
+                color={isFocused ? palette.primary[500] : palette.neutral[300]}
+              />
+            ) : (
+              <></>
+            )}
+
             {label === TabBarLabel.Setting ? (
               <Icon
                 name={'setting-icon'}

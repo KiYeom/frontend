@@ -6,7 +6,6 @@ export const Container = styled.View`
   flex: 1;
   justify-content: center;
   padding-horizontal: ${rsWidth * 20 + 'px'};
-  padding-vertical: ${rsHeight * 40 + 'px'};
   gap: ${rsHeight * 20 + 'px'};
 `;
 

@@ -49,6 +49,7 @@ const guestLogin = async (): Promise<OauthResult> => {
   }
 
   if (!res.isNewUser) {
+    Analytics.setUser(res.accessToken);
     setInfoWhenLogin(
       res.nickname,
       res.birthdate,
@@ -93,6 +94,7 @@ const googleLogin = async (): Promise<OauthResult> => {
   }
 
   if (!res.isNewUser) {
+    Analytics.setUser(res.accessToken);
     setInfoWhenLogin(
       res.nickname,
       res.birthdate,
@@ -136,6 +138,7 @@ const appleLogin = async (): Promise<OauthResult> => {
   }
 
   if (!res.isNewUser) {
+    Analytics.setUser(res.accessToken);
     setInfoWhenLogin(
       '' + res.nickname,
       res.birthdate,

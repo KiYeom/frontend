@@ -20,11 +20,17 @@ const DEVICE_ID = 'device_id';
 //Chatting
 const CHATTING = 'chatting';
 
+//NewIMessages
+const NEW_I_MESSAGES = 'new_i_messages';
+
 //Notice
 const NOTICE = 'notice';
 
 //dangerSign
 const RISK = 'RISK';
+
+//refreshChattingPageTimes
+const REFRESH_CHAT = 'refresh_chat';
 
 //setTokenInfo
 export const setTokenInfo = (accessToken: string, refreshToken: string): void => {
@@ -76,6 +82,7 @@ export const clearInfoWhenLogout = (): void => {
   clearTokenInfo();
   deleteNotice();
   deleteChatting();
+  deleteNewIMessages();
   deleteNotificationSent();
 };
 
@@ -185,6 +192,19 @@ export const deleteChatting = (): void => {
   storage.delete(CHATTING);
 };
 
+//NewIMessages
+export const getNewIMessages = (): string | undefined => {
+  return storage.getString(NEW_I_MESSAGES);
+};
+
+export const setNewIMessages = (newIMessages: string): void => {
+  storage.set(NEW_I_MESSAGES, newIMessages);
+};
+
+export const deleteNewIMessages = (): void => {
+  storage.delete(NEW_I_MESSAGES);
+};
+
 //Notice
 export const getNotice = (): TNotice | undefined => {
   const noticeString = storage.getString(NOTICE);
@@ -200,6 +220,25 @@ export const setNotice = (notice: TNotice): void => {
 
 export const deleteNotice = (): void => {
   storage.delete(NOTICE);
+};
+
+//refreshChattingPageTimes
+export const getRefreshChat = (): number => {
+  return storage.getNumber(REFRESH_CHAT) ?? 0;
+};
+
+export const setRefreshChat = (refreshChat: number): void => {
+  storage.set(REFRESH_CHAT, refreshChat);
+};
+
+export const deleteRefreshChat = (): void => {
+  storage.delete(REFRESH_CHAT);
+};
+
+export const addRefreshChat = (times: number): number => {
+  const refreshChat = getRefreshChat();
+  setRefreshChat(refreshChat + times);
+  return refreshChat + times;
 };
 
 //ai 답변 저장하기

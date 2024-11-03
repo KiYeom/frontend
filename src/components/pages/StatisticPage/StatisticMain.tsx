@@ -1,23 +1,23 @@
 import { css } from '@emotion/native';
 import { useNavigation } from '@react-navigation/native';
+import { Image } from 'expo-image';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { dailyAnalyze, dailyAnalyzeStatus } from '../../../apis/analyze';
 import { TEmotionCheck, TLabel } from '../../../apis/analyze.type';
 import palette from '../../../assets/styles/theme';
+import { HomeStackName, RootStackName } from '../../../constants/Constants';
 import Analytics from '../../../utils/analytics';
-import { rsHeight } from '../../../utils/responsive-size';
-import DateLine from '../../atoms/DateLine/DateLine';
+import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import SingleDatePickerModal from '../../rangeCal/single-date-picker-modal';
+import BlurredButton from './BlurredButton';
 import DailyEmotionClassification from './Daily_EmotionClassification/DailyEmotionClassification';
 import EmotionArea from './Daily_Keyword/EmotionArea';
 import EmotionDairy from './Daily_Keyword/EmotionDairy';
 import KeywordArea from './Daily_Keyword/KeywordArea';
-import PageName from './PageName';
 import ReportType from './ReportType';
-import { Container } from './StatisticMain.style';
-
+import { Container, DateLineText, StatisticTitle } from './StatisticMain.style';
 const START_HOUR_OF_DAY = 6;
 
 const getServerYesterday = (currentDate: Date = new Date()) => {
@@ -67,7 +67,7 @@ const StatisticMain: React.FC<any> = () => {
   const [labelsClassification, setLabelsClassification] = useState<TLabel[]>([]);
   const [isSummaryList, setIsSummaryList] = useState(true);
   const [isRecordKeywordList, setIsRecordKeywordList] = useState<TEmotionCheck[]>([]);
-  const [isNullRecordKeywordList, setIsNullRecordKeywordList] = useState(false);
+  const [isNullRecordKeywordList, setIsNullRecordKeywordList] = useState(true);
   const [summaryList, setSummaryList] = useState<string[]>([]);
   const [todayFeeling, setTodayFeeling] = useState<string>('');
   const [availableDates, setAvailableDates] = useState<string[]>([]);
@@ -88,9 +88,9 @@ const StatisticMain: React.FC<any> = () => {
   }, []);
 
   useEffect(() => {
+    console.log('date 바뀜');
     const fetchData = async () => {
       const dailyStatistics = await dailyAnalyze(getApiDateString(date ?? getServerYesterday()));
-      console.log('dailyStatistics', dailyStatistics);
       if (!dailyStatistics) {
         alert('네트워크 연결이 불안정합니다. 잠시 후 다시 시도해주세요.');
         return;
@@ -101,6 +101,7 @@ const StatisticMain: React.FC<any> = () => {
       setSummaryList(dailyStatistics.summary.keywords);
       setIsRecordKeywordList(dailyStatistics.record.Keywords);
       setIsNullRecordKeywordList(dailyStatistics.record.isNULL);
+      //빈 값 [] 이면 false를 넘겨주기 때문에 !을 붙여서 true로 만들어줌
       setTodayFeeling(dailyStatistics.record.todayFeeling ?? '');
     };
     fetchData();
@@ -129,19 +130,80 @@ const StatisticMain: React.FC<any> = () => {
               Analytics.clickDailyCalendarButton();
               setOpenModal(true);
             }}></ReportType>
-          <PageName type={`쿠키가 생각했던${'\n'}주인님의 모습이에요`} />
-          <DateLine value={getDateString(date ?? getServerYesterday())} />
+          <View
+            style={{
+              //backgroundColor: 'yellow',
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Image
+              style={{
+                width: 70 * rsWidth,
+                height: 70 * rsHeight,
+                aspectRatio: 1, // 가로 세로 비율을 고정
+                resizeMode: 'contain', // 이미지를 잘리지 않게 표시
+              }}
+              source={{
+                uri: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/statistic/reportlogo.png',
+              }}
+            />
+            <View style={{ marginVertical: 10 * rsHeight }}>
+              <DateLineText>{getDateString(date ?? getServerYesterday())}</DateLineText>
+              <StatisticTitle>쿠키와의 대화에서{'\n'}마음을 살펴보았어요</StatisticTitle>
+            </View>
+          </View>
           <Container>
-            <DailyEmotionClassification
-              isNullClassification={isNullClassification}
-              labelsClassification={labelsClassification}
-            />
-            <EmotionArea
-              isRecordKeywordList={isRecordKeywordList}
-              isNullRecordKeywordList={isNullRecordKeywordList}
-            />
-            <EmotionDairy todayFeeling={todayFeeling} />
-            <KeywordArea isSummaryList={isSummaryList} summaryList={summaryList} />
+            {!isNullClassification ? (
+              <>
+                <DailyEmotionClassification
+                  isNullClassification={isNullClassification}
+                  labelsClassification={labelsClassification}
+                />
+                <KeywordArea isSummaryList={isSummaryList} summaryList={summaryList} />
+              </>
+            ) : (
+              <>
+                <BlurredButton
+                  blurredImageUri={
+                    'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/statistic/blurgraph.png'
+                  }
+                  text={'지금 쿠키와 대화하고\n내일 나의 마음을 확인해보세요'}
+                  buttonText="쿠키랑 대화하기"
+                  onPress={async () => {
+                    Analytics.clickCTAChatButton();
+                    navigation.navigate(RootStackName.HomeStackNavigator, {
+                      screen: HomeStackName.NewChat,
+                    });
+                  }}
+                />
+              </>
+            )}
+            {!isNullRecordKeywordList || todayFeeling !== '' ? (
+              <>
+                <EmotionArea
+                  isRecordKeywordList={isRecordKeywordList}
+                  isNullRecordKeywordList={isNullRecordKeywordList}
+                />
+                <EmotionDairy todayFeeling={todayFeeling} />
+              </>
+            ) : (
+              <>
+                <BlurredButton
+                  blurredImageUri={
+                    'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/statistic/sampleemotionkeyword.png'
+                  }
+                  text={'지금 내 마음속\n목소리를 들어볼까요?'}
+                  buttonText="감정 일기 작성하기"
+                  onPress={() => {
+                    Analytics.clickCTADiaryButton();
+                    navigation.navigate(RootStackName.HomeStackNavigator, {
+                      screen: HomeStackName.SmallEmotionChart,
+                    });
+                  }}
+                />
+              </>
+            )}
           </Container>
         </View>
       </ScrollView>

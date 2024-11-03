@@ -4,7 +4,7 @@ import palette from '../../../assets/styles/theme';
 import { helloTexts, HomeStackName, RootStackName } from '../../../constants/Constants';
 import Analytics from '../../../utils/analytics';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
-import { getUserNickname } from '../../../utils/storageUtils';
+import { getUserNickname, setRefreshChat } from '../../../utils/storageUtils';
 import Icon from '../../icons/icons';
 import {
   CookieImage,
@@ -39,7 +39,11 @@ const HomeChatBtn = ({ navigation, riskScore }) => {
       os={Platform.OS}
       onPress={() => {
         Analytics.clickTabHomeChatButton(riskScore);
-        navigation.navigate(RootStackName.HomeStackNavigator, { screen: HomeStackName.Chat });
+        setRefreshChat(0);
+        navigation.navigate(RootStackName.HomeStackNavigator, {
+          screen: HomeStackName.NewChat,
+        }); //쿠키 편지 화면으로 이동한다
+        //navigation.navigate(RootStackName.HomeStackNavigator, { screen: HomeStackName.NewChat });
       }}
       status={'home'}
       riskScore={riskScore}>
