@@ -102,7 +102,6 @@ const StatisticMain: React.FC<any> = () => {
       setIsRecordKeywordList(dailyStatistics.record.Keywords);
       setIsNullRecordKeywordList(dailyStatistics.record.isNULL);
       //빈 값 [] 이면 false를 넘겨주기 때문에 !을 붙여서 true로 만들어줌
-      console.log('!*@&*#&@#', dailyStatistics.record.Keywords, dailyStatistics.record.isNULL);
       setTodayFeeling(dailyStatistics.record.todayFeeling ?? '');
     };
     fetchData();

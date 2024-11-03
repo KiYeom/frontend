@@ -15,12 +15,17 @@ import {
   Time,
   TimeProps,
   Message,
+  ComposerProps,
+  Composer,
 } from 'react-native-gifted-chat';
 import palette from '../../../assets/styles/theme';
 import { css } from '@emotion/native';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, Image, Text, View } from 'react-native';
 import Icon from '../../icons/icons';
+import TypingIndicator from 'react-native-gifted-chat/src/TypingIndicator';
+
+const AVATAR_SIZE = 35;
 
 export const RenderBubble = (props: BubbleProps<IMessage>) => {
   return (
@@ -76,6 +81,7 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
           }}
         />
       </View>
+
       {props.renderTime && props.renderTime({ ...props })}
     </View>
   );
@@ -89,14 +95,13 @@ export const RenderAvatar = (props: AvatarProps<IMessage>) => {
       {...props}
       imageStyle={{
         left: {
-          width: 35 * rsWidth,
-          height: 35 * rsHeight,
+          width: AVATAR_SIZE * rsWidth,
+          height: AVATAR_SIZE * rsHeight,
+          objectFit: 'cover',
         },
       }}
       containerStyle={{
         left: {
-          borderWidth: 2,
-          //backgroundColor: 'red',
           marginRight: 8 * rsWidth,
         },
       }}
@@ -210,6 +215,10 @@ export const RenderInputToolbar = (props: InputToolbarProps<IMessage>) => (
   />
 );
 
+export const RenderComposer = (props: ComposerProps, disable: boolean = false) => (
+  <Composer {...props} multiline={false} disableComposer={disable} />
+);
+
 export const RenderLoading = () => (
   <View
     style={css`
@@ -220,3 +229,24 @@ export const RenderLoading = () => (
     <ActivityIndicator size="large" color={palette.primary[500]} />
   </View>
 );
+
+export const RenderCustomView = (props: BubbleProps<IMessage>) => <></>;
+
+export const RenderFooter = (sending: boolean) => {
+  if (!sending) return <></>;
+  return (
+    <View
+      style={{
+        marginLeft: 8,
+        gap: 8,
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+      }}>
+      <Image
+        source={require('../../../assets/images/cookieprofile.png')}
+        style={{ objectFit: 'contain', width: 35 * rsWidth, height: 35 * rsHeight }}
+      />
+      <TypingIndicator isTyping={sending} />
+    </View>
+  );
+};

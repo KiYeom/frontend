@@ -20,6 +20,9 @@ const DEVICE_ID = 'device_id';
 //Chatting
 const CHATTING = 'chatting';
 
+//NewIMessages
+const NEW_I_MESSAGES = 'new_i_messages';
+
 //Notice
 const NOTICE = 'notice';
 
@@ -79,6 +82,7 @@ export const clearInfoWhenLogout = (): void => {
   clearTokenInfo();
   deleteNotice();
   deleteChatting();
+  deleteNewIMessages();
   deleteNotificationSent();
 };
 
@@ -186,6 +190,19 @@ export const setChatting = (chatting: string): void => {
 
 export const deleteChatting = (): void => {
   storage.delete(CHATTING);
+};
+
+//NewIMessages
+export const getNewIMessages = (): string | undefined => {
+  return storage.getString(NEW_I_MESSAGES);
+};
+
+export const setNewIMessages = (newIMessages: string): void => {
+  storage.set(NEW_I_MESSAGES, newIMessages);
+};
+
+export const deleteNewIMessages = (): void => {
+  storage.delete(NEW_I_MESSAGES);
 };
 
 //Notice

@@ -65,6 +65,9 @@ const Home: React.FC<any> = ({ navigation }) => {
       .catch((error: any) => {
         console.error('[ERROR] homeCarousel: ', error);
       });
+    navigation.navigate(RootStackName.HomeStackNavigator, {
+      screen: HomeStackName.NewChat,
+    });
   }, []);
 
   //헤더 아이콘 클릭했을 때 이동 페이지

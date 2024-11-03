@@ -39,8 +39,6 @@ const DeactivateAlert: React.FC = ({ navigation }) => {
       contentContainerStyle={{
         flexGrow: 1,
         marginBottom: insets.bottom,
-        // borderColor: 'red',
-        // borderWidth: 10,
       }}>
       <Container>
         <SignOutTitleContainer>
