@@ -27,7 +27,7 @@ module.exports = {
         backgroundColor: '#ffffff',
       },
       package: 'com.ceunnseo.reMIND',
-      permissions: ['INTERNET'],
+      permissions: ['INTERNET', 'com.google.android.gms.permission.AD_ID'],
       googleServicesFile: process.env.GOOGLE_SERVICES_JSON,
     },
     androidStatusBar: {
