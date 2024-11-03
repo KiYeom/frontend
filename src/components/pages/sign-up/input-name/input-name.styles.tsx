@@ -2,7 +2,7 @@ import styled from '@emotion/native';
 import palette from '../../../../assets/styles/theme';
 import { rsFont, rsHeight, rsWidth } from '../../../../utils/responsive-size';
 
-export const TitleContaienr = styled.View`
+export const TitleContainer = styled.View`
   height: ${rsHeight * 147 + 'px'};
   gap: ${rsHeight * 10 + 'px'};
   padding: ${rsHeight * 40 + 'px'} ${rsWidth * 24 + 'px'} 0 ${rsWidth * 24 + 'px'};

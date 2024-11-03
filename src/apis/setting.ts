@@ -31,7 +31,7 @@ export const logout = async (deviceId: string): Promise<TCommonResult | undefine
   }
 };
 
-export const deavtivate = async (reasons: string): Promise<TCommonResult> => {
+export const deactivate = async (reasons: string): Promise<TCommonResult> => {
   try {
     const res = await instance.delete('/v1/auth/deactivate', {
       params: { reasons },

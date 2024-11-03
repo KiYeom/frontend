@@ -50,12 +50,14 @@ const SmallEmotionChart = ({ navigation }) => {
   const headerHeight = useHeaderHeight();
 
   useEffect(() => {
+    console.log('useEffect 실행');
     if (Platform.OS === 'ios') {
       const { StatusBarManager } = NativeModules;
     }
     dailyAnalyze(getApiDateString(new Date())).then((data) => {
       if (!data || !data.record || !data.record.todayFeeling) return;
       setText(data.record.todayFeeling);
+      console.log('data.record.todayFeeling', data.record.todayFeeling);
     });
     setSelectedEmotions(recordedEmotions);
   }, []);
@@ -67,7 +69,7 @@ const SmallEmotionChart = ({ navigation }) => {
     } else {
       // 선택된 감정 추가
       if (selectedEmotions.length >= MAXIMUM_EMOTION_COUNT) {
-        Toast.show(`감정은 ${MAXIMUM_EMOTION_COUNT}개까지 선택할 수 있습니다!`, {
+        Toast.show(`감정은 ${MAXIMUM_EMOTION_COUNT}개까지 선택할 수 있어요🐶`, {
           duration: Toast.durations.SHORT,
           position: Toast.positions.CENTER,
         });
@@ -114,7 +116,7 @@ const SmallEmotionChart = ({ navigation }) => {
               margin-horizontal: ${rsWidth * 24 + 'px'};
               text-align: left;
             `}>
-            {getUserNickname()}님,{'\n'}오늘 하루는 어떠셨나요?🐾
+            {getUserNickname()}님,{'\n'}지금 기분은 어떠세요?🐾
           </Title>
 
           <Carousel
@@ -144,9 +146,7 @@ const SmallEmotionChart = ({ navigation }) => {
               gap: ${rsHeight * 10 + 'px'};
               //background-color: blue;
             `}>
-            <SmallTitle>
-              {selectedEmotions.length}개의 감정을 담았어요🐶 (최대 {MAXIMUM_EMOTION_COUNT}개)
-            </SmallTitle>
+            <SmallTitle>{selectedEmotions.length}개의 감정을 담았어요🐶</SmallTitle>
 
             <EmotionDesc>
               {selectedEmotions.length > 0
@@ -190,7 +190,7 @@ const SmallEmotionChart = ({ navigation }) => {
                 </View>
               )}
             </ScrollView>
-            <SmallTitle>오늘의 한 줄 일기</SmallTitle>
+            <SmallTitle>오늘 하루는 어떠셨나요?💭</SmallTitle>
             <Input value={text} onChange={(text) => setText(text)} />
           </View>
 
@@ -208,12 +208,13 @@ const SmallEmotionChart = ({ navigation }) => {
               }
               primary={true}
               disabled={
-                selectedEmotions.length < MINIMUM_EMOTION_COUNT ||
+                (selectedEmotions.length < MINIMUM_EMOTION_COUNT && text.trim() === '') ||
                 selectedEmotions.length > MAXIMUM_EMOTION_COUNT
               }
               onPress={async () => {
                 Analytics.clickRecordButton();
                 setRecordedEmotions(selectedEmotions); // 상태 업데이트
+                console.log('저장할 데이터 ', text);
                 await todayEmotion(selectedEmotions, text); //
                 navigation.navigate(TabScreenName.Home);
               }}

@@ -6,7 +6,7 @@ module.exports = {
   expo: {
     name: 'reMIND',
     slug: 'reMIND',
-    version: '1.2.1',
+    version: '1.2.2',
     orientation: 'portrait',
     icon: './src/assets/images/appicon.png',
     userInterfaceStyle: 'light',
@@ -28,8 +28,10 @@ module.exports = {
       },
       package: 'com.ceunnseo.reMIND',
       permissions: ['INTERNET'],
-      //googleServicesFile: process.env.GOOGLE_SERVICES_FILE,
       googleServicesFile: process.env.GOOGLE_SERVICES_JSON,
+    },
+    androidStatusBar: {
+      translucent: true,
     },
     scheme: 'remind',
     web: {
@@ -52,7 +54,7 @@ module.exports = {
       [
         '@react-native-google-signin/google-signin',
         {
-          iosUrlScheme: 'com.googleusercontent.apps.94079762653-arcgeib4l0hbg6snh81cjimd9iuuoun3',
+          iosUrlScheme: process.env.IOS_URL_SCHEME,
         },
       ],
       [

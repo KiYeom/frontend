@@ -1,12 +1,13 @@
 import { css } from '@emotion/native';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { PieChart } from 'react-native-gifted-charts';
 import { Text, View } from 'react-native-ui-lib';
 import { TLabel } from '../../../../apis/analyze.type';
 import palette from '../../../../assets/styles/theme';
 import { rsFont, rsHeight, rsWidth } from '../../../../utils/responsive-size';
-import Empty from '../Empty';
-
+import { Container } from '../Daily_Keyword/Keyword.style';
+import { SectionTitle } from '../StatisticMain.style';
 type TLabelWithColor = {
   label: string;
   value: number;
@@ -14,7 +15,8 @@ type TLabelWithColor = {
 };
 
 const DailyEmotionClassification: React.FC<any> = (props: any) => {
-  const { labelsClassification } = props;
+  const { isNullClassification, labelsClassification } = props;
+  const navigation = useNavigation(); // 네비게이션 훅 사용
   //pieData를 만들어주는 함수
   const generatePieData = (labelsClassification: TLabel[]): TLabelWithColor[] => {
     const result: TLabelWithColor[] = [];
@@ -83,19 +85,8 @@ const DailyEmotionClassification: React.FC<any> = (props: any) => {
     );
   };
   return (
-    <View
-      style={css`
-        background-color: ${palette.neutral[50]};
-        flex: 1; //전체 배경
-        background-color: white; //통계 차트 박스
-        border-radius: 20px;
-        flex: 1;
-        justify-content: center;
-        align-items: center;
-        gap: ${24 * rsHeight + 'px'};
-        padding-horizontal: ${rsWidth * 10 + 'px'};
-        padding-vertical: ${rsHeight * 32 + 'px'};
-      `}>
+    <Container>
+      <SectionTitle>쿠키가 생각했을 때의 모습이에요</SectionTitle>
       {pieData.length !== 0 ? (
         <>
           <PieChart
@@ -139,9 +130,9 @@ const DailyEmotionClassification: React.FC<any> = (props: any) => {
           {renderLegendComponent(pieData)}
         </>
       ) : (
-        <Empty type="채팅기록"></Empty>
+        <></>
       )}
-    </View>
+    </Container>
   );
 };
 export default DailyEmotionClassification;

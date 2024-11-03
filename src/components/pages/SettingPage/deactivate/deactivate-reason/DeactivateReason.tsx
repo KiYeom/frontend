@@ -1,30 +1,58 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
-import { deavtivate } from '../../../../../apis/setting';
+import { Alert, Keyboard, TouchableWithoutFeedback, View } from 'react-native';
+import { deactivate } from '../../../../../apis/setting';
 import { reasons } from '../../../../../constants/Constants';
 import Analytics from '../../../../../utils/analytics';
 import { UseSigninStatus } from '../../../../../utils/signin-status';
 import { clearInfoWhenLogout, getUserNickname } from '../../../../../utils/storageUtils';
 import Button from '../../../../button/button';
 import DeactivateReasonCheckBoxs from '../../../../molecules/DeactivateReasonCheckBoxs';
+import { CheckboxContainer, FormContainer } from './DeactivateReason.style';
 import {
   Container,
   SignOutTitle,
   SignOutTitleContainer,
-} from '../dedactivate-alert/DeactivateAlert.style';
-import { CheckboxContainer, FormContainer } from './DeactivateReason.style';
+} from '../deactivate-alert/DeactivateAlert.style';
+import { css } from '@emotion/native';
+import { rsHeight, rsWidth } from '../../../../../utils/responsive-size';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const DeactivateReason: React.FC = () => {
-  const [btnDisable, setBtnDisable] = useState<boolean>(true);
+  const insets = useSafeAreaInsets();
+  const [btnDisable, setBtnDisable] = useState<boolean>(false);
   const [isChecked, setIsChecked] = useState<boolean[]>(Array(reasons.length).fill(false));
   const [text, setText] = useState<string>('');
 
   const { setSigninStatus } = UseSigninStatus();
 
+  const makeAlert = () => {
+    Alert.alert(
+      '정말 탈퇴하시겠어요?', // 첫번째 text: 타이틀 큰 제목
+      '탈퇴 버튼 선택 시, 계정은 삭제되며 복구되지 않습니다', // 두번째 text: 작은 제목
+      [
+        {
+          text: '취소',
+          onPress: () => {
+            Analytics.clickWithdrawalModalCancelButton();
+          },
+        },
+        {
+          text: '탈퇴', // 버튼 제목
+
+          onPress: () => {
+            Analytics.clickWithdrawalModalConfirmButton();
+            deactiveUser();
+          },
+        },
+      ],
+      { cancelable: false }, //alert 밖에 눌렀을 때 alert 안 없어지도록
+    );
+  };
+
   const deactiveUser = () => {
     setBtnDisable(true);
     const reasons = saveReason();
-    deavtivate(reasons)
+    deactivate(reasons)
       .then((res) => {
         if (res.result) {
           clearInfoWhenLogout();
@@ -33,8 +61,8 @@ const DeactivateReason: React.FC = () => {
       })
       .catch((e) => {
         alert('회원 탈퇴가 실패했습니다. 잠시 후 다시 시도해주세요.\n 문의: admin@remind4u.co.kr');
+        setBtnDisable(false);
       });
-    setBtnDisable(false);
   };
 
   // useEffect를 사용하여 isChecked 변화에 따라 버튼의 비활성화 상태 변경
@@ -70,59 +98,51 @@ const DeactivateReason: React.FC = () => {
       })
       .filter((reason) => reason !== null);
     return JSON.stringify(selectedReasons);
-    //console.log('Selected reasons:', selectedReasons);
-    //console.log('selected...', JSON.stringify(selectedReasons));
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <Container>
-        <SignOutTitleContainer>
-          <SignOutTitle status="default">
-            {getUserNickname()}님,{'\n'}떠나시는 이유를 알려주세요
-          </SignOutTitle>
-        </SignOutTitleContainer>
-        <FormContainer>
-          <CheckboxContainer>
-            <DeactivateReasonCheckBoxs
-              isChecked={isChecked}
-              setIsChecked={setIsChecked}
-              text={text}
-              setText={setText}
-            />
-          </CheckboxContainer>
-          <Button
-            title="탈퇴하기"
-            disabled={btnDisable}
-            primary={true}
-            onPress={() => {
-              Analytics.clickWithdrawalFinalButton();
-              Alert.alert(
-                '정말 탈퇴하시겠어요?', // 첫번째 text: 타이틀 큰 제목
-                '탈퇴 버튼 선택 시, 계정은 삭제되며 복구되지 않습니다', // 두번째 text: 작은 제목
-                [
-                  {
-                    text: '취소',
-                    onPress: () => {
-                      Analytics.clickWithdrawalModalCancelButton();
-                    },
-                  },
-                  {
-                    text: '탈퇴', // 버튼 제목
+      <View
+        style={{
+          flex: 1,
+          marginBottom: insets.bottom,
+        }}>
+        <Container>
+          <SignOutTitleContainer>
+            <SignOutTitle status="default">
+              {getUserNickname()}님,{'\n'}떠나시는 이유를 알려주세요
+            </SignOutTitle>
+          </SignOutTitleContainer>
+          <FormContainer>
+            <CheckboxContainer>
+              <DeactivateReasonCheckBoxs
+                isChecked={isChecked}
+                setIsChecked={setIsChecked}
+                text={text}
+                setText={setText}
+              />
+            </CheckboxContainer>
 
-                    onPress: () => {
-                      Analytics.clickWithdrawalModalConfirmButton();
-                      deactiveUser();
-                    },
-                  },
-                ],
-                { cancelable: false }, //alert 밖에 눌렀을 때 alert 안 없어지도록
-              );
-              //deactivateRequest();
-            }}
-          />
-        </FormContainer>
-      </Container>
+            <View
+              style={css`
+                display: flex;
+                justify-content: center;
+                padding: 0 0 ${rsWidth * 24 + 'px'} 0;
+                gap: ${rsHeight * 12 + 'px'};
+              `}>
+              <Button
+                title="탈퇴하기"
+                disabled={btnDisable}
+                primary={true}
+                onPress={() => {
+                  Analytics.clickWithdrawalFinalButton();
+                  makeAlert();
+                }}
+              />
+            </View>
+          </FormContainer>
+        </Container>
+      </View>
     </TouchableWithoutFeedback>
   );
 };

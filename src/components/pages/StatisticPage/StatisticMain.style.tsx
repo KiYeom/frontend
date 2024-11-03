@@ -37,3 +37,27 @@ export const DescText = styled.Text`
   background-color: white;
   text-align: center;
 `;
+
+//INFO : 변경
+
+//변경된 날짜 폰트
+export const DateLineText = styled.Text`
+  font-family: Kyobo-handwriting;
+  font-size: ${16 * rsFont + 'px'};
+  color: ${palette.neutral[500]};
+  text-align: center;
+`;
+//변경된 리포트 제목 폰트
+export const StatisticTitle = styled.Text`
+  font-family: Kyobo-handwriting;
+  font-size: ${24 * rsFont + 'px'};
+  color: ${palette.neutral[900]};
+  text-align: center;
+`;
+
+//변경된 색션 제목 폰트
+export const SectionTitle = styled.Text`
+  font-family: Kyobo-handwriting;
+  font-size: ${18 * rsFont + 'px'};
+  color: ${palette.neutral[900]};
+`;

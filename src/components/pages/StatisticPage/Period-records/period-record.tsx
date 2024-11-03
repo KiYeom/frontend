@@ -1,13 +1,8 @@
 import React from 'react';
 import { EmotionKeyword, TRecordEmotion } from '../../../../apis/analyze.type';
 import Empty from '../Empty';
-import {
-  RContainer,
-  RecordContainer,
-  RecordText,
-  RecordTitle,
-  RTitle,
-} from './period-record.style';
+import { SectionTitle } from '../StatisticMain.style';
+import { RContainer, RecordContainer, RecordText, RecordTitle } from './period-record.style';
 
 export type PeriodRecordProps = {
   records: TRecordEmotion[];
@@ -24,7 +19,8 @@ const PeriodRecord = (props: PeriodRecordProps) => {
 
   return (
     <RContainer>
-      <RTitle>내가 기록한 감정들</RTitle>
+      {/*<RTitle>내가 기록한 감정들</RTitle>*/}
+      <SectionTitle>내가 기록한 하루들</SectionTitle>
       {records.length === 0 ? (
         <Empty type="채팅기록"></Empty>
       ) : (
