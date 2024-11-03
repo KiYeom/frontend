@@ -42,7 +42,6 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
             target: route.key,
             canPreventDefault: true,
           });
-          console.log(route.key);
 
           //탭 클릭 시 이동
           if (!isFocused && !event.defaultPrevented) {

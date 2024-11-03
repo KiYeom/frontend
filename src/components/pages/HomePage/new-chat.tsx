@@ -73,7 +73,7 @@ const NewChat: React.FC = ({ navigation }) => {
 
   const getIMessageFromServer = async (lastMessageDate: Date): Promise<IMessage[]> => {
     const messages: IMessage[] = [];
-    const lastDateAdd1s = new Date(lastMessageDate.getTime() + 1000);
+    const lastDateAdd1s = new Date(lastMessageDate.getTime() + 10 * 1000);
     const serverMessages = await getOldChatting(botObject._id, lastDateAdd1s.toISOString());
 
     if (serverMessages && serverMessages.chats && serverMessages.chats.length > 0) {
