@@ -263,6 +263,7 @@ const NewChat: React.FC = ({ navigation }) => {
           navigation.navigate(TabScreenName.Home);
         }}
       />
+
       <GiftedChat
         messages={messages}
         onSend={(messages) => onSend(messages)}
