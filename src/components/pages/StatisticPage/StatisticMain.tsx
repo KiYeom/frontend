@@ -154,32 +154,6 @@ const StatisticMain: React.FC<any> = () => {
             </View>
           </View>
           <Container>
-            <BlurredButton
-              blurredImageUri={
-                'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/statistic/blurgraph.png'
-              }
-              text={'지금 쿠키와 대화하고\n내일 나의 마음을 확인해보세요'}
-              buttonText="쿠키랑 대화하기"
-              onPress={async () => {
-                Analytics.clickCTAChatButton();
-                navigation.navigate(RootStackName.HomeStackNavigator, {
-                  screen: HomeStackName.NewChat,
-                });
-              }}
-            />
-            <BlurredButton
-              blurredImageUri={
-                'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/statistic/blurgraph.png'
-              }
-              text={'지금 쿠키와 대화하고\n내일 나의 마음을 확인해보세요'}
-              buttonText="쿠키랑 대화하기?"
-              onPress={async () => {
-                Analytics.clickCTAChatButton();
-                navigation.navigate(RootStackName.HomeStackNavigator, {
-                  screen: HomeStackName.NewChat,
-                });
-              }}
-            />
             {!isNullClassification ? (
               <>
                 <DailyEmotionClassification
