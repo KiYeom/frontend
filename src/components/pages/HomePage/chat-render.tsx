@@ -42,26 +42,26 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
           {...props}
           renderTime={() => null}
           textStyle={{
-            left: {
-              color: palette.neutral[500],
-              fontFamily: 'Pretendard-Regular',
-              fontSize: 14,
-              textAlign: 'left',
-              marginTop: 0,
-              marginBottom: 0,
-              marginLeft: 0,
-              marginRight: 0,
-            },
-            right: {
-              color: '#fff',
-              fontFamily: 'Pretendard-Regular',
-              fontSize: 14,
-              textAlign: 'left',
-              marginTop: 0,
-              marginBottom: 0,
-              marginLeft: 0,
-              marginRight: 0,
-            },
+            left: css`
+              color: ${palette.neutral[500]};
+              font-family: Pretendard-Regular;
+              font-size: ${rsFont * 14 + 'px'};
+              text-align: left;
+              margin-top: 0;
+              margin-bottom: 0;
+              margin-left: 0;
+              margin-right: 0;
+            `,
+            right: css`
+              color: #fff;
+              font-family: Pretendard-Regular;
+              font-size: ${rsFont * 14 + 'px'};
+              text-align: left;
+              margin-top: 0;
+              margin-bottom: 0;
+              margin-left: 0;
+              margin-right: 0;
+            `,
           }}
           wrapperStyle={{
             left: css`

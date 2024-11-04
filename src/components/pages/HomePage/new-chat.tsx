@@ -275,14 +275,13 @@ const NewChat: React.FC = ({ navigation }) => {
         }}
         isStatusBarTranslucentAndroid
         renderAvatar={RenderAvatar}
-        showAvatarForEveryMessage
         renderAvatarOnTop
         onPressAvatar={() => {
           Analytics.clickChatCharacterAvatar();
           navigation.navigate(HomeStackName.Profile);
         }}
         renderBubble={RenderBubble}
-        renderChatFooter={() => RenderFooter(sending)}
+        renderFooter={() => RenderFooter(sending)}
         isCustomViewBottom
         renderTime={RenderTime}
         renderDay={RenderDay}
