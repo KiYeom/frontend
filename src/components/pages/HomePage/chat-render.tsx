@@ -35,7 +35,6 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
         align-items: end;
         justify-content: start;
         gap: ${rsWidth * 8 + 'px'};
-        //background-color: pink;
       `}>
       <View>
         <Bubble
@@ -88,24 +87,32 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
 };
 
 export const RenderAvatar = (props: AvatarProps<IMessage>) => {
-  const { position } = props;
+  const { position, currentMessage, previousMessage } = props;
   if (position !== 'left') return null;
+  const avatarShow: boolean =
+    !previousMessage ||
+    !previousMessage._id ||
+    !previousMessage.user ||
+    !previousMessage.user._id ||
+    previousMessage.user._id !== currentMessage.user._id;
   return (
-    <Avatar
-      {...props}
-      imageStyle={{
-        left: {
-          width: AVATAR_SIZE * rsWidth,
-          height: AVATAR_SIZE * rsHeight,
-          objectFit: 'cover',
-        },
-      }}
-      containerStyle={{
-        left: {
-          marginRight: 8 * rsWidth,
-        },
-      }}
-    />
+    <View
+      style={css`
+        width: ${rsWidth * 35 + 'px'};
+        height: ${rsHeight * 35 + 'px'};
+      `}>
+      {avatarShow && (
+        <Avatar
+          {...props}
+          imageStyle={{
+            left: css`
+              width: ${rsWidth * 35 + 'px'};
+              height: ${rsHeight * 35 + 'px'};
+            `,
+          }}
+        />
+      )}
+    </View>
   );
 };
 

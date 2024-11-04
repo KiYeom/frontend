@@ -83,8 +83,16 @@ const NewChat: React.FC = ({ navigation }) => {
         const texts = text.split('\n');
         for (let j = 0; j < texts.length; j++) {
           const text = texts[j];
-          const splitTexts = text.match(/\s*([^.!?;:…。？！~…」»]+[.!?;:…。？！~…」»]?)\s*/g) || [];
+          let splitTexts: string[] = [text];
+          if (chat.status !== 'user') {
+            splitTexts =
+              text.match(
+                /\s*([^.!?;:…。？！~…」»]+[.!?;:…。？！~…」»](?:\s*[\u{1F300}-\u{1F5FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}\u{1F004}\u{1F0CF}\u{1F170}-\u{1F251}]*)?)\s*/gu,
+              ) || [];
+          }
+
           for (let k = 0; k < splitTexts.length; k++) {
+            if (splitTexts[k] === '') continue;
             messages.push({
               _id: uuid.v4().toString(),
               text: splitTexts[k],
@@ -139,7 +147,9 @@ const NewChat: React.FC = ({ navigation }) => {
       .then((res) => {
         if (res && res.answer) {
           const answers =
-            res.answer.match(/\s*([^.!?;:…。？！~…」»]+[.!?;:…。？！~…」»]?)\s*/g) || [];
+            res.answer.match(
+              /\s*([^.!?;:…。？！~…」»]+[.!?;:…。？！~…」»](?:\s*[\u{1F300}-\u{1F5FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}\u{1F004}\u{1F0CF}\u{1F170}-\u{1F251}]*)?)\s*/gu,
+            ) || [];
           const newMessages: IMessage[] = [];
           for (let i = 0; i < answers.length; i++) {
             newMessages.push({
@@ -275,6 +285,7 @@ const NewChat: React.FC = ({ navigation }) => {
         }}
         isStatusBarTranslucentAndroid
         renderAvatar={RenderAvatar}
+        showAvatarForEveryMessage
         renderAvatarOnTop
         onPressAvatar={() => {
           Analytics.clickChatCharacterAvatar();
