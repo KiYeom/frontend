@@ -6,6 +6,7 @@ import Icon from '../../icons/icons';
 import { Homeheader } from './Homeheader.style';
 
 const Header = ({ navigation, riskStatus, onIconPress }) => {
+  console.log('헤더', riskStatus);
   return (
     <Homeheader>
       <Icon name="remind-logo" />
