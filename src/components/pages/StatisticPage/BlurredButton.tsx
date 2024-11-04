@@ -49,20 +49,20 @@ const BlurredButton = ({ blurredImageUri, text, buttonText, onPress }) => {
             {/* 쿠키 이미지*/}
             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
               {buttonText === '쿠키랑 대화하기' ? (
-                <View style={{ width: 140, height: 112 }}>
+                <View style={{ width: 140 * rsWidth, height: 112 * rsHeight }}>
                   <Image
                     style={{ flex: 1, width: '100%', height: '100%' }}
                     source={{
-                      uri: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/statistic/messagewaitingcookie.png',
+                      uri: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/statistic/waitingcookie.png',
                     }}
                   />
                 </View>
               ) : (
-                <View style={{ width: 220, height: 76 }}>
+                <View style={{ width: 220 * rsWidth, height: 85 * rsHeight }}>
                   <Image
                     style={{ flex: 1, width: '100%', height: '100%' }}
                     source={{
-                      uri: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/statistic/thinkingcookie.png',
+                      uri: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/statistic/mindthinkingcookie.png',
                     }}
                   />
                 </View>

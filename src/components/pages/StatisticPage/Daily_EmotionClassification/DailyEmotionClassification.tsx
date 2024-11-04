@@ -88,7 +88,14 @@ const DailyEmotionClassification: React.FC<any> = (props: any) => {
     <Container>
       <SectionTitle>쿠키가 생각했을 때의 모습이에요</SectionTitle>
       {pieData.length !== 0 ? (
-        <>
+        <View
+          style={css`
+            background-color: white;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            padding-vertical: ${rsHeight * 30 + 'px'};
+          `}>
           <PieChart
             data={pieData} //파이차트 데이터
             donut //파이차트 형태 (도넛)
@@ -128,7 +135,7 @@ const DailyEmotionClassification: React.FC<any> = (props: any) => {
             }}
           />
           {renderLegendComponent(pieData)}
-        </>
+        </View>
       ) : (
         <></>
       )}

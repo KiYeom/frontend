@@ -184,7 +184,6 @@ const NewChat: React.FC = ({ navigation }) => {
       sendMessageToServer();
     }, 2 * 1000);
   };
-
   const resetRefreshTimer = (height: number, ms: number) => {
     if (refreshTimeoutRef.current) {
       clearTimeout(refreshTimeoutRef.current);
