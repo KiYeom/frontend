@@ -104,7 +104,8 @@ const Home: React.FC<any> = ({ navigation }) => {
     const fetchRiskScore = async () => {
       // 위험 점수 api 로 가져오기
       const date = getApiDateString(new Date());
-      const fetchedRiskScore = await getRiskScore(date); //현재 위험 점수를 가지고 오는 api 호출
+      //const fetchedRiskScore = await getRiskScore(date); //현재 위험 점수를 가지고 오는 api 호출
+      const fetchedRiskScore = 86; //임시로 86점으로 설정
       setRiskScore(fetchedRiskScore);
 
       const storedData = getRiskData();

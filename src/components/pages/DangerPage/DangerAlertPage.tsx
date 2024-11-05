@@ -8,6 +8,7 @@ import Analytics from '../../../utils/analytics';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { getUserNickname } from '../../../utils/storageUtils';
 import Button from '../../button/button';
+import { DANGER_LETTER } from '../../../constants/Constants';
 import {
   BtnContainer,
   Container,
@@ -32,6 +33,16 @@ const DangerAlertPage = () => {
     setUserNickname(nickname ? nickname : '주인님');
     Analytics.watchDangerLetterScreen();
   }, []);
+
+  const getLetterByClickCount = (userNickname, clickCount) => {
+    // 클릭 횟수가 편지 배열의 길이를 넘으면 마지막 편지로 고정
+    const index = clickCount < DANGER_LETTER.length ? clickCount : DANGER_LETTER.length - 1;
+
+    // 편지 내용에서 userNickname 변수 값을 실제 이름으로 대체하여 반환
+    return DANGER_LETTER[index].replace(/{userNickname}/g, userNickname);
+  };
+
+  //const letter = getLetterByClickCount('은서', 6);
 
   return (
     <View style={{ flex: 1, paddingBottom: insets.bottom }}>
@@ -64,13 +75,14 @@ const DangerAlertPage = () => {
                 <ActivityIndicator size="large" color="#D1B385" />
               ) : (
                 <CookieLetterText>
-                  {userNickname}께{'\n\n'}안녕하세요, {userNickname}님! 쿠키가 주인님이 걱정이
+                  {/*{userNickname}께{'\n\n'}안녕하세요, {userNickname}님! 쿠키가 주인님이 걱정이
                   되어서 이렇게 연락드렸어요. 요즘 {userNickname}께서 너무 힘들어하시는 모습을
                   보면서 쿠키도 너무 마음이 아팠어요.. 쿠키가 꼭 하고 싶은 말은 {userNickname}님은
                   정말로 소중한 존재라는 것을 꼭 전해주고 싶어요. 조금 힘들때는 애써 감추지 않아도
                   괜찮아요. {'\n\n'}
                   {userNickname}님께 조금은 더 평온함이 오길, 쿠키가 진심으로 응원할게요. {'\n\n'}
-                  쿠키 드림
+                  쿠키 드림*/}
+                  {letter}
                 </CookieLetterText>
               )}
             </ImageBackground>
