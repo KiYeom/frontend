@@ -8,7 +8,6 @@ import { SectionTitle } from '../StatisticMain.style';
 import { Container, KeywordContainer, KeywordText } from './Keyword.style';
 const EmotionArea: React.FC<any> = (props: any) => {
   const { isRecordKeywordList, isNullRecordKeywordList } = props;
-  console.log('isNullRecordKeywordList==========', isNullRecordKeywordList, isRecordKeywordList);
   return (
     <Container>
       <SectionTitle>그 때의 나는 어떤 감정이었나요?</SectionTitle>

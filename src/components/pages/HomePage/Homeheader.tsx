@@ -5,8 +5,13 @@ import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 import Icon from '../../icons/icons';
 import { Homeheader } from './Homeheader.style';
 
-const Header = ({ navigation, riskStatus, onIconPress }) => {
-  console.log('헤더', riskStatus);
+const Header = ({
+  riskStatus,
+  onIconPress,
+}: {
+  riskStatus: 'safe' | 'danger' | 'danger-opened';
+  onIconPress: () => void;
+}) => {
   return (
     <Homeheader>
       <Icon name="remind-logo" />

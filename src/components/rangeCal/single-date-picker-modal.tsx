@@ -33,8 +33,6 @@ const isDateInList = (date: DateType | null, dateList: string[]): boolean => {
   // 입력된 Date 객체를 'YYYY-MM-DD' 형식의 문자열로 변환
   const dateStr = getIsoString(targetDate).split('T')[0];
 
-  console.log('picker: ', targetDate, dateStr);
-  console.log('picker: ', dateList);
   // 변환된 문자열이 dateList에 포함되어 있는지 확인
   return dateList.includes(dateStr);
 };
@@ -61,7 +59,6 @@ const SingleDatePickerModal = (props: SingleDatePickerModalProps) => {
                   mode="single"
                   locale="kor"
                   onChange={(newDate) => {
-                    //console.log('newDate', newDate);
                     setDate(new Date(newDate.date));
                   }}
                   date={date}
@@ -79,7 +76,6 @@ const SingleDatePickerModal = (props: SingleDatePickerModalProps) => {
                 primary={true}
                 disabled={false}
                 onPress={() => {
-                  //console.log('버튼 선택함');
                   onChange?.(date);
                   onClose?.();
                 }}

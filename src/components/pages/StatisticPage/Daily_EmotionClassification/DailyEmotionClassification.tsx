@@ -21,7 +21,6 @@ const DailyEmotionClassification: React.FC<any> = (props: any) => {
   const generatePieData = (labelsClassification: TLabel[]): TLabelWithColor[] => {
     const result: TLabelWithColor[] = [];
     labelsClassification.map((item, index) => {
-      //console.log('generatePieData 함수 실행', item.value, item.label);
       result.push({
         label: item.label,
         value: Math.round(item.percent),

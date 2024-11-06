@@ -20,10 +20,8 @@ const KeywordArea: React.FC<any> = (props: any) => {
           buttonText="지금 대화하기"
           onPress={() => {
             // 버튼 클릭 시 실행될 함수
-            console.log('두번째 버튼 클릭됨');
             //navigation.replace(RootStackName.HomeStackNavigator, { screen: HomeStackName.Chat });
             // 채팅 화면으로 가는데, 채팅 화면의 뒤로가기 버튼을 누르면 이 화면 말고 홈 화면으로 가야할 것 같음..
-            console.log('버튼 클릭함');
           }}
         />
       ) : (

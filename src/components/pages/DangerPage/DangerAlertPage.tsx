@@ -17,6 +17,7 @@ import {
   ImageContainer,
   Title,
 } from './DangerAlertPage.style';
+import { useRoute } from '@react-navigation/native';
 
 const cookieLetter = {
   image:
@@ -24,25 +25,23 @@ const cookieLetter = {
 };
 
 const DangerAlertPage = () => {
-  const [userNickname, setUserNickname] = React.useState<string | null>(null);
-  const [isLoaded, setIsLoaded] = React.useState<boolean>(false);
+  const route = useRoute();
+  const { letterIndex } = route.params as { letterIndex: number };
+
   const insets = useSafeAreaInsets();
+  const [isLoaded, setIsLoaded] = React.useState<boolean>(false);
+  const userNickname = getUserNickname() ?? '주인님';
 
-  useEffect(() => {
-    const nickname = getUserNickname();
-    setUserNickname(nickname ? nickname : '주인님');
-    Analytics.watchDangerLetterScreen();
-  }, []);
-
-  const getLetterByClickCount = (userNickname, clickCount) => {
+  const getLetter = () => {
     // 클릭 횟수가 편지 배열의 길이를 넘으면 마지막 편지로 고정
-    const index = clickCount < DANGER_LETTER.length ? clickCount : DANGER_LETTER.length - 1;
 
     // 편지 내용에서 userNickname 변수 값을 실제 이름으로 대체하여 반환
-    return DANGER_LETTER[index].replace(/{userNickname}/g, userNickname);
+    return DANGER_LETTER[letterIndex ?? 0].replace(/{userNickname}/g, userNickname);
   };
 
-  //const letter = getLetterByClickCount('은서', 6);
+  useEffect(() => {
+    Analytics.watchDangerLetterScreen();
+  }, []);
 
   return (
     <View style={{ flex: 1, paddingBottom: insets.bottom }}>
@@ -62,28 +61,14 @@ const DangerAlertPage = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
               }}
-              onLoadStart={() => {
-                // setIsLoaded(false);
-                console.log('이미지 로딩 시작: ', new Date().getTime());
-              }}
               onLoadEnd={() => {
                 setIsLoaded(true);
-                console.log('이미지 로딩 완료: ', new Date().getTime());
               }}
               source={{ uri: cookieLetter.image }}>
               {!isLoaded ? (
                 <ActivityIndicator size="large" color="#D1B385" />
               ) : (
-                <CookieLetterText>
-                  {/*{userNickname}께{'\n\n'}안녕하세요, {userNickname}님! 쿠키가 주인님이 걱정이
-                  되어서 이렇게 연락드렸어요. 요즘 {userNickname}께서 너무 힘들어하시는 모습을
-                  보면서 쿠키도 너무 마음이 아팠어요.. 쿠키가 꼭 하고 싶은 말은 {userNickname}님은
-                  정말로 소중한 존재라는 것을 꼭 전해주고 싶어요. 조금 힘들때는 애써 감추지 않아도
-                  괜찮아요. {'\n\n'}
-                  {userNickname}님께 조금은 더 평온함이 오길, 쿠키가 진심으로 응원할게요. {'\n\n'}
-                  쿠키 드림*/}
-                  {letter}
-                </CookieLetterText>
+                <CookieLetterText>{getLetter()}</CookieLetterText>
               )}
             </ImageBackground>
           </ImageContainer>
@@ -93,7 +78,7 @@ const DangerAlertPage = () => {
               24시간 무료 비밀 보장 상담 센터를 알아왔어요.{'\n'}
               쿠키랑 같이 연락해볼까요?
             </Desc>
-            <Button
+            {/* <Button
               title="상담선생님과 전화하기 (109)"
               primary={true}
               icon="call"
@@ -115,7 +100,7 @@ const DangerAlertPage = () => {
                 Analytics.clickDangerLetterChatButton();
                 WebBrowser.openBrowserAsync(`${KAKAO_MESSAGE}`);
               }}
-            />
+            /> */}
             <Button
               title="다른 상담 기관 알아보기"
               primary={true}

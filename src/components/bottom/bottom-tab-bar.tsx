@@ -35,8 +35,6 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
 
         //탭 버튼 클릭 시 호출되는 함수
         const onPress = () => {
-          //console.log('눌림!');
-          //console.log(route.name); //route.name을 통해 setting 클릭 시 api 호출하도록
           const event = navigation.emit({
             type: 'tabPress',
             target: route.key,

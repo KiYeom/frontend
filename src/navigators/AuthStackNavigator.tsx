@@ -13,7 +13,6 @@ const AuthStack = createNativeStackNavigator();
 const AuthStackNavigator: React.FC<any> = ({ navigation }) => {
   const { RightStatus, setRightStatus } = UseRightStatus();
   const clickRight = () => {
-    //console.log('clickRight', RightStatus);
     setRightStatus(!RightStatus);
   };
 

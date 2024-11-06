@@ -12,8 +12,6 @@ export type PeriodRecordProps = {
 const PeriodRecord = (props: PeriodRecordProps) => {
   const { records } = props;
   const getEmotionsText = (recordKeywords: EmotionKeyword[]): string => {
-    console.log('recordEmotions', records);
-    console.log('recordEmotions', recordKeywords);
     return recordKeywords.map((keyword) => keyword.keyword).join(', ');
   };
 

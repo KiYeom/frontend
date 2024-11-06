@@ -23,7 +23,6 @@ const ChatList = () => {
           navigation.navigate(RootStackName.HomeStackNavigator, {
             screen: HomeStackName.NewChat,
           });
-          console.log('터치함');
         }}
         style={css`
           //background-color: red;
