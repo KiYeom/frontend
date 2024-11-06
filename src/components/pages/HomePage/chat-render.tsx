@@ -14,7 +14,6 @@ import {
   SystemMessageProps,
   Time,
   TimeProps,
-  Message,
   ComposerProps,
   Composer,
 } from 'react-native-gifted-chat';
@@ -24,8 +23,6 @@ import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { ActivityIndicator, Image, Text, View } from 'react-native';
 import Icon from '../../icons/icons';
 import TypingIndicator from 'react-native-gifted-chat/src/TypingIndicator';
-
-const AVATAR_SIZE = 35;
 
 export const RenderBubble = (props: BubbleProps<IMessage>) => {
   return (
@@ -89,12 +86,19 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
 export const RenderAvatar = (props: AvatarProps<IMessage>) => {
   const { position, currentMessage, previousMessage } = props;
   if (position !== 'left') return null;
+
+  const isPreviousUserExist =
+    previousMessage !== undefined &&
+    previousMessage._id !== undefined &&
+    previousMessage.user !== undefined &&
+    previousMessage.user._id !== undefined;
+
   const avatarShow: boolean =
-    !previousMessage ||
-    !previousMessage._id ||
-    !previousMessage.user ||
-    !previousMessage.user._id ||
-    previousMessage.user._id !== currentMessage.user._id;
+    !isPreviousUserExist ||
+    previousMessage.user._id !== currentMessage.user._id ||
+    new Date(currentMessage.createdAt).getTime() - new Date(previousMessage.createdAt).getTime() >
+      10 * 1000;
+
   return (
     <View
       style={css`

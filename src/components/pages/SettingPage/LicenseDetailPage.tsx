@@ -8,7 +8,6 @@ const LicenseDetailPage: React.FC<any> = ({ navigation }) => {
   const route = useRoute();
   const { item }: any = route.params;
   //useRoute를 통해 넘겨온 데이터를 받을 수 있음, object 형태
-  console.log('전달받은 데이터 : ', item);
 
   useLayoutEffect(() => {
     navigation.setOptions({

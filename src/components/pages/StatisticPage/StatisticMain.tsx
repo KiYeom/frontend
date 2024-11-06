@@ -37,8 +37,6 @@ const getServerYesterday = (currentDate: Date = new Date()) => {
 };
 
 const getDateString = (date: Date): string => {
-  //console.log('getDateString', date, Object.prototype.toString.call(date));
-  //console.log('getDateString getfullyear', date.getFullYear);
   return (
     date?.getFullYear() +
     '년 ' +
@@ -75,7 +73,6 @@ const StatisticMain: React.FC<any> = () => {
   const insets = useSafeAreaInsets();
 
   const onChange = useCallback((newDate) => {
-    //console.log('onchange', newDate);
     setDate(newDate);
   }, []);
 
@@ -88,7 +85,6 @@ const StatisticMain: React.FC<any> = () => {
   }, []);
 
   useEffect(() => {
-    console.log('date 바뀜');
     const fetchData = async () => {
       const dailyStatistics = await dailyAnalyze(getApiDateString(date ?? getServerYesterday()));
       if (!dailyStatistics) {

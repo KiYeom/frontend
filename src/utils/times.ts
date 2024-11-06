@@ -1,9 +1,10 @@
 export const KOREA_TIMEOFFSET_MINUTES = +9 * 60;
+export const START_HOUR = 6;
 
 export const getIsoString = (date, timezoneOffsetMinute = KOREA_TIMEOFFSET_MINUTES) => {
   const tzo = timezoneOffsetMinute,
     dif = tzo >= 0 ? '+' : '-',
-    pad = function (num) {
+    pad = function (num: number) {
       return (num < 10 ? '0' : '') + num;
     };
 
@@ -27,5 +28,20 @@ export const getIsoString = (date, timezoneOffsetMinute = KOREA_TIMEOFFSET_MINUT
     pad(Math.floor(Math.abs(tzo) / 60)) +
     ':' +
     pad(Math.abs(tzo) % 60)
+  );
+};
+
+export const getApiDateString = (date: Date = new Date()): string => {
+  const nowKoreanDate = new Date(date.getTime() + KOREA_TIMEOFFSET_MINUTES * 60 * 1000);
+
+  if (nowKoreanDate.getHours() < START_HOUR) {
+    nowKoreanDate.setDate(nowKoreanDate.getDate() - 1);
+  }
+  return (
+    nowKoreanDate.getFullYear() +
+    '-' +
+    String(nowKoreanDate.getMonth() + 1).padStart(2, '0') +
+    '-' +
+    String(nowKoreanDate.getDate()).padStart(2, '0')
   );
 };

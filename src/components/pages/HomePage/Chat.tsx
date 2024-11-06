@@ -19,10 +19,8 @@ const Chat: React.FC = ({ navigation }) => {
   const [data, setData] = useState<Message[]>(() => {
     const savedChatting = getChatting();
     if (savedChatting) {
-      //console.log('이전에 대화함', savedChatting);
       return JSON.parse(savedChatting);
     } else {
-      //console.log('처음 대화를 시작함');
       const welcomeMessage = [botAnswer()];
       welcomeMessage[0].text = `반가워요, ${userName}님!💚 저는 ${userName}님 곁에서 힘이 되어드리고 싶은 골든 리트리버 쿠키예요🐶 이 곳은 ${userName}님과 저만의 비밀 공간이니, 어떤 이야기도 편하게 나눠주세요!\n\n반말이 편할까요, 아니면 존댓말이 좋으실까요? 원하는 말투로 대화할게요! 🍀💕`;
       saveChatLogs(welcomeMessage);
@@ -35,10 +33,7 @@ const Chat: React.FC = ({ navigation }) => {
   useEffect(() => {
     Analytics.watchChatScreen();
     loadChatLogs({ data, setData });
-    //console.log('===채팅창 시작===', data);
     if (Array.isArray(data) && data.length > 1) {
-      //console.log('&&&&&&', data, Array.isArray(data));
-      //console.log('데이터 있음');
       const newData = [...data]; // 기존 data를 복사
       newData[0].text = getAiResponse(); // 복사한 배열의 첫 번째 요소의 text를 변경
       setData(newData); // 상태 업데이트
@@ -61,7 +56,6 @@ const Chat: React.FC = ({ navigation }) => {
   }, [data]);
 
   const renderItem = ({ item, index }: any) => {
-    //console.log('renderitem', item);
     const currentDate = item.date;
     const nextDate = index + 1 < data.length ? data[index + 1].date : undefined;
     let showDateLine = currentDate !== nextDate || nextDate === undefined;

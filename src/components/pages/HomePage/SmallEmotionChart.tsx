@@ -50,14 +50,12 @@ const SmallEmotionChart = ({ navigation }) => {
   const headerHeight = useHeaderHeight();
 
   useEffect(() => {
-    console.log('useEffect 실행');
     if (Platform.OS === 'ios') {
       const { StatusBarManager } = NativeModules;
     }
     dailyAnalyze(getApiDateString(new Date())).then((data) => {
       if (!data || !data.record || !data.record.todayFeeling) return;
       setText(data.record.todayFeeling);
-      console.log('data.record.todayFeeling', data.record.todayFeeling);
     });
     setSelectedEmotions(recordedEmotions);
   }, []);
@@ -214,7 +212,6 @@ const SmallEmotionChart = ({ navigation }) => {
               onPress={async () => {
                 Analytics.clickRecordButton();
                 setRecordedEmotions(selectedEmotions); // 상태 업데이트
-                console.log('저장할 데이터 ', text);
                 await todayEmotion(selectedEmotions, text); //
                 navigation.navigate(TabScreenName.Home);
               }}

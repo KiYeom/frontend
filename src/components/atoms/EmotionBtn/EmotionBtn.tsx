@@ -45,7 +45,6 @@ const EmotionBtn = ({ navigation }) => {
           setIsNULL(true); // 데이터가 없으면 true로 설정
         }
       } catch (error) {
-        //console.error('Failed to fetch data:', error); // 에러 처리
       } finally {
         setLoading(false); // 로딩 종료
       }
@@ -82,7 +81,8 @@ const EmotionBtn = ({ navigation }) => {
           screen: HomeStackName.SmallEmotionChart,
         });
       }}
-      status={'emotion'}>
+      status={'emotion'}
+      riskScore={0}>
       <>
         <HomeBtnTitle>
           {!isNULL
@@ -113,12 +113,7 @@ const EmotionBtn = ({ navigation }) => {
           `}>
           {!isNULL ? (
             recordedEmotions.map((emotion, index) => (
-              <EmotionCard
-                key={index}
-                emotion={emotion}
-                onPress={() => console.log('눌림')}
-                status={'simple'}
-              />
+              <EmotionCard key={index} emotion={emotion} status={'simple'} />
             ))
           ) : (
             <EmotionImage

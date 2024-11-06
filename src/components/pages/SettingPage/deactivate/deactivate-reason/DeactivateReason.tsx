@@ -80,7 +80,6 @@ const DeactivateReason: React.FC = () => {
     } else {
       setBtnDisable(false);
     }
-    console.log('text', text);
   }, [isChecked, text]); // 의존성 배열에 etcText 추가
 
   useEffect(() => {

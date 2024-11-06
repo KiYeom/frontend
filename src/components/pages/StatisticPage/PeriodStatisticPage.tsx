@@ -44,7 +44,6 @@ const PeriodStatisticPage: React.FC<any> = () => {
   useEffect(() => {
     Analytics.watchPeriodStatisticScreen();
     const fetchData = async () => {
-      //console.log('날짜가 변경됨');
       try {
         setLoading(true);
         setError(null);
@@ -57,7 +56,6 @@ const PeriodStatisticPage: React.FC<any> = () => {
           periodKeyword(startDateFormatted, endDateFormatted), //기간 키워드 리스트
           periodRecordEmotions(startDateFormatted, endDateFormatted), //기간 기록한 감정들
         ]);
-        //console.log('기간 감정 차트', res);
         if (res && res.charts) {
           setEmotionsData(res.charts);
         }
@@ -65,13 +63,8 @@ const PeriodStatisticPage: React.FC<any> = () => {
           setPeriodKeywordList(res2.keywords);
         }
         if (res3) {
-          console.log('기간 기록한 감정들', res3);
           setRecordEmotions(res3);
         }
-        //console.log('시작 날짜 ', startDateFormatted);
-        //console.log('종료 날짜 ', endDateFormatted);
-        //console.log('기간 리포트 api 응답 결과', res.charts);
-        //console.log('기간 키워드 결과', res2.keywords);
       } catch (err) {
         setError('데이터를 불러오는 중 오류가 발생했습니다.');
         console.error(err);

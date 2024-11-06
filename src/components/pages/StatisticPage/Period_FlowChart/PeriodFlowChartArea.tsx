@@ -63,9 +63,6 @@ const PeriodFlowChart = ({ emotionsData, setEmotionsData, startDate, endDate }) 
               title={label}
               primary={index === activeIndex}
               onPress={() => {
-                //console.log('filledData', filledData);
-                //console.log('emotionsData[activeIndex].chart', emotionsData[activeIndex].chart);
-                //console.log('activeIndex', activeIndex);
                 setActiveIndex(index);
               }}
             />
