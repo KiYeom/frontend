@@ -6,6 +6,8 @@ import { LineChart } from 'react-native-gifted-charts';
 import { rsFont, rsHeight, rsWidth } from '../../../../utils/responsive-size';
 import MoodButton from '../../../button/MoodButton';
 import { SectionTitle } from '../StatisticMain.style';
+import { getDemoActivePush } from '../../../../apis/demo';
+import { getIsDemo, setIsScoreDemo } from '../../../../utils/storageUtils';
 
 const fillMissingDates = (data, startDate, endDate) => {
   const result = [];
@@ -64,6 +66,12 @@ const PeriodFlowChart = ({ emotionsData, setEmotionsData, startDate, endDate }) 
               primary={index === activeIndex}
               onPress={() => {
                 setActiveIndex(index);
+                if (!getIsDemo()) return;
+                setIsScoreDemo(true);
+                //마지막 버튼을 클릭할 때
+                if (index === buttonLabels.length - 1) {
+                  getDemoActivePush();
+                }
               }}
             />
           ))}

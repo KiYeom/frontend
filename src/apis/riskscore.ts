@@ -1,3 +1,4 @@
+import { getIsScoreDemo } from '../utils/storageUtils';
 import { instance } from './interceptor';
 export const getRiskScore = async (today: string): Promise<number> => {
   try {
@@ -7,6 +8,7 @@ export const getRiskScore = async (today: string): Promise<number> => {
     if (!res.data.score || res.data.score < 0 || res.data.score > 100) {
       return 0;
     }
+    if (getIsScoreDemo()) return 99;
     return res.data.score;
   } catch (error) {
     console.error('[ERROR] getRiskScore function error', error);

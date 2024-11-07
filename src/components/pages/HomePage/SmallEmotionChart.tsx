@@ -26,12 +26,13 @@ import Analytics from '../../../utils/analytics';
 import useRecordedEmotionStore from '../../../utils/emotion-recorded';
 import useEmotionStore from '../../../utils/emotion-status';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
-import { getUserNickname } from '../../../utils/storageUtils';
+import { getIsDemo, getUserNickname } from '../../../utils/storageUtils';
 import EmotionCard from '../../atoms/EmotionCard/EmotionCard';
 import EmotionChip from '../../atoms/EmotionChip/EmotionChip';
 import Button from '../../button/button';
 import Input from '../../input/input';
 import { EmotionDesc, SmallTitle, Title } from './EmotionChart.style';
+import { getDemoAnalyticsPush } from '../../../apis/demo';
 
 const getApiDateString = (date: Date): string => {
   return (
@@ -207,6 +208,7 @@ const SmallEmotionChart = ({ navigation }) => {
                 Analytics.clickRecordButton();
                 setRecordedEmotions(selectedEmotions); // 상태 업데이트
                 await todayEmotion(selectedEmotions, text); //
+                if (getIsDemo()) getDemoAnalyticsPush();
                 navigation.navigate(TabScreenName.Home);
               }}
             />

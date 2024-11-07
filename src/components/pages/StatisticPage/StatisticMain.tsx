@@ -18,6 +18,7 @@ import EmotionDairy from './Daily_Keyword/EmotionDairy';
 import KeywordArea from './Daily_Keyword/KeywordArea';
 import ReportType from './ReportType';
 import { Container, DateLineText, StatisticTitle } from './StatisticMain.style';
+import { getIsDemo } from '../../../utils/storageUtils';
 const START_HOUR_OF_DAY = 6;
 
 const getServerYesterday = (currentDate: Date = new Date()) => {
@@ -32,6 +33,22 @@ const getServerYesterday = (currentDate: Date = new Date()) => {
   } else {
     // 그렇지 않으면 어제 출력 (어제)
     koreaTime.setDate(koreaTime.getDate() - 1);
+  }
+  return koreaTime;
+};
+
+const getServerToday = (currentDate: Date = new Date()) => {
+  let utc = currentDate.getTime() + currentDate.getTimezoneOffset() * 60000;
+  let koreaTime = new Date(utc + 9 * 60 * 60 * 1000); // UTC+9 시간대
+
+  let hour = koreaTime.getHours();
+
+  if (hour >= 0 && hour < START_HOUR_OF_DAY) {
+    // 오전 0시에서 6시 사이라면 엊그제 출력 (2일전)
+    koreaTime.setDate(koreaTime.getDate() - 1);
+  } else {
+    // 그렇지 않으면 어제 출력 (어제)
+    koreaTime.setDate(koreaTime.getDate());
   }
   return koreaTime;
 };
@@ -78,28 +95,54 @@ const StatisticMain: React.FC<any> = () => {
 
   useEffect(() => {
     Analytics.watchDailyStatisticScreen();
+    if (getIsDemo()) setDate(getServerToday());
     dailyAnalyzeStatus(2024).then((data) => {
       if (!data) return;
-      setAvailableDates(data.dates);
+      if (getIsDemo()) {
+        setAvailableDates([...data.dates, getApiDateString(getServerToday())]);
+      } else {
+        setAvailableDates(data.dates);
+      }
     });
   }, []);
 
+  const fetchData = async () => {
+    const dailyStatistics = await dailyAnalyze(getApiDateString(date ?? getServerYesterday()));
+    if (!dailyStatistics) {
+      alert('네트워크 연결이 불안정합니다. 잠시 후 다시 시도해주세요.');
+      return;
+    }
+    setIsNullClassification(dailyStatistics.classification.isNULL);
+    setLabelsClassification(dailyStatistics.classification.labels);
+    setIsSummaryList(dailyStatistics.summary.isNULL);
+    setSummaryList(dailyStatistics.summary.keywords);
+    setIsRecordKeywordList(dailyStatistics.record.Keywords);
+    setIsNullRecordKeywordList(dailyStatistics.record.isNULL);
+    //빈 값 [] 이면 false를 넘겨주기 때문에 !을 붙여서 true로 만들어줌
+    setTodayFeeling(dailyStatistics.record.todayFeeling ?? '');
+  };
+
+  //헤더 아이콘 설정하기
   useEffect(() => {
-    const fetchData = async () => {
-      const dailyStatistics = await dailyAnalyze(getApiDateString(date ?? getServerYesterday()));
-      if (!dailyStatistics) {
-        alert('네트워크 연결이 불안정합니다. 잠시 후 다시 시도해주세요.');
-        return;
-      }
-      setIsNullClassification(dailyStatistics.classification.isNULL);
-      setLabelsClassification(dailyStatistics.classification.labels);
-      setIsSummaryList(dailyStatistics.summary.isNULL);
-      setSummaryList(dailyStatistics.summary.keywords);
-      setIsRecordKeywordList(dailyStatistics.record.Keywords);
-      setIsNullRecordKeywordList(dailyStatistics.record.isNULL);
-      //빈 값 [] 이면 false를 넘겨주기 때문에 !을 붙여서 true로 만들어줌
-      setTodayFeeling(dailyStatistics.record.todayFeeling ?? '');
+    const unsubscribe = navigation.addListener('focus', () => {
+      fetchData();
+      if (getIsDemo()) setDate(getServerToday());
+      dailyAnalyzeStatus(2024).then((data) => {
+        if (!data) return;
+        if (getIsDemo()) {
+          setAvailableDates([...data.dates, getApiDateString(getServerToday())]);
+        } else {
+          setAvailableDates(data.dates);
+        }
+      });
+    });
+    // 컴포넌트 unmount 시 리스너를 해제
+    return () => {
+      unsubscribe();
     };
+  }, [navigation]);
+
+  useEffect(() => {
     fetchData();
   }, [date]);
 

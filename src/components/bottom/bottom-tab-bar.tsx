@@ -15,7 +15,8 @@ import Icon from '../icons/icons';
 import { BottomTabBarContainer, TabButtonContainer, TabLabel } from './bottom-tab-bar.style';
 import Home from '../pages/HomePage/Home';
 import { Alert } from 'react-native';
-import { deleteIsDemo, setIsDemo } from '../../utils/storageUtils';
+import { deleteIsDemo, getIsDemo, setIsDemo } from '../../utils/storageUtils';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 const setDemoMode = () => {
   Alert.alert(
@@ -30,6 +31,17 @@ const setDemoMode = () => {
       { text: '시연 모드 진입', onPress: () => setIsDemo(true) },
     ],
   );
+};
+
+const deleteDemoMode = () => {
+  Alert.alert('시연 모드를 취소하시겠습니까?', '', [
+    {
+      text: '뒤로 가기',
+      onPress: () => console.log('Cancel Pressed'),
+      style: 'cancel',
+    },
+    { text: '시연 모드 취소', onPress: () => deleteIsDemo() },
+  ]);
 };
 
 const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
@@ -80,7 +92,8 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
             return;
           } else if (route.name === TabScreenName.Home) {
             Analytics.clickTabHomeDemoModeButton();
-            setDemoMode();
+            if (getIsDemo()) deleteDemoMode();
+            else setDemoMode();
             return;
           } else {
             onPress();

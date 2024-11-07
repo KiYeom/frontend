@@ -36,6 +36,9 @@ const REFRESH_CHAT = 'refresh_chat';
 //isDemo
 const IS_DEMO = 'is_demo';
 
+//isScoreDemo
+const IS_SCORE_DEMO = 'is_score_demo';
+
 //setTokenInfo
 export const setTokenInfo = (accessToken: string, refreshToken: string): void => {
   setAccessToken(accessToken);
@@ -251,11 +254,30 @@ export const getIsDemo = (): boolean => {
 };
 
 export const setIsDemo = (isDemo: boolean): void => {
+  deleteRiskData();
   storage.set(IS_DEMO, isDemo);
 };
 
 export const deleteIsDemo = (): void => {
+  deleteRiskData();
   storage.delete(IS_DEMO);
+};
+
+//isScoreDemo
+export const getIsScoreDemo = (): boolean => {
+  const result = storage.getBoolean(IS_SCORE_DEMO) ?? false;
+  if (result) {
+    deleteIsScoreDemo();
+  }
+  return result;
+};
+
+export const setIsScoreDemo = (isScoreDemo: boolean): void => {
+  storage.set(IS_SCORE_DEMO, isScoreDemo);
+};
+
+export const deleteIsScoreDemo = (): void => {
+  storage.delete(IS_SCORE_DEMO);
 };
 
 //ai 답변 저장하기
