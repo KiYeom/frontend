@@ -14,6 +14,23 @@ import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import Icon from '../icons/icons';
 import { BottomTabBarContainer, TabButtonContainer, TabLabel } from './bottom-tab-bar.style';
 import Home from '../pages/HomePage/Home';
+import { Alert } from 'react-native';
+import { deleteIsDemo, setIsDemo } from '../../utils/storageUtils';
+
+const setDemoMode = () => {
+  Alert.alert(
+    '시연 모드로 실행하시겠습니까?',
+    '시연 모드일 경우, 보고서 생성은 실시간으로 실행되며, 푸시 알림도 실시간으로 전송됩니다. \n\n 시연 모드는 앱을 재시작하면 해제됩니다. ',
+    [
+      {
+        text: '뒤로 가기',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      { text: '시연 모드 진입', onPress: () => setIsDemo(true) },
+    ],
+  );
+};
 
 const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
   const insets = useSafeAreaInsets();
@@ -57,12 +74,13 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
         const onLongPress = () => {
           if (route.name === TabScreenName.Setting && isFocused) {
             Analytics.clickTabSettingConnectButton();
-            AppEventsLogger.logEvent(AppEventsLogger.AppEvents.CompletedRegistration, {
-              [AppEventsLogger.AppEventParams.RegistrationMethod]: 'email',
-            });
             navigation.navigate(RootStackName.SettingStackNavigator, {
               screen: SettingStackName.OrganizationStatus,
             });
+            return;
+          } else if (route.name === TabScreenName.Home) {
+            Analytics.clickTabHomeDemoModeButton();
+            setDemoMode();
             return;
           } else {
             onPress();

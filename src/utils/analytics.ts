@@ -74,6 +74,10 @@ export default class Analytics {
       carouselImageUrl: carouselImageUrl ?? 'undefined',
     });
   };
+  //탭 - 홈 화면 - 데모 모드 버튼 클릭
+  public static clickTabHomeDemoModeButton = (): void => {
+    this.sendEvent('탭-홈 화면 - 데모 모드 버튼 클릭', 'tabHomeDemoModeButton');
+  };
   //상담 기관 정보 버튼 클릭
   public static clickClinicInfoButton = (score: number | undefined = undefined): void => {
     this.sendEvent('탭-홈->상담 기관 정보 버튼 클릭', 'tabHomeClinicInfoButton', {

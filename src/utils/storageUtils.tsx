@@ -33,6 +33,9 @@ const RISK_WITH_LETTER_ID = 'RISK_WITH_LETTER_ID';
 //refreshChattingPageTimes
 const REFRESH_CHAT = 'refresh_chat';
 
+//isDemo
+const IS_DEMO = 'is_demo';
+
 //setTokenInfo
 export const setTokenInfo = (accessToken: string, refreshToken: string): void => {
   setAccessToken(accessToken);
@@ -240,6 +243,19 @@ export const addRefreshChat = (times: number): number => {
   const refreshChat = getRefreshChat();
   setRefreshChat(refreshChat + times);
   return refreshChat + times;
+};
+
+//isDemo
+export const getIsDemo = (): boolean => {
+  return storage.getBoolean(IS_DEMO) ?? false;
+};
+
+export const setIsDemo = (isDemo: boolean): void => {
+  storage.set(IS_DEMO, isDemo);
+};
+
+export const deleteIsDemo = (): void => {
+  storage.delete(IS_DEMO);
 };
 
 //ai 답변 저장하기
