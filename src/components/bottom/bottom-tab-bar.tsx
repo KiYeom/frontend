@@ -17,6 +17,21 @@ import Home from '../pages/HomePage/Home';
 import { Alert } from 'react-native';
 import { deleteIsDemo, getIsDemo, setIsDemo } from '../../utils/storageUtils';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import { getDemoAllow } from '../../apis/demo';
+
+const requestDemoMode = () => {
+  getDemoAllow()
+    .then((response) => {
+      if (response && response.result) {
+        setIsDemo(true);
+        return;
+      }
+      alert('시연 모드 대상자가 아닙니다. 관리자에게 문의하세요.');
+    })
+    .catch((error) => {
+      alert('서버와 통신이 실패했습니다. 잠시 후 다시 시도해주세요.');
+    });
+};
 
 const setDemoMode = () => {
   Alert.alert(
@@ -28,7 +43,7 @@ const setDemoMode = () => {
         onPress: () => console.log('Cancel Pressed'),
         style: 'cancel',
       },
-      { text: '시연 모드 진입', onPress: () => setIsDemo(true) },
+      { text: '시연 모드 진입', onPress: () => requestDemoMode() },
     ],
   );
 };
