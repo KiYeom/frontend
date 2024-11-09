@@ -1,6 +1,6 @@
 import { css } from '@emotion/native';
 import React from 'react';
-import { Text, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import palette from '../../../../assets/styles/theme';
 import { rsHeight } from '../../../../utils/responsive-size';
 import Icon from '../../../icons/icons';
@@ -10,7 +10,17 @@ const EmotionDairy: React.FC<any> = (props: any) => {
   const { todayFeeling } = props;
   return (
     <Container>
-      <SectionTitle>그 때의 나는 어떤 생각을 했을까요?</SectionTitle>
+      <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+        <SectionTitle>그 때의 나는 어떤 생각을 했을까요?</SectionTitle>
+        <TouchableOpacity
+          activeOpacity={1}
+          style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}
+          onPress={() => {
+            /* Handle press here */
+          }}>
+          <Icon name="information" width={16} height={16} />
+        </TouchableOpacity>
+      </View>
       {todayFeeling == '' ? (
         <KeywordContainer>
           <Icon name={'empty-icon'} />

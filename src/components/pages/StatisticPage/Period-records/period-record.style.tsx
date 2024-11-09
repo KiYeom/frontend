@@ -14,7 +14,7 @@ export const RecordContainer = styled.View`
   align-items: start;
   justify-content: flex-start;
   padding-horizontal: ${rsWidth * 12 + 'px'};
-  padding-vertical: ${rsHeight * 14 + 'px'};
+  padding-vertical: ${rsHeight * 12 + 'px'};
   gap: ${rsWidth * 8 + 'px'};
   width: 100%;
   height: auto;
@@ -24,24 +24,31 @@ export const RecordContainer = styled.View`
   border-radius: 10px;
 `;
 
-//네잎클로버 아이콘 배경 동그라미
-export const RecordIcon = styled.View<{ index: number }>`
-  display: flex;
-  justify-content: center;
+export const RecordDateArea = styled.View`
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: ${rsWidth * 8 + 'px'};
+`;
+
+export const RecordDateText = styled.Text`
+  font-family: Pretendard-SemiBold;
+  font-size: ${16 * rsFont + 'px'};
+  align-self: center;
+`;
+
+export const RecordDateIcon = styled.View`
   align-items: center;
-  width: ${rsWidth * 42 + 'px'};
-  height: ${rsWidth * 42 + 'px'};
-  border-radius: ${rsHeight * 21 + 'px'};
-  background-color: ${(props) => {
-    switch (props.index) {
-      case 0:
-        return palette.primary[50];
-      case 1:
-        return '#FDF9D8';
-      case 2:
-        return '#EFECFF';
-    }
-  }};
+  justify-content: center;
+`;
+
+export const RecordKeywordText = styled.Text`
+  font-family: Pretendard-Bold;
+  font-size: ${14 * rsFont + 'px'};
+`;
+
+export const RecordDailyText = styled.Text`
+  font-family: Pretendard-Regular;
+  font-size: ${14 * rsFont + 'px'};
 `;
 
 //키워드 제목

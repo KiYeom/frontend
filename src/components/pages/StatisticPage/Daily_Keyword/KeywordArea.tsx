@@ -5,12 +5,23 @@ import Icon from '../../../icons/icons';
 import BlurredButton from '../BlurredButton';
 import { SectionTitle } from '../StatisticMain.style';
 import { Container, KeywordContainer, KeywordIcon, KeywordText } from './Keyword.style';
+import { TouchableOpacity, View } from 'react-native';
 const KeywordArea: React.FC<any> = (props: any) => {
   const { value, isSummaryList, summaryList } = props;
 
   return (
     <Container>
-      <SectionTitle>쿠키와 이런 이야기를 했어요</SectionTitle>
+      <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+        <SectionTitle>쿠키와 이런 이야기를 했어요</SectionTitle>
+        <TouchableOpacity
+          activeOpacity={1}
+          style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}
+          onPress={() => {
+            /* Handle press here */
+          }}>
+          <Icon name="information" width={16} height={16} />
+        </TouchableOpacity>
+      </View>
       {summaryList.length === 0 ? (
         <BlurredButton
           blurredImageUri={

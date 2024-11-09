@@ -1,6 +1,6 @@
 import { css } from '@emotion/native';
 import React from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { rsWidth } from '../../../../utils/responsive-size';
 import EmotionCard from '../../../atoms/EmotionCard/EmotionCard';
 import Icon from '../../../icons/icons';
@@ -10,7 +10,17 @@ const EmotionArea: React.FC<any> = (props: any) => {
   const { isRecordKeywordList, isNullRecordKeywordList } = props;
   return (
     <Container>
-      <SectionTitle>그 때의 나는 어떤 감정이었나요?</SectionTitle>
+      <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+        <SectionTitle>그 때의 나는 어떤 감정이었나요?</SectionTitle>
+        <TouchableOpacity
+          activeOpacity={1}
+          style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}
+          onPress={() => {
+            /* Handle press here */
+          }}>
+          <Icon name="information" width={16} height={16} />
+        </TouchableOpacity>
+      </View>
       {isRecordKeywordList.length === 0 ? (
         <KeywordContainer>
           <Icon name={'empty-icon'} />

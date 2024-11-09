@@ -1,13 +1,14 @@
 import { css } from '@emotion/native';
 import dayjs from 'dayjs';
 import React, { useState } from 'react';
-import { Dimensions, View } from 'react-native';
+import { Dimensions, TouchableOpacity, View } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 import { rsFont, rsHeight, rsWidth } from '../../../../utils/responsive-size';
 import MoodButton from '../../../button/MoodButton';
 import { SectionTitle } from '../StatisticMain.style';
 import { getDemoActivePush } from '../../../../apis/demo';
 import { getIsDemo, setIsScoreDemo } from '../../../../utils/storageUtils';
+import Icon from '../../../icons/icons';
 
 const fillMissingDates = (data, startDate, endDate) => {
   const result = [];
@@ -51,7 +52,17 @@ const PeriodFlowChart = ({ emotionsData, setEmotionsData, startDate, endDate }) 
         style={css`
           padding-horizontal: ${rsWidth * 20 + 'px'};
         `}>
-        <SectionTitle>얼마나 많은 감정 변화가 있었을까요?</SectionTitle>
+        <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+          <SectionTitle>얼마나 많은 감정 변화가 있었을까요?</SectionTitle>
+          <TouchableOpacity
+            activeOpacity={1}
+            style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}
+            onPress={() => {
+              /* Handle press here */
+            }}>
+            <Icon name="information" width={16} height={16} />
+          </TouchableOpacity>
+        </View>
         <View
           style={css`
             flex-direction: row;
