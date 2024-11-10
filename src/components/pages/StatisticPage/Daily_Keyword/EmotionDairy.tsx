@@ -2,26 +2,47 @@ import { css } from '@emotion/native';
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import palette from '../../../../assets/styles/theme';
-import { rsHeight } from '../../../../utils/responsive-size';
+import { rsFont, rsHeight } from '../../../../utils/responsive-size';
 import Icon from '../../../icons/icons';
 import { SectionTitle } from '../StatisticMain.style';
 import { Container, KeywordContainer, KeywordText } from './Keyword.style';
+import { Hint } from 'react-native-ui-lib';
+
+const HINT_NAME = 'daily';
+const HINT_MESSAGE = '그 때의 나는 어떤 생각을 했을까요?';
+
 const EmotionDairy: React.FC<any> = (props: any) => {
-  const { todayFeeling } = props;
+  const { todayFeeling, hintStatus, setHintStatus } = props;
   return (
     <Container>
       <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
         <SectionTitle>그 때의 나는 어떤 생각을 했을까요?</SectionTitle>
-        <TouchableOpacity
-          activeOpacity={1}
-          style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}
-          onPress={() => {
-            /* Handle press here */
-          }}>
-          <Icon name="information" width={16} height={16} />
-        </TouchableOpacity>
+        <View style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}>
+          <Hint
+            visible={hintStatus && hintStatus === HINT_NAME}
+            position={Hint.positions.TOP}
+            message={HINT_MESSAGE}
+            color={'white'}
+            enableShadow
+            messageStyle={css`
+              font-family: Kyobo-handwriting;
+              font-size: ${16 * rsFont + 'px'};
+              color: ${palette.neutral[900]};
+            `}
+            onPress={() => setHintStatus(undefined)}
+            onBackgroundPress={() => setHintStatus(undefined)}>
+            <View>
+              <TouchableOpacity
+                activeOpacity={1}
+                style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}
+                onPress={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}>
+                <Icon name="information" width={16} height={16} />
+              </TouchableOpacity>
+            </View>
+          </Hint>
+        </View>
       </View>
-      {todayFeeling == '' ? (
+      {todayFeeling === '' ? (
         <KeywordContainer>
           <Icon name={'empty-icon'} />
           <KeywordText>나의 생각은 기록하지 않았어요</KeywordText>

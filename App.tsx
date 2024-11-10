@@ -29,6 +29,8 @@ import {
   setDeviceId,
 } from './src/utils/storageUtils';
 import { setStatusBarStyle } from 'expo-status-bar';
+import { PaperProvider } from 'react-native-paper';
+import { RootSiblingParent } from 'react-native-root-siblings';
 
 Sentry.init({
   dsn: 'https://038362834934b1090d94fe368fdbcbf7@o4507944128020480.ingest.us.sentry.io/4507944132870145',
@@ -130,106 +132,110 @@ const App: React.FC = () => {
 
   return (
     <SafeAreaProvider>
-      <NavigationContainer
-        theme={navTheme}
-        linking={{
-          prefixes: [prefix],
-          config: {
-            // Configuration for linking
-            screens: {
-              // Define the linking configuration
-              [RootStackName.HomeStackNavigator]: {
+      <PaperProvider>
+        <RootSiblingParent>
+          <NavigationContainer
+            theme={navTheme}
+            linking={{
+              prefixes: [prefix],
+              config: {
+                // Configuration for linking
                 screens: {
-                  [HomeStackName.NewChat]: 'chat', //{"url": "remind://chat" }
+                  // Define the linking configuration
+                  [RootStackName.HomeStackNavigator]: {
+                    screens: {
+                      [HomeStackName.NewChat]: 'chat', //{"url": "remind://chat" }
+                    },
+                  },
+                  [RootStackName.BottomTabNavigator]: {
+                    screens: {
+                      [TabScreenName.Statistic]: 'statistic/daily', //{"url": "remind://statistic/daily" }
+                    },
+                  },
                 },
               },
-              [RootStackName.BottomTabNavigator]: {
-                screens: {
-                  [TabScreenName.Statistic]: 'statistic/daily', //{"url": "remind://statistic/daily" }
-                },
+              async getInitialURL() {
+                // First, you may want to do the default deep link handling
+                // Check if app was opened from a deep link
+                const url = await Linking.getInitialURL();
+
+                if (url != null) {
+                  return url;
+                }
+
+                // Handle URL from expo push notifications
+                const response = await Notifications.getLastNotificationResponseAsync();
+
+                return response?.notification.request.content.data.url;
               },
-            },
-          },
-          async getInitialURL() {
-            // First, you may want to do the default deep link handling
-            // Check if app was opened from a deep link
-            const url = await Linking.getInitialURL();
+              subscribe(listener) {
+                const onReceiveURL = ({ url }: { url: string }) => listener(url);
 
-            if (url != null) {
-              return url;
-            }
+                // Listen to incoming links from deep linking
+                const eventListenerSubscription = Linking.addEventListener('url', onReceiveURL);
 
-            // Handle URL from expo push notifications
-            const response = await Notifications.getLastNotificationResponseAsync();
+                // Listen to expo push notifications
+                const subscription = Notifications.addNotificationResponseReceivedListener(
+                  (response) => {
+                    const url = response.notification.request.content.data.url;
 
-            return response?.notification.request.content.data.url;
-          },
-          subscribe(listener) {
-            const onReceiveURL = ({ url }: { url: string }) => listener(url);
+                    // Any custom logic to see whether the URL needs to be handled
+                    //...
 
-            // Listen to incoming links from deep linking
-            const eventListenerSubscription = Linking.addEventListener('url', onReceiveURL);
+                    // Let React Navigation handle the URL
+                    listener(url);
+                  },
+                );
 
-            // Listen to expo push notifications
-            const subscription = Notifications.addNotificationResponseReceivedListener(
-              (response) => {
-                const url = response.notification.request.content.data.url;
-
-                // Any custom logic to see whether the URL needs to be handled
-                //...
-
-                // Let React Navigation handle the URL
-                listener(url);
+                return () => {
+                  // Clean up the event listeners
+                  eventListenerSubscription.remove();
+                  subscription.remove();
+                };
               },
-            );
-
-            return () => {
-              // Clean up the event listeners
-              eventListenerSubscription.remove();
-              subscription.remove();
-            };
-          },
-        }}
-        fallback={
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color={palette.primary[500]} />
-          </View>
-        }>
-        <RootStack.Navigator
-          screenOptions={{
-            headerShown: false,
-          }}>
-          {SigninStatus ? (
-            <>
-              <RootStack.Screen
-                name={RootStackName.BottomTabNavigator}
-                component={BottomTabNavigator}
-              />
-              <RootStack.Screen
-                name={RootStackName.StatisStackNavigator}
-                component={StatisticStackNavigator}
-              />
-              <RootStack.Screen
-                name={RootStackName.HomeStackNavigator}
-                component={HomeStackNavigator}
-              />
-              <RootStack.Screen
-                name={RootStackName.SettingStackNavigator}
-                component={SettingStackNavigator}
-              />
-              <RootStack.Screen
-                name={RootStackName.DangerStackNavigator}
-                component={DangerStackNavigator}
-              />
-            </>
-          ) : (
-            <RootStack.Screen
-              name={RootStackName.AuthStackNavigator}
-              component={AuthStackNavigator}
-            />
-          )}
-        </RootStack.Navigator>
-      </NavigationContainer>
+            }}
+            fallback={
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color={palette.primary[500]} />
+              </View>
+            }>
+            <RootStack.Navigator
+              screenOptions={{
+                headerShown: false,
+              }}>
+              {SigninStatus ? (
+                <>
+                  <RootStack.Screen
+                    name={RootStackName.BottomTabNavigator}
+                    component={BottomTabNavigator}
+                  />
+                  <RootStack.Screen
+                    name={RootStackName.StatisStackNavigator}
+                    component={StatisticStackNavigator}
+                  />
+                  <RootStack.Screen
+                    name={RootStackName.HomeStackNavigator}
+                    component={HomeStackNavigator}
+                  />
+                  <RootStack.Screen
+                    name={RootStackName.SettingStackNavigator}
+                    component={SettingStackNavigator}
+                  />
+                  <RootStack.Screen
+                    name={RootStackName.DangerStackNavigator}
+                    component={DangerStackNavigator}
+                  />
+                </>
+              ) : (
+                <RootStack.Screen
+                  name={RootStackName.AuthStackNavigator}
+                  component={AuthStackNavigator}
+                />
+              )}
+            </RootStack.Navigator>
+          </NavigationContainer>
+        </RootSiblingParent>
+      </PaperProvider>
     </SafeAreaProvider>
   );
 };

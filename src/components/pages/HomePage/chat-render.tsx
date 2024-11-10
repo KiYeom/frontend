@@ -20,7 +20,7 @@ import {
 import palette from '../../../assets/styles/theme';
 import { css } from '@emotion/native';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
-import { ActivityIndicator, Image, Text, View } from 'react-native';
+import { ActivityIndicator, Image, Text, TouchableOpacity, View } from 'react-native';
 import Icon from '../../icons/icons';
 import TypingIndicator from 'react-native-gifted-chat/src/TypingIndicator';
 
@@ -33,50 +33,52 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
         justify-content: start;
         gap: ${rsWidth * 8 + 'px'};
       `}>
-      <View>
-        <Bubble
-          {...props}
-          renderTime={() => null}
-          textStyle={{
-            left: css`
-              color: ${palette.neutral[500]};
-              font-family: Pretendard-Regular;
-              font-size: ${rsFont * 14 + 'px'};
-              text-align: left;
-              margin-top: 0;
-              margin-bottom: 0;
-              margin-left: 0;
-              margin-right: 0;
-            `,
-            right: css`
-              color: #fff;
-              font-family: Pretendard-Regular;
-              font-size: ${rsFont * 14 + 'px'};
-              text-align: left;
-              margin-top: 0;
-              margin-bottom: 0;
-              margin-left: 0;
-              margin-right: 0;
-            `,
-          }}
-          wrapperStyle={{
-            left: css`
-              max-width: ${rsWidth * 200 + 'px'};
-              background-color: ${palette.neutral[100]};
-              padding-horizontal: ${rsWidth * 12 + 'px'};
-              padding-vertical: ${rsHeight * 8 + 'px'};
-              margin: 0px;
-            `,
-            right: css`
-              max-width: ${rsWidth * 200 + 'px'};
-              background-color: ${palette.primary[500]};
-              padding-horizontal: ${rsWidth * 12 + 'px'};
-              padding-vertical: ${rsHeight * 8 + 'px'};
-              margin: 0px;
-            `,
-          }}
-        />
-      </View>
+      <TouchableOpacity activeOpacity={1} onLongPress={props.onLongPress}>
+        <View>
+          <Bubble
+            {...props}
+            renderTime={() => null}
+            textStyle={{
+              left: css`
+                color: ${palette.neutral[500]};
+                font-family: Pretendard-Regular;
+                font-size: ${rsFont * 14 + 'px'};
+                text-align: left;
+                margin-top: 0;
+                margin-bottom: 0;
+                margin-left: 0;
+                margin-right: 0;
+              `,
+              right: css`
+                color: #fff;
+                font-family: Pretendard-Regular;
+                font-size: ${rsFont * 14 + 'px'};
+                text-align: left;
+                margin-top: 0;
+                margin-bottom: 0;
+                margin-left: 0;
+                margin-right: 0;
+              `,
+            }}
+            wrapperStyle={{
+              left: css`
+                max-width: ${rsWidth * 200 + 'px'};
+                background-color: ${palette.neutral[100]};
+                padding-horizontal: ${rsWidth * 12 + 'px'};
+                padding-vertical: ${rsHeight * 8 + 'px'};
+                margin: 0px;
+              `,
+              right: css`
+                max-width: ${rsWidth * 200 + 'px'};
+                background-color: ${palette.primary[500]};
+                padding-horizontal: ${rsWidth * 12 + 'px'};
+                padding-vertical: ${rsHeight * 8 + 'px'};
+                margin: 0px;
+              `,
+            }}
+          />
+        </View>
+      </TouchableOpacity>
 
       {props.renderTime && props.renderTime({ ...props })}
     </View>

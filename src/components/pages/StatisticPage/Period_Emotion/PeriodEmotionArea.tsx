@@ -1,23 +1,28 @@
 import { css } from '@emotion/native';
-import React from 'react';
-import { ScrollView, TouchableOpacity, View } from 'react-native';
-import { rsFont, rsWidth } from '../../../../utils/responsive-size';
-import EmotionCard from '../../../atoms/EmotionCard/EmotionCard';
-import Icon from '../../../icons/icons';
+import { TouchableOpacity, View } from 'react-native';
+import { rsFont, rsHeight, rsWidth } from '../../../../utils/responsive-size';
 import { SectionTitle } from '../StatisticMain.style';
-import { Container, KeywordContainer, KeywordText } from './Keyword.style';
+import PeriodKeyword from '../../../periodKeyword/PeriodKeyword';
+import Empty from '../Empty';
+import PeriodKeywordArea from '../Period_keyword/PeriodKeywordArea';
 import { Hint } from 'react-native-ui-lib';
 import palette from '../../../../assets/styles/theme';
+import Icon from '../../../icons/icons';
 
-const HINT_NAME = 'record';
+const HINT_NAME = 'period-emotion';
 const HINT_MESSAGE = '쿠키와 대화한 내용을 키워드로 정리해요';
 
-const EmotionArea: React.FC<any> = (props: any) => {
-  const { isRecordKeywordList, hintStatus, setHintStatus } = props;
+const PeriodEmotionArea: React.FC<any> = (props: any) => {
+  const { periodEmotionList, hintStatus, setHintStatus } = props;
+
   return (
-    <Container>
+    <View
+      style={css`
+        gap: ${12 * rsHeight + 'px'};
+        padding-horizontal: ${rsWidth * 20 + 'px'};
+      `}>
       <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
-        <SectionTitle>그 때의 나는 어떤 감정이었나요?</SectionTitle>
+        <SectionTitle>그 동안 이러한 감정들을 느꼈어요</SectionTitle>
         <View style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}>
           <Hint
             visible={hintStatus && hintStatus === HINT_NAME}
@@ -43,29 +48,25 @@ const EmotionArea: React.FC<any> = (props: any) => {
           </Hint>
         </View>
       </View>
-      {isRecordKeywordList.length === 0 ? (
-        <KeywordContainer>
-          <Icon name={'empty-icon'} />
-          <KeywordText>나의 감정은 기록하지 않았어요</KeywordText>
-        </KeywordContainer>
-      ) : (
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={css`
-            flex-grow: 1;
-          `}
-          contentContainerStyle={css`
-            flex-grow: 1;
-            flex-direction: row;
-            gap: ${rsWidth * 8 + 'px'};
-          `}>
-          {isRecordKeywordList.map((emotion, index) => (
-            <EmotionCard key={index} emotion={emotion} onPress={() => {}} status={'default-view'} />
-          ))}
-        </ScrollView>
-      )}
-    </Container>
+      <View
+        style={css`
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          width: 100%;
+          height: auto;
+          gap: ${rsHeight * 8 + 'px'};
+        `}>
+        {periodEmotionList && periodEmotionList.length > 0 ? (
+          periodEmotionList.map((emotion: string, index: number) => (
+            <PeriodKeyword key={index} title={emotion} ranking={index + 1} />
+          ))
+        ) : (
+          <Empty type="채팅기록" />
+        )}
+      </View>
+    </View>
   );
 };
-export default EmotionArea;
+export default PeriodEmotionArea;

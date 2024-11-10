@@ -39,6 +39,12 @@ export const DescText = styled.Text`
 `;
 
 //INFO : 변경
+export const DateLineContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: ${rsWidth * 4 + 'px'};
+`;
 
 //변경된 날짜 폰트
 export const DateLineText = styled.Text`
@@ -60,4 +66,11 @@ export const SectionTitle = styled.Text`
   font-family: Kyobo-handwriting;
   font-size: ${18 * rsFont + 'px'};
   color: ${palette.neutral[900]};
+`;
+
+export const PageHintText = styled.Text`
+  font-family: Pretendard-Regular;
+  font-size: ${16 * rsFont + 'px'};
+  color: black;
+  margin: 0 ${rsWidth * 24 + 'px'} 0 ${rsWidth * 24 + 'px'};
 `;

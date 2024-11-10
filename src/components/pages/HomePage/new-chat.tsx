@@ -43,6 +43,8 @@ import uuid from 'react-native-uuid';
 import { requestAnalytics } from '../../../apis/demo';
 import { getApiDateString } from '../../../utils/times';
 import { getRiskScore } from '../../../apis/riskscore';
+import * as Clipboard from 'expo-clipboard';
+import Toast from 'react-native-root-toast';
 
 const userObject = {
   _id: 0,
@@ -312,6 +314,12 @@ const NewChat: React.FC = ({ navigation }) => {
     };
   }, [navigation]);
 
+  const showToast = () => {
+    Toast.show('메시지가 복사했습니다.', {
+      duration: Toast.durations.SHORT,
+      position: Toast.positions.CENTER,
+    });
+  };
   return (
     <SafeAreaView
       style={{ flex: 1 }}
@@ -377,8 +385,12 @@ const NewChat: React.FC = ({ navigation }) => {
           navigation.navigate(HomeStackName.Profile);
         }}
         renderBubble={RenderBubble}
+        onLongPress={(context, message: IMessage) => {
+          Clipboard.setStringAsync(message.text).then(() => {
+            showToast();
+          });
+        }}
         renderFooter={() => RenderFooter(sending)}
-        isCustomViewBottom
         renderTime={RenderTime}
         renderDay={RenderDay}
         renderSystemMessage={RenderSystemMessage}
