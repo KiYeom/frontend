@@ -10,7 +10,7 @@ import { Hint } from 'react-native-ui-lib';
 import palette from '../../../../assets/styles/theme';
 
 const HINT_NAME = 'period-keyword';
-const HINT_MESSAGE = '쿠키와 대화한 내용을 키워드로 정리해요';
+const HINT_MESSAGE = '그 동안 쿠키와 나눴던 이야기를 키워드로 정리해봤어요!';
 
 const PeriodKeywordArea: React.FC<any> = (props: any) => {
   const { periodKeywordList, hintStatus, setHintStatus } = props;

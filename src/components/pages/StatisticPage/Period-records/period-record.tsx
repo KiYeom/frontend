@@ -19,7 +19,7 @@ import { rsFont } from '../../../../utils/responsive-size';
 import { css } from '@emotion/native';
 
 const HINT_NAME = 'period-record';
-const HINT_MESSAGE = '내가 기록한 하루들을 확인해요';
+const HINT_MESSAGE = '자신이 기록한 날들을 한 눈에 볼 수 있어요!';
 
 const PeriodRecord = (props: any) => {
   const { records, hintStatus, setHintStatus } = props;

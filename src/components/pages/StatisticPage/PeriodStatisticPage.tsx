@@ -26,7 +26,8 @@ import Icon from '../../icons/icons';
 import PeriodEmotionArea from './Period_Emotion/PeriodEmotionArea';
 
 const HINT_NAME = 'main';
-const HINT_MESSAGE = '쿠키와의 대화에서 마음을 살펴보았어요';
+const HINT_MESSAGE =
+  '그동안 쿠키와의 대화를 통해 나의 감정 변화를 확인하고, 대화 주제 및 나의 기록을 통해 지난 날의 자신을 돌아보세요!\n※ 본 보고서는 참고용이며, 필요 시 전문가와 상의하세요.';
 
 const PeriodStatisticPage: React.FC<any> = () => {
   const [loading, setLoading] = useState(true);
@@ -168,11 +169,12 @@ const PeriodStatisticPage: React.FC<any> = () => {
                     enableShadow
                     messageStyle={css`
                       font-family: Kyobo-handwriting;
-                      font-size: ${14 * rsFont + 'px'};
+                      font-size: ${16 * rsFont + 'px'};
                       color: ${palette.neutral[900]};
                     `}
                     onPress={() => setHintStatus(undefined)}
-                    onBackgroundPress={() => setHintStatus(undefined)}>
+                    onBackgroundPress={() => setHintStatus(undefined)}
+                    backdropColor={'rgba(0, 0, 0, 0.5)'}>
                     <View>
                       <TouchableOpacity
                         activeOpacity={1}

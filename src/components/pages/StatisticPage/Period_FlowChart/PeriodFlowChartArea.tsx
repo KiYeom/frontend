@@ -39,7 +39,7 @@ const fillMissingDates = (data, startDate, endDate) => {
 };
 
 const HINT_NAME = 'period-flow';
-const HINT_MESSAGE = '감정 변화를 한눈에 확인해요';
+const HINT_MESSAGE = '그 동안 자신의 감정 변화를 객관적으로 한 눈에 불 수 있어요!';
 
 const PeriodFlowChart = ({ emotionsData, startDate, endDate, hintStatus, setHintStatus }) => {
   const [activeIndex, setActiveIndex] = useState(0);

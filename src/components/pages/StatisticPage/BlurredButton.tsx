@@ -76,7 +76,6 @@ const BlurredButton = ({ blurredImageUri, text, buttonText, onPress }) => {
                   padding-vertical: ${10 * rsHeight + 'px'};
                   padding-horizontal: ${20 * rsWidth + 'px'};
                   border-radius: 10px;
-                  width: ${220 * rsWidth + 'px'};
                 `}>
                 <Text style={styles.buttonText}>{buttonText}</Text>
               </View>

@@ -10,7 +10,7 @@ import { Hint } from 'react-native-ui-lib';
 import palette from '../../../../assets/styles/theme';
 
 const HINT_NAME = 'record';
-const HINT_MESSAGE = '쿠키와 대화한 내용을 키워드로 정리해요';
+const HINT_MESSAGE = '자신이 선택한 그날의 감정이에요!';
 
 const EmotionArea: React.FC<any> = (props: any) => {
   const { isRecordKeywordList, hintStatus, setHintStatus } = props;

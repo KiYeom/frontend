@@ -83,7 +83,8 @@ const getApiDateString = (date: Date): string => {
 };
 
 const HINT_NAME = 'main';
-const HINT_MESSAGE = '쿠키와 대화한 내용을 통해 나의 감정을 확인해요';
+const HINT_MESSAGE =
+  '쿠키와의 대화를 통해 나의 감정을 객관적으로 확인하고 그날의 자신을 돌아볼 수 있어요!\n※ 일일 보고서는 매일 오전 6시에 갱신돼요.\n※ 본 보고서는 참고용이며, 필요 시 전문가와 상의하세요.';
 
 //전체 통계 화면
 const StatisticMain: React.FC<any> = () => {
@@ -112,11 +113,7 @@ const StatisticMain: React.FC<any> = () => {
     if (getIsDemo()) setDate(getServerToday());
     dailyAnalyzeStatus(2024).then((data) => {
       if (!data) return;
-      if (getIsDemo()) {
-        setAvailableDates([...data.dates, getApiDateString(getServerToday())]);
-      } else {
-        setAvailableDates(data.dates);
-      }
+      setAvailableDates([...data.dates, getApiDateString(getServerToday())]);
     });
   }, []);
 
@@ -215,11 +212,12 @@ const StatisticMain: React.FC<any> = () => {
                     enableShadow
                     messageStyle={css`
                       font-family: Kyobo-handwriting;
-                      font-size: ${14 * rsFont + 'px'};
+                      font-size: ${16 * rsFont + 'px'};
                       color: ${palette.neutral[900]};
                     `}
                     onPress={() => setHintStatus(undefined)}
-                    onBackgroundPress={() => setHintStatus(undefined)}>
+                    onBackgroundPress={() => setHintStatus(undefined)}
+                    backdropColor={'rgba(0, 0, 0, 0.5)'}>
                     <View>
                       <TouchableOpacity
                         activeOpacity={1}

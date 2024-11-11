@@ -10,7 +10,8 @@ import { Hint } from 'react-native-ui-lib';
 import { css } from '@emotion/native';
 
 const HINT_NAME = 'keyword';
-const HINT_MESSAGE = '쿠키와 대화한 내용을 키워드로 정리해요';
+const HINT_MESSAGE =
+  '키워드로 요약한 그날의 대화 주제이에요.\n※ 정확한 분석을 위해 30자 이상의 대화가 필요합니다.';
 
 const KeywordArea: React.FC<any> = (props: any) => {
   const { summaryList, hintStatus, setHintStatus } = props;

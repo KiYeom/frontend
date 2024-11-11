@@ -4,13 +4,12 @@ import { rsFont, rsHeight, rsWidth } from '../../../../utils/responsive-size';
 import { SectionTitle } from '../StatisticMain.style';
 import PeriodKeyword from '../../../periodKeyword/PeriodKeyword';
 import Empty from '../Empty';
-import PeriodKeywordArea from '../Period_keyword/PeriodKeywordArea';
 import { Hint } from 'react-native-ui-lib';
 import palette from '../../../../assets/styles/theme';
 import Icon from '../../../icons/icons';
 
 const HINT_NAME = 'period-emotion';
-const HINT_MESSAGE = '쿠키와 대화한 내용을 키워드로 정리해요';
+const HINT_MESSAGE = '그 동안 자신이 가장 많이 느꼈던 감정들이에요!';
 
 const PeriodEmotionArea: React.FC<any> = (props: any) => {
   const { periodEmotionList, hintStatus, setHintStatus } = props;
