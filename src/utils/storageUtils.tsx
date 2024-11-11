@@ -2,6 +2,7 @@ import { MMKV } from 'react-native-mmkv';
 import { ONE_DAY_IN_MS } from '../constants/Constants';
 import { TGender, TNotice } from '../constants/types';
 import { getApiDateString } from './times';
+import { showAppNotice } from './app-notice';
 
 export const storage = new MMKV();
 
@@ -23,9 +24,6 @@ const CHATTING = 'chatting';
 
 //NewIMessages
 const NEW_I_MESSAGES = 'new_i_messages';
-
-//Notice
-const NOTICE = 'notice';
 
 //RiskWithLetterId
 const RISK_WITH_LETTER_ID = 'RISK_WITH_LETTER_ID';
@@ -81,13 +79,14 @@ export const setInfoWhenLogin = (
 ): void => {
   setUserInfo(nickname, birthdate, gender);
   setTokenInfo(accessToken, refreshToken);
-  if (notice) setNotice(notice);
+  if (notice) {
+    showAppNotice(notice);
+  }
 };
 
 export const clearInfoWhenLogout = (): void => {
   clearUserInfo();
   clearTokenInfo();
-  deleteNotice();
   deleteChatting();
   deleteNewIMessages();
   deleteNotificationSent();
@@ -210,23 +209,6 @@ export const setNewIMessages = (newIMessages: string): void => {
 
 export const deleteNewIMessages = (): void => {
   storage.delete(NEW_I_MESSAGES);
-};
-
-//Notice
-export const getNotice = (): TNotice | undefined => {
-  const noticeString = storage.getString(NOTICE);
-  if (!noticeString) {
-    return undefined;
-  }
-  return JSON.parse(noticeString);
-};
-
-export const setNotice = (notice: TNotice): void => {
-  storage.set(NOTICE, JSON.stringify(notice));
-};
-
-export const deleteNotice = (): void => {
-  storage.delete(NOTICE);
 };
 
 //refreshChattingPageTimes

@@ -331,5 +331,8 @@ export default class Analytics {
     );
   };
 
-  //일반 상황 안내 화면 (링크로 대체)
+  //앱 공지 클릭
+  public static clickAppNoticeButton = (link: string): void => {
+    this.sendEvent('앱 공지 클릭', 'clickAppNoticeButton', { link });
+  };
 }
