@@ -2,6 +2,7 @@ import { MMKV } from 'react-native-mmkv';
 import { ONE_DAY_IN_MS } from '../constants/Constants';
 import { TGender, TNotice } from '../constants/types';
 import { getApiDateString } from './times';
+import { showAppNotice } from './app-notice';
 
 export const storage = new MMKV();
 
@@ -24,14 +25,17 @@ const CHATTING = 'chatting';
 //NewIMessages
 const NEW_I_MESSAGES = 'new_i_messages';
 
-//Notice
-const NOTICE = 'notice';
-
 //RiskWithLetterId
 const RISK_WITH_LETTER_ID = 'RISK_WITH_LETTER_ID';
 
 //refreshChattingPageTimes
 const REFRESH_CHAT = 'refresh_chat';
+
+//isDemo
+const IS_DEMO = 'is_demo';
+
+//isScoreDemo
+const IS_SCORE_DEMO = 'is_score_demo';
 
 //setTokenInfo
 export const setTokenInfo = (accessToken: string, refreshToken: string): void => {
@@ -75,13 +79,14 @@ export const setInfoWhenLogin = (
 ): void => {
   setUserInfo(nickname, birthdate, gender);
   setTokenInfo(accessToken, refreshToken);
-  if (notice) setNotice(notice);
+  if (notice) {
+    showAppNotice(notice);
+  }
 };
 
 export const clearInfoWhenLogout = (): void => {
   clearUserInfo();
   clearTokenInfo();
-  deleteNotice();
   deleteChatting();
   deleteNewIMessages();
   deleteNotificationSent();
@@ -206,23 +211,6 @@ export const deleteNewIMessages = (): void => {
   storage.delete(NEW_I_MESSAGES);
 };
 
-//Notice
-export const getNotice = (): TNotice | undefined => {
-  const noticeString = storage.getString(NOTICE);
-  if (!noticeString) {
-    return undefined;
-  }
-  return JSON.parse(noticeString);
-};
-
-export const setNotice = (notice: TNotice): void => {
-  storage.set(NOTICE, JSON.stringify(notice));
-};
-
-export const deleteNotice = (): void => {
-  storage.delete(NOTICE);
-};
-
 //refreshChattingPageTimes
 export const getRefreshChat = (): number => {
   return storage.getNumber(REFRESH_CHAT) ?? 0;
@@ -240,6 +228,38 @@ export const addRefreshChat = (times: number): number => {
   const refreshChat = getRefreshChat();
   setRefreshChat(refreshChat + times);
   return refreshChat + times;
+};
+
+//isDemo
+export const getIsDemo = (): boolean => {
+  return storage.getBoolean(IS_DEMO) ?? false;
+};
+
+export const setIsDemo = (isDemo: boolean): void => {
+  deleteRiskData();
+  storage.set(IS_DEMO, isDemo);
+};
+
+export const deleteIsDemo = (): void => {
+  deleteRiskData();
+  storage.delete(IS_DEMO);
+};
+
+//isScoreDemo
+export const getIsScoreDemo = (): boolean => {
+  const result = storage.getBoolean(IS_SCORE_DEMO) ?? false;
+  if (result) {
+    deleteIsScoreDemo();
+  }
+  return result;
+};
+
+export const setIsScoreDemo = (isScoreDemo: boolean): void => {
+  storage.set(IS_SCORE_DEMO, isScoreDemo);
+};
+
+export const deleteIsScoreDemo = (): void => {
+  storage.delete(IS_SCORE_DEMO);
 };
 
 //ai 답변 저장하기

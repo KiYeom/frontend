@@ -2,21 +2,27 @@ import { css } from '@emotion/native';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { PieChart } from 'react-native-gifted-charts';
-import { Text, View } from 'react-native-ui-lib';
+import { Hint, Text, View } from 'react-native-ui-lib';
 import { TLabel } from '../../../../apis/analyze.type';
 import palette from '../../../../assets/styles/theme';
 import { rsFont, rsHeight, rsWidth } from '../../../../utils/responsive-size';
 import { Container } from '../Daily_Keyword/Keyword.style';
 import { SectionTitle } from '../StatisticMain.style';
+import { TouchableOpacity } from 'react-native';
+import Icon from '../../../icons/icons';
+
 type TLabelWithColor = {
   label: string;
   value: number;
   color: string;
 };
 
+const HINT_NAME = 'emotion';
+const HINT_MESSAGE =
+  '대화에서 숨은 나의 감정을 객관적으로 분석한 결과예요!\n※ 정확한 분석을 위해 30자 이상의 대화가 필요합니다.';
+
 const DailyEmotionClassification: React.FC<any> = (props: any) => {
-  const { isNullClassification, labelsClassification } = props;
-  const navigation = useNavigation(); // 네비게이션 훅 사용
+  const { labelsClassification, hintStatus, setHintStatus } = props;
   //pieData를 만들어주는 함수
   const generatePieData = (labelsClassification: TLabel[]): TLabelWithColor[] => {
     const result: TLabelWithColor[] = [];
@@ -85,7 +91,34 @@ const DailyEmotionClassification: React.FC<any> = (props: any) => {
   };
   return (
     <Container>
-      <SectionTitle>쿠키가 생각했을 때의 모습이에요</SectionTitle>
+      <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+        <SectionTitle>쿠키가 생각했을 때의 모습이에요</SectionTitle>
+        <View style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}>
+          <Hint
+            visible={hintStatus && hintStatus === HINT_NAME}
+            position={Hint.positions.TOP}
+            message={HINT_MESSAGE}
+            color={'white'}
+            enableShadow
+            messageStyle={css`
+              font-family: Kyobo-handwriting;
+              font-size: ${16 * rsFont + 'px'};
+              color: ${palette.neutral[900]};
+            `}
+            onPress={() => setHintStatus(undefined)}
+            onBackgroundPress={() => setHintStatus(undefined)}>
+            <View>
+              <TouchableOpacity
+                activeOpacity={1}
+                style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}
+                onPress={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}>
+                <Icon name="information" width={16} height={16} />
+              </TouchableOpacity>
+            </View>
+          </Hint>
+        </View>
+      </View>
+
       {pieData.length !== 0 ? (
         <View
           style={css`

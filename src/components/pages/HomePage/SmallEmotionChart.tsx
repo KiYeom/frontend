@@ -2,11 +2,13 @@ import { css } from '@emotion/native';
 import { useHeaderHeight } from '@react-navigation/elements';
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  Keyboard,
   KeyboardAvoidingView,
   NativeModules,
   Platform,
   ScrollView,
   Text,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import Toast from 'react-native-root-toast';
@@ -24,12 +26,13 @@ import Analytics from '../../../utils/analytics';
 import useRecordedEmotionStore from '../../../utils/emotion-recorded';
 import useEmotionStore from '../../../utils/emotion-status';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
-import { getUserNickname } from '../../../utils/storageUtils';
+import { getIsDemo, getUserNickname } from '../../../utils/storageUtils';
 import EmotionCard from '../../atoms/EmotionCard/EmotionCard';
 import EmotionChip from '../../atoms/EmotionChip/EmotionChip';
 import Button from '../../button/button';
 import Input from '../../input/input';
 import { EmotionDesc, SmallTitle, Title } from './EmotionChart.style';
+import { getDemoAnalyticsPush } from '../../../apis/demo';
 
 const getApiDateString = (date: Date): string => {
   return (
@@ -50,9 +53,7 @@ const SmallEmotionChart = ({ navigation }) => {
   const headerHeight = useHeaderHeight();
 
   useEffect(() => {
-    if (Platform.OS === 'ios') {
-      const { StatusBarManager } = NativeModules;
-    }
+    Analytics.watchEmotionRecordScreen();
     dailyAnalyze(getApiDateString(new Date())).then((data) => {
       if (!data || !data.record || !data.record.todayFeeling) return;
       setText(data.record.todayFeeling);
@@ -77,9 +78,10 @@ const SmallEmotionChart = ({ navigation }) => {
     }
   };
 
-  useEffect(() => {
-    Analytics.watchEmotionRecordScreen();
-  }, []);
+  // Chip을 삭제하는 핸들러
+  const handleRemoveEmotion = (emotion) => {
+    removeEmotion(emotion.keyword);
+  };
 
   useEffect(() => {
     // 스크롤 움직임을 약간 지연시키기 위해 setTimeout 사용
@@ -92,21 +94,16 @@ const SmallEmotionChart = ({ navigation }) => {
     return () => clearTimeout(timeout); // 타이머 제거
   }, [selectedEmotions]); // selectedEmotions가 변경될 때마다 실행
 
-  // Chip을 삭제하는 핸들러
-  const handleRemoveEmotion = (emotion) => {
-    removeEmotion(emotion.keyword);
-  };
-
   return (
     <View
       style={css`
         flex: 1;
-        padding-bottom: ${insets.bottom + 'px'};
+        margin-bottom: ${insets.bottom + 'px'};
       `}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? headerHeight : 0}>
+        keyboardVerticalOffset={Platform.OS === 'ios' ? headerHeight : headerHeight}>
         <ScrollView>
           <Title
             // ellipsizeMode="tail"
@@ -140,9 +137,7 @@ const SmallEmotionChart = ({ navigation }) => {
             style={css`
               padding-vertical: ${rsHeight * 10 + 'px'};
               padding-horizontal: ${rsWidth * 24 + 'px'};
-              flex-grow: 0;
               gap: ${rsHeight * 10 + 'px'};
-              //background-color: blue;
             `}>
             <SmallTitle>{selectedEmotions.length}개의 감정을 담았어요🐶</SmallTitle>
 
@@ -213,6 +208,7 @@ const SmallEmotionChart = ({ navigation }) => {
                 Analytics.clickRecordButton();
                 setRecordedEmotions(selectedEmotions); // 상태 업데이트
                 await todayEmotion(selectedEmotions, text); //
+                if (getIsDemo()) getDemoAnalyticsPush();
                 navigation.navigate(TabScreenName.Home);
               }}
             />

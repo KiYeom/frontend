@@ -1,16 +1,50 @@
 import React from 'react';
 import palette from '../../../../assets/styles/theme';
-import { rsHeight, rsWidth } from '../../../../utils/responsive-size';
+import { rsFont, rsHeight, rsWidth } from '../../../../utils/responsive-size';
 import Icon from '../../../icons/icons';
 import BlurredButton from '../BlurredButton';
 import { SectionTitle } from '../StatisticMain.style';
 import { Container, KeywordContainer, KeywordIcon, KeywordText } from './Keyword.style';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { Hint } from 'react-native-ui-lib';
+import { css } from '@emotion/native';
+
+const HINT_NAME = 'keyword';
+const HINT_MESSAGE =
+  '키워드로 요약한 그날의 대화 주제예요.\n※ 정확한 분석을 위해 30자 이상의 대화가 필요합니다.';
+
 const KeywordArea: React.FC<any> = (props: any) => {
-  const { value, isSummaryList, summaryList } = props;
+  const { summaryList, hintStatus, setHintStatus } = props;
 
   return (
     <Container>
-      <SectionTitle>쿠키와 이런 이야기를 했어요</SectionTitle>
+      <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+        <SectionTitle>쿠키와 이런 이야기를 했어요</SectionTitle>
+        <View style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}>
+          <Hint
+            visible={hintStatus && hintStatus === HINT_NAME}
+            position={Hint.positions.TOP}
+            message={HINT_MESSAGE}
+            color={'white'}
+            enableShadow
+            messageStyle={css`
+              font-family: Kyobo-handwriting;
+              font-size: ${16 * rsFont + 'px'};
+              color: ${palette.neutral[900]};
+            `}
+            onPress={() => setHintStatus(undefined)}
+            onBackgroundPress={() => setHintStatus(undefined)}>
+            <View>
+              <TouchableOpacity
+                activeOpacity={1}
+                style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}
+                onPress={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}>
+                <Icon name="information" width={16} height={16} />
+              </TouchableOpacity>
+            </View>
+          </Hint>
+        </View>
+      </View>
       {summaryList.length === 0 ? (
         <BlurredButton
           blurredImageUri={

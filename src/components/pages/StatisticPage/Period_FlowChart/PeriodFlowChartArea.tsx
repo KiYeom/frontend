@@ -1,11 +1,16 @@
 import { css } from '@emotion/native';
 import dayjs from 'dayjs';
 import React, { useState } from 'react';
-import { Dimensions, View } from 'react-native';
+import { Dimensions, TouchableOpacity, View } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 import { rsFont, rsHeight, rsWidth } from '../../../../utils/responsive-size';
 import MoodButton from '../../../button/MoodButton';
 import { SectionTitle } from '../StatisticMain.style';
+import { getDemoActivePush } from '../../../../apis/demo';
+import { getIsDemo, setIsScoreDemo } from '../../../../utils/storageUtils';
+import Icon from '../../../icons/icons';
+import { Hint } from 'react-native-ui-lib';
+import palette from '../../../../assets/styles/theme';
 
 const fillMissingDates = (data, startDate, endDate) => {
   const result = [];
@@ -33,7 +38,10 @@ const fillMissingDates = (data, startDate, endDate) => {
   return result;
 };
 
-const PeriodFlowChart = ({ emotionsData, setEmotionsData, startDate, endDate }) => {
+const HINT_NAME = 'period-flow';
+const HINT_MESSAGE = '그 동안 자신의 감정 변화를 객관적으로 한 눈에 불 수 있어요!';
+
+const PeriodFlowChart = ({ emotionsData, startDate, endDate, hintStatus, setHintStatus }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const yAxisLabelWidth = 20;
   const screenWidth = Dimensions.get('window').width - 2 * yAxisLabelWidth * rsWidth;
@@ -49,7 +57,33 @@ const PeriodFlowChart = ({ emotionsData, setEmotionsData, startDate, endDate }) 
         style={css`
           padding-horizontal: ${rsWidth * 20 + 'px'};
         `}>
-        <SectionTitle>얼마나 많은 감정 변화가 있었을까요?</SectionTitle>
+        <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+          <SectionTitle>얼마나 많은 감정 변화가 있었을까요?</SectionTitle>
+          <View style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}>
+            <Hint
+              visible={hintStatus && hintStatus === HINT_NAME}
+              position={Hint.positions.TOP}
+              message={HINT_MESSAGE}
+              color={'white'}
+              enableShadow
+              messageStyle={css`
+                font-family: Kyobo-handwriting;
+                font-size: ${16 * rsFont + 'px'};
+                color: ${palette.neutral[900]};
+              `}
+              onPress={() => setHintStatus(undefined)}
+              onBackgroundPress={() => setHintStatus(undefined)}>
+              <View>
+                <TouchableOpacity
+                  activeOpacity={1}
+                  style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}
+                  onPress={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}>
+                  <Icon name="information" width={16} height={16} />
+                </TouchableOpacity>
+              </View>
+            </Hint>
+          </View>
+        </View>
         <View
           style={css`
             flex-direction: row;
@@ -64,6 +98,12 @@ const PeriodFlowChart = ({ emotionsData, setEmotionsData, startDate, endDate }) 
               primary={index === activeIndex}
               onPress={() => {
                 setActiveIndex(index);
+                if (!getIsDemo()) return;
+                setIsScoreDemo(true);
+                //마지막 버튼을 클릭할 때
+                if (index === buttonLabels.length - 1) {
+                  getDemoActivePush();
+                }
               }}
             />
           ))}

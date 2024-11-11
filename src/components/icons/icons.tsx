@@ -23,6 +23,8 @@ import SettingIcon from './svg/setting-icon';
 import StatisticIcon from './svg/statistic-icon';
 import TextIcon from './svg/text';
 import ChatIcon from './svg/chat';
+import InformationIcon from './svg/information';
+import DefaultHeart from './svg/default-heart';
 
 export type TIconName =
   | 'airplane'
@@ -49,7 +51,9 @@ export type TIconName =
   | 'search'
   | 'letter'
   | 'empty-icon'
-  | 'chat-icon';
+  | 'chat-icon'
+  | 'information'
+  | 'default-heart';
 
 export default function Icon({
   width,
@@ -113,5 +117,9 @@ export default function Icon({
       return <Letter width={width} height={height} color={color} />;
     case 'empty-icon':
       return <EmptyIcon width={width} height={height} color={color} />;
+    case 'information':
+      return <InformationIcon width={width} height={height} color={color} />;
+    case 'default-heart':
+      return <DefaultHeart width={width} height={height} color={color} />;
   }
 }

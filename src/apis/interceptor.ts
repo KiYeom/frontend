@@ -8,9 +8,9 @@ import {
   getDeviceIdFromMMKV,
   getRefreshToken,
   setAccessToken,
-  setNotice,
   setUserInfo,
 } from '../utils/storageUtils';
+import { showAppNotice } from '../utils/app-notice';
 
 function setInterceptor(instance: any) {
   instance.interceptors.request.use(async function (config: any) {
@@ -91,7 +91,7 @@ export const reissueAccessToken = async (
         setUserInfo(resDate.nickname, resDate.birthdate, resDate.gender);
       }
       if (resDate.notice) {
-        setNotice(resDate.notice);
+        showAppNotice(resDate.notice);
       }
     }
   } catch (error) {
