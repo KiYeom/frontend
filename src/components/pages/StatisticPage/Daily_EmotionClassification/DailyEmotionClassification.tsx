@@ -19,7 +19,7 @@ type TLabelWithColor = {
 
 const HINT_NAME = 'emotion';
 const HINT_MESSAGE =
-  '대화에서 숨은 나의 감정을 객관적으로 분석한 결과이에요!\n※ 정확한 분석을 위해 30자 이상의 대화가 필요합니다.';
+  '대화에서 숨은 나의 감정을 객관적으로 분석한 결과예요!\n※ 정확한 분석을 위해 30자 이상의 대화가 필요합니다.';
 
 const DailyEmotionClassification: React.FC<any> = (props: any) => {
   const { labelsClassification, hintStatus, setHintStatus } = props;

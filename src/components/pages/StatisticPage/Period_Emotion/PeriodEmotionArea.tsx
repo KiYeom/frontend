@@ -9,7 +9,7 @@ import palette from '../../../../assets/styles/theme';
 import Icon from '../../../icons/icons';
 
 const HINT_NAME = 'period-emotion';
-const HINT_MESSAGE = '그 동안 자신이 가장 많이 느꼈던 감정들이에요!';
+const HINT_MESSAGE = '그 동안 자신이 가장 많이 느꼈던 감정이에요!';
 
 const PeriodEmotionArea: React.FC<any> = (props: any) => {
   const { periodEmotionList, hintStatus, setHintStatus } = props;
