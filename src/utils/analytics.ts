@@ -74,6 +74,10 @@ export default class Analytics {
       carouselImageUrl: carouselImageUrl ?? 'undefined',
     });
   };
+  //탭 - 홈 화면 - 데모 모드 버튼 클릭
+  public static clickTabHomeDemoModeButton = (): void => {
+    this.sendEvent('탭-홈 화면 - 데모 모드 버튼 클릭', 'tabHomeDemoModeButton');
+  };
   //상담 기관 정보 버튼 클릭
   public static clickClinicInfoButton = (score: number | undefined = undefined): void => {
     this.sendEvent('탭-홈->상담 기관 정보 버튼 클릭', 'tabHomeClinicInfoButton', {
@@ -327,5 +331,8 @@ export default class Analytics {
     );
   };
 
-  //일반 상황 안내 화면 (링크로 대체)
+  //앱 공지 클릭
+  public static clickAppNoticeButton = (link: string): void => {
+    this.sendEvent('앱 공지 클릭', 'clickAppNoticeButton', { link });
+  };
 }

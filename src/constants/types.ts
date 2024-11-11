@@ -1,9 +1,9 @@
 export type TNotice = {
+  index: number;
   title: string;
   content: string;
-  options: TOptionButton[];
-  description: string;
-  required: boolean;
+  buttons: TOptionButton[];
+  force: boolean;
 };
 
 export type TOptionButton = {

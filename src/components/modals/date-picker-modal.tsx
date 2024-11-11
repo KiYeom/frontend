@@ -33,7 +33,6 @@ const DatePickerModal = ({
                 title="입력 완료"
                 primary={true}
                 onPress={() => {
-                  console.log('in', date);
                   onChange?.(date);
                   onClose?.();
                 }}

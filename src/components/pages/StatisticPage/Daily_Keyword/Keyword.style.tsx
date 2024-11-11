@@ -60,4 +60,5 @@ export const Container = styled.View`
   height: auto;
   //max-height: ${253 * rsHeight + 'px'};
   gap: ${12 * rsHeight + 'px'};
+  //background-color: pink;
 `;

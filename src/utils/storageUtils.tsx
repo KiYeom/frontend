@@ -1,6 +1,8 @@
 import { MMKV } from 'react-native-mmkv';
 import { ONE_DAY_IN_MS } from '../constants/Constants';
 import { TGender, TNotice } from '../constants/types';
+import { getApiDateString } from './times';
+import { showAppNotice } from './app-notice';
 
 export const storage = new MMKV();
 
@@ -23,14 +25,17 @@ const CHATTING = 'chatting';
 //NewIMessages
 const NEW_I_MESSAGES = 'new_i_messages';
 
-//Notice
-const NOTICE = 'notice';
-
-//dangerSign
-const RISK = 'RISK';
+//RiskWithLetterId
+const RISK_WITH_LETTER_ID = 'RISK_WITH_LETTER_ID';
 
 //refreshChattingPageTimes
 const REFRESH_CHAT = 'refresh_chat';
+
+//isDemo
+const IS_DEMO = 'is_demo';
+
+//isScoreDemo
+const IS_SCORE_DEMO = 'is_score_demo';
 
 //setTokenInfo
 export const setTokenInfo = (accessToken: string, refreshToken: string): void => {
@@ -40,8 +45,8 @@ export const setTokenInfo = (accessToken: string, refreshToken: string): void =>
 
 //clearTokenInfo
 export const clearTokenInfo = (): void => {
-  storage.delete(ACCESS_TOKEN);
-  storage.delete(REFRESH_TOKEN);
+  deleteAccessToken();
+  deleteRefreshToken();
 };
 
 //setUserInfo
@@ -57,11 +62,11 @@ export const setUserInfo = (
 
 //clearUserInfo
 export const clearUserInfo = (): void => {
-  storage.delete(USER_NICKNAME);
-  storage.delete(USER_BIRTHDATE);
-  storage.delete(USER_GENDER);
-  storage.delete(NOTIFICATION_SENT);
-  storage.delete(RISK);
+  deleteUserNickname();
+  deleteUserBirthdate();
+  deleteUserGender();
+  deleteNotificationSent();
+  deleteRiskData();
 };
 
 export const setInfoWhenLogin = (
@@ -74,13 +79,14 @@ export const setInfoWhenLogin = (
 ): void => {
   setUserInfo(nickname, birthdate, gender);
   setTokenInfo(accessToken, refreshToken);
-  if (notice) setNotice(notice);
+  if (notice) {
+    showAppNotice(notice);
+  }
 };
 
 export const clearInfoWhenLogout = (): void => {
   clearUserInfo();
   clearTokenInfo();
-  deleteNotice();
   deleteChatting();
   deleteNewIMessages();
   deleteNotificationSent();
@@ -205,23 +211,6 @@ export const deleteNewIMessages = (): void => {
   storage.delete(NEW_I_MESSAGES);
 };
 
-//Notice
-export const getNotice = (): TNotice | undefined => {
-  const noticeString = storage.getString(NOTICE);
-  if (!noticeString) {
-    return undefined;
-  }
-  return JSON.parse(noticeString);
-};
-
-export const setNotice = (notice: TNotice): void => {
-  storage.set(NOTICE, JSON.stringify(notice));
-};
-
-export const deleteNotice = (): void => {
-  storage.delete(NOTICE);
-};
-
 //refreshChattingPageTimes
 export const getRefreshChat = (): number => {
   return storage.getNumber(REFRESH_CHAT) ?? 0;
@@ -241,6 +230,38 @@ export const addRefreshChat = (times: number): number => {
   return refreshChat + times;
 };
 
+//isDemo
+export const getIsDemo = (): boolean => {
+  return storage.getBoolean(IS_DEMO) ?? false;
+};
+
+export const setIsDemo = (isDemo: boolean): void => {
+  deleteRiskData();
+  storage.set(IS_DEMO, isDemo);
+};
+
+export const deleteIsDemo = (): void => {
+  deleteRiskData();
+  storage.delete(IS_DEMO);
+};
+
+//isScoreDemo
+export const getIsScoreDemo = (): boolean => {
+  const result = storage.getBoolean(IS_SCORE_DEMO) ?? false;
+  if (result) {
+    deleteIsScoreDemo();
+  }
+  return result;
+};
+
+export const setIsScoreDemo = (isScoreDemo: boolean): void => {
+  storage.set(IS_SCORE_DEMO, isScoreDemo);
+};
+
+export const deleteIsScoreDemo = (): void => {
+  storage.delete(IS_SCORE_DEMO);
+};
+
 //ai 답변 저장하기
 export const saveAiResponse = (aiResponse: string) => {
   storage.set('AIRESPONSE', aiResponse);
@@ -251,41 +272,33 @@ export const getAiResponse = () => {
 };
 
 // INFO : 위험 신호
-// 위험 데이터 저장 {메세지 확인 여부, 타임스탬프}
-export const saveRiskData = (isChecked: boolean, timestamp: number): void => {
-  const data = JSON.stringify({ isChecked, timestamp });
-  storage.set(RISK, data);
+export type TRiskData = {
+  timestamp: number;
+  isRead: boolean;
+  letterIndex: number | null;
+};
+
+export const getRiskData = (): TRiskData | undefined => {
+  const data = storage.getString(RISK_WITH_LETTER_ID);
+  if (!data) return undefined;
+  const riskData = JSON.parse(data);
+  const nowApiDateString = getApiDateString(new Date());
+  const riskDateApiDateString = getApiDateString(new Date(riskData.timestamp));
+  if (riskDateApiDateString === nowApiDateString) {
+    return riskData;
+  } else {
+    deleteRiskData();
+    return undefined;
+  }
+};
+
+// 위험 데이터 저장
+export const setRiskData = (riskDate: TRiskData): void => {
+  const data = JSON.stringify(riskDate);
+  storage.set(RISK_WITH_LETTER_ID, data);
 };
 
 // 위험 데이터 삭제
-export const clearRiskData = (): void => {
-  storage.delete(RISK);
-};
-
-// 데이터를 불러오는 함수
-//6시간 전 : 1729465494744
-//36시간 전 : 1729357537247
-// 데이터를 불러오는 함수
-export const getRiskData = (): { isChecked: boolean; timestamp: number } | null => {
-  const data = storage.getString(RISK); //isCheked, timestamp
-  if (data != null) {
-    try {
-      // 데이터가 존재한다면
-      const parsedData = JSON.parse(data);
-      parsedData.isChecked = Boolean(parsedData.isChecked); // 문자열 'true'를 boolean true로 변환
-      parsedData.timestamp = Number(parsedData.timestamp); // 문자열을 숫자로 변환
-      const currentTime = new Date().getTime();
-      if (currentTime - parsedData.timestamp > ONE_DAY_IN_MS) {
-        // 24시간이 경과한 경우 -> 로컬을 비운다
-        console.log('24시간 경과');
-        clearRiskData();
-        return null;
-      }
-      return parsedData;
-    } catch (error) {
-      console.error('Error parsing risk data:', error);
-      return null;
-    }
-  }
-  return null;
+export const deleteRiskData = (): void => {
+  storage.delete(RISK_WITH_LETTER_ID);
 };

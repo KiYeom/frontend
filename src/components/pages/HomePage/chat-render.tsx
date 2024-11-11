@@ -14,18 +14,15 @@ import {
   SystemMessageProps,
   Time,
   TimeProps,
-  Message,
   ComposerProps,
   Composer,
 } from 'react-native-gifted-chat';
 import palette from '../../../assets/styles/theme';
 import { css } from '@emotion/native';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
-import { ActivityIndicator, Image, Text, View } from 'react-native';
+import { ActivityIndicator, Image, Text, TouchableOpacity, View } from 'react-native';
 import Icon from '../../icons/icons';
 import TypingIndicator from 'react-native-gifted-chat/src/TypingIndicator';
-
-const AVATAR_SIZE = 35;
 
 export const RenderBubble = (props: BubbleProps<IMessage>) => {
   return (
@@ -35,52 +32,53 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
         align-items: end;
         justify-content: start;
         gap: ${rsWidth * 8 + 'px'};
-        //background-color: pink;
       `}>
-      <View>
-        <Bubble
-          {...props}
-          renderTime={() => null}
-          textStyle={{
-            left: {
-              color: palette.neutral[500],
-              fontFamily: 'Pretendard-Regular',
-              fontSize: 14,
-              textAlign: 'left',
-              marginTop: 0,
-              marginBottom: 0,
-              marginLeft: 0,
-              marginRight: 0,
-            },
-            right: {
-              color: '#fff',
-              fontFamily: 'Pretendard-Regular',
-              fontSize: 14,
-              textAlign: 'left',
-              marginTop: 0,
-              marginBottom: 0,
-              marginLeft: 0,
-              marginRight: 0,
-            },
-          }}
-          wrapperStyle={{
-            left: css`
-              max-width: ${rsWidth * 200 + 'px'};
-              background-color: ${palette.neutral[100]};
-              padding-horizontal: ${rsWidth * 12 + 'px'};
-              padding-vertical: ${rsHeight * 8 + 'px'};
-              margin: 0px;
-            `,
-            right: css`
-              max-width: ${rsWidth * 200 + 'px'};
-              background-color: ${palette.primary[500]};
-              padding-horizontal: ${rsWidth * 12 + 'px'};
-              padding-vertical: ${rsHeight * 8 + 'px'};
-              margin: 0px;
-            `,
-          }}
-        />
-      </View>
+      <TouchableOpacity activeOpacity={1} onLongPress={props.onLongPress}>
+        <View>
+          <Bubble
+            {...props}
+            renderTime={() => null}
+            textStyle={{
+              left: css`
+                color: ${palette.neutral[500]};
+                font-family: Pretendard-Regular;
+                font-size: ${rsFont * 14 + 'px'};
+                text-align: left;
+                margin-top: 0;
+                margin-bottom: 0;
+                margin-left: 0;
+                margin-right: 0;
+              `,
+              right: css`
+                color: #fff;
+                font-family: Pretendard-Regular;
+                font-size: ${rsFont * 14 + 'px'};
+                text-align: left;
+                margin-top: 0;
+                margin-bottom: 0;
+                margin-left: 0;
+                margin-right: 0;
+              `,
+            }}
+            wrapperStyle={{
+              left: css`
+                max-width: ${rsWidth * 200 + 'px'};
+                background-color: ${palette.neutral[100]};
+                padding-horizontal: ${rsWidth * 12 + 'px'};
+                padding-vertical: ${rsHeight * 8 + 'px'};
+                margin: 0px;
+              `,
+              right: css`
+                max-width: ${rsWidth * 200 + 'px'};
+                background-color: ${palette.primary[500]};
+                padding-horizontal: ${rsWidth * 12 + 'px'};
+                padding-vertical: ${rsHeight * 8 + 'px'};
+                margin: 0px;
+              `,
+            }}
+          />
+        </View>
+      </TouchableOpacity>
 
       {props.renderTime && props.renderTime({ ...props })}
     </View>
@@ -88,24 +86,39 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
 };
 
 export const RenderAvatar = (props: AvatarProps<IMessage>) => {
-  const { position } = props;
+  const { position, currentMessage, previousMessage } = props;
   if (position !== 'left') return null;
+
+  const isPreviousUserExist =
+    previousMessage !== undefined &&
+    previousMessage._id !== undefined &&
+    previousMessage.user !== undefined &&
+    previousMessage.user._id !== undefined;
+
+  const avatarShow: boolean =
+    !isPreviousUserExist ||
+    previousMessage.user._id !== currentMessage.user._id ||
+    new Date(currentMessage.createdAt).getTime() - new Date(previousMessage.createdAt).getTime() >
+      10 * 1000;
+
   return (
-    <Avatar
-      {...props}
-      imageStyle={{
-        left: {
-          width: AVATAR_SIZE * rsWidth,
-          height: AVATAR_SIZE * rsHeight,
-          objectFit: 'cover',
-        },
-      }}
-      containerStyle={{
-        left: {
-          marginRight: 8 * rsWidth,
-        },
-      }}
-    />
+    <View
+      style={css`
+        width: ${rsWidth * 35 + 'px'};
+        height: ${rsHeight * 35 + 'px'};
+      `}>
+      {avatarShow && (
+        <Avatar
+          {...props}
+          imageStyle={{
+            left: css`
+              width: ${rsWidth * 35 + 'px'};
+              height: ${rsHeight * 35 + 'px'};
+            `,
+          }}
+        />
+      )}
+    </View>
   );
 };
 

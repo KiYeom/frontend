@@ -58,7 +58,6 @@ const SettingMenus: React.FC<any> = ({ navigation, logoutRequest }) => {
             // 버튼 배열
             {
               text: '아니오', // 버튼 제목
-              onPress: () => console.log('아니오 버튼 누름'),
               style: 'cancel',
             },
             { text: '네', onPress: () => logoutRequest() },
@@ -68,26 +67,12 @@ const SettingMenus: React.FC<any> = ({ navigation, logoutRequest }) => {
     },
     {
       title: '회원탈퇴',
-      onPress: () =>
-        /*Alert.alert(
-          '정말 탈퇴하시겠어요?', // 첫번째 text: 타이틀 큰 제목
-          '탈퇴 버튼 선택 시, 계정은 삭제되며 복구되지 않습니다', // 두번째 text: 작은 제목
-          [
-            { text: '취소', onPress: () => console.log('탈퇴 취소함') },
-            {
-              text: '탈퇴', // 버튼 제목
-              onPress: () => deactivateRequest(),
-            },
-          ],
-          { cancelable: false } //alert 밖에 눌렀을 때 alert 안 없어지도록
-        ),*/
-        {
-          console.log('회원탈퇴 누름');
-          navigation.navigate('SettingStackNavigator', {
-            screen: 'DeactivateAlert',
-            params: {},
-          });
-        },
+      onPress: () => {
+        navigation.navigate('SettingStackNavigator', {
+          screen: 'DeactivateAlert',
+          params: {},
+        });
+      },
     },
   ];
 

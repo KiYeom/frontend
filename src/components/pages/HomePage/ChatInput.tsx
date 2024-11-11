@@ -72,8 +72,6 @@ const ChatInput = ({ data, setData }: any) => {
     const userQuestion = userSend(text); //유저가 보낸 말을 말풍선으로 만들고
     setData((prevData: any) => {
       //말풍선 데이터에 저장
-      //console.log('------userQuestion-------', userQuestion);
-      //console.log('-----------prevData--------', prevData);
       // prevData가 배열인지 확인
       const newData = [userQuestion, ...(Array.isArray(prevData) ? prevData : [])];
       saveChatLogs(newData);

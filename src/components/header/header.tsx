@@ -2,7 +2,7 @@ import * as amplitude from '@amplitude/analytics-react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import palette from '../../assets/styles/theme';
-import { rsWidth } from '../../utils/responsive-size';
+import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import Icon, { TIconName } from '../icons/icons';
 import {
   HeaderCenter,
@@ -64,7 +64,7 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
         <HeaderRight onPress={rightFunction} activeOpacity={1} isTitle={title !== undefined}>
           {rightText !== undefined && <OptionText>{rightText}</OptionText>}
           {rightIcon !== undefined && (
-            <Icon name={rightIcon} width={rsWidth * 9 + 'px'} color={palette.neutral[900]} />
+            <Icon name={rightIcon} height={rsHeight * 30 + 'px'} color={palette.neutral[900]} />
           )}
         </HeaderRight>
       )}

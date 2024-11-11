@@ -72,7 +72,6 @@ const InputName = ({ route, navigation }) => {
   };
 
   const saveNickName = (nickname: string) => {
-    console.log('isGuestMode', isGuestMode);
     setLoading(true);
     setUserNickname(nickname);
     guestModeSignUp()

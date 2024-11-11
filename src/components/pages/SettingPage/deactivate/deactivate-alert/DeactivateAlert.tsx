@@ -33,7 +33,6 @@ const DeactivateAlert: React.FC = ({ navigation }) => {
     Analytics.watchWithdrawalDefenseScreen();
   }, []);
 
-  //console.log('chats ========', chatCount);
   return (
     <KeyboardAwareScrollView
       contentContainerStyle={{

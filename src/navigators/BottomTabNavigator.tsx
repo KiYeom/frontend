@@ -10,7 +10,6 @@ import NewChat from '../components/pages/HomePage/new-chat';
 const Tab = createBottomTabNavigator();
 
 const BottomTabNavigator: React.FC<any> = () => {
-  //console.log('채팅 화면 새로 그려짐..');
   return (
     <Tab.Navigator
       initialRouteName={TabScreenName.Home}

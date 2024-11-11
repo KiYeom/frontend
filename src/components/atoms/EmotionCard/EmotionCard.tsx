@@ -27,17 +27,16 @@ const EmotionCard = (props: EmotionCardProps) => {
         border: 1px solid ${palette.neutral[100]};
       `}>
       <Icon name={`${emotion.group}-emotion` as TIconName} width={rsWidth * 25 + 'px'} />
-      {status === 'default' ||
-        ('default-view' && (
-          <Text
-            style={css`
-              font-family: Pretendard-Medium;
-              font-size: ${rsFont * 14 + 'px'};
-              color: ${palette.neutral[900]};
-            `}>
-            {emotion.keyword}
-          </Text>
-        ))}
+      {status !== 'simple' && (
+        <Text
+          style={css`
+            font-family: Pretendard-Medium;
+            font-size: ${rsFont * 14 + 'px'};
+            color: ${palette.neutral[900]};
+          `}>
+          {emotion.keyword}
+        </Text>
+      )}
       {status === 'default' && (
         <TouchableOpacity
           onPress={() => onPress(emotion)}
