@@ -2,14 +2,14 @@ import { css } from '@emotion/native';
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import React, { useCallback, useEffect, useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { dailyAnalyze, dailyAnalyzeStatus } from '../../../apis/analyze';
 import { TEmotionCheck, TLabel } from '../../../apis/analyze.type';
 import palette from '../../../assets/styles/theme';
 import { HomeStackName, RootStackName } from '../../../constants/Constants';
 import Analytics from '../../../utils/analytics';
-import { rsHeight, rsWidth } from '../../../utils/responsive-size';
+import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 import SingleDatePickerModal from '../../rangeCal/single-date-picker-modal';
 import BlurredButton from './BlurredButton';
 import DailyEmotionClassification from './Daily_EmotionClassification/DailyEmotionClassification';
@@ -17,7 +17,16 @@ import EmotionArea from './Daily_Keyword/EmotionArea';
 import EmotionDairy from './Daily_Keyword/EmotionDairy';
 import KeywordArea from './Daily_Keyword/KeywordArea';
 import ReportType from './ReportType';
-import { Container, DateLineText, StatisticTitle } from './StatisticMain.style';
+import {
+  Container,
+  DateLineContainer,
+  DateLineText,
+  PageHintText,
+  StatisticTitle,
+} from './StatisticMain.style';
+import { getIsDemo } from '../../../utils/storageUtils';
+import { Hint } from 'react-native-ui-lib';
+import Icon from '../../icons/icons';
 const START_HOUR_OF_DAY = 6;
 
 const getServerYesterday = (currentDate: Date = new Date()) => {
@@ -36,9 +45,23 @@ const getServerYesterday = (currentDate: Date = new Date()) => {
   return koreaTime;
 };
 
+const getServerToday = (currentDate: Date = new Date()) => {
+  let utc = currentDate.getTime() + currentDate.getTimezoneOffset() * 60000;
+  let koreaTime = new Date(utc + 9 * 60 * 60 * 1000); // UTC+9 시간대
+
+  let hour = koreaTime.getHours();
+
+  if (hour >= 0 && hour < START_HOUR_OF_DAY) {
+    // 오전 0시에서 6시 사이라면 엊그제 출력 (2일전)
+    koreaTime.setDate(koreaTime.getDate() - 1);
+  } else {
+    // 그렇지 않으면 어제 출력 (어제)
+    koreaTime.setDate(koreaTime.getDate());
+  }
+  return koreaTime;
+};
+
 const getDateString = (date: Date): string => {
-  //console.log('getDateString', date, Object.prototype.toString.call(date));
-  //console.log('getDateString getfullyear', date.getFullYear);
   return (
     date?.getFullYear() +
     '년 ' +
@@ -59,6 +82,10 @@ const getApiDateString = (date: Date): string => {
   );
 };
 
+const HINT_NAME = 'main';
+const HINT_MESSAGE =
+  '쿠키와의 대화를 통해 나의 감정을 객관적으로 확인하고 그날의 자신을 돌아볼 수 있어요!\n※ 일일 보고서는 매일 오전 6시에 갱신돼요.\n※ 본 보고서는 참고용이며, 필요 시 전문가와 상의하세요.';
+
 //전체 통계 화면
 const StatisticMain: React.FC<any> = () => {
   const [date, setDate] = useState<Date | undefined>(getServerYesterday()); //서버에서 계산하는 날짜
@@ -71,39 +98,62 @@ const StatisticMain: React.FC<any> = () => {
   const [summaryList, setSummaryList] = useState<string[]>([]);
   const [todayFeeling, setTodayFeeling] = useState<string>('');
   const [availableDates, setAvailableDates] = useState<string[]>([]);
+  const [hintStatus, setHintStatus] = useState<
+    'emotion' | 'keyword' | 'record' | 'daily' | 'main' | undefined
+  >(undefined);
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
 
   const onChange = useCallback((newDate) => {
-    //console.log('onchange', newDate);
     setDate(newDate);
   }, []);
 
   useEffect(() => {
     Analytics.watchDailyStatisticScreen();
+    if (getIsDemo()) setDate(getServerToday());
     dailyAnalyzeStatus(2024).then((data) => {
       if (!data) return;
-      setAvailableDates(data.dates);
+      setAvailableDates([...data.dates, getApiDateString(getServerToday())]);
     });
   }, []);
 
+  const fetchData = async () => {
+    const dailyStatistics = await dailyAnalyze(getApiDateString(date ?? getServerYesterday()));
+    if (!dailyStatistics) {
+      alert('네트워크 연결이 불안정합니다. 잠시 후 다시 시도해주세요.');
+      return;
+    }
+    setIsNullClassification(dailyStatistics.classification.isNULL);
+    setLabelsClassification(dailyStatistics.classification.labels);
+    setIsSummaryList(dailyStatistics.summary.isNULL);
+    setSummaryList(dailyStatistics.summary.keywords);
+    setIsRecordKeywordList(dailyStatistics.record.Keywords);
+    setIsNullRecordKeywordList(dailyStatistics.record.isNULL);
+    //빈 값 [] 이면 false를 넘겨주기 때문에 !을 붙여서 true로 만들어줌
+    setTodayFeeling(dailyStatistics.record.todayFeeling ?? '');
+  };
+
+  //헤더 아이콘 설정하기
   useEffect(() => {
-    console.log('date 바뀜');
-    const fetchData = async () => {
-      const dailyStatistics = await dailyAnalyze(getApiDateString(date ?? getServerYesterday()));
-      if (!dailyStatistics) {
-        alert('네트워크 연결이 불안정합니다. 잠시 후 다시 시도해주세요.');
-        return;
-      }
-      setIsNullClassification(dailyStatistics.classification.isNULL);
-      setLabelsClassification(dailyStatistics.classification.labels);
-      setIsSummaryList(dailyStatistics.summary.isNULL);
-      setSummaryList(dailyStatistics.summary.keywords);
-      setIsRecordKeywordList(dailyStatistics.record.Keywords);
-      setIsNullRecordKeywordList(dailyStatistics.record.isNULL);
-      //빈 값 [] 이면 false를 넘겨주기 때문에 !을 붙여서 true로 만들어줌
-      setTodayFeeling(dailyStatistics.record.todayFeeling ?? '');
+    const unsubscribe = navigation.addListener('focus', () => {
+      fetchData();
+      if (getIsDemo()) setDate(getServerToday());
+      dailyAnalyzeStatus(2024).then((data) => {
+        if (!data) return;
+        if (getIsDemo()) {
+          setAvailableDates([...data.dates, getApiDateString(getServerToday())]);
+        } else {
+          setAvailableDates(data.dates);
+        }
+      });
+    });
+    // 컴포넌트 unmount 시 리스너를 해제
+    return () => {
+      unsubscribe();
     };
+  }, [navigation]);
+
+  useEffect(() => {
     fetchData();
   }, [date]);
 
@@ -149,7 +199,36 @@ const StatisticMain: React.FC<any> = () => {
               }}
             />
             <View style={{ marginVertical: 10 * rsHeight }}>
-              <DateLineText>{getDateString(date ?? getServerYesterday())}</DateLineText>
+              <DateLineContainer>
+                <TouchableOpacity onPress={() => setOpenModal(true)}>
+                  <DateLineText>{getDateString(date ?? getServerYesterday())}</DateLineText>
+                </TouchableOpacity>
+                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                  <Hint
+                    visible={hintStatus && hintStatus === HINT_NAME}
+                    position={Hint.positions.BOTTOM}
+                    message={HINT_MESSAGE}
+                    color={'white'}
+                    enableShadow
+                    messageStyle={css`
+                      font-family: Kyobo-handwriting;
+                      font-size: ${16 * rsFont + 'px'};
+                      color: ${palette.neutral[900]};
+                    `}
+                    onPress={() => setHintStatus(undefined)}
+                    onBackgroundPress={() => setHintStatus(undefined)}
+                    backdropColor={'rgba(0, 0, 0, 0.5)'}>
+                    <View>
+                      <TouchableOpacity
+                        activeOpacity={1}
+                        style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}
+                        onPress={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}>
+                        <Icon name="information" width={14} height={14} />
+                      </TouchableOpacity>
+                    </View>
+                  </Hint>
+                </View>
+              </DateLineContainer>
               <StatisticTitle>쿠키와의 대화에서{'\n'}마음을 살펴보았어요</StatisticTitle>
             </View>
           </View>
@@ -157,10 +236,19 @@ const StatisticMain: React.FC<any> = () => {
             {!isNullClassification ? (
               <>
                 <DailyEmotionClassification
-                  isNullClassification={isNullClassification}
                   labelsClassification={labelsClassification}
+                  hintStatus={hintStatus}
+                  setHintStatus={(hint: 'emotion' | undefined) => {
+                    setHintStatus(hint);
+                  }}
                 />
-                <KeywordArea isSummaryList={isSummaryList} summaryList={summaryList} />
+                <KeywordArea
+                  summaryList={summaryList}
+                  hintStatus={hintStatus}
+                  setHintStatus={(hint: 'keyword' | undefined) => {
+                    setHintStatus(hint);
+                  }}
+                />
               </>
             ) : (
               <>
@@ -183,9 +271,18 @@ const StatisticMain: React.FC<any> = () => {
               <>
                 <EmotionArea
                   isRecordKeywordList={isRecordKeywordList}
-                  isNullRecordKeywordList={isNullRecordKeywordList}
+                  hintStatus={hintStatus}
+                  setHintStatus={(hint: 'record' | undefined) => {
+                    setHintStatus(hint);
+                  }}
                 />
-                <EmotionDairy todayFeeling={todayFeeling} />
+                <EmotionDairy
+                  todayFeeling={todayFeeling}
+                  hintStatus={hintStatus}
+                  setHintStatus={(hint: 'daily' | undefined) => {
+                    setHintStatus(hint);
+                  }}
+                />
               </>
             ) : (
               <>

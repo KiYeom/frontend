@@ -1,16 +1,26 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Dimensions, Platform, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GiftedChat, IMessage, SendProps } from 'react-native-gifted-chat';
 import Header from '../../header/header';
-import { ERRORMESSAGE, HomeStackName } from '../../../constants/Constants';
+import {
+  DANGER_LETTER,
+  DangerStackName,
+  ERRORMESSAGE,
+  HomeStackName,
+  RISK_SCORE_THRESHOLD,
+  RootStackName,
+} from '../../../constants/Constants';
 import * as NavigationBar from 'expo-navigation-bar';
 import {
   addRefreshChat,
+  getIsDemo,
   getNewIMessages,
   getRefreshChat,
+  getRiskData,
   getUserNickname,
   setNewIMessages,
+  setRiskData,
 } from '../../../utils/storageUtils';
 import Analytics from '../../../utils/analytics';
 import { rsWidth } from '../../../utils/responsive-size';
@@ -30,6 +40,11 @@ import {
 } from './chat-render';
 import { css } from '@emotion/native';
 import uuid from 'react-native-uuid';
+import { requestAnalytics } from '../../../apis/demo';
+import { getApiDateString } from '../../../utils/times';
+import { getRiskScore } from '../../../apis/riskscore';
+import * as Clipboard from 'expo-clipboard';
+import Toast from 'react-native-root-toast';
 
 const userObject = {
   _id: 0,
@@ -54,6 +69,9 @@ const NewChat: React.FC = ({ navigation }) => {
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const refreshTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  const [riskScore, setRiskScore] = React.useState<number>(0);
+  const [riskStatus, setRiskStatus] = React.useState<'safe' | 'danger' | 'danger-opened'>('safe');
+
   const decideRefreshScreen = (viewHeight: number) => {
     NavigationBar.getVisibilityAsync().then((navBarStatus) => {
       if (navBarStatus === 'visible') {
@@ -73,8 +91,8 @@ const NewChat: React.FC = ({ navigation }) => {
 
   const getIMessageFromServer = async (lastMessageDate: Date): Promise<IMessage[]> => {
     const messages: IMessage[] = [];
-    const lastDateAdd1s = new Date(lastMessageDate.getTime() + 10 * 1000);
-    const serverMessages = await getOldChatting(botObject._id, lastDateAdd1s.toISOString());
+    const lastDateAddSecond = new Date(lastMessageDate.getTime() + 10 * 1000);
+    const serverMessages = await getOldChatting(botObject._id, lastDateAddSecond.toISOString());
 
     if (serverMessages && serverMessages.chats && serverMessages.chats.length > 0) {
       for (let i = 0; i < serverMessages.chats.length; i++) {
@@ -83,8 +101,16 @@ const NewChat: React.FC = ({ navigation }) => {
         const texts = text.split('\n');
         for (let j = 0; j < texts.length; j++) {
           const text = texts[j];
-          const splitTexts = text.match(/\s*([^.!?;:…。？！~…」»]+[.!?;:…。？！~…」»]?)\s*/g) || [];
+          let splitTexts: string[] = [text];
+          if (chat.status !== 'user') {
+            splitTexts =
+              text.match(
+                /\s*([^.!?;:…。？！~…」»]+[.!?;:…。？！~…」»](?:\s*[\u{1F300}-\u{1F5FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}\u{1F004}\u{1F0CF}\u{1F170}-\u{1F251}]*)?)\s*/gu,
+              ) || [];
+          }
+
           for (let k = 0; k < splitTexts.length; k++) {
+            if (splitTexts[k] === '') continue;
             messages.push({
               _id: uuid.v4().toString(),
               text: splitTexts[k],
@@ -139,7 +165,9 @@ const NewChat: React.FC = ({ navigation }) => {
       .then((res) => {
         if (res && res.answer) {
           const answers =
-            res.answer.match(/\s*([^.!?;:…。？！~…」»]+[.!?;:…。？！~…」»]?)\s*/g) || [];
+            res.answer.match(
+              /\s*([^.!?;:…。？！~…」»]+[.!?;:…。？！~…」»](?:\s*[\u{1F300}-\u{1F5FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}\u{1F004}\u{1F0CF}\u{1F170}-\u{1F251}]*)?)\s*/gu,
+            ) || [];
           const newMessages: IMessage[] = [];
           for (let i = 0; i < answers.length; i++) {
             newMessages.push({
@@ -184,7 +212,6 @@ const NewChat: React.FC = ({ navigation }) => {
       sendMessageToServer();
     }, 2 * 1000);
   };
-
   const resetRefreshTimer = (height: number, ms: number) => {
     if (refreshTimeoutRef.current) {
       clearTimeout(refreshTimeoutRef.current);
@@ -228,6 +255,71 @@ const NewChat: React.FC = ({ navigation }) => {
     }
   }, [buffer]);
 
+  //헤더 아이콘 클릭했을 때 이동 페이지
+  const handleDangerPress = () => {
+    if (riskStatus === 'danger') {
+      Analytics.clickDangerLetterButton(riskScore);
+      const letterIndex = Math.floor(Math.random() * DANGER_LETTER.length);
+      setRiskData({
+        timestamp: new Date().getTime(),
+        isRead: true,
+        letterIndex,
+      });
+      navigation.navigate(RootStackName.DangerStackNavigator, {
+        screen: DangerStackName.DangerAlert,
+        params: { letterIndex },
+      }); //쿠키 편지 화면으로 이동한다
+      return;
+    }
+    if (riskStatus === 'danger-opened') {
+      //위험한 상태일 때 확인을 했으면
+      Analytics.clickOpenedDangerLetterButton(riskScore);
+      const letterIndex = getRiskData()?.letterIndex;
+      navigation.navigate(RootStackName.DangerStackNavigator, {
+        screen: DangerStackName.DangerAlert,
+        params: { letterIndex: letterIndex ?? 0 },
+      }); //쿠키 편지 화면으로 이동한다
+      return;
+    }
+  };
+
+  const refreshRiskScore = () => {
+    const date = getApiDateString(new Date());
+    getRiskScore(date).then((res) => {
+      setRiskScore(res);
+      if (res >= RISK_SCORE_THRESHOLD && !getRiskData()) {
+        setRiskData({
+          timestamp: new Date().getTime(),
+          isRead: false,
+          letterIndex: null,
+        });
+      }
+      refreshRiskStatus();
+    });
+  };
+
+  const refreshRiskStatus = () => {
+    const riskData = getRiskData();
+    if (!riskData) setRiskStatus('safe');
+    else if (riskData.isRead) setRiskStatus('danger-opened');
+    else setRiskStatus('danger');
+  };
+
+  //헤더 아이콘 설정하기
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', refreshRiskScore);
+    // 컴포넌트 unmount 시 리스너를 해제
+    return () => {
+      unsubscribe();
+    };
+  }, [navigation]);
+
+  const showToast = () => {
+    Toast.show('메시지가 복사했습니다.', {
+      duration: Toast.durations.SHORT,
+      position: Toast.positions.CENTER,
+    });
+  };
   return (
     <SafeAreaView
       style={{ flex: 1 }}
@@ -261,9 +353,20 @@ const NewChat: React.FC = ({ navigation }) => {
         title="쿠키의 채팅방"
         leftFunction={() => {
           Analytics.clickHeaderBackButton();
+          if (getIsDemo()) requestAnalytics();
           navigation.navigate(TabScreenName.Home);
         }}
+        rightFunction={handleDangerPress}
+        rightIcon={
+          riskStatus === 'danger'
+            ? 'danger-sign'
+            : riskStatus === 'danger-opened'
+              ? 'danger-sign-opened'
+              : 'remind-logo'
+        }
+        isRight={riskStatus !== 'safe'}
       />
+
       <GiftedChat
         messages={messages}
         onSend={(messages) => onSend(messages)}
@@ -282,8 +385,12 @@ const NewChat: React.FC = ({ navigation }) => {
           navigation.navigate(HomeStackName.Profile);
         }}
         renderBubble={RenderBubble}
-        renderChatFooter={() => RenderFooter(sending)}
-        isCustomViewBottom
+        onLongPress={(context, message: IMessage) => {
+          Clipboard.setStringAsync(message.text).then(() => {
+            showToast();
+          });
+        }}
+        renderFooter={() => RenderFooter(sending)}
         renderTime={RenderTime}
         renderDay={RenderDay}
         renderSystemMessage={RenderSystemMessage}

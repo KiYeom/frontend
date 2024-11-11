@@ -8,7 +8,6 @@ export const getDeviceId = async (): Promise<string | null> => {
   } else if (Platform.OS === 'android') {
     return Application.getAndroidId();
   } else {
-    console.log('Unsupported OS: ' + Platform.OS);
     return null;
   }
 };

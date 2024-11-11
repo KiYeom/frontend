@@ -65,7 +65,6 @@ const guestLogin = async (): Promise<OauthResult> => {
 };
 
 const googleLogin = async (): Promise<OauthResult> => {
-  console.log('googleLogin 함수');
   GoogleSignin.configure({
     iosClientId: process.env.EXPO_PUBLIC_IOS_CLIENT_ID,
   });
@@ -160,10 +159,8 @@ const Login: React.FC<any> = ({ navigation }) => {
   //const [lastVendor, setLastVendor] = React.useState<TVender | undefined>();
   //const [privacyModal, setPrivacyModal] = React.useState(false);
   //const [guestModal, setGuestModal] = React.useState(false);
-  //console.log('lastVendor?', lastVendor);
 
   const onHandleLogin = async (vendor: TVender) => {
-    console.log('로딩 시작');
     setLoading(true);
     let oauthResult: OauthResult = OauthResult.UnknownError;
     try {
@@ -238,12 +235,8 @@ const Login: React.FC<any> = ({ navigation }) => {
           vendor="google"
           activeOpacity={1}
           onPress={() => {
-            console.log('버튼 누름');
-            //setLastVendor('google');
-            //setPrivacyModal(true);
             Analytics.clickGoogleLoginButton();
             onHandleLogin('google');
-            //if (lastVendor) onHandleLogin(lastVendor);
           }}
           disabled={loading}>
           <LoginBtnIcon source={require('../../../assets/images/google.png')} />

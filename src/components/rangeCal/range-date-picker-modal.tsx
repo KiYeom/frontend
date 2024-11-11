@@ -26,8 +26,6 @@ const RangeDatePickerModal = ({
     startDate: range.startDate, // 일주일 전 날짜
     endDate: range.endDate, // 현재 날짜
   });
-  //console.log('시작', localRange.startDate);
-  //console.log('끝', localRange.endDate);
   //두 날짜의 차이가 하루 이하면 버튼 비활성화
   const validateDate = (startDate: any, endDate: any) => {
     const oneDayInMillis = 24 * 60 * 60 * 1000;

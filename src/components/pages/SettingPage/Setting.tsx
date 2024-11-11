@@ -46,7 +46,6 @@ const Setting: React.FC<any> = ({ navigation }) => {
 
   //로그아웃
   const logoutRequest = async () => {
-    console.log('logout Request 시작'); // 로그 추가
     try {
       const deviceId = getDeviceIdFromMMKV();
       if (deviceId) await logout(deviceId);

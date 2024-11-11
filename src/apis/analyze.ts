@@ -5,6 +5,7 @@ import {
   TPeriodChart,
   TPeriodKeywords,
   TPeriodRecordEmotions,
+  TPeriodTotalEmotions,
 } from './analyze.type';
 import { instance } from './interceptor';
 
@@ -25,7 +26,6 @@ export const dailyAnalyzeStatus = async (
 export const dailyAnalyze = async (today: string): Promise<TDailyAnalyze | undefined> => {
   try {
     const res = await instance.get('/v1/analyze/daily', { params: { date: today } });
-    console.log('일일분석', res);
     return res.data; //record, summary, classification 리턴
   } catch (error) {
     console.log('[ERROR] daily analyze', error);
@@ -45,6 +45,22 @@ export const periodKeyword = async (
     return res.data;
   } catch (error) {
     console.log('[ERROR] period keyword', error);
+    return undefined;
+  }
+};
+
+//기간 분석 : 감정 탑 조회
+export const periodTotalEmotion = async (
+  start: string,
+  end: string,
+): Promise<TPeriodTotalEmotions | undefined> => {
+  try {
+    const res = await instance.get('/v1/analyze/period/emotions', {
+      params: { start_date: start, end_date: end },
+    });
+    return res.data;
+  } catch (error) {
+    console.log('[ERROR] period emotion', error);
     return undefined;
   }
 };
@@ -103,10 +119,8 @@ export const todayEmotion = async (
 export const todayEmotionCheck = async () => {
   try {
     const res = await instance.get('/v1/analyze/today-record');
-    //console.log('기분 조회하기', res);
     return res.data;
   } catch (error) {
-    //console.log('기록한 오늘의 기분 error', error);
     return;
   }
 };
