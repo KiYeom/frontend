@@ -18,18 +18,51 @@ import {
   Title,
 } from './DangerAlertPage.style';
 import { useRoute } from '@react-navigation/native';
+import { TDangerButton } from '../../../apis/risk-score.types';
+import { getDangerButtons } from '../../../apis/riskscore';
 
 const cookieLetter = {
   image:
     'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/home/letter/cookieletter.png',
 };
 
+const DEFAULT_BUTTONS: TDangerButton[] = [
+  {
+    index: 1,
+    text: '다른 상담 기관 알아보기',
+    type: 'in-link',
+    content: 'https://autumn-flier-d18.notion.site/1268e75d989680f7b4f2d63d66f4a08a?pvs=4',
+  },
+];
+
+const handleDangerSSRButton = (type: 'tel' | 'in-link' | 'out-link', content: string): void => {
+  if (type === 'tel') {
+    if (Platform.OS === 'android') {
+      Linking.openURL(`tel:${content}`);
+    } else {
+      // iOS에서 전화 걸기
+      Linking.openURL(`tel://${content}`);
+    }
+    return;
+  }
+  if (type === 'in-link') {
+    WebBrowser.openBrowserAsync(content);
+    return;
+  }
+  if (type === 'out-link') {
+    Linking.openURL(content);
+    return;
+  }
+};
+
 const DangerAlertPage = () => {
   const route = useRoute();
   const { letterIndex } = route.params as { letterIndex: number };
+  const [buttons, setButtons] = React.useState<TDangerButton[]>([]);
 
   const insets = useSafeAreaInsets();
-  const [isLoaded, setIsLoaded] = React.useState<boolean>(false);
+  const [isImageLoaded, setIsImageLoaded] = React.useState<boolean>(false);
+  const [isButtonLoaded, setIsButtonLoaded] = React.useState<boolean>(false);
   const userNickname = getUserNickname() ?? '주인님';
 
   const getLetter = () => {
@@ -41,6 +74,24 @@ const DangerAlertPage = () => {
 
   useEffect(() => {
     Analytics.watchDangerLetterScreen();
+    getDangerButtons()
+      .then((res) => {
+        if (!res || !res.buttons || res.buttons.length === 0) {
+          const buttons = DEFAULT_BUTTONS.sort((a, b) => a.index - b.index);
+          setButtons(buttons);
+        } else {
+          //buttons sort
+          const buttons = res.buttons.sort((a, b) => a.index - b.index);
+          setButtons(buttons);
+        }
+      })
+      .catch((error) => {
+        const buttons = DEFAULT_BUTTONS.sort((a, b) => a.index - b.index);
+        setButtons(buttons);
+      })
+      .finally(() => {
+        setIsButtonLoaded(true);
+      });
   }, []);
 
   return (
@@ -62,10 +113,10 @@ const DangerAlertPage = () => {
                 alignItems: 'center',
               }}
               onLoadEnd={() => {
-                setIsLoaded(true);
+                setIsImageLoaded(true);
               }}
               source={{ uri: cookieLetter.image }}>
-              {!isLoaded ? (
+              {!isImageLoaded ? (
                 <ActivityIndicator size="large" color="#D1B385" />
               ) : (
                 <CookieLetterText>{getLetter()}</CookieLetterText>
@@ -78,40 +129,24 @@ const DangerAlertPage = () => {
               24시간 무료 비밀 보장 상담 센터를 알아왔어요.{'\n'}
               쿠키랑 같이 연락해볼까요?
             </Desc>
-            {/* <Button
-              title="상담선생님과 전화하기 (109)"
-              primary={true}
-              icon="call"
-              onPress={() => {
-                Analytics.clickDangerLetterCallButton();
-                if (Platform.OS === 'android') {
-                  Linking.openURL(`tel:${PHONE_NUMBER}`);
-                } else {
-                  // iOS에서 전화 걸기
-                  Linking.openURL(`tel://${PHONE_NUMBER}`);
-                }
-              }}
-            />
-            <Button
-              title="상담선생님과 문자하기 (카카오톡)"
-              primary={true}
-              icon="text"
-              onPress={() => {
-                Analytics.clickDangerLetterChatButton();
-                WebBrowser.openBrowserAsync(`${KAKAO_MESSAGE}`);
-              }}
-            /> */}
-            <Button
-              title="다른 상담 기관 알아보기"
-              primary={true}
-              icon="search"
-              onPress={() => {
-                Analytics.clickDangerLetterOtherClinicButton();
-                WebBrowser.openBrowserAsync(
-                  'https://autumn-flier-d18.notion.site/1268e75d989680f7b4f2d63d66f4a08a?pvs=4',
-                ); //24시간 넘은 경우 -> 상담소로
-              }}
-            />
+            {isButtonLoaded ? (
+              buttons.map((button, index) => (
+                <Button
+                  key={index}
+                  title={button.text}
+                  primary={true}
+                  icon={
+                    button.type === 'tel' ? 'call' : button.type === 'in-link' ? 'search' : 'text'
+                  }
+                  onPress={() => {
+                    Analytics.clickDangerLetterSSRButton(button.text);
+                    handleDangerSSRButton(button.type, button.content);
+                  }}
+                />
+              ))
+            ) : (
+              <></>
+            )}
           </BtnContainer>
         </Container>
       </ScrollView>
