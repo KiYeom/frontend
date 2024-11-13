@@ -1,3 +1,5 @@
+import { TNotice } from '../constants/types';
+
 export type TAuth = {
   nickname: string | null;
   gender: '여성' | '남성' | null;
@@ -5,7 +7,7 @@ export type TAuth = {
   isNewUser: boolean;
   accessToken: string;
   refreshToken: string;
-  notice: Notice | null;
+  notice: TNotice | null;
 };
 
 type Notice = {
