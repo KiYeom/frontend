@@ -5,11 +5,13 @@ import { instance } from './interceptor';
 export const chatting = async (
   characterId: number,
   question: string,
+  isDemo: boolean = false,
 ): Promise<TChatAnswer | undefined> => {
   try {
     const res = await instance.post('/v1/chat/memory', {
       characterId,
       question,
+      isDemo,
     });
     return res.data; //ai의 답변을 return
   } catch (error) {

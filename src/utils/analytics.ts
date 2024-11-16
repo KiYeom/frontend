@@ -330,6 +330,12 @@ export default class Analytics {
       'dangerLetterOtherClinicButton',
     );
   };
+  //위험 상황 편지 - SSR 버튼 클릭
+  public static clickDangerLetterSSRButton = (text: string): void => {
+    this.sendEvent('위험 상황 편지 - SSR 버튼 클릭', 'dangerLetterCallButton', {
+      text,
+    });
+  };
 
   //앱 공지 클릭
   public static clickAppNoticeButton = (link: string): void => {

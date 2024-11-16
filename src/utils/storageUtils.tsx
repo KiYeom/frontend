@@ -31,6 +31,8 @@ const RISK_WITH_LETTER_ID = 'RISK_WITH_LETTER_ID';
 //refreshChattingPageTimes
 const REFRESH_CHAT = 'refresh_chat';
 
+//READ_NOTICE
+const READ_NOTICE = 'read_notice';
 //isDemo
 const IS_DEMO = 'is_demo';
 
@@ -90,6 +92,7 @@ export const clearInfoWhenLogout = (): void => {
   deleteChatting();
   deleteNewIMessages();
   deleteNotificationSent();
+  deleteReadNotice();
 };
 
 //Tokens
@@ -228,6 +231,35 @@ export const addRefreshChat = (times: number): number => {
   const refreshChat = getRefreshChat();
   setRefreshChat(refreshChat + times);
   return refreshChat + times;
+};
+
+//READ_NOTICE
+export const getReadNotice = (): number[] => {
+  const numberArrayString = storage.getString(READ_NOTICE);
+  if (!numberArrayString) return [];
+  return JSON.parse(numberArrayString);
+};
+
+export const findReadNotice = (noticeId: number): boolean => {
+  const readNotice = getReadNotice();
+  return readNotice.includes(noticeId);
+};
+
+export const setReadNotice = (readNotice: number[]): void => {
+  const readNoticeString = JSON.stringify(readNotice);
+  storage.set(READ_NOTICE, readNoticeString);
+};
+
+export const addReadNotice = (noticeId: number): void => {
+  const readNotice = getReadNotice();
+  if (!readNotice.includes(noticeId)) {
+    readNotice.push(noticeId);
+    setReadNotice(readNotice);
+  }
+};
+
+export const deleteReadNotice = (): void => {
+  storage.delete(READ_NOTICE);
 };
 
 //isDemo

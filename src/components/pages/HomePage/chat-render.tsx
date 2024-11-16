@@ -23,10 +23,13 @@ import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { ActivityIndicator, Image, Text, TouchableOpacity, View } from 'react-native';
 import Icon from '../../icons/icons';
 import TypingIndicator from 'react-native-gifted-chat/src/TypingIndicator';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 
 export const RenderBubble = (props: BubbleProps<IMessage>) => {
   return (
-    <View
+    <Animated.View
+      key={props.currentMessage._id}
+      entering={FadeInDown}
       style={css`
         flex-direction: ${props.position === 'left' ? 'row' : 'row-reverse'};
         align-items: end;
@@ -81,7 +84,7 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
       </TouchableOpacity>
 
       {props.renderTime && props.renderTime({ ...props })}
-    </View>
+    </Animated.View>
   );
 };
 

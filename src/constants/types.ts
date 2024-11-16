@@ -4,6 +4,7 @@ export type TNotice = {
   content: string;
   buttons: TOptionButton[];
   force: boolean;
+  saved: boolean;
 };
 
 export type TOptionButton = {
