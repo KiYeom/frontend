@@ -161,7 +161,8 @@ const NewChat: React.FC = ({ navigation }) => {
     if (!buffer) return;
     setSending(true);
     const question = buffer ?? '';
-    chatting(1, question)
+    const isDemo = getIsDemo();
+    chatting(1, question, isDemo)
       .then((res) => {
         if (res && res.answer) {
           const answers =
