@@ -17,7 +17,7 @@ import Home from '../pages/HomePage/Home';
 import { Alert } from 'react-native';
 import { deleteIsDemo, getIsDemo, setIsDemo } from '../../utils/storageUtils';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
-import { getDemoAllow } from '../../apis/demo';
+import { getDemoActivePush, getDemoAllow, getDemoAnalyticsPush } from '../../apis/demo';
 
 const requestDemoMode = () => {
   getDemoAllow().then((response) => {
@@ -96,6 +96,14 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
             Analytics.clickTabHomeDemoModeButton();
             if (getIsDemo()) endDemoMode();
             else requestDemoMode();
+            return;
+          } else if (route.name === TabScreenName.NewChat) {
+            if (getIsDemo()) getDemoActivePush();
+            else onPress();
+            return;
+          } else if (route.name === TabScreenName.Statistic) {
+            if (getIsDemo()) getDemoAnalyticsPush();
+            else onPress();
             return;
           } else {
             onPress();
