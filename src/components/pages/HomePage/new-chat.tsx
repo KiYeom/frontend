@@ -161,7 +161,8 @@ const NewChat: React.FC = ({ navigation }) => {
     if (!buffer) return;
     setSending(true);
     const question = buffer ?? '';
-    chatting(1, question)
+    const isDemo = getIsDemo();
+    chatting(1, question, isDemo)
       .then((res) => {
         if (res && res.answer) {
           const answers =
@@ -212,6 +213,7 @@ const NewChat: React.FC = ({ navigation }) => {
       sendMessageToServer();
     }, 2 * 1000);
   };
+
   const resetRefreshTimer = (height: number, ms: number) => {
     if (refreshTimeoutRef.current) {
       clearTimeout(refreshTimeoutRef.current);
@@ -237,6 +239,16 @@ const NewChat: React.FC = ({ navigation }) => {
         alert('대화 내역을 불러오는 중 오류가 발생했어요. 다시 시도해주세요.');
         navigation.navigate(TabScreenName.Home);
       });
+
+    if (!getIsDemo()) return;
+    const refreshRiskTimer = setInterval(() => {
+      console.log('refreshRiskTimer');
+      refreshRiskScore();
+    }, 2000);
+
+    return () => {
+      clearInterval(refreshRiskTimer);
+    };
   }, []);
 
   const onSend = (newMessages: IMessage[] = []) => {
@@ -320,6 +332,7 @@ const NewChat: React.FC = ({ navigation }) => {
       position: Toast.positions.CENTER,
     });
   };
+
   return (
     <SafeAreaView
       style={{ flex: 1 }}
