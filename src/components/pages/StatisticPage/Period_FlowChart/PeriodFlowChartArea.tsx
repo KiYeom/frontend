@@ -99,11 +99,6 @@ const PeriodFlowChart = ({ emotionsData, startDate, endDate, hintStatus, setHint
               onPress={() => {
                 setActiveIndex(index);
                 if (!getIsDemo()) return;
-                setIsScoreDemo(true);
-                //마지막 버튼을 클릭할 때
-                if (index === buttonLabels.length - 1) {
-                  getDemoActivePush();
-                }
               }}
             />
           ))}

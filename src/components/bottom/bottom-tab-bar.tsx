@@ -1,5 +1,4 @@
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { AppEventsLogger } from 'react-native-fbsdk-next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import palette from '../../assets/styles/theme';
 import {
@@ -13,37 +12,22 @@ import Analytics from '../../utils/analytics';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import Icon from '../icons/icons';
 import { BottomTabBarContainer, TabButtonContainer, TabLabel } from './bottom-tab-bar.style';
-import Home from '../pages/HomePage/Home';
-import { Alert } from 'react-native';
 import { deleteIsDemo, getIsDemo, setIsDemo } from '../../utils/storageUtils';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 import { getDemoActivePush, getDemoAllow, getDemoAnalyticsPush } from '../../apis/demo';
+import { setDemoTalk } from '../../utils/demo-chat';
 
 const requestDemoMode = () => {
   getDemoAllow().then((response) => {
     if (response && response.result) {
       setIsDemo(true);
-      alert('시연 모드가 진입했습니다.');
+      setDemoTalk();
       return;
     }
   });
 };
 
 const endDemoMode = () => {
-  Alert.alert('시연 모드를 취소하시겠습니까?', '', [
-    {
-      text: '뒤로 가기',
-      onPress: () => console.log('Cancel Pressed'),
-      style: 'cancel',
-    },
-    {
-      text: '시연 모드 취소',
-      onPress: () => {
-        deleteIsDemo();
-        alert('시연 모드가 취소되었습니다.');
-      },
-    },
-  ]);
+  deleteIsDemo();
 };
 
 const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
@@ -114,6 +98,7 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
         return (
           <TabButtonContainer
             key={index}
+            activeOpacity={1}
             accessibilityState={isFocused ? { selected: true } : {}}
             accessibilityLabel={options.tabBarAccessibilityLabel}
             onPress={onPress}

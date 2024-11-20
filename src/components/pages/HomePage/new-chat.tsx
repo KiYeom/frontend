@@ -19,6 +19,7 @@ import {
   getRefreshChat,
   getRiskData,
   getUserNickname,
+  setIsScoreDemo,
   setNewIMessages,
   setRiskData,
 } from '../../../utils/storageUtils';
@@ -397,6 +398,9 @@ const NewChat: React.FC = ({ navigation }) => {
           Analytics.clickChatCharacterAvatar();
           navigation.navigate(HomeStackName.Profile);
         }}
+        onLongPressAvatar={() => {
+          if (getIsDemo()) setIsScoreDemo(true);
+        }}
         renderBubble={RenderBubble}
         onLongPress={(context, message: IMessage) => {
           Clipboard.setStringAsync(message.text).then(() => {
@@ -410,7 +414,7 @@ const NewChat: React.FC = ({ navigation }) => {
         renderInputToolbar={RenderInputToolbar}
         renderComposer={RenderComposer}
         textInputProps={{
-          placeholder: '메시지 입력',
+          placeholder: getIsDemo() ? '메시지 입력.' : '메시지 입력',
           marginLeft: rsWidth * 15,
         }}
         keyboardShouldPersistTaps="never"
