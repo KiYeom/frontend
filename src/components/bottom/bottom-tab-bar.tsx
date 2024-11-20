@@ -17,45 +17,32 @@ import Home from '../pages/HomePage/Home';
 import { Alert } from 'react-native';
 import { deleteIsDemo, getIsDemo, setIsDemo } from '../../utils/storageUtils';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
-import { getDemoAllow } from '../../apis/demo';
+import { getDemoActivePush, getDemoAllow, getDemoAnalyticsPush } from '../../apis/demo';
 
 const requestDemoMode = () => {
-  getDemoAllow()
-    .then((response) => {
-      if (response && response.result) {
-        setIsDemo(true);
-        return;
-      }
-      alert('시연 모드 대상자가 아닙니다. 관리자에게 문의하세요.');
-    })
-    .catch((error) => {
-      alert('서버와 통신이 실패했습니다. 잠시 후 다시 시도해주세요.');
-    });
+  getDemoAllow().then((response) => {
+    if (response && response.result) {
+      setIsDemo(true);
+      alert('시연 모드가 진입했습니다.');
+      return;
+    }
+  });
 };
 
-const setDemoMode = () => {
-  Alert.alert(
-    '시연 모드로 실행하시겠습니까?',
-    '시연 모드일 경우, 보고서 생성은 실시간으로 실행되며, 푸시 알림도 실시간으로 전송됩니다. \n\n 시연 모드는 앱을 재시작하면 해제됩니다. ',
-    [
-      {
-        text: '뒤로 가기',
-        onPress: () => console.log('Cancel Pressed'),
-        style: 'cancel',
-      },
-      { text: '시연 모드 진입', onPress: () => requestDemoMode() },
-    ],
-  );
-};
-
-const deleteDemoMode = () => {
+const endDemoMode = () => {
   Alert.alert('시연 모드를 취소하시겠습니까?', '', [
     {
       text: '뒤로 가기',
       onPress: () => console.log('Cancel Pressed'),
       style: 'cancel',
     },
-    { text: '시연 모드 취소', onPress: () => deleteIsDemo() },
+    {
+      text: '시연 모드 취소',
+      onPress: () => {
+        deleteIsDemo();
+        alert('시연 모드가 취소되었습니다.');
+      },
+    },
   ]);
 };
 
@@ -99,7 +86,7 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
         };
 
         const onLongPress = () => {
-          if (route.name === TabScreenName.Setting && isFocused) {
+          if (route.name === TabScreenName.Setting) {
             Analytics.clickTabSettingConnectButton();
             navigation.navigate(RootStackName.SettingStackNavigator, {
               screen: SettingStackName.OrganizationStatus,
@@ -107,8 +94,16 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
             return;
           } else if (route.name === TabScreenName.Home) {
             Analytics.clickTabHomeDemoModeButton();
-            if (getIsDemo()) deleteDemoMode();
-            else setDemoMode();
+            if (getIsDemo()) endDemoMode();
+            else requestDemoMode();
+            return;
+          } else if (route.name === TabScreenName.NewChat) {
+            if (getIsDemo()) getDemoActivePush();
+            else onPress();
+            return;
+          } else if (route.name === TabScreenName.Statistic) {
+            if (getIsDemo()) getDemoAnalyticsPush();
+            else onPress();
             return;
           } else {
             onPress();
