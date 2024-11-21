@@ -24,9 +24,9 @@ import {
   PageHintText,
   StatisticTitle,
 } from './StatisticMain.style';
-import { getIsDemo } from '../../../utils/storageUtils';
 import { Hint } from 'react-native-ui-lib';
 import Icon from '../../icons/icons';
+import { getApiDateString } from '../../../utils/times';
 const START_HOUR_OF_DAY = 6;
 
 const getServerYesterday = (currentDate: Date = new Date()) => {
@@ -46,39 +46,25 @@ const getServerYesterday = (currentDate: Date = new Date()) => {
 };
 
 const getServerToday = (currentDate: Date = new Date()) => {
-  let utc = currentDate.getTime() + currentDate.getTimezoneOffset() * 60000;
-  let koreaTime = new Date(utc + 9 * 60 * 60 * 1000); // UTC+9 시간대
+  let koreaTime = new Date(currentDate.getTime() + 9 * 60 * 60 * 1000); // UTC+9 시간대
 
-  let hour = koreaTime.getHours();
+  let hour = koreaTime.getUTCHours();
 
   if (hour >= 0 && hour < START_HOUR_OF_DAY) {
-    // 오전 0시에서 6시 사이라면 엊그제 출력 (2일전)
-    koreaTime.setDate(koreaTime.getDate() - 1);
-  } else {
-    // 그렇지 않으면 어제 출력 (어제)
-    koreaTime.setDate(koreaTime.getDate());
+    koreaTime.setUTCDate(koreaTime.getUTCDate() - 1);
   }
   return koreaTime;
 };
 
 const getDateString = (date: Date): string => {
+  const nowKoreanDate = new Date(date.getTime() + 9 * 60 * 60 * 1000);
   return (
-    date?.getFullYear() +
+    nowKoreanDate?.getUTCFullYear() +
     '년 ' +
-    String(date.getMonth() + 1).padStart(2, '0') +
+    String(nowKoreanDate.getUTCMonth() + 1).padStart(2, '0') +
     '월 ' +
-    String(date.getDate()).padStart(2, '0') +
+    String(nowKoreanDate.getUTCDate()).padStart(2, '0') +
     '일'
-  );
-};
-
-const getApiDateString = (date: Date): string => {
-  return (
-    date?.getFullYear() +
-    '-' +
-    String(date.getMonth() + 1).padStart(2, '0') +
-    '-' +
-    String(date.getDate()).padStart(2, '0')
   );
 };
 
@@ -88,7 +74,7 @@ const HINT_MESSAGE =
 
 //전체 통계 화면
 const StatisticMain: React.FC<any> = () => {
-  const [date, setDate] = useState<Date | undefined>(getServerYesterday()); //서버에서 계산하는 날짜
+  const [date, setDate] = useState<Date>(new Date()); //서버에서 계산하는 날짜
   const [openModal, setOpenModal] = React.useState(false);
   const [isNullClassification, setIsNullClassification] = useState(true);
   const [labelsClassification, setLabelsClassification] = useState<TLabel[]>([]);
@@ -105,20 +91,21 @@ const StatisticMain: React.FC<any> = () => {
   const insets = useSafeAreaInsets();
 
   const onChange = useCallback((newDate) => {
-    setDate(newDate);
+    setDate(new Date(newDate));
   }, []);
 
   useEffect(() => {
     Analytics.watchDailyStatisticScreen();
-    if (getIsDemo()) setDate(getServerToday());
     dailyAnalyzeStatus(2024).then((data) => {
       if (!data) return;
-      setAvailableDates([...data.dates, getApiDateString(getServerToday())]);
+      setAvailableDates([...data.dates, getApiDateString(new Date())]);
     });
   }, []);
 
   const fetchData = async () => {
-    const dailyStatistics = await dailyAnalyze(getApiDateString(date ?? getServerYesterday()));
+    console.log('fetchData1: ', date);
+    console.log('fetchData2: ', getApiDateString(date));
+    const dailyStatistics = await dailyAnalyze(getApiDateString(date));
     if (!dailyStatistics) {
       alert('네트워크 연결이 불안정합니다. 잠시 후 다시 시도해주세요.');
       return;
@@ -136,15 +123,9 @@ const StatisticMain: React.FC<any> = () => {
   //헤더 아이콘 설정하기
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      fetchData();
-      if (getIsDemo()) setDate(getServerToday());
       dailyAnalyzeStatus(2024).then((data) => {
         if (!data) return;
-        if (getIsDemo()) {
-          setAvailableDates([...data.dates, getApiDateString(getServerToday())]);
-        } else {
-          setAvailableDates(data.dates);
-        }
+        setAvailableDates([...data.dates, getApiDateString(new Date())]);
       });
     });
     // 컴포넌트 unmount 시 리스너를 해제
@@ -201,7 +182,7 @@ const StatisticMain: React.FC<any> = () => {
             <View style={{ marginVertical: 10 * rsHeight }}>
               <DateLineContainer>
                 <TouchableOpacity onPress={() => setOpenModal(true)}>
-                  <DateLineText>{getDateString(date ?? getServerYesterday())}</DateLineText>
+                  <DateLineText>{getDateString(date)}</DateLineText>
                 </TouchableOpacity>
                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                   <Hint

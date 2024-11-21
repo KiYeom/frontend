@@ -15,6 +15,7 @@ export const dailyAnalyzeStatus = async (
 ): Promise<TDailyAnalyzeStatus | undefined> => {
   try {
     const res = await instance.get('/v1/analyze/daily-status', { params: { year } });
+    console.log('res.data', res.data);
     return res.data; //record, summary, classification 리턴
   } catch (error) {
     console.log('[ERROR] daily analyze', error);
