@@ -14,6 +14,7 @@ import {
   VersionStatus,
   VersionText,
 } from './menu-row.styles';
+import { getIsDemo } from '../../utils/storageUtils';
 
 export type MenuRowProps = {
   text: string;
@@ -56,8 +57,8 @@ const MenuRow = (props: MenuRowProps) => {
         {showVersion && (
           <>
             <VersionText>{'v' + getAppVersion()}</VersionText>
-            <VersionStatus isLatest={isLatest}>
-              {isLatest ? '최신' : '지금 업데이트하기!'}
+            <VersionStatus isLatest={getIsDemo() ? true : isLatest}>
+              {isLatest || getIsDemo() ? '최신' : '지금 업데이트하기!'}
             </VersionStatus>
           </>
         )}

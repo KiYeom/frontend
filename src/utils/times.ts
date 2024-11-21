@@ -1,7 +1,7 @@
 export const KOREA_TIMEOFFSET_MINUTES = +9 * 60;
 export const START_HOUR = 6;
 
-export const getIsoString = (date, timezoneOffsetMinute = KOREA_TIMEOFFSET_MINUTES) => {
+export const getIsoString = (date: Date, timezoneOffsetMinute = KOREA_TIMEOFFSET_MINUTES) => {
   const tzo = timezoneOffsetMinute,
     dif = tzo >= 0 ? '+' : '-',
     pad = function (num: number) {
@@ -13,17 +13,17 @@ export const getIsoString = (date, timezoneOffsetMinute = KOREA_TIMEOFFSET_MINUT
   const localDate = new Date(utc + timezoneOffsetMinute * 60000);
 
   return (
-    localDate.getFullYear() +
+    localDate.getUTCFullYear() +
     '-' +
-    pad(localDate.getMonth() + 1) +
+    pad(localDate.getUTCMonth() + 1) +
     '-' +
-    pad(localDate.getDate()) +
+    pad(localDate.getUTCDate()) +
     'T' +
-    pad(localDate.getHours()) +
+    pad(localDate.getUTCHours()) +
     ':' +
-    pad(localDate.getMinutes()) +
+    pad(localDate.getUTCMinutes()) +
     ':' +
-    pad(localDate.getSeconds()) +
+    pad(localDate.getUTCSeconds()) +
     dif +
     pad(Math.floor(Math.abs(tzo) / 60)) +
     ':' +
@@ -38,10 +38,10 @@ export const getApiDateString = (date: Date = new Date()): string => {
     nowKoreanDate.setDate(nowKoreanDate.getDate() - 1);
   }
   return (
-    nowKoreanDate.getFullYear() +
+    nowKoreanDate.getUTCFullYear() +
     '-' +
-    String(nowKoreanDate.getMonth() + 1).padStart(2, '0') +
+    String(nowKoreanDate.getUTCMonth() + 1).padStart(2, '0') +
     '-' +
-    String(nowKoreanDate.getDate()).padStart(2, '0')
+    String(nowKoreanDate.getUTCDate()).padStart(2, '0')
   );
 };
