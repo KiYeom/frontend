@@ -240,16 +240,6 @@ const NewChat: React.FC = ({ navigation }) => {
         alert('대화 내역을 불러오는 중 오류가 발생했어요. 다시 시도해주세요.');
         navigation.navigate(TabScreenName.Home);
       });
-
-    if (!getIsDemo()) return;
-    const refreshRiskTimer = setInterval(() => {
-      console.log('refreshRiskTimer');
-      refreshRiskScore();
-    }, 2000);
-
-    return () => {
-      clearInterval(refreshRiskTimer);
-    };
   }, []);
 
   const onSend = (newMessages: IMessage[] = []) => {
