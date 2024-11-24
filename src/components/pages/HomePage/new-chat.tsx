@@ -24,7 +24,7 @@ import {
   setRiskData,
 } from '../../../utils/storageUtils';
 import Analytics from '../../../utils/analytics';
-import { rsWidth } from '../../../utils/responsive-size';
+import { rsFont, rsWidth } from '../../../utils/responsive-size';
 import { chatting, getOldChatting } from '../../../apis/chatting';
 import { TabScreenName } from '../../../constants/Constants';
 import {
@@ -46,6 +46,10 @@ import { getApiDateString } from '../../../utils/times';
 import { getRiskScore } from '../../../apis/riskscore';
 import * as Clipboard from 'expo-clipboard';
 import Toast from 'react-native-root-toast';
+import { Hint } from 'react-native-ui-lib';
+import palette from '../../../assets/styles/theme';
+
+const HINT_MESSAGE = 'LLM AI 모델로 생성된 답변입니다. 필요 시 전문가와 상의하세요.';
 
 const userObject = {
   _id: 0,
@@ -72,6 +76,7 @@ const NewChat: React.FC = ({ navigation }) => {
 
   const [riskScore, setRiskScore] = React.useState<number>(0);
   const [riskStatus, setRiskStatus] = React.useState<'safe' | 'danger' | 'danger-opened'>('safe');
+  const [hintStatus, setHintStatus] = React.useState<boolean>(false);
 
   const decideRefreshScreen = (viewHeight: number) => {
     NavigationBar.getVisibilityAsync().then((navBarStatus) => {
@@ -284,6 +289,11 @@ const NewChat: React.FC = ({ navigation }) => {
       }); //쿠키 편지 화면으로 이동한다
       return;
     }
+    if (riskStatus === 'safe') {
+      console.log('hint');
+      setHintStatus(true);
+      return;
+    }
   };
 
   const refreshRiskScore = () => {
@@ -360,16 +370,32 @@ const NewChat: React.FC = ({ navigation }) => {
           if (getIsDemo()) requestAnalytics();
           navigation.navigate(TabScreenName.Home);
         }}
+        isRight
         rightFunction={handleDangerPress}
         rightIcon={
           riskStatus === 'danger'
             ? 'danger-sign'
             : riskStatus === 'danger-opened'
               ? 'danger-sign-opened'
-              : 'remind-logo'
+              : 'information'
         }
-        isRight={riskStatus !== 'safe'}
       />
+      <Hint
+        visible={hintStatus}
+        position={Hint.positions.BOTTOM}
+        message={HINT_MESSAGE}
+        color={'white'}
+        enableShadow
+        messageStyle={css`
+          font-family: Kyobo-handwriting;
+          font-size: ${16 * rsFont + 'px'};
+          color: ${palette.neutral[900]};
+        `}
+        onPress={() => setHintStatus(false)}
+        onBackgroundPress={() => setHintStatus(false)}
+        backdropColor={'rgba(0, 0, 0, 0.5)'}>
+        <View />
+      </Hint>
 
       <GiftedChat
         messages={messages}
