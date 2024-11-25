@@ -26,38 +26,13 @@ import {
 } from './StatisticMain.style';
 import { Hint } from 'react-native-ui-lib';
 import Icon from '../../icons/icons';
-import { getApiDateString } from '../../../utils/times';
+import { getKoreanServerTodayDateString } from '../../../utils/times';
+
 const START_HOUR_OF_DAY = 6;
 
-const getServerYesterday = (currentDate: Date = new Date()) => {
-  let utc = currentDate.getTime() + currentDate.getTimezoneOffset() * 60000;
-  let koreaTime = new Date(utc + 9 * 60 * 60 * 1000); // UTC+9 시간대
-
-  let hour = koreaTime.getHours();
-
-  if (hour >= 0 && hour < START_HOUR_OF_DAY) {
-    // 오전 0시에서 6시 사이라면 엊그제 출력 (2일전)
-    koreaTime.setDate(koreaTime.getDate() - 2);
-  } else {
-    // 그렇지 않으면 어제 출력 (어제)
-    koreaTime.setDate(koreaTime.getDate() - 1);
-  }
-  return koreaTime;
-};
-
-const getServerToday = (currentDate: Date = new Date()) => {
-  let koreaTime = new Date(currentDate.getTime() + 9 * 60 * 60 * 1000); // UTC+9 시간대
-
-  let hour = koreaTime.getUTCHours();
-
-  if (hour >= 0 && hour < START_HOUR_OF_DAY) {
-    koreaTime.setUTCDate(koreaTime.getUTCDate() - 1);
-  }
-  return koreaTime;
-};
-
-const getDateString = (date: Date): string => {
-  const nowKoreanDate = new Date(date.getTime() + 9 * 60 * 60 * 1000);
+//checked at 24-11-25
+const getDateKoreanString = (utcDate: Date): string => {
+  const nowKoreanDate = new Date(utcDate.getTime() + 9 * 60 * 60 * 1000);
   return (
     nowKoreanDate?.getUTCFullYear() +
     '년 ' +
@@ -98,14 +73,12 @@ const StatisticMain: React.FC<any> = () => {
     Analytics.watchDailyStatisticScreen();
     dailyAnalyzeStatus(2024).then((data) => {
       if (!data) return;
-      setAvailableDates([...data.dates, getApiDateString(new Date())]);
+      setAvailableDates([...data.dates, getKoreanServerTodayDateString(new Date())]);
     });
   }, []);
 
   const fetchData = async () => {
-    console.log('fetchData1: ', date);
-    console.log('fetchData2: ', getApiDateString(date));
-    const dailyStatistics = await dailyAnalyze(getApiDateString(date));
+    const dailyStatistics = await dailyAnalyze(getKoreanServerTodayDateString(date));
     if (!dailyStatistics) {
       alert('네트워크 연결이 불안정합니다. 잠시 후 다시 시도해주세요.');
       return;
@@ -125,7 +98,7 @@ const StatisticMain: React.FC<any> = () => {
     const unsubscribe = navigation.addListener('focus', () => {
       dailyAnalyzeStatus(2024).then((data) => {
         if (!data) return;
-        setAvailableDates([...data.dates, getApiDateString(new Date())]);
+        setAvailableDates([...data.dates, getKoreanServerTodayDateString(new Date())]);
       });
     });
     // 컴포넌트 unmount 시 리스너를 해제
@@ -182,7 +155,7 @@ const StatisticMain: React.FC<any> = () => {
             <View style={{ marginVertical: 10 * rsHeight }}>
               <DateLineContainer>
                 <TouchableOpacity onPress={() => setOpenModal(true)}>
-                  <DateLineText>{getDateString(date)}</DateLineText>
+                  <DateLineText>{getDateKoreanString(date)}</DateLineText>
                 </TouchableOpacity>
                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                   <Hint

@@ -42,7 +42,7 @@ import {
 import { css } from '@emotion/native';
 import uuid from 'react-native-uuid';
 import { requestAnalytics } from '../../../apis/demo';
-import { getApiDateString } from '../../../utils/times';
+import { getKoreanServerTodayDateString } from '../../../utils/times';
 import { getRiskScore } from '../../../apis/riskscore';
 import * as Clipboard from 'expo-clipboard';
 import Toast from 'react-native-root-toast';
@@ -297,7 +297,7 @@ const NewChat: React.FC = ({ navigation }) => {
   };
 
   const refreshRiskScore = () => {
-    const date = getApiDateString(new Date());
+    const date = getKoreanServerTodayDateString(new Date());
     getRiskScore(date).then((res) => {
       setRiskScore(res);
       if (res >= RISK_SCORE_THRESHOLD && !getRiskData()) {

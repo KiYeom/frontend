@@ -84,7 +84,7 @@ const reportMessages = (message: IMessage) => {
   }
   const chats = getMessageSet(message, allMessages);
   if (chats === undefined) {
-    Alert.alert('신고 접수 실패', '인터넷 연결이 불안정합니다. 잠시 후 다시 시도해주세요.');
+    Alert.alert('신고 접수 실패', '쿠키와 대화를 진행한 후 다시 시도해주세요.');
     return;
   }
 
