@@ -34,3 +34,17 @@ export const getOldChatting = async (
     return;
   }
 };
+
+export const reportChat = async (
+  botId: number,
+  chatText: string,
+  chatTime: string,
+): Promise<boolean> => {
+  try {
+    await instance.post('/v1/chat/report', { botId, chatText, chatTime });
+    return true;
+  } catch (error) {
+    Sentry.captureException(error);
+    return false;
+  }
+};

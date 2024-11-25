@@ -18,6 +18,7 @@ import { Checkbox } from 'react-native-ui-lib';
 import palette from '../../../../../assets/styles/theme';
 import { rsHeight, rsWidth } from '../../../../../utils/responsive-size';
 import * as WebBrowser from 'expo-web-browser';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const validateCode = (code: string): 'error' | 'default' | 'correct' => {
   if (code.length !== 0 && (code.length < 2 || code.length > 15)) return 'error';
@@ -30,6 +31,7 @@ const OrganizationConnect: React.FC = ({ navigation }) => {
   const [privacyAllowed, setPrivacyAllowed] = React.useState<boolean>(false);
   const [fourth, setFourth] = React.useState<boolean>(false);
   const [loading, setLoading] = React.useState(false);
+  const insets = useSafeAreaInsets();
 
   const connectOrganization = (code: string) => {
     setLoading(true);
@@ -66,6 +68,7 @@ const OrganizationConnect: React.FC = ({ navigation }) => {
       <View
         style={css`
           flex: 1;
+          margin-bottom: ${insets.bottom + 'px'};
         `}>
         <TitleContainer>
           <Annotation>reMIND 기관 연결 페이지</Annotation>

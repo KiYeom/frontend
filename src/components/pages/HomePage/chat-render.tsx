@@ -20,10 +20,37 @@ import {
 import palette from '../../../assets/styles/theme';
 import { css } from '@emotion/native';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
-import { ActivityIndicator, Image, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, Text, TouchableOpacity, View } from 'react-native';
 import Icon from '../../icons/icons';
 import TypingIndicator from 'react-native-gifted-chat/src/TypingIndicator';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { reportChat } from '../../../apis/chatting';
+
+const reportMessages = (message: IMessage) => {
+  if (message.user._id === null || isNaN(message.user._id)) return;
+  reportChat(
+    Number(message.user._id),
+    message.text,
+    new Date(message.createdAt).toISOString(),
+  ).finally(() => {
+    Alert.alert('신고 접수', '신고가 접수되었습니다. 감사합니다!');
+  });
+};
+
+const confirmReport = (message: IMessage) => {
+  Alert.alert(
+    '대화를 신고하시겠습니까?',
+    '대화 신고 시 해당 대화를 비식별화 처리를 통해 개인정보 제거 후 신고가 접수됩니다. ',
+    [
+      // 버튼 배열
+      {
+        text: '아니오', // 버튼 제목
+        style: 'cancel',
+      },
+      { text: '신고하기', onPress: () => reportMessages(message) },
+    ],
+  );
+};
 
 export const RenderBubble = (props: BubbleProps<IMessage>) => {
   return (
@@ -34,7 +61,7 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
         flex-direction: ${props.position === 'left' ? 'row' : 'row-reverse'};
         align-items: end;
         justify-content: start;
-        gap: ${rsWidth * 8 + 'px'};
+        gap: ${rsWidth * 6 + 'px'};
       `}>
       <TouchableOpacity activeOpacity={1} onLongPress={props.onLongPress}>
         <View>
@@ -82,6 +109,24 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
           />
         </View>
       </TouchableOpacity>
+
+      {typeof props.currentMessage.user._id === 'number' && props.currentMessage.user._id > 0 && (
+        <TouchableOpacity activeOpacity={1} onPress={() => confirmReport(props.currentMessage)}>
+          <View
+            style={css`
+              flex: 1;
+              justify-content: flex-end;
+              padding-bottom: ${rsHeight * 4 + 'px'};
+            `}>
+            <Icon
+              name="warning"
+              width={rsWidth * 14 + 'px'}
+              height={rsHeight * 14 + 'px'}
+              color={palette.neutral[400]}
+            />
+          </View>
+        </TouchableOpacity>
+      )}
 
       {props.renderTime && props.renderTime({ ...props })}
     </Animated.View>
