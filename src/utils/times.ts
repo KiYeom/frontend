@@ -1,47 +1,57 @@
 export const KOREA_TIMEOFFSET_MINUTES = +9 * 60;
 export const START_HOUR = 6;
 
-export const getIsoString = (date, timezoneOffsetMinute = KOREA_TIMEOFFSET_MINUTES) => {
-  const tzo = timezoneOffsetMinute,
-    dif = tzo >= 0 ? '+' : '-',
-    pad = function (num: number) {
-      return (num < 10 ? '0' : '') + num;
-    };
-
-  // UTC 시간에서 오프셋을 적용한 시간을 계산합니다.
-  const utc = date.getTime() + date.getTimezoneOffset() * 60000;
-  const localDate = new Date(utc + timezoneOffsetMinute * 60000);
+//checked at 24-11-25
+export const getKoreanRealDateString = (date: Date = new Date()): string => {
+  const nowKoreanDate = new Date(date.getTime() + KOREA_TIMEOFFSET_MINUTES * 60 * 1000);
 
   return (
-    localDate.getFullYear() +
+    nowKoreanDate.getUTCFullYear() +
     '-' +
-    pad(localDate.getMonth() + 1) +
+    String(nowKoreanDate.getUTCMonth() + 1).padStart(2, '0') +
     '-' +
-    pad(localDate.getDate()) +
-    'T' +
-    pad(localDate.getHours()) +
-    ':' +
-    pad(localDate.getMinutes()) +
-    ':' +
-    pad(localDate.getSeconds()) +
-    dif +
-    pad(Math.floor(Math.abs(tzo) / 60)) +
-    ':' +
-    pad(Math.abs(tzo) % 60)
+    String(nowKoreanDate.getUTCDate()).padStart(2, '0')
   );
 };
 
-export const getApiDateString = (date: Date = new Date()): string => {
-  const nowKoreanDate = new Date(date.getTime() + KOREA_TIMEOFFSET_MINUTES * 60 * 1000);
+//checked at 24-11-25
+export const getKoreanServerTodayDateString = (date: Date): string => {
+  const nowKoreanTimeByUTC = new Date(date.getTime() + 9 * 60 * 60 * 1000);
 
-  if (nowKoreanDate.getHours() < START_HOUR) {
-    nowKoreanDate.setDate(nowKoreanDate.getDate() - 1);
+  if (nowKoreanTimeByUTC.getUTCHours() < 6) {
+    nowKoreanTimeByUTC.setUTCDate(nowKoreanTimeByUTC.getUTCDate() - 1);
   }
-  return (
-    nowKoreanDate.getFullYear() +
+
+  const result =
+    nowKoreanTimeByUTC.getUTCFullYear() +
     '-' +
-    String(nowKoreanDate.getMonth() + 1).padStart(2, '0') +
+    String(nowKoreanTimeByUTC.getUTCMonth() + 1).padStart(2, '0') +
     '-' +
-    String(nowKoreanDate.getDate()).padStart(2, '0')
-  );
+    String(nowKoreanTimeByUTC.getUTCDate()).padStart(2, '0');
+
+  console.log('KoreanServerTodayDate: ' + result);
+
+  return result;
+};
+
+//checked at 24-11-25
+export const getKoreanServerYesterdayDateString = (testDate: Date): string => {
+  const nowKoreanTimeByUTC = new Date(testDate.getTime() + 9 * 60 * 60 * 1000);
+
+  if (nowKoreanTimeByUTC.getUTCHours() < 6) {
+    nowKoreanTimeByUTC.setUTCDate(nowKoreanTimeByUTC.getUTCDate() - 1);
+  }
+
+  nowKoreanTimeByUTC.setUTCDate(nowKoreanTimeByUTC.getUTCDate() - 1);
+
+  const result =
+    nowKoreanTimeByUTC.getUTCFullYear() +
+    '-' +
+    String(nowKoreanTimeByUTC.getUTCMonth() + 1).padStart(2, '0') +
+    '-' +
+    String(nowKoreanTimeByUTC.getUTCDate()).padStart(2, '0');
+
+  console.log('result: ' + result);
+
+  return result;
 };

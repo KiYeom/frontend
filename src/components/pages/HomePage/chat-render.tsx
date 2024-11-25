@@ -20,12 +20,124 @@ import {
 import palette from '../../../assets/styles/theme';
 import { css } from '@emotion/native';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
-import { ActivityIndicator, Image, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, TouchableOpacity, View } from 'react-native';
 import Icon from '../../icons/icons';
 import TypingIndicator from 'react-native-gifted-chat/src/TypingIndicator';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { reportChat } from '../../../apis/chatting';
+import { getNewIMessages } from '../../../utils/storageUtils';
+
+const getMessageSet = (
+  currentMessage: IMessage,
+  allMessages: IMessage[],
+):
+  | {
+      botChats: string;
+      userChats: string;
+    }
+  | undefined => {
+  // Find the index of the current message
+  const currentMessageIndex = allMessages.findIndex((msg) => msg._id === currentMessage._id);
+
+  if (currentMessageIndex === -1) {
+    console.warn('Message not found in the list');
+    return undefined;
+  }
+
+  let nowIndex = currentMessageIndex;
+  const botChats: string[] = [];
+  const userChats: string[] = [];
+
+  for (let i = nowIndex; i < allMessages.length; i++) {
+    const msg = allMessages[i];
+    if (msg.user._id === null || isNaN(msg.user._id) || Number(msg.user._id) <= 0) {
+      break;
+    }
+    botChats.push(msg.text);
+    nowIndex++;
+  }
+  for (let i = nowIndex; i < allMessages.length; i++) {
+    const msg = allMessages[i];
+    if (msg.user._id === null || isNaN(msg.user._id) || Number(msg.user._id) > 0) {
+      break;
+    }
+    userChats.push(msg.text);
+    nowIndex++;
+  }
+  botChats.reverse();
+  userChats.reverse();
+
+  return {
+    botChats: botChats.join('\n'),
+    userChats: userChats.join('\n'),
+  };
+};
+
+const reportMessages = (message: IMessage) => {
+  if (message.user._id === null || isNaN(message.user._id)) return;
+  //대화 내역을 가져오는 함수
+  let allMessages: IMessage[] = [];
+  const deviceHistory = getNewIMessages();
+  if (deviceHistory) {
+    const deviceArray = JSON.parse(deviceHistory);
+    allMessages.push(...deviceArray);
+  }
+  const chats = getMessageSet(message, allMessages);
+  if (chats === undefined) {
+    Alert.alert('신고 접수 실패', '쿠키와 대화를 진행한 후 다시 시도해주세요.');
+    return;
+  }
+
+  reportChat(
+    Number(message.user._id),
+    chats.userChats,
+    chats.botChats,
+    new Date(message.createdAt).toISOString(),
+  ).finally(() => {
+    Alert.alert('신고 접수', '신고가 접수되었습니다. 감사합니다!');
+  });
+};
+
+const confirmReport = (message: IMessage) => {
+  Alert.alert(
+    '대화를 신고하시겠습니까?',
+    '대화 신고 시 해당 대화를 비식별화 처리를 통해 개인정보 제거 후 신고가 접수됩니다. ',
+    [
+      // 버튼 배열
+      {
+        text: '아니오', // 버튼 제목
+        style: 'cancel',
+      },
+      { text: '신고하기', onPress: () => reportMessages(message) },
+    ],
+  );
+};
 
 export const RenderBubble = (props: BubbleProps<IMessage>) => {
+  const showReport = (): boolean => {
+    const nowMessageUserId = props.currentMessage.user._id;
+    //check is bot message
+    if (nowMessageUserId === null || isNaN(nowMessageUserId) || Number(nowMessageUserId) <= 0)
+      return false;
+
+    //check is last bot chat
+    const nextMessageUserId =
+      props.nextMessage && props.nextMessage.user && props.nextMessage.user._id
+        ? props.nextMessage.user._id
+        : null;
+    if (nextMessageUserId === null) return true;
+    if (nextMessageUserId !== null && isNaN(nextMessageUserId) && Number(nextMessageUserId) > 0)
+      return true;
+    if (
+      props.nextMessage &&
+      new Date(props.nextMessage.createdAt).getTime() -
+        new Date(props.currentMessage.createdAt).getTime() >=
+        10 * 1000
+    )
+      return true;
+    return false;
+  };
+
   return (
     <Animated.View
       key={props.currentMessage._id}
@@ -34,7 +146,7 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
         flex-direction: ${props.position === 'left' ? 'row' : 'row-reverse'};
         align-items: end;
         justify-content: start;
-        gap: ${rsWidth * 8 + 'px'};
+        gap: ${rsWidth * 6 + 'px'};
       `}>
       <TouchableOpacity activeOpacity={1} onLongPress={props.onLongPress}>
         <View>
@@ -82,6 +194,23 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
           />
         </View>
       </TouchableOpacity>
+
+      {showReport() && (
+        <TouchableOpacity activeOpacity={1} onPress={() => confirmReport(props.currentMessage)}>
+          <View
+            style={css`
+              flex: 1;
+              justify-content: flex-end;
+            `}>
+            <Icon
+              name="warning"
+              width={rsWidth * 14 + 'px'}
+              height={rsHeight * 14 + 'px'}
+              color={palette.neutral[400]}
+            />
+          </View>
+        </TouchableOpacity>
+      )}
 
       {props.renderTime && props.renderTime({ ...props })}
     </Animated.View>

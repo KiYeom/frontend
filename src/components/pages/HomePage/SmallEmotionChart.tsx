@@ -14,7 +14,7 @@ import {
 import Toast from 'react-native-root-toast';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Carousel } from 'react-native-ui-lib';
-import { dailyAnalyze, todayEmotion } from '../../../apis/analyze';
+import { dailyAnalyze, todayEmotion, todayEmotionCheck } from '../../../apis/analyze';
 import {
   emotionData,
   emotionsByColumn,
@@ -26,23 +26,12 @@ import Analytics from '../../../utils/analytics';
 import useRecordedEmotionStore from '../../../utils/emotion-recorded';
 import useEmotionStore from '../../../utils/emotion-status';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
-import { getIsDemo, getUserNickname } from '../../../utils/storageUtils';
+import { getUserNickname } from '../../../utils/storageUtils';
 import EmotionCard from '../../atoms/EmotionCard/EmotionCard';
 import EmotionChip from '../../atoms/EmotionChip/EmotionChip';
 import Button from '../../button/button';
 import Input from '../../input/input';
 import { EmotionDesc, SmallTitle, Title } from './EmotionChart.style';
-import { getDemoAnalyticsPush } from '../../../apis/demo';
-
-const getApiDateString = (date: Date): string => {
-  return (
-    date?.getFullYear() +
-    '-' +
-    String(date.getMonth() + 1).padStart(2, '0') +
-    '-' +
-    String(date.getDate()).padStart(2, '0')
-  );
-};
 
 const SmallEmotionChart = ({ navigation }) => {
   const insets = useSafeAreaInsets();
@@ -54,9 +43,8 @@ const SmallEmotionChart = ({ navigation }) => {
 
   useEffect(() => {
     Analytics.watchEmotionRecordScreen();
-    dailyAnalyze(getApiDateString(new Date())).then((data) => {
-      if (!data || !data.record || !data.record.todayFeeling) return;
-      setText(data.record.todayFeeling);
+    todayEmotionCheck().then((data) => {
+      setText(data.todayFeeling);
     });
     setSelectedEmotions(recordedEmotions);
   }, []);
@@ -116,7 +104,7 @@ const SmallEmotionChart = ({ navigation }) => {
 
           <Carousel
             pageWidth={rsWidth * 150} //캐러셀의 너비
-            initialPage={2} //앱이 처음 실행되고 보여줄 초기 페이지
+            initialPage={0} //앱이 처음 실행되고 보여줄 초기 페이지
             itemSpacings={12 * rsWidth}>
             {emotionsByColumn.map((emotions, index) => (
               <View key={index}>
@@ -201,14 +189,14 @@ const SmallEmotionChart = ({ navigation }) => {
               }
               primary={true}
               disabled={
-                (selectedEmotions.length < MINIMUM_EMOTION_COUNT && text.trim() === '') ||
+                (selectedEmotions.length < MINIMUM_EMOTION_COUNT &&
+                  (!text || text.trim() === '')) ||
                 selectedEmotions.length > MAXIMUM_EMOTION_COUNT
               }
               onPress={async () => {
                 Analytics.clickRecordButton();
                 setRecordedEmotions(selectedEmotions); // 상태 업데이트
-                await todayEmotion(selectedEmotions, text); //
-                if (getIsDemo()) getDemoAnalyticsPush();
+                await todayEmotion(selectedEmotions, text);
                 navigation.navigate(TabScreenName.Home);
               }}
             />

@@ -1,7 +1,7 @@
 import { MMKV } from 'react-native-mmkv';
 import { ONE_DAY_IN_MS } from '../constants/Constants';
 import { TGender, TNotice } from '../constants/types';
-import { getApiDateString } from './times';
+import { getKoreanServerTodayDateString } from './times';
 import { showAppNotice } from './app-notice';
 
 export const storage = new MMKV();
@@ -314,8 +314,8 @@ export const getRiskData = (): TRiskData | undefined => {
   const data = storage.getString(RISK_WITH_LETTER_ID);
   if (!data) return undefined;
   const riskData = JSON.parse(data);
-  const nowApiDateString = getApiDateString(new Date());
-  const riskDateApiDateString = getApiDateString(new Date(riskData.timestamp));
+  const nowApiDateString = getKoreanServerTodayDateString(new Date());
+  const riskDateApiDateString = getKoreanServerTodayDateString(new Date(riskData.timestamp));
   if (riskDateApiDateString === nowApiDateString) {
     return riskData;
   } else {
@@ -325,8 +325,8 @@ export const getRiskData = (): TRiskData | undefined => {
 };
 
 // 위험 데이터 저장
-export const setRiskData = (riskDate: TRiskData): void => {
-  const data = JSON.stringify(riskDate);
+export const setRiskData = (riskData: TRiskData): void => {
+  const data = JSON.stringify(riskData);
   storage.set(RISK_WITH_LETTER_ID, data);
 };
 

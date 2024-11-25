@@ -2,6 +2,7 @@ import * as Sentry from '@sentry/react-native';
 import { instance } from './interceptor';
 import { getIsDemo } from '../utils/storageUtils';
 import { TCommonResult } from './common.types';
+import { TDemoChats } from './demo.types';
 
 export const getDemoAllow = async (): Promise<TCommonResult | undefined> => {
   try {
@@ -59,6 +60,19 @@ export const requestAnalytics = async (): Promise<void> => {
     }
     await instance.get('/v1/analyze/daily-update');
     return;
+  } catch (error) {
+    Sentry.captureException(error); // Sentry에 에러 전송
+    return;
+  }
+};
+
+export const requestDemoChat = async (): Promise<TDemoChats | undefined> => {
+  try {
+    if (!getIsDemo()) {
+      return;
+    }
+    const res = await instance.get('/v1/demo/get-chat');
+    return res.data;
   } catch (error) {
     Sentry.captureException(error); // Sentry에 에러 전송
     return;

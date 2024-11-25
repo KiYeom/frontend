@@ -5,7 +5,7 @@ import { Modal, TouchableWithoutFeedback, View } from 'react-native';
 import DateTimePicker, { DateType } from 'react-native-ui-datepicker';
 import palette from '../../assets/styles/theme';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';
-import { getIsoString } from '../../utils/times';
+import { getKoreanRealDateString } from '../../utils/times';
 import Button from '../button/button';
 
 const isDateInList = (date: DateType | null, dateList: string[]): boolean => {
@@ -31,7 +31,7 @@ const isDateInList = (date: DateType | null, dateList: string[]): boolean => {
   }
 
   // 입력된 Date 객체를 'YYYY-MM-DD' 형식의 문자열로 변환
-  const dateStr = getIsoString(targetDate).split('T')[0];
+  const dateStr = getKoreanRealDateString(targetDate);
 
   // 변환된 문자열이 dateList에 포함되어 있는지 확인
   return dateList.includes(dateStr);
