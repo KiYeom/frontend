@@ -2,7 +2,7 @@ export const KOREA_TIMEOFFSET_MINUTES = +9 * 60;
 export const START_HOUR = 6;
 
 //checked at 24-11-25
-export const getKoreanDateString = (date: Date = new Date()): string => {
+export const getKoreanRealDateString = (date: Date = new Date()): string => {
   const nowKoreanDate = new Date(date.getTime() + KOREA_TIMEOFFSET_MINUTES * 60 * 1000);
 
   return (

@@ -23,7 +23,6 @@ import { getDeviceId } from './src/utils/device-info';
 import { UseSigninStatus } from './src/utils/signin-status';
 import {
   clearInfoWhenLogout,
-  deleteIsDemo,
   getAccessToken,
   getRefreshToken,
   setDeviceId,
@@ -93,7 +92,6 @@ const App: React.FC = () => {
       return;
     }
     setDeviceId(deviceId);
-    deleteIsDemo();
     const signinResult = await checkSignIn();
     if (!signinResult) {
       clearInfoWhenLogout();

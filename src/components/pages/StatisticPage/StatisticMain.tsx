@@ -26,7 +26,12 @@ import {
 } from './StatisticMain.style';
 import { Hint } from 'react-native-ui-lib';
 import Icon from '../../icons/icons';
-import { getKoreanServerTodayDateString } from '../../../utils/times';
+import {
+  getKoreanRealDateString,
+  getKoreanServerTodayDateString,
+  getKoreanServerYesterdayDateString,
+} from '../../../utils/times';
+import { getIsDemo } from '../../../utils/storageUtils';
 
 const START_HOUR_OF_DAY = 6;
 
@@ -72,13 +77,22 @@ const StatisticMain: React.FC<any> = () => {
   useEffect(() => {
     Analytics.watchDailyStatisticScreen();
     dailyAnalyzeStatus(2024).then((data) => {
-      if (!data) return;
-      setAvailableDates([...data.dates, getKoreanServerTodayDateString(new Date())]);
+      if (!data) {
+        setAvailableDates([getKoreanServerTodayDateString(new Date())]);
+      } else {
+        setAvailableDates([...data.dates, getKoreanServerTodayDateString(new Date())]);
+      }
     });
+    if (getIsDemo()) {
+      setDate(new Date(`${getKoreanServerTodayDateString(new Date())}T00:00:00.000+09:00`));
+    } else {
+      setDate(new Date(`${getKoreanServerYesterdayDateString(new Date())}T00:00:00.000+09:00`));
+    }
   }, []);
 
   const fetchData = async () => {
-    const dailyStatistics = await dailyAnalyze(getKoreanServerTodayDateString(date));
+    console.log('fetchData date: ', date);
+    const dailyStatistics = await dailyAnalyze(getKoreanRealDateString(date));
     if (!dailyStatistics) {
       alert('네트워크 연결이 불안정합니다. 잠시 후 다시 시도해주세요.');
       return;
@@ -97,8 +111,11 @@ const StatisticMain: React.FC<any> = () => {
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       dailyAnalyzeStatus(2024).then((data) => {
-        if (!data) return;
-        setAvailableDates([...data.dates, getKoreanServerTodayDateString(new Date())]);
+        if (!data) {
+          setAvailableDates([getKoreanServerTodayDateString(new Date())]);
+        } else {
+          setAvailableDates([...data.dates, getKoreanServerTodayDateString(new Date())]);
+        }
       });
     });
     // 컴포넌트 unmount 시 리스너를 해제

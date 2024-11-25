@@ -14,7 +14,7 @@ import {
 import Toast from 'react-native-root-toast';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Carousel } from 'react-native-ui-lib';
-import { dailyAnalyze, todayEmotion } from '../../../apis/analyze';
+import { dailyAnalyze, todayEmotion, todayEmotionCheck } from '../../../apis/analyze';
 import {
   emotionData,
   emotionsByColumn,
@@ -26,23 +26,12 @@ import Analytics from '../../../utils/analytics';
 import useRecordedEmotionStore from '../../../utils/emotion-recorded';
 import useEmotionStore from '../../../utils/emotion-status';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
-import { getIsDemo, getUserNickname } from '../../../utils/storageUtils';
+import { getUserNickname } from '../../../utils/storageUtils';
 import EmotionCard from '../../atoms/EmotionCard/EmotionCard';
 import EmotionChip from '../../atoms/EmotionChip/EmotionChip';
 import Button from '../../button/button';
 import Input from '../../input/input';
 import { EmotionDesc, SmallTitle, Title } from './EmotionChart.style';
-import { getDemoAnalyticsPush } from '../../../apis/demo';
-
-const getApiDateString = (date: Date): string => {
-  return (
-    date?.getFullYear() +
-    '-' +
-    String(date.getMonth() + 1).padStart(2, '0') +
-    '-' +
-    String(date.getDate()).padStart(2, '0')
-  );
-};
 
 const SmallEmotionChart = ({ navigation }) => {
   const insets = useSafeAreaInsets();
@@ -54,9 +43,8 @@ const SmallEmotionChart = ({ navigation }) => {
 
   useEffect(() => {
     Analytics.watchEmotionRecordScreen();
-    dailyAnalyze(getApiDateString(new Date())).then((data) => {
-      if (!data || !data.record || !data.record.todayFeeling) return;
-      setText(data.record.todayFeeling);
+    todayEmotionCheck().then((data) => {
+      setText(data.todayFeeling);
     });
     setSelectedEmotions(recordedEmotions);
   }, []);
@@ -201,7 +189,8 @@ const SmallEmotionChart = ({ navigation }) => {
               }
               primary={true}
               disabled={
-                (selectedEmotions.length < MINIMUM_EMOTION_COUNT && text.trim() === '') ||
+                (selectedEmotions.length < MINIMUM_EMOTION_COUNT &&
+                  (!text || text.trim() === '')) ||
                 selectedEmotions.length > MAXIMUM_EMOTION_COUNT
               }
               onPress={async () => {
