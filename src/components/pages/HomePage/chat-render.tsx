@@ -67,9 +67,6 @@ const getMessageSet = (
   botChats.reverse();
   userChats.reverse();
 
-  console.log('botChats', botChats);
-  console.log('userChats', userChats);
-
   return {
     botChats: botChats.join('\n'),
     userChats: userChats.join('\n'),
@@ -130,6 +127,13 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
         : null;
     if (nextMessageUserId === null) return true;
     if (nextMessageUserId !== null && isNaN(nextMessageUserId) && Number(nextMessageUserId) > 0)
+      return true;
+    if (
+      props.nextMessage &&
+      new Date(props.nextMessage.createdAt).getTime() -
+        new Date(props.currentMessage.createdAt).getTime() >=
+        10 * 1000
+    )
       return true;
     return false;
   };

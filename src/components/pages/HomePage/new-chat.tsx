@@ -291,7 +291,6 @@ const NewChat: React.FC = ({ navigation }) => {
       return;
     }
     if (riskStatus === 'safe') {
-      console.log('hint');
       setHintStatus(true);
       return;
     }
