@@ -20,17 +20,81 @@ import {
 import palette from '../../../assets/styles/theme';
 import { css } from '@emotion/native';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
-import { ActivityIndicator, Alert, Image, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, TouchableOpacity, View } from 'react-native';
 import Icon from '../../icons/icons';
 import TypingIndicator from 'react-native-gifted-chat/src/TypingIndicator';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { reportChat } from '../../../apis/chatting';
+import { getNewIMessages } from '../../../utils/storageUtils';
+
+const getMessageSet = (
+  currentMessage: IMessage,
+  allMessages: IMessage[],
+):
+  | {
+      botChats: string;
+      userChats: string;
+    }
+  | undefined => {
+  // Find the index of the current message
+  const currentMessageIndex = allMessages.findIndex((msg) => msg._id === currentMessage._id);
+
+  if (currentMessageIndex === -1) {
+    console.warn('Message not found in the list');
+    return undefined;
+  }
+
+  let nowIndex = currentMessageIndex;
+  const botChats: string[] = [];
+  const userChats: string[] = [];
+
+  for (let i = nowIndex; i < allMessages.length; i++) {
+    const msg = allMessages[i];
+    if (msg.user._id === null || isNaN(msg.user._id) || Number(msg.user._id) <= 0) {
+      break;
+    }
+    botChats.push(msg.text);
+    nowIndex++;
+  }
+  for (let i = nowIndex; i < allMessages.length; i++) {
+    const msg = allMessages[i];
+    if (msg.user._id === null || isNaN(msg.user._id) || Number(msg.user._id) > 0) {
+      break;
+    }
+    userChats.push(msg.text);
+    nowIndex++;
+  }
+  botChats.reverse();
+  userChats.reverse();
+
+  console.log('botChats', botChats);
+  console.log('userChats', userChats);
+
+  return {
+    botChats: botChats.join('\n'),
+    userChats: userChats.join('\n'),
+  };
+};
 
 const reportMessages = (message: IMessage) => {
   if (message.user._id === null || isNaN(message.user._id)) return;
+  //대화 내역을 가져오는 함수
+  let allMessages: IMessage[] = [];
+  const deviceHistory = getNewIMessages();
+  if (deviceHistory) {
+    const deviceArray = JSON.parse(deviceHistory);
+    allMessages.push(...deviceArray);
+  }
+  const chats = getMessageSet(message, allMessages);
+  if (chats === undefined) {
+    Alert.alert('신고 접수 실패', '인터넷 연결이 불안정합니다. 잠시 후 다시 시도해주세요.');
+    return;
+  }
+
   reportChat(
     Number(message.user._id),
-    message.text,
+    chats.userChats,
+    chats.botChats,
     new Date(message.createdAt).toISOString(),
   ).finally(() => {
     Alert.alert('신고 접수', '신고가 접수되었습니다. 감사합니다!');
@@ -53,6 +117,23 @@ const confirmReport = (message: IMessage) => {
 };
 
 export const RenderBubble = (props: BubbleProps<IMessage>) => {
+  const showReport = (): boolean => {
+    const nowMessageUserId = props.currentMessage.user._id;
+    //check is bot message
+    if (nowMessageUserId === null || isNaN(nowMessageUserId) || Number(nowMessageUserId) <= 0)
+      return false;
+
+    //check is last bot chat
+    const nextMessageUserId =
+      props.nextMessage && props.nextMessage.user && props.nextMessage.user._id
+        ? props.nextMessage.user._id
+        : null;
+    if (nextMessageUserId === null) return true;
+    if (nextMessageUserId !== null && isNaN(nextMessageUserId) && Number(nextMessageUserId) > 0)
+      return true;
+    return false;
+  };
+
   return (
     <Animated.View
       key={props.currentMessage._id}
@@ -110,13 +191,12 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
         </View>
       </TouchableOpacity>
 
-      {typeof props.currentMessage.user._id === 'number' && props.currentMessage.user._id > 0 && (
+      {showReport() && (
         <TouchableOpacity activeOpacity={1} onPress={() => confirmReport(props.currentMessage)}>
           <View
             style={css`
               flex: 1;
               justify-content: flex-end;
-              padding-bottom: ${rsHeight * 4 + 'px'};
             `}>
             <Icon
               name="warning"

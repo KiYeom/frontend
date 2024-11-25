@@ -49,7 +49,7 @@ import Toast from 'react-native-root-toast';
 import { Hint } from 'react-native-ui-lib';
 import palette from '../../../assets/styles/theme';
 
-const HINT_MESSAGE = 'LLM AI 모델로 생성된 답변입니다. 필요 시 전문가와 상의하세요.';
+const HINT_MESSAGE = 'AI로 생성된 답변입니다. 상담 필요 시 전문가와 상의하세요.';
 
 const userObject = {
   _id: 0,
@@ -154,6 +154,7 @@ const NewChat: React.FC = ({ navigation }) => {
         user: botObject,
       };
       messages.push(welcomeMessage);
+      setNewIMessages(JSON.stringify([welcomeMessage]));
     }
     return messages;
   };
@@ -387,7 +388,7 @@ const NewChat: React.FC = ({ navigation }) => {
         color={'white'}
         enableShadow
         messageStyle={css`
-          font-family: Kyobo-handwriting;
+          font-family: Pretendard-Regular;
           font-size: ${16 * rsFont + 'px'};
           color: ${palette.neutral[900]};
         `}

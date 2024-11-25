@@ -116,7 +116,7 @@ const SmallEmotionChart = ({ navigation }) => {
 
           <Carousel
             pageWidth={rsWidth * 150} //캐러셀의 너비
-            initialPage={2} //앱이 처음 실행되고 보여줄 초기 페이지
+            initialPage={0} //앱이 처음 실행되고 보여줄 초기 페이지
             itemSpacings={12 * rsWidth}>
             {emotionsByColumn.map((emotions, index) => (
               <View key={index}>
