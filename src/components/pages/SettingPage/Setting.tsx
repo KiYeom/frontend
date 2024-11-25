@@ -92,18 +92,15 @@ const Setting: React.FC<any> = ({ navigation }) => {
     setLoading(true);
     getLatestVersion()
       .then((res) => {
-        if (res) {
-          if (res.latestVersion === getAppVersion()) {
-            setIsLatest(true);
-          } else {
-            setIsLatest(false);
-          }
-          setLoading(false);
-        } else {
-          setIsLatest(true);
+        const deviceVersion = getAppVersion() ?? undefined;
+        if (res && deviceVersion && deviceVersion < res.latestVersion) {
+          setIsLatest(false);
+          return;
         }
       })
-      .catch((error) => console.error(error));
+      .catch((error) => console.error(error))
+      .finally(() => setLoading(false));
+
     const unsubscribe = navigation.addListener('focus', () => {
       setName(getUserNickname() + '');
     });

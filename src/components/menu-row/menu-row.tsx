@@ -57,7 +57,9 @@ const MenuRow = (props: MenuRowProps) => {
         {showVersion && (
           <>
             <VersionText>{'v' + getAppVersion()}</VersionText>
-            <VersionStatus isLatest={true}>{'최신'}</VersionStatus>
+            <VersionStatus isLatest={isLatest}>
+              {isLatest ? '최신' : '지금 업데이트 '}
+            </VersionStatus>
           </>
         )}
       </MenuRowTextContainer>
