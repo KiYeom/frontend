@@ -402,7 +402,7 @@ const NewChat: React.FC = ({ navigation }) => {
         onSend={(messages) => onSend(messages)}
         user={userObject}
         onInputTextChanged={(text) => {
-          if (typingTimeoutRef.current) {
+          if (typingTimeoutRef.current && !sending && buffer) {
             resetTimer();
           }
         }}

@@ -55,6 +55,7 @@ const HINT_MESSAGE =
 //전체 통계 화면
 const StatisticMain: React.FC<any> = () => {
   const [date, setDate] = useState<Date>(new Date()); //서버에서 계산하는 날짜
+  const [dateKorean, setDateKorean] = useState<string>(''); //한국 시간으로 변환한 날짜
   const [openModal, setOpenModal] = React.useState(false);
   const [isNullClassification, setIsNullClassification] = useState(true);
   const [labelsClassification, setLabelsClassification] = useState<TLabel[]>([]);
@@ -125,6 +126,7 @@ const StatisticMain: React.FC<any> = () => {
   }, [navigation]);
 
   useEffect(() => {
+    setDateKorean(getDateKoreanString(date));
     fetchData();
   }, [date]);
 
@@ -172,7 +174,7 @@ const StatisticMain: React.FC<any> = () => {
             <View style={{ marginVertical: 10 * rsHeight }}>
               <DateLineContainer>
                 <TouchableOpacity onPress={() => setOpenModal(true)}>
-                  <DateLineText>{getDateKoreanString(date)}</DateLineText>
+                  <DateLineText>{dateKorean}</DateLineText>
                 </TouchableOpacity>
                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                   <Hint
