@@ -8,10 +8,10 @@ module.exports = {
     slug: 'reMIND',
     version: '1.2.6',
     orientation: 'portrait',
-    icon: './src/assets/images/appicon.png',
-    userInterfaceStyle: 'light',
+    icon: './src/assets/images/christmasappicon.png',
+    userInterfaceStyle: 'automatic',
     splash: {
-      image: './src/assets/images/splash.png',
+      image: './src/assets/images/christmassplash.png',
       resizeMode: 'contain',
       backgroundColor: '#4DA584',
     },
@@ -20,6 +20,7 @@ module.exports = {
       bundleIdentifier: 'com.ceunnseo.reMIND',
       usesAppleSignIn: true,
       googleServicesFile: process.env.GOOGLE_SERVICES_INFO,
+      userInterfaceStyle: 'automatic',
     },
     android: {
       adaptiveIcon: {
@@ -29,6 +30,7 @@ module.exports = {
       package: 'com.ceunnseo.reMIND',
       permissions: ['INTERNET', 'com.google.android.gms.permission.AD_ID'],
       googleServicesFile: process.env.GOOGLE_SERVICES_JSON,
+      userInterfaceStyle: 'automatic',
     },
     androidStatusBar: {
       translucent: true,

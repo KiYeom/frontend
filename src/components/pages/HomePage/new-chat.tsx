@@ -59,7 +59,8 @@ const userObject = {
 const botObject = {
   _id: 1,
   name: '쿠키',
-  avatar: require('../../../assets/images/cookieprofile.png'),
+  //avatar: require('../../../assets/images/cookieprofile.png'),
+  avatar: require('../../../assets/images/cookieprofilechristmas.png'),
 };
 
 const NewChat: React.FC = ({ navigation }) => {
