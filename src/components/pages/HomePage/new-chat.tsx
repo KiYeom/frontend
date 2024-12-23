@@ -19,11 +19,12 @@ import {
   getRefreshChat,
   getRiskData,
   getUserNickname,
+  setIsScoreDemo,
   setNewIMessages,
   setRiskData,
 } from '../../../utils/storageUtils';
 import Analytics from '../../../utils/analytics';
-import { rsWidth } from '../../../utils/responsive-size';
+import { rsFont, rsWidth } from '../../../utils/responsive-size';
 import { chatting, getOldChatting } from '../../../apis/chatting';
 import { TabScreenName } from '../../../constants/Constants';
 import {
@@ -41,10 +42,14 @@ import {
 import { css } from '@emotion/native';
 import uuid from 'react-native-uuid';
 import { requestAnalytics } from '../../../apis/demo';
-import { getApiDateString } from '../../../utils/times';
+import { getKoreanServerTodayDateString } from '../../../utils/times';
 import { getRiskScore } from '../../../apis/riskscore';
 import * as Clipboard from 'expo-clipboard';
 import Toast from 'react-native-root-toast';
+import { Hint } from 'react-native-ui-lib';
+import palette from '../../../assets/styles/theme';
+
+const HINT_MESSAGE = 'AI로 생성된 답변입니다. 상담 필요 시 전문가와 상의하세요.';
 
 const userObject = {
   _id: 0,
@@ -54,7 +59,8 @@ const userObject = {
 const botObject = {
   _id: 1,
   name: '쿠키',
-  avatar: require('../../../assets/images/cookieprofile.png'),
+  //avatar: require('../../../assets/images/cookieprofile.png'),
+  avatar: require('../../../assets/images/cookieprofilechristmas.png'),
 };
 
 const NewChat: React.FC = ({ navigation }) => {
@@ -71,6 +77,7 @@ const NewChat: React.FC = ({ navigation }) => {
 
   const [riskScore, setRiskScore] = React.useState<number>(0);
   const [riskStatus, setRiskStatus] = React.useState<'safe' | 'danger' | 'danger-opened'>('safe');
+  const [hintStatus, setHintStatus] = React.useState<boolean>(false);
 
   const decideRefreshScreen = (viewHeight: number) => {
     NavigationBar.getVisibilityAsync().then((navBarStatus) => {
@@ -148,6 +155,7 @@ const NewChat: React.FC = ({ navigation }) => {
         user: botObject,
       };
       messages.push(welcomeMessage);
+      setNewIMessages(JSON.stringify([welcomeMessage]));
     }
     return messages;
   };
@@ -161,7 +169,8 @@ const NewChat: React.FC = ({ navigation }) => {
     if (!buffer) return;
     setSending(true);
     const question = buffer ?? '';
-    chatting(1, question)
+    const isDemo = getIsDemo();
+    chatting(1, question, isDemo)
       .then((res) => {
         if (res && res.answer) {
           const answers =
@@ -212,6 +221,7 @@ const NewChat: React.FC = ({ navigation }) => {
       sendMessageToServer();
     }, 2 * 1000);
   };
+
   const resetRefreshTimer = (height: number, ms: number) => {
     if (refreshTimeoutRef.current) {
       clearTimeout(refreshTimeoutRef.current);
@@ -281,10 +291,14 @@ const NewChat: React.FC = ({ navigation }) => {
       }); //쿠키 편지 화면으로 이동한다
       return;
     }
+    if (riskStatus === 'safe') {
+      setHintStatus(true);
+      return;
+    }
   };
 
   const refreshRiskScore = () => {
-    const date = getApiDateString(new Date());
+    const date = getKoreanServerTodayDateString(new Date());
     getRiskScore(date).then((res) => {
       setRiskScore(res);
       if (res >= RISK_SCORE_THRESHOLD && !getRiskData()) {
@@ -320,6 +334,7 @@ const NewChat: React.FC = ({ navigation }) => {
       position: Toast.positions.CENTER,
     });
   };
+
   return (
     <SafeAreaView
       style={{ flex: 1 }}
@@ -356,16 +371,32 @@ const NewChat: React.FC = ({ navigation }) => {
           if (getIsDemo()) requestAnalytics();
           navigation.navigate(TabScreenName.Home);
         }}
+        isRight
         rightFunction={handleDangerPress}
         rightIcon={
           riskStatus === 'danger'
             ? 'danger-sign'
             : riskStatus === 'danger-opened'
               ? 'danger-sign-opened'
-              : 'remind-logo'
+              : 'information'
         }
-        isRight={riskStatus !== 'safe'}
       />
+      <Hint
+        visible={hintStatus}
+        position={Hint.positions.BOTTOM}
+        message={HINT_MESSAGE}
+        color={'white'}
+        enableShadow
+        messageStyle={css`
+          font-family: Pretendard-Regular;
+          font-size: ${16 * rsFont + 'px'};
+          color: ${palette.neutral[900]};
+        `}
+        onPress={() => setHintStatus(false)}
+        onBackgroundPress={() => setHintStatus(false)}
+        backdropColor={'rgba(0, 0, 0, 0.5)'}>
+        <View />
+      </Hint>
 
       <GiftedChat
         messages={messages}
@@ -384,6 +415,9 @@ const NewChat: React.FC = ({ navigation }) => {
           Analytics.clickChatCharacterAvatar();
           navigation.navigate(HomeStackName.Profile);
         }}
+        onLongPressAvatar={() => {
+          if (getIsDemo()) setIsScoreDemo(true);
+        }}
         renderBubble={RenderBubble}
         onLongPress={(context, message: IMessage) => {
           Clipboard.setStringAsync(message.text).then(() => {
@@ -397,7 +431,7 @@ const NewChat: React.FC = ({ navigation }) => {
         renderInputToolbar={RenderInputToolbar}
         renderComposer={RenderComposer}
         textInputProps={{
-          placeholder: '메시지 입력',
+          placeholder: getIsDemo() ? '메시지 입력.' : '메시지 입력',
           marginLeft: rsWidth * 15,
         }}
         keyboardShouldPersistTaps="never"

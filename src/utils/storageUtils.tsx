@@ -1,7 +1,7 @@
 import { MMKV } from 'react-native-mmkv';
 import { ONE_DAY_IN_MS } from '../constants/Constants';
 import { TGender, TNotice } from '../constants/types';
-import { getApiDateString } from './times';
+import { getKoreanServerTodayDateString } from './times';
 import { showAppNotice } from './app-notice';
 
 export const storage = new MMKV();
@@ -31,6 +31,8 @@ const RISK_WITH_LETTER_ID = 'RISK_WITH_LETTER_ID';
 //refreshChattingPageTimes
 const REFRESH_CHAT = 'refresh_chat';
 
+//READ_NOTICE
+const READ_NOTICE = 'read_notice';
 //isDemo
 const IS_DEMO = 'is_demo';
 
@@ -90,6 +92,7 @@ export const clearInfoWhenLogout = (): void => {
   deleteChatting();
   deleteNewIMessages();
   deleteNotificationSent();
+  deleteReadNotice();
 };
 
 //Tokens
@@ -230,6 +233,35 @@ export const addRefreshChat = (times: number): number => {
   return refreshChat + times;
 };
 
+//READ_NOTICE
+export const getReadNotice = (): number[] => {
+  const numberArrayString = storage.getString(READ_NOTICE);
+  if (!numberArrayString) return [];
+  return JSON.parse(numberArrayString);
+};
+
+export const findReadNotice = (noticeId: number): boolean => {
+  const readNotice = getReadNotice();
+  return readNotice.includes(noticeId);
+};
+
+export const setReadNotice = (readNotice: number[]): void => {
+  const readNoticeString = JSON.stringify(readNotice);
+  storage.set(READ_NOTICE, readNoticeString);
+};
+
+export const addReadNotice = (noticeId: number): void => {
+  const readNotice = getReadNotice();
+  if (!readNotice.includes(noticeId)) {
+    readNotice.push(noticeId);
+    setReadNotice(readNotice);
+  }
+};
+
+export const deleteReadNotice = (): void => {
+  storage.delete(READ_NOTICE);
+};
+
 //isDemo
 export const getIsDemo = (): boolean => {
   return storage.getBoolean(IS_DEMO) ?? false;
@@ -282,8 +314,8 @@ export const getRiskData = (): TRiskData | undefined => {
   const data = storage.getString(RISK_WITH_LETTER_ID);
   if (!data) return undefined;
   const riskData = JSON.parse(data);
-  const nowApiDateString = getApiDateString(new Date());
-  const riskDateApiDateString = getApiDateString(new Date(riskData.timestamp));
+  const nowApiDateString = getKoreanServerTodayDateString(new Date());
+  const riskDateApiDateString = getKoreanServerTodayDateString(new Date(riskData.timestamp));
   if (riskDateApiDateString === nowApiDateString) {
     return riskData;
   } else {
@@ -293,8 +325,8 @@ export const getRiskData = (): TRiskData | undefined => {
 };
 
 // 위험 데이터 저장
-export const setRiskData = (riskDate: TRiskData): void => {
-  const data = JSON.stringify(riskDate);
+export const setRiskData = (riskData: TRiskData): void => {
+  const data = JSON.stringify(riskData);
   storage.set(RISK_WITH_LETTER_ID, data);
 };
 

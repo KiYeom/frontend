@@ -23,7 +23,6 @@ import { getDeviceId } from './src/utils/device-info';
 import { UseSigninStatus } from './src/utils/signin-status';
 import {
   clearInfoWhenLogout,
-  deleteIsDemo,
   getAccessToken,
   getRefreshToken,
   setDeviceId,
@@ -31,6 +30,8 @@ import {
 import { setStatusBarStyle } from 'expo-status-bar';
 import { PaperProvider } from 'react-native-paper';
 import { RootSiblingParent } from 'react-native-root-siblings';
+import { Appearance, useColorScheme } from 'react-native';
+import * as SystemUI from 'expo-system-ui';
 
 Sentry.init({
   dsn: 'https://038362834934b1090d94fe368fdbcbf7@o4507944128020480.ingest.us.sentry.io/4507944132870145',
@@ -93,7 +94,6 @@ const App: React.FC = () => {
       return;
     }
     setDeviceId(deviceId);
-    deleteIsDemo();
     const signinResult = await checkSignIn();
     if (!signinResult) {
       clearInfoWhenLogout();
@@ -102,6 +102,16 @@ const App: React.FC = () => {
     if (accessToken) Analytics.setUser(accessToken);
     setSigninStatus(signinResult);
   };
+  //다크모드 확인
+  /*let colorScheme = useColorScheme();
+  useEffect(() => {
+    console.log('======colorsheme======', colorScheme);
+    if (colorScheme === 'dark') {
+      console.log('다크모드');
+    } else {
+      console.log('라이트모드');
+    }
+  }, [colorScheme]);*/
 
   useEffect(() => {
     if (loaded || error) {

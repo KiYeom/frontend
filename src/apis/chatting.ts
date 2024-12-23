@@ -5,11 +5,13 @@ import { instance } from './interceptor';
 export const chatting = async (
   characterId: number,
   question: string,
+  isDemo: boolean = false,
 ): Promise<TChatAnswer | undefined> => {
   try {
     const res = await instance.post('/v1/chat/memory', {
       characterId,
       question,
+      isDemo,
     });
     return res.data; //ai의 답변을 return
   } catch (error) {
@@ -30,5 +32,20 @@ export const getOldChatting = async (
   } catch (error) {
     Sentry.captureException(error);
     return;
+  }
+};
+
+export const reportChat = async (
+  botId: number,
+  userText: string,
+  botText: string,
+  chatTime: string,
+): Promise<boolean> => {
+  try {
+    await instance.post('/v1/chat/report', { botId, userText, botText, chatTime });
+    return true;
+  } catch (error) {
+    Sentry.captureException(error);
+    return false;
   }
 };

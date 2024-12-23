@@ -89,9 +89,8 @@ const InputName = ({ route, navigation }) => {
       });
   };
 
-  const isButtonEnabled = isGuestMode
-    ? validateName(name) === 'correct' && !loading && legalAllowed
-    : validateName(name) === 'correct' && !loading && legalAllowed && privacyAllowed && fourth;
+  const isButtonEnabled =
+    validateName(name) === 'correct' && !loading && legalAllowed && privacyAllowed && fourth;
 
   useEffect(() => {
     Analytics.watchSignUpScreen();
@@ -164,40 +163,36 @@ const InputName = ({ route, navigation }) => {
               />
             </TouchableOpacity>
 
-            {!isGuestMode && (
-              <>
-                <TouchableOpacity
-                  activeOpacity={1}
-                  onPress={() => {
-                    setPrivacyAllowed(!privacyAllowed);
-                  }}>
-                  <Checkbox
-                    value={privacyAllowed}
-                    onValueChange={() => {
-                      setPrivacyAllowed(!privacyAllowed);
-                    }}
-                    label={'개인정보 처리방침에 동의합니다.'}
-                    color={privacyAllowed ? palette.primary[400] : palette.neutral[200]}
-                    labelStyle={{ fontSize: 14 }} //라벨 스타일링
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  activeOpacity={1}
-                  onPress={() => {
-                    setFourth(!fourth);
-                  }}>
-                  <Checkbox
-                    value={fourth}
-                    onValueChange={() => {
-                      setFourth(!fourth);
-                    }}
-                    label={'만 14세 이상입니다'}
-                    color={fourth ? palette.primary[400] : palette.neutral[200]}
-                    labelStyle={{ fontSize: 14 }} //라벨 스타일링
-                  />
-                </TouchableOpacity>
-              </>
-            )}
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={() => {
+                setPrivacyAllowed(!privacyAllowed);
+              }}>
+              <Checkbox
+                value={privacyAllowed}
+                onValueChange={() => {
+                  setPrivacyAllowed(!privacyAllowed);
+                }}
+                label={'개인정보 처리방침에 동의합니다.'}
+                color={privacyAllowed ? palette.primary[400] : palette.neutral[200]}
+                labelStyle={{ fontSize: 14 }} //라벨 스타일링
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={() => {
+                setFourth(!fourth);
+              }}>
+              <Checkbox
+                value={fourth}
+                onValueChange={() => {
+                  setFourth(!fourth);
+                }}
+                label={'만 14세 이상입니다'}
+                color={fourth ? palette.primary[400] : palette.neutral[200]}
+                labelStyle={{ fontSize: 14 }} //라벨 스타일링
+              />
+            </TouchableOpacity>
             <TouchableOpacity
               activeOpacity={1}
               style={{ alignSelf: 'flex-start' }}

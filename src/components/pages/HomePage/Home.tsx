@@ -23,7 +23,7 @@ import { getRiskData, setRiskData } from '../../../utils/storageUtils';
 import EmotionBtn from '../../atoms/EmotionBtn/EmotionBtn';
 import HomeChatBtn from '../../atoms/HomeBtn/HomeChatBtn';
 import Header from './Homeheader';
-import { getApiDateString } from '../../../utils/times';
+import { getKoreanServerTodayDateString } from '../../../utils/times';
 
 const defaultHomeCarousel = [
   {
@@ -98,7 +98,7 @@ const Home: React.FC<any> = ({ navigation }) => {
   };
 
   const refreshRiskScore = () => {
-    const date = getApiDateString(new Date());
+    const date = getKoreanServerTodayDateString(new Date());
     getRiskScore(date).then((res) => {
       setRiskScore(res);
       if (res >= RISK_SCORE_THRESHOLD && !getRiskData()) {

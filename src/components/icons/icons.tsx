@@ -25,6 +25,7 @@ import TextIcon from './svg/text';
 import ChatIcon from './svg/chat';
 import InformationIcon from './svg/information';
 import DefaultHeart from './svg/default-heart';
+import Warning from './svg/warning';
 
 export type TIconName =
   | 'airplane'
@@ -53,7 +54,8 @@ export type TIconName =
   | 'empty-icon'
   | 'chat-icon'
   | 'information'
-  | 'default-heart';
+  | 'default-heart'
+  | 'warning';
 
 export default function Icon({
   width,
@@ -121,5 +123,7 @@ export default function Icon({
       return <InformationIcon width={width} height={height} color={color} />;
     case 'default-heart':
       return <DefaultHeart width={width} height={height} color={color} />;
+    case 'warning':
+      return <Warning width={width} height={height} color={color} />;
   }
 }
