@@ -87,6 +87,10 @@ const App: React.FC = () => {
 
   const bootstrap = async (): Promise<void> => {
     setStatusBarStyle('dark');
+    /* 사과 메세지 추가 */
+    alert(
+      '현재 서비스에 문제가 발생하여 복구 작업중에 있습니다.😢 불편을 드려 정말 죄송하며, 빠른 시일 내로 정상화될 수 있도록 최선을 다하겠습니다.🙏',
+    );
     const deviceId = await getDeviceId();
     if (deviceId === null) {
       console.error('DeviceId is undefined');
