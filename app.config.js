@@ -38,6 +38,7 @@ module.exports = {
     scheme: 'remind',
     web: {
       favicon: './assets/favicon.png',
+      bundler: 'metro',
     },
     extra: {
       eas: {
@@ -119,6 +120,7 @@ module.exports = {
           autoLogAppEventsEnabled: false,
         },
       ],
+      ['expo-router'],
     ],
     runtimeVersion: '1.0.0',
     updates: {
