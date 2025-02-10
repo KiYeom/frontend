@@ -276,3 +276,7 @@ ios/
 
 # ios firebase file
 GoogleService-Info.plist
+
+#practice file
+app/
+mycomponents/
