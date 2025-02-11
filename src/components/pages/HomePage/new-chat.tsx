@@ -335,6 +335,7 @@ const NewChat: React.FC = ({ navigation }) => {
     });
   };
 
+  //채팅 화면
   return (
     <SafeAreaView
       style={{ flex: 1 }}
@@ -428,14 +429,16 @@ const NewChat: React.FC = ({ navigation }) => {
         renderTime={RenderTime}
         renderDay={RenderDay}
         renderSystemMessage={RenderSystemMessage}
-        renderInputToolbar={RenderInputToolbar}
-        renderComposer={RenderComposer}
+        renderInputToolbar={(sendProps: SendProps<IMessage>) =>
+          RenderInputToolbar(sendProps, sending)
+        }
+        //renderComposer={RenderComposer}
         textInputProps={{
           placeholder: getIsDemo() ? '메시지 입력.' : '메시지 입력',
           marginLeft: rsWidth * 15,
         }}
         keyboardShouldPersistTaps="never"
-        renderSend={(sendProps: SendProps<IMessage>) => RenderSend(sendProps, sending)}
+        //renderSend={(sendProps: SendProps<IMessage>) => RenderSend(sendProps, sending)}
         alwaysShowSend
       />
     </SafeAreaView>

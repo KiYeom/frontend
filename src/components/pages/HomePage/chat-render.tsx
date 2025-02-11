@@ -17,15 +17,18 @@ import {
   ComposerProps,
   Composer,
 } from 'react-native-gifted-chat';
+import { TextInput } from 'react-native';
 import palette from '../../../assets/styles/theme';
 import { css } from '@emotion/native';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
-import { ActivityIndicator, Alert, Image, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, TouchableOpacity, View, Text } from 'react-native';
 import Icon from '../../icons/icons';
 import TypingIndicator from 'react-native-gifted-chat/src/TypingIndicator';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { reportChat } from '../../../apis/chatting';
 import { getNewIMessages } from '../../../utils/storageUtils';
+import Input from '../../input/input';
+import { transparent } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 
 const getMessageSet = (
   currentMessage: IMessage,
@@ -293,13 +296,31 @@ export const RenderTime = (props: TimeProps<IMessage>) => {
   );
 };
 
+//보내기 버튼
 export const RenderSend = (props: SendProps<IMessage>, sendingStatus: boolean) => {
   return (
-    <View>
+    <View
+      style={{
+        /*backgroundColor: 'pink',*/
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        alignItems: 'stretch',
+      }}>
       <Send
         {...props}
         disabled={sendingStatus}
-        containerStyle={{ justifyContent: 'center', paddingHorizontal: rsWidth * 15 }}>
+        containerStyle={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          paddingHorizontal: rsWidth * 15,
+          //width: rsWidth * 30,
+          //height: rsWidth * 30,
+          //borderRadius: (rsWidth * 30) / 2,
+          /*backgroundColor: 'yellow',*/
+        }}>
         <Icon name="airplane" />
       </Send>
     </View>
@@ -347,22 +368,126 @@ export const RenderSystemMessage = (props: SystemMessageProps<IMessage>) => {
   );
 };
 
-export const RenderInputToolbar = (props: InputToolbarProps<IMessage>) => (
+//글자가 입력되는 공간
+/*export const RenderInputToolbar = (props: InputToolbarProps<IMessage>) => (
   <InputToolbar
     {...props}
     containerStyle={{
       borderTopColor: 'transparent',
       backgroundColor: palette.neutral[50],
+      display: 'flex',
+      flexDirection: 'column',
       marginHorizontal: rsWidth * 20,
       marginVertical: rsHeight * 8,
       borderRadius: 10,
     }}
+    //renderComposer와 보내기 버튼은 InputToolbar의 자식 요소임. 그래서 renderComposer(파란색)와 renderSend(분홍색)에 flex : 1을 주니까 절반을 차지한 것 같음. 그리고 InputToolbar의 flex direction은 기본 설정인 row 로 확인 됨
+    renderComposer={(props) => (
+      <View
+        style={{
+          display: 'flex',
+          flex: 1,
+          justifyContent: 'flex-start',
+          alignItems: 'stretch',
+          paddingVertical: 10,
+          paddingHorizontal: 10,
+        }}>
+        <TextInput
+          style={{
+            maxHeight: rsFont * 14 * 5,
+          }}
+          multiline
+          value={props.text}
+          onChangeText={props.onTextChanged}
+        />
+      </View>
+    )}
+    renderSned={(props) => (
+      <TouchableOpacity
+        style={styles.sendButton}
+        onPress={() => sendProps.onSend({ text: sendProps.text }, true)}>
+        <Text style={styles.sendButtonText}>Send</Text>
+      </TouchableOpacity>
+    )}
+  />
+);*/
+//props: SendProps<IMessage>, sendingStatus: boolean
+//커스텀 인풋 툴 바
+export const RenderInputToolbar = (props: InputToolbarProps<IMessage>, sendingStatus: boolean) => (
+  <InputToolbar
+    {...props}
+    containerStyle={{
+      borderTopColor: 'transparent',
+      //backgroundColor: palette.neutral[50],
+      //backgroundColor: 'green',
+      display: 'flex',
+      flexDirection: 'row', // row로 두어야 Input과 Send 버튼이 나란히 배치됨
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: rsWidth * 20,
+      paddingVertical: rsHeight * 8,
+      gap: rsWidth * 20,
+    }}
+    renderComposer={(composerProps) => (
+      <TextInput
+        style={{
+          flex: 1,
+          fontSize: rsFont * 16,
+          lineHeight: rsFont * 16 * 1.4,
+          minHeight: rsHeight * 46,
+          maxHeight: rsHeight * 110,
+          backgroundColor: palette.neutral[50],
+          borderRadius: 10,
+          paddingHorizontal: 15,
+          paddingVertical: 15,
+          marginRight: 20,
+        }}
+        multiline
+        value={composerProps.text}
+        onChangeText={composerProps.onTextChanged}
+        placeholder="메시지 입력"
+        placeholderTextColor={palette.neutral[300]}
+      />
+    )}
+    renderSend={(sendProps) => (
+      <Send
+        {...props}
+        disabled={sendingStatus}
+        containerStyle={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          alignSelf: 'center',
+        }}>
+        <Icon name="airplane" color={sendingStatus ? palette.neutral[300] : palette.neutral[400]} />
+      </Send>
+    )}
   />
 );
 
+/*
 export const RenderComposer = (props: ComposerProps, disable: boolean = false) => (
   <Composer {...props} multiline={false} disableComposer={disable} />
-);
+);*/
+
+//글자가 입력되는 공간의 INPUT 창
+/*export const RenderComposer = (props: ComposerProps, disable: boolean = false) => (
+  <View
+    style={{
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: '100%',
+      backgroundColor: 'blue',
+      paddingHorizontal: 10,
+      paddingVertical: 10,
+      paddingBottom: 10,
+    }}>
+    <Text>테스트</Text>
+  </View>
+);*/
 
 export const RenderLoading = () => (
   <View
