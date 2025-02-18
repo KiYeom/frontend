@@ -11,6 +11,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import Icon from '../../icons/icons';
 import Toast from 'react-native-root-toast';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Carousel } from 'react-native-ui-lib';
@@ -129,7 +130,7 @@ const SmallEmotionChart = ({ navigation }) => {
             `}>
             <SmallTitle>{selectedEmotions.length}개의 감정을 담았어요🐶</SmallTitle>
 
-            <EmotionDesc>
+            <EmotionDesc textAlign={'center'}>
               {selectedEmotions.length > 0
                 ? `${selectedEmotions[selectedEmotions.length - 1].keyword} : ${emotionData[selectedEmotions[selectedEmotions.length - 1].keyword].desc}`
                 : ''}
@@ -171,7 +172,23 @@ const SmallEmotionChart = ({ navigation }) => {
                 </View>
               )}
             </ScrollView>
-            <SmallTitle>오늘 하루는 어떠셨나요?💭</SmallTitle>
+            <View
+              style={css`
+                display: flex;
+                flex-direction: row;
+                gap: ${rsWidth * 10 + 'px'};
+              `}>
+              <Icon name="dairy-cookie" width={80} height={60} />
+              <View
+                style={css`
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: center;
+                `}>
+                <SmallTitle>오늘 하루를 되돌아봐요💭</SmallTitle>
+                <EmotionDesc>가장 인상깊었던 일은 무엇이었나요?</EmotionDesc>
+              </View>
+            </View>
             <Input value={text} onChange={(text) => setText(text)} />
           </View>
 
