@@ -8,10 +8,10 @@ module.exports = {
     slug: 'reMIND',
     version: '1.2.7',
     orientation: 'portrait',
-    icon: './src/assets/images/christmasappicon.png',
+    icon: './src/assets/images/appicon.png',
     userInterfaceStyle: 'automatic',
     splash: {
-      image: './src/assets/images/christmassplash.png',
+      image: './src/assets/images/splash.png',
       resizeMode: 'contain',
       backgroundColor: '#4DA584',
     },
