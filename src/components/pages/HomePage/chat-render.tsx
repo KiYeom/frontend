@@ -513,8 +513,8 @@ export const RenderFooter = (sending: boolean) => {
         justifyContent: 'flex-start',
       }}>
       <Image
-        //source={require('../../../assets/images/cookieprofile.png')}
-        source={require('../../../assets/images/cookieprofilechristmas.png')}
+        source={require('../../../assets/images/cookieprofile.png')}
+        //source={require('../../../assets/images/cookieprofilechristmas.png')}
         style={{ objectFit: 'contain', width: 35 * rsWidth, height: 35 * rsHeight }}
       />
       <TypingIndicator isTyping={sending} />

@@ -73,8 +73,8 @@ const HomeChatBtn = ({ navigation, riskScore }) => {
           style={{
             resizeMode: 'contain',
           }}
-          //source={require('../../../assets/images/homebuttonimage.png')}
-          source={require('../../../assets/images/homebuttonchristmas.png')}
+          source={require('../../../assets/images/homebuttonimage.png')}
+          //source={require('../../../assets/images/homebuttonchristmas.png')}
         />
       )}
     </HomeBtn>
