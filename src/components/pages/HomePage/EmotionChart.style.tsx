@@ -71,5 +71,5 @@ export const EmotionDesc = styled.Text<{
   text-align: ${(props) => (props.textAlign ? props.textAlign : 'left')};
   color: ${palette.neutral[500]};
   margin-top: ${rsHeight * 6 + 'px'};
-  margin-bottom: ${rsHeight * 12 + 'px'};
+  margin-bottom: ${rsHeight * 24 + 'px'};
 `;

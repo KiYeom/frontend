@@ -35,9 +35,6 @@ const HomeStackNavigator: React.FC = () => {
                 })
               }
               title={formatDate(new Date()).slice(5)}
-              isRight={true}
-              rightText={'기록'}
-              rightFunction={() => console.log('기록하기 버튼')}
             />
           ),
         }}

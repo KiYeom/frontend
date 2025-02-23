@@ -8,21 +8,23 @@ type CustomMultiTextInputProps = {
   onChangeText?: (text: string) => void;
 };
 
+const MaximizedTextLine = 5;
+
 //
-const CustomMultiTextInput = (props: CustomTextInputProps) => {
+const CustomMultiTextInput = (props: CustomMultiTextInputProps) => {
   const { value, onChangeText = () => {} } = props;
   return (
     <TextInput
       style={{
         flex: 1,
         fontSize: rsFont * 16,
-        lineHeight: rsFont * 16 * 1.4,
-        minHeight: rsHeight * 46,
-        maxHeight: rsHeight * 110,
-        backgroundColor: 'red',
+        lineHeight: rsFont * 16 * 1.5,
+        minHeight: rsFont * 16 * 1.5 + 15 * 2,
+        maxHeight: rsFont * 16 * 1.5 * MaximizedTextLine + 15 * 2,
         borderRadius: 10,
         paddingHorizontal: 15,
         paddingVertical: 15,
+        backgroundColor: palette.neutral[50],
       }}
       multiline
       value={value}

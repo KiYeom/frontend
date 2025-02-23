@@ -111,6 +111,7 @@ const SmallEmotionChart = ({ navigation }) => {
         bottomOffset={insets.bottom + 70}
         contentContainerStyle={css`
           background-color: white;
+          margin-top: ${rsHeight * 24 + 'px'};
         `}>
         <EmotionTitleBox
           iconName={'emotion-thinking-cookie'}
