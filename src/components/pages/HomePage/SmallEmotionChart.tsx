@@ -30,7 +30,7 @@ import EmotionTitleBox from './emotionTitleBox';
 import Analytics from '../../../utils/analytics';
 import useRecordedEmotionStore from '../../../utils/emotion-recorded';
 import useEmotionStore from '../../../utils/emotion-status';
-import { rsHeight, rsWidth } from '../../../utils/responsive-size';
+import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { getUserNickname } from '../../../utils/storageUtils';
 import EmotionCard from '../../atoms/EmotionCard/EmotionCard';
 import EmotionChip from '../../atoms/EmotionChip/EmotionChip';
@@ -42,6 +42,7 @@ import {
   KeyboardToolbar,
   KeyboardStickyView,
 } from 'react-native-keyboard-controller';
+import palette from '../../../assets/styles/theme';
 
 const SmallEmotionChart = ({ navigation }) => {
   const insets = useSafeAreaInsets();
@@ -109,7 +110,7 @@ const SmallEmotionChart = ({ navigation }) => {
       <KeyboardAwareScrollView
         bottomOffset={insets.bottom + 70}
         contentContainerStyle={css`
-          background-color: red;
+          background-color: white;
         `}>
         <EmotionTitleBox
           iconName={'emotion-thinking-cookie'}
@@ -135,89 +136,53 @@ const SmallEmotionChart = ({ navigation }) => {
             </View>
           ))}
         </Carousel>
+        <EmotionDesc textAlign={'center'}>
+          {selectedEmotions.length > 0
+            ? `${selectedEmotions[selectedEmotions.length - 1].keyword} : ${emotionData[selectedEmotions[selectedEmotions.length - 1].keyword].desc}`
+            : ''}
+        </EmotionDesc>
 
-        <View
-          style={css`
-            padding-vertical: ${rsHeight * 10 + 'px'};
-            padding-horizontal: ${rsWidth * 24 + 'px'};
-            gap: ${rsHeight * 10 + 'px'};
-          `}>
-          <SmallTitle>{selectedEmotions.length}개의 감정을 담았어요🐶</SmallTitle>
-
-          <EmotionDesc textAlign={'center'}>
-            {selectedEmotions.length > 0
-              ? `${selectedEmotions[selectedEmotions.length - 1].keyword} : ${emotionData[selectedEmotions[selectedEmotions.length - 1].keyword].desc}`
-              : ''}
-          </EmotionDesc>
-
-          <ScrollView
-            horizontal
-            ref={scrollViewRef}
-            showsHorizontalScrollIndicator={false}
-            style={css`
-              flex-grow: 1;
-            `}
-            contentContainerStyle={css`
-              flex-grow: 1;
-              flex-direction: row;
-              gap: ${rsWidth * 8 + 'px'};
-            `}>
-            {selectedEmotions.length > 0 ? (
-              selectedEmotions.map((emotion, i) => (
-                <EmotionCard
-                  key={i}
-                  emotion={emotion}
-                  onPress={handleRemoveEmotion}
-                  status={'default'}
-                />
-              ))
-            ) : (
-              <View
-                style={css`
-                  flex: 1;
-                  align-items: center;
-                  justify-content: center;
-                  height: ${rsHeight * 100 + 'px'};
-                  width: ${rsWidth * 100 + 'px'};
-                  border-radius: 10px;
-                  margin-right: ${rsWidth * 8 + 'px'};
-                `}>
-                <Text style={css``}></Text>
-              </View>
-            )}
-          </ScrollView>
-          {/*<View
-            style={css`
-              display: flex;
-              flex-direction: row;
-              gap: ${rsWidth * 10 + 'px'};
-            `}>
-            <Icon name="dairy-cookie" width={80} height={60} />
-            <View
-              style={css`
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-              `}>
-              <SmallTitle>오늘 하루를 되돌아봐요💭</SmallTitle>
-              <EmotionDesc>가장 인상깊었던 일은 무엇이었나요?</EmotionDesc>
-            </View>
-          </View>*/}
-        </View>
         <EmotionTitleBox
           iconName={'dairy-cookie'}
-          mainTitle={'오늘 하루를 되돌아봐요'}
+          mainTitle={'오늘 하루를 되돌아봐요.'}
           subTitle={'이 감정을 가장 강하게 느낀 순간은 언제인가요?'}
         />
+        {selectedEmotions.length > 0 && (
+          <View
+            style={css`
+              margin-top: ${rsHeight * 12 + 'px'};
+              //background-color: gray;
+              flex-direction: row;
+              flex-wrap: wrap;
+              gap: ${rsWidth * 6 + 'px'};
+              padding-horizontal: ${rsWidth * 24 + 'px'};
+            `}>
+            {selectedEmotions.length > 0
+              ? selectedEmotions.map((emotion, i) => (
+                  <EmotionCard
+                    key={i}
+                    emotion={emotion}
+                    onPress={handleRemoveEmotion}
+                    status={'default'}
+                  />
+                ))
+              : ''}
+          </View>
+        )}
         <TextInput
           style={css`
-            border: 1px solid #e5e5e5;
-            font-size: 16px;
-            padding: ${rsHeight * 10 + 'px'};
-            margin-top: ${rsHeight * 10 + 'px'};
+            border-radius: 10px;
+            background-color: ${palette.neutral[100]};
+            font-size: ${rsFont * 16 + 'px'};
+            line-height: ${rsFont * 16 * 1.5 + 'px'};
+            margin-horizontal: ${rsWidth * 24 + 'px'};
+            margin-top: ${rsHeight * 12 + 'px'};
             margin-bottom: ${rsHeight * 30 + 'px'};
+            padding-horizontal: ${rsWidth * 12 + 'px'};
+            padding-vertical: ${rsHeight * 12 + 'px'};
             min-height: ${rsHeight * 100 + 'px'};
             text-align-vertical: top;
+            font-family: Kyobo-handwriting;
           `}
           multiline={true}
           scrollEnabled={false}
@@ -229,9 +194,25 @@ const SmallEmotionChart = ({ navigation }) => {
         <View
           style={css`
             padding: ${rsHeight * 10 + 'px'};
-            background-color: blue;
           `}>
-          <Button title="테스트" primary={true} />
+          <Button
+            title={
+              selectedEmotions.length < MINIMUM_EMOTION_COUNT
+                ? `오늘의 마음을 알려주세요`
+                : `쿠키에게 알려주기`
+            }
+            primary={true}
+            disabled={
+              (selectedEmotions.length < MINIMUM_EMOTION_COUNT && (!text || text.trim() === '')) ||
+              selectedEmotions.length > MAXIMUM_EMOTION_COUNT
+            }
+            onPress={async () => {
+              Analytics.clickRecordButton();
+              setRecordedEmotions(selectedEmotions); // 상태 업데이트
+              await todayEmotion(selectedEmotions, text);
+              navigation.navigate(TabScreenName.Home);
+            }}
+          />
         </View>
       </KeyboardStickyView>
     </View>

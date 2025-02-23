@@ -66,8 +66,10 @@ export const RecordedEmotion = styled.ScrollView`
 export const EmotionDesc = styled.Text<{
   textAlign?: 'left' | 'center' | 'right';
 }>`
-  font-size: ${rsFont * 14 + 'px'};
-  font-family: Pretendard-Medisum;
+  font-size: ${rsFont * 16 + 'px'};
+  font-family: Kyobo-handwriting;
   text-align: ${(props) => (props.textAlign ? props.textAlign : 'left')};
-  color: ${palette.neutral[400]};
+  color: ${palette.neutral[500]};
+  margin-top: ${rsHeight * 6 + 'px'};
+  margin-bottom: ${rsHeight * 12 + 'px'};
 `;
