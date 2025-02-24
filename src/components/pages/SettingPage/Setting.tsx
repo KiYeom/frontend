@@ -1,7 +1,7 @@
 import * as Notifications from 'expo-notifications';
 import * as WebBrowser from 'expo-web-browser';
 import React, { useEffect } from 'react';
-import { Alert, View } from 'react-native';
+import { Alert, View, Linking } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getLatestVersion, logout } from '../../../apis/setting';
 import palette from '../../../assets/styles/theme';
@@ -43,6 +43,18 @@ const Setting: React.FC<any> = ({ navigation }) => {
   const { SigninStatus, setSigninStatus } = UseSigninStatus();
   const [isLatest, setIsLatest] = React.useState<boolean>(true);
   const insets = useSafeAreaInsets();
+
+  //브라우저 열기
+  const openWeb = async () => {
+    console.log('📢 브라우저 열기 시도!');
+
+    const result = await WebBrowser.openBrowserAsync('https://example.com', {
+      createTask: false, // 앱 내부에서 실행
+      showInRecents: true, // 최근 앱 목록에 유지
+    });
+
+    console.log('✅ 브라우저 결과:', result);
+  };
 
   //로그아웃
   const logoutRequest = async () => {
@@ -145,9 +157,15 @@ const Setting: React.FC<any> = ({ navigation }) => {
           />
           <MenuRow
             text="문의하기"
-            onPress={() => {
+            onPress={async () => {
+              //console.log('📢 브라우저 열기 시도!');
               Analytics.clickTabSettingInquiryButton();
-              WebBrowser.openBrowserAsync('https://j2wk7.channel.io/home');
+              Linking.openURL('https://j2wk7.channel.io/home');
+              //const result = await WebBrowser.openBrowserAsync('https://j2wk7.channel.io/home', {
+              //createTask: false, //앱 내부에서 실행
+              //showInRecents: true, //최근 앱 목록에 유지
+              //});
+              //console.log('✅ 브라우저 결과:', result);
             }}
           />
           <MenuRow
@@ -161,17 +179,12 @@ const Setting: React.FC<any> = ({ navigation }) => {
           />
           <MenuRow
             text="개인정보 처리방침"
-            onPress={
-              () => {
-                Analytics.clickTabSettingPrivacyPolicyButton();
-                WebBrowser.openBrowserAsync(
-                  'https://autumn-flier-d18.notion.site/reMIND-167ef1180e2d42b09d019e6d187fccfd',
-                );
-              }
-              // navigation.navigate(RootStackName.SettingStackNavigator, {
-              //   screen: SettingStackName.PrivacyPolicy,
-              // })
-            }
+            onPress={() => {
+              Analytics.clickTabSettingPrivacyPolicyButton();
+              WebBrowser.openBrowserAsync(
+                'https://autumn-flier-d18.notion.site/reMIND-167ef1180e2d42b09d019e6d187fccfd',
+              );
+            }}
           />
           <MenuRow
             text="오픈소스 라이센스"
