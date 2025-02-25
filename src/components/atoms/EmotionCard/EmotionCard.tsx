@@ -21,7 +21,7 @@ const EmotionCard = (props: EmotionCardProps) => {
   return (
     <View
       style={css`
-        height: ${status === 'default' ? 'auto' : rsHeight * 100 + 'px'};
+        height: ${status === 'default' ? rsHeight * 35 + 'px' : rsHeight * 100 + 'px'};
         //height: ${rsHeight * 100 + 'px'};
         width: ${status === 'simple'
           ? rsWidth * 60 + 'px'

@@ -76,7 +76,7 @@ const StatisticMain: React.FC<any> = () => {
 
   useEffect(() => {
     Analytics.watchDailyStatisticScreen();
-    dailyAnalyzeStatus(2024).then((data) => {
+    dailyAnalyzeStatus(2025).then((data) => {
       if (!data) {
         setAvailableDates([getKoreanServerTodayDateString(new Date())]);
       } else {
@@ -92,7 +92,8 @@ const StatisticMain: React.FC<any> = () => {
 
   const fetchData = async () => {
     console.log('fetchData date: ', date);
-    const dailyStatistics = await dailyAnalyze(getKoreanRealDateString(date));
+    //console.log('fetchData date: ', new Date());
+    const dailyStatistics = await dailyAnalyze(getKoreanRealDateString(date)); //date -> new Date()
     if (!dailyStatistics) {
       alert('네트워크 연결이 불안정합니다. 잠시 후 다시 시도해주세요.');
       return;
@@ -105,12 +106,13 @@ const StatisticMain: React.FC<any> = () => {
     setIsNullRecordKeywordList(dailyStatistics.record.isNULL);
     //빈 값 [] 이면 false를 넘겨주기 때문에 !을 붙여서 true로 만들어줌
     setTodayFeeling(dailyStatistics.record.todayFeeling ?? '');
+    console.log('😀😀😀😀😀😀😀😀', dailyStatistics.record.todayFeeling);
   };
 
   //헤더 아이콘 설정하기
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      dailyAnalyzeStatus(2024).then((data) => {
+      dailyAnalyzeStatus(2025).then((data) => {
         if (!data) {
           setAvailableDates([getKoreanServerTodayDateString(new Date())]);
         } else {
