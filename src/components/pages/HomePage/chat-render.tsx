@@ -17,6 +17,7 @@ import {
   ComposerProps,
   Composer,
 } from 'react-native-gifted-chat';
+import CustomMultiTextInput from './CustomMultiTextInput';
 import { TextInput } from 'react-native';
 import palette from '../../../assets/styles/theme';
 import { css } from '@emotion/native';
@@ -429,25 +430,7 @@ export const RenderInputToolbar = (props: InputToolbarProps<IMessage>, sendingSt
       gap: rsWidth * 20,
     }}
     renderComposer={(composerProps) => (
-      <TextInput
-        style={{
-          flex: 1,
-          fontSize: rsFont * 16,
-          lineHeight: rsFont * 16 * 1.4,
-          minHeight: rsHeight * 46,
-          maxHeight: rsHeight * 110,
-          backgroundColor: palette.neutral[50],
-          borderRadius: 10,
-          paddingHorizontal: 15,
-          paddingVertical: 15,
-          marginRight: 20,
-        }}
-        multiline
-        value={composerProps.text}
-        onChangeText={composerProps.onTextChanged}
-        placeholder="메시지 입력"
-        placeholderTextColor={palette.neutral[300]}
-      />
+      <CustomMultiTextInput value={composerProps.text} onChangeText={composerProps.onTextChanged} />
     )}
     renderSend={(sendProps) => (
       <Send
@@ -459,6 +442,7 @@ export const RenderInputToolbar = (props: InputToolbarProps<IMessage>, sendingSt
           justifyContent: 'center',
           alignItems: 'center',
           alignSelf: 'center',
+          marginLeft: 20 * rsWidth,
         }}>
         <Icon name="airplane" color={sendingStatus ? palette.neutral[300] : palette.neutral[400]} />
       </Send>
@@ -513,8 +497,8 @@ export const RenderFooter = (sending: boolean) => {
         justifyContent: 'flex-start',
       }}>
       <Image
-        //source={require('../../../assets/images/cookieprofile.png')}
-        source={require('../../../assets/images/cookieprofilechristmas.png')}
+        source={require('../../../assets/images/cookieprofile.png')}
+        //source={require('../../../assets/images/cookieprofilechristmas.png')}
         style={{ objectFit: 'contain', width: 35 * rsWidth, height: 35 * rsHeight }}
       />
       <TypingIndicator isTyping={sending} />

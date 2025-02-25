@@ -14,7 +14,7 @@ export const Title = styled.Text`
 export const SmallTitle = styled.Text`
   font-family: Pretendard-SemiBold;
   font-size: ${rsFont * 20 + 'px'};
-  color: ${palette.neutral[500]};
+  color: ${palette.neutral[900]};
   text-align: left;
 `;
 
@@ -63,9 +63,13 @@ export const RecordedEmotion = styled.ScrollView`
 `;
 
 //감정 설명 창
-export const EmotionDesc = styled.Text`
-  font-size: ${rsFont * 18 + 'px'};
-  font-family: Pretendard-Medium;
-  text-align: center;
-  color: ${palette.neutral[400]};
+export const EmotionDesc = styled.Text<{
+  textAlign?: 'left' | 'center' | 'right';
+}>`
+  font-size: ${rsFont * 16 + 'px'};
+  font-family: Kyobo-handwriting;
+  text-align: ${(props) => (props.textAlign ? props.textAlign : 'left')};
+  color: ${palette.neutral[500]};
+  margin-top: ${rsHeight * 6 + 'px'};
+  margin-bottom: ${rsHeight * 24 + 'px'};
 `;

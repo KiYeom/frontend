@@ -26,6 +26,8 @@ import ChatIcon from './svg/chat';
 import InformationIcon from './svg/information';
 import DefaultHeart from './svg/default-heart';
 import Warning from './svg/warning';
+import DairyCookie from './svg/DairyCookie';
+import EmotionThinkingCookie from './svg/emotion-thinking-cookie';
 
 export type TIconName =
   | 'airplane'
@@ -55,7 +57,9 @@ export type TIconName =
   | 'chat-icon'
   | 'information'
   | 'default-heart'
-  | 'warning';
+  | 'warning'
+  | 'dairy-cookie'
+  | 'emotion-thinking-cookie';
 
 export default function Icon({
   width,
@@ -125,5 +129,9 @@ export default function Icon({
       return <DefaultHeart width={width} height={height} color={color} />;
     case 'warning':
       return <Warning width={width} height={height} color={color} />;
+    case 'dairy-cookie':
+      return <DairyCookie width={width} height={height} color={color} />;
+    case 'emotion-thinking-cookie':
+      return <EmotionThinkingCookie width={width} height={height} color={color} />;
   }
 }

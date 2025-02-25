@@ -8,6 +8,7 @@ import Profile from '../components/pages/Profile/profile';
 import { HomeStackName, RootStackName, TabScreenName } from '../constants/Constants';
 import NewChat from '../components/pages/HomePage/new-chat';
 import Chat from '../components/pages/HomePage/Chat';
+import { formatDate } from '../utils/Chatting';
 
 const HomeStack = createNativeStackNavigator();
 
@@ -33,6 +34,7 @@ const HomeStackNavigator: React.FC = () => {
                   screen: TabScreenName.Home,
                 })
               }
+              title={formatDate(new Date()).slice(5)}
             />
           ),
         }}
