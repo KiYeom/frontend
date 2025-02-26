@@ -96,6 +96,18 @@ export enum AuthStackName {
   InputProfile = 'InputProfile',
 }
 
+/*서비스 로그인 및 회원가입 경로를 저장하는 AuthProvider
+google : 구글 계정 로그인
+apple : 애플 계정 로그인
+guest : 게스트 로그인
+*/
+export enum AuthProvider {
+  Google = 'google',
+  Apple = 'apple',
+  Guest = 'guest',
+  kakao = 'kakao',
+}
+
 export const emotionsByColumn = [
   [
     { group: 'angry', keyword: '격분한', desc: '몹시 분하고 화가 난' },

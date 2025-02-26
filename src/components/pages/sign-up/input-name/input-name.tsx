@@ -9,6 +9,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import { AuthProvider } from '../../../../constants/Constants';
 import { Checkbox } from 'react-native-ui-lib';
 import { updateUserProfile } from '../../../../apis/auth';
 import palette from '../../../../assets/styles/theme';
@@ -62,6 +63,7 @@ const InputName = ({ route, navigation }) => {
           res.accessToken,
           res.refreshToken,
           res.notice,
+          AuthProvider.Guest,
         );
         setSigninStatus(true);
         return true;

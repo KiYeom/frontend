@@ -486,6 +486,7 @@ export const RenderLoading = () => (
 
 export const RenderCustomView = (props: BubbleProps<IMessage>) => <></>;
 
+//메세지 도착하기 전에 나오는 ... 애니메이션
 export const RenderFooter = (sending: boolean) => {
   if (!sending) return <></>;
   return (
@@ -495,6 +496,7 @@ export const RenderFooter = (sending: boolean) => {
         gap: 8,
         flexDirection: 'row',
         justifyContent: 'flex-start',
+        //backgroundColor: 'red',
       }}>
       <Image
         source={require('../../../assets/images/cookieprofile.png')}

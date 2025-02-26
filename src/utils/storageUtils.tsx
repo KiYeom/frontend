@@ -1,6 +1,6 @@
 import { MMKV } from 'react-native-mmkv';
 import { ONE_DAY_IN_MS } from '../constants/Constants';
-import { TGender, TNotice } from '../constants/types';
+import { TGender, TNotice, TVender } from '../constants/types';
 import { getKoreanServerTodayDateString } from './times';
 import { showAppNotice } from './app-notice';
 
@@ -15,6 +15,7 @@ const USER_NICKNAME = 'user_nickname';
 const USER_BIRTHDATE = 'user_birthdate';
 const USER_GENDER = 'user_gender';
 const NOTIFICATION_SENT = 'notification_sent';
+const USER_ACCOUNT_PROVIDER = 'user_account_provider';
 
 //DeviceInfo
 const DEVICE_ID = 'device_id';
@@ -78,9 +79,11 @@ export const setInfoWhenLogin = (
   accessToken: string,
   refreshToken: string,
   notice: TNotice | null,
+  provider?: string,
 ): void => {
   setUserInfo(nickname, birthdate, gender);
   setTokenInfo(accessToken, refreshToken);
+  provider && setUserAccountProvider(provider);
   if (notice) {
     showAppNotice(notice);
   }
@@ -93,6 +96,7 @@ export const clearInfoWhenLogout = (): void => {
   deleteNewIMessages();
   deleteNotificationSent();
   deleteReadNotice();
+  deleteUserAccountProvider();
 };
 
 //Tokens
@@ -123,6 +127,17 @@ export const deleteRefreshToken = (): void => {
 };
 
 //User
+//UserAccountProvider
+export const setUserAccountProvider = (provider: TVender): void => {
+  storage.set(USER_ACCOUNT_PROVIDER, provider);
+};
+export const getUserAccountProvider = (): string | undefined => {
+  return storage.getString(USER_ACCOUNT_PROVIDER);
+};
+export const deleteUserAccountProvider = (): void => {
+  storage.delete(USER_ACCOUNT_PROVIDER);
+};
+
 //UserNickname
 export const getUserNickname = (): string | undefined => {
   return storage.getString(USER_NICKNAME);

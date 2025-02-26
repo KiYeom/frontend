@@ -11,7 +11,12 @@ import { AuthStackName } from '../../../constants/Constants';
 import { TVender } from '../../../constants/types';
 import Analytics from '../../../utils/analytics';
 import { UseSigninStatus } from '../../../utils/signin-status';
-import { getDeviceIdFromMMKV, setInfoWhenLogin, setTokenInfo } from '../../../utils/storageUtils';
+import {
+  getDeviceIdFromMMKV,
+  getUserAccountProvider,
+  setInfoWhenLogin,
+  setTokenInfo,
+} from '../../../utils/storageUtils';
 import {
   ButtonContainer,
   Container,
@@ -23,6 +28,7 @@ import {
   WelcomeDesc,
   WelcomeTitle,
 } from './sing-in.styles';
+import { AuthProvider } from '../../../constants/Constants';
 
 enum OauthResult {
   UserCancel,
@@ -38,7 +44,7 @@ const guestLogin = async (): Promise<OauthResult> => {
   if (!deviceId) {
     return OauthResult.UnknownError;
   }
-  const res = await ssoLogin(deviceId, 'guest');
+  const res = await ssoLogin(deviceId, AuthProvider.Guest);
   if (!res) {
     return OauthResult.BackendError;
   }
@@ -57,6 +63,7 @@ const guestLogin = async (): Promise<OauthResult> => {
       res.accessToken,
       res.refreshToken,
       res.notice,
+      AuthProvider.Guest,
     );
     return OauthResult.OldUserSuccess;
   }
@@ -82,18 +89,20 @@ const googleLogin = async (): Promise<OauthResult> => {
     return OauthResult.OauthError;
   }
 
-  const res = await ssoLogin(googleToken, 'google');
+  const res = await ssoLogin(googleToken, AuthProvider.Google);
   if (!res) {
     return OauthResult.BackendError;
   }
 
   if (res.isNewUser) {
     setTokenInfo(res.accessToken, res.refreshToken);
+    //setUserAccountProvider('google');
     return OauthResult.NewUserSuccess;
   }
 
   if (!res.isNewUser) {
     Analytics.setUser(res.accessToken);
+    //setUserAccountProvider('google');
     setInfoWhenLogin(
       res.nickname,
       res.birthdate,
@@ -101,6 +110,7 @@ const googleLogin = async (): Promise<OauthResult> => {
       res.accessToken,
       res.refreshToken,
       res.notice,
+      AuthProvider.Google,
     );
     return OauthResult.OldUserSuccess;
   }
@@ -125,7 +135,7 @@ const appleLogin = async (): Promise<OauthResult> => {
     return OauthResult.OauthError;
   }
 
-  const res = await ssoLogin(credential.authorizationCode, 'apple');
+  const res = await ssoLogin(credential.authorizationCode, AuthProvider.Apple);
 
   if (!res) {
     return OauthResult.BackendError;
@@ -145,6 +155,7 @@ const appleLogin = async (): Promise<OauthResult> => {
       res.accessToken,
       res.refreshToken,
       res.notice,
+      AuthProvider.Apple,
     );
     return OauthResult.OldUserSuccess;
   }
@@ -165,15 +176,15 @@ const Login: React.FC<any> = ({ navigation }) => {
     let oauthResult: OauthResult = OauthResult.UnknownError;
     try {
       switch (vendor) {
-        case 'google':
+        case AuthProvider.Google:
           oauthResult = await googleLogin();
           break;
-        case 'apple':
+        case AuthProvider.Apple:
           oauthResult = await appleLogin();
           break;
-        case 'kakao':
-          break;
-        case 'guest':
+        //case 'kakao':
+        //break;
+        case AuthProvider.Guest:
           oauthResult = await guestLogin();
           break;
       }
@@ -190,7 +201,9 @@ const Login: React.FC<any> = ({ navigation }) => {
       }
       if (oauthResult === OauthResult.NewUserSuccess) {
         //새로운 유저
-        navigation.navigate(AuthStackName.InputName, { isGuestMode: vendor === 'guest' });
+        navigation.navigate(AuthStackName.InputName, {
+          isGuestMode: vendor === AuthProvider.Guest,
+        });
         return;
       }
       if (oauthResult === OauthResult.BackendError) {
@@ -210,6 +223,10 @@ const Login: React.FC<any> = ({ navigation }) => {
     }
   };
 
+  React.useEffect(() => {
+    console.log('😀😀😀😀😀Login Page😀😀😀😀😀😀', getUserAccountProvider());
+  }, []);
+
   return (
     <Container>
       <WelcomeTitle>쿠키와 함께하는 {'\n'}힐링 채팅</WelcomeTitle>
@@ -220,23 +237,23 @@ const Login: React.FC<any> = ({ navigation }) => {
       <ButtonContainer>
         <WelcomeDesc>🚀이메일 하나로 3초만에 가입하기🚀</WelcomeDesc>
         <LoginBtn
-          vendor="guest"
+          vendor={AuthProvider.Guest}
           activeOpacity={1}
           onPress={() => {
             //setLastVendor('guest');
             //setGuestModal(true);
             Analytics.clickGuestModeButton();
-            onHandleLogin('guest');
+            onHandleLogin(AuthProvider.Guest);
           }}
           disabled={loading}>
-          <LoginBtnLabel vendor="guest">비회원으로 바로 시작하기</LoginBtnLabel>
+          <LoginBtnLabel vendor={AuthProvider.Guest}>비회원으로 바로 시작하기</LoginBtnLabel>
         </LoginBtn>
         <LoginBtn
-          vendor="google"
+          vendor={AuthProvider.Google}
           activeOpacity={1}
           onPress={() => {
             Analytics.clickGoogleLoginButton();
-            onHandleLogin('google');
+            onHandleLogin(AuthProvider.Google);
           }}
           disabled={loading}>
           <LoginBtnIcon source={require('../../../assets/images/google.png')} />
@@ -244,18 +261,18 @@ const Login: React.FC<any> = ({ navigation }) => {
         </LoginBtn>
         {Platform.OS === 'ios' && (
           <LoginBtn
-            vendor="apple"
+            vendor={AuthProvider.Apple}
             activeOpacity={1}
             onPress={() => {
               //setLastVendor('apple');
               //setPrivacyModal(true);
               Analytics.clickAppleLoginButton();
-              onHandleLogin('apple');
+              onHandleLogin(AuthProvider.Apple);
               //if (lastVendor) onHandleLogin(lastVendor);
             }}
             disabled={loading}>
             <LoginBtnIcon source={require('../../../assets/images/apple.png')} />
-            <LoginBtnLabel vendor="apple">애플로 로그인</LoginBtnLabel>
+            <LoginBtnLabel vendor={AuthProvider.Apple}>애플로 로그인</LoginBtnLabel>
           </LoginBtn>
         )}
       </ButtonContainer>

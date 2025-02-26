@@ -15,7 +15,14 @@ export const chatting = async (
     });
     return res.data; //ai의 답변을 return
   } catch (error) {
-    Sentry.captureException(error); // Sentry에 에러 전송
+    Sentry.captureException(error, {
+      extra: {
+        screen: 'chatting',
+        action: 'ai의 답변을 받는 과정 (post /v1/chat/memory)',
+        time: new Date().toISOString(),
+        apiEndPoinnt: '/v1/chat/memory',
+      },
+    }); // Sentry에 에러 전송
     return;
   }
 };
@@ -30,7 +37,14 @@ export const getOldChatting = async (
     });
     return res.data;
   } catch (error) {
-    Sentry.captureException(error);
+    Sentry.captureException(error, {
+      extra: {
+        screen: 'chatting',
+        action: '이전 데이터들을 가지고 오는 작업 (get /v1/chat/history)',
+        time: new Date().toISOString(),
+        apiEndPoinnt: '/v1/chat/history',
+      },
+    });
     return;
   }
 };

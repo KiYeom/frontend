@@ -26,6 +26,7 @@ import {
   clearInfoWhenLogout,
   getAccessToken,
   getRefreshToken,
+  getUserAccountProvider,
   setDeviceId,
 } from './src/utils/storageUtils';
 import { setStatusBarStyle } from 'expo-status-bar';
@@ -54,6 +55,7 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(true); //로딩중이면 true, 로딩이 끝났으면 false
   const { SigninStatus, setSigninStatus } = UseSigninStatus(); //store에서 가지고 온 전역 state
 
+  //useFont를 사용하여 사용할 폰트를 로드 (폰트 로드 시 loaded : true, 로드 중 에러 발생하면 error객체 포함)
   const [loaded, error] = useFonts({
     'Pretendard-SemiBold': require('./src/assets/fonts/Pretendard-SemiBold.ttf'),
     'Pretendard-Bold': require('./src/assets/fonts/Pretendard-Bold.ttf'),
@@ -103,17 +105,8 @@ const App: React.FC = () => {
     if (accessToken) Analytics.setUser(accessToken);
     setSigninStatus(signinResult);
   };
-  //다크모드 확인
-  /*let colorScheme = useColorScheme();
-  useEffect(() => {
-    console.log('======colorsheme======', colorScheme);
-    if (colorScheme === 'dark') {
-      console.log('다크모드');
-    } else {
-      console.log('라이트모드');
-    }
-  }, [colorScheme]);*/
 
+  //앱 처음 실행 시 폰트 로드 진행. 완료되면 로그인 여부를 판단한 뒤에 로딩 화면을 숨김
   useEffect(() => {
     if (loaded || error) {
       SplashScreen.hideAsync();
@@ -125,7 +118,9 @@ const App: React.FC = () => {
     }
   }, [loaded, error]);
 
+  // 처음 앱을 실행할 때 amplitude에 로그인 화면에 진입했음을 알려준다.
   useEffect(() => {
+    console.log('⭐️⭐️⭐️ provider', getUserAccountProvider());
     Analytics.watchLoginScreen();
   }, []);
 
@@ -133,6 +128,7 @@ const App: React.FC = () => {
     return null;
   }
 
+  // 로딩스피너
   if (loading) {
     return (
       <View style={styles.loadingContainer}>

@@ -106,7 +106,7 @@ const StatisticMain: React.FC<any> = () => {
     setIsNullRecordKeywordList(dailyStatistics.record.isNULL);
     //빈 값 [] 이면 false를 넘겨주기 때문에 !을 붙여서 true로 만들어줌
     setTodayFeeling(dailyStatistics.record.todayFeeling ?? '');
-    console.log('😀😀😀😀😀😀😀😀', dailyStatistics.record.todayFeeling);
+    //console.log('😀😀😀😀😀😀😀😀', dailyStatistics.record.todayFeeling);
   };
 
   //헤더 아이콘 설정하기

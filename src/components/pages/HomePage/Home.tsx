@@ -19,7 +19,7 @@ import {
 import Analytics from '../../../utils/analytics';
 import requestNotificationPermission from '../../../utils/NotificationToken';
 import { ratio, rsHeight, rsWidth } from '../../../utils/responsive-size';
-import { getRiskData, setRiskData } from '../../../utils/storageUtils';
+import { getRiskData, getUserAccountProvider, setRiskData } from '../../../utils/storageUtils';
 import EmotionBtn from '../../atoms/EmotionBtn/EmotionBtn';
 import HomeChatBtn from '../../atoms/HomeBtn/HomeChatBtn';
 import Header from './Homeheader';
