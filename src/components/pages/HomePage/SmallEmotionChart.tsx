@@ -22,6 +22,7 @@ import { dailyAnalyze, todayEmotion, todayEmotionCheck } from '../../../apis/ana
 import {
   emotionData,
   emotionsByColumn,
+  HomeStackName,
   MAXIMUM_EMOTION_COUNT,
   MINIMUM_EMOTION_COUNT,
   TabScreenName,
@@ -51,14 +52,13 @@ const SmallEmotionChart = ({ navigation }) => {
   const scrollViewRef = useRef(null);
   const [text, setText] = useState('');
   const headerHeight = useHeaderHeight();
-  const buttonRef = useRef(null);
   const [buttonHeight, setButtonHeight] = useState(0);
 
   useEffect(() => {
     Analytics.watchEmotionRecordScreen();
-    todayEmotionCheck().then((data) => {
-      setText(data.todayFeeling);
-    });
+    //todayEmotionCheck().then((data) => {
+    //setText(data.todayFeeling);
+    //});
     setSelectedEmotions(recordedEmotions);
   }, []);
 
@@ -95,12 +95,6 @@ const SmallEmotionChart = ({ navigation }) => {
     return () => clearTimeout(timeout); // 타이머 제거
   }, [selectedEmotions]); // selectedEmotions가 변경될 때마다 실행
 
-  useEffect(() => {
-    buttonRef.current?.measure((x, y, width, height) => {
-      setButtonHeight(height);
-    });
-  }, []);
-
   return (
     <View
       style={css`
@@ -111,7 +105,7 @@ const SmallEmotionChart = ({ navigation }) => {
         bottomOffset={insets.bottom + 70}
         contentContainerStyle={css`
           background-color: white;
-          margin-top: ${rsHeight * 24 + 'px'};
+          margin-top: ${rsHeight * 12 + 'px'};
         `}>
         <EmotionTitleBox
           iconName={'emotion-thinking-cookie'}
@@ -143,16 +137,12 @@ const SmallEmotionChart = ({ navigation }) => {
             : ''}
         </EmotionDesc>
 
-        <EmotionTitleBox
-          iconName={'dairy-cookie'}
-          mainTitle={'오늘 하루를 되돌아봐요.'}
-          subTitle={'이 감정을 가장 강하게 느낀 순간은 언제인가요?'}
-        />
         {selectedEmotions.length > 0 && (
           <View
             style={css`
               margin-top: ${rsHeight * 12 + 'px'};
               //background-color: gray;
+              height: ${rsHeight * 80 + 'px'};
               flex-direction: row;
               flex-wrap: wrap;
               gap: ${rsWidth * 6 + 'px'};
@@ -170,33 +160,17 @@ const SmallEmotionChart = ({ navigation }) => {
               : ''}
           </View>
         )}
-        <TextInput
-          style={css`
-            border-radius: 10px;
-            background-color: ${palette.neutral[100]};
-            font-size: ${rsFont * 16 + 'px'};
-            line-height: ${rsFont * 16 * 1.5 + 'px'};
-            margin-horizontal: ${rsWidth * 24 + 'px'};
-            margin-top: ${rsHeight * 12 + 'px'};
-            margin-bottom: ${rsHeight * 30 + 'px'};
-            padding-horizontal: ${rsWidth * 12 + 'px'};
-            padding-vertical: ${rsHeight * 12 + 'px'};
-            min-height: ${rsHeight * 100 + 'px'};
-            text-align-vertical: top;
-            font-family: Kyobo-handwriting;
-          `}
-          multiline={true}
-          scrollEnabled={false}
-          value={text}
-          onChangeText={(text) => setText(text)}
-        />
       </KeyboardAwareScrollView>
       <KeyboardStickyView offset={{ closed: 0, opened: Platform.OS === 'ios' ? insets.bottom : 0 }}>
         <View
           style={css`
             padding: ${rsHeight * 10 + 'px'};
+            //background-color: pink;
+            flex-direction: row;
+            gap: ${rsWidth * 10 + 'px'};
+            justify-content: center;
           `}>
-          <Button
+          {/*<Button
             title={
               selectedEmotions.length < MINIMUM_EMOTION_COUNT
                 ? `오늘의 마음을 알려주세요`
@@ -212,6 +186,24 @@ const SmallEmotionChart = ({ navigation }) => {
               setRecordedEmotions(selectedEmotions); // 상태 업데이트
               await todayEmotion(selectedEmotions, text);
               navigation.navigate(TabScreenName.Home);
+            }}
+          />*/}
+          <Button
+            title="감정만 기록하기"
+            primary={false}
+            disabled={selectedEmotions.length < MINIMUM_EMOTION_COUNT}
+            onPress={async () => {
+              Analytics.clickRecordButton();
+              setRecordedEmotions(selectedEmotions); // 상태 업데이트
+              await todayEmotion(selectedEmotions, text);
+              navigation.navigate(TabScreenName.Home);
+            }}
+          />
+          <Button
+            title="마음일기 쓰러가기"
+            primary={true}
+            onPress={() => {
+              navigation.navigate(HomeStackName.DailyDairy);
             }}
           />
         </View>

@@ -8,12 +8,15 @@ import Profile from '../components/pages/Profile/profile';
 import { HomeStackName, RootStackName, TabScreenName } from '../constants/Constants';
 import NewChat from '../components/pages/HomePage/new-chat';
 import Chat from '../components/pages/HomePage/Chat';
+import DailyDairy from '../components/pages/HomePage/DailyDairy';
 import { formatDate } from '../utils/Chatting';
+import { Alert } from 'react-native';
 
 const HomeStack = createNativeStackNavigator();
 
 const HomeStackNavigator: React.FC = () => {
   const navigation = useNavigation();
+
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen
@@ -35,6 +38,42 @@ const HomeStackNavigator: React.FC = () => {
                 })
               }
               title={formatDate(new Date()).slice(5)}
+            />
+          ),
+        }}
+      />
+      <HomeStack.Screen
+        name={HomeStackName.DailyDairy}
+        component={DailyDairy}
+        options={{
+          header: () => (
+            <Header
+              title={formatDate(new Date()).slice(5)}
+              leftFunction={() => {
+                Alert.alert(
+                  '뒤로 가시겠어요?', // 첫번째 text: 타이틀 큰 제목
+                  '작성한 내용이 지워질 수 있어요!', // 두번째 text: 작은 제목
+                  [
+                    {
+                      text: '아니오',
+                      onPress: () => {
+                        //Analytics.clickWithdrawalModalCancelButton();
+                        console.log('뒤로 가기 방지');
+                      },
+                    },
+                    {
+                      text: '네', // 버튼 제목
+                      onPress: () => {
+                        console.log('뒤로 가기');
+                        navigation.navigate(RootStackName.HomeStackNavigator, {
+                          screen: HomeStackName.SmallEmotionChart,
+                        });
+                      },
+                    },
+                  ],
+                  { cancelable: false }, //alert 밖에 눌렀을 때 alert 안 없어지도록
+                );
+              }}
             />
           ),
         }}
