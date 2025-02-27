@@ -11,6 +11,8 @@ import {
   setUserInfo,
 } from '../utils/storageUtils';
 import { showAppNotice } from '../utils/app-notice';
+import * as Sentry from '@sentry/react-native';
+import { parse } from 'react-native-svg';
 
 function setInterceptor(instance: any) {
   instance.interceptors.request.use(async function (config: any) {
@@ -24,6 +26,22 @@ function setInterceptor(instance: any) {
       return response.data;
     },
     async function (error: any) {
+      // Sentry 스코프를 사용하여 에러 태그 및 추가 정보를 설정
+      Sentry.withScope((scope) => {
+        scope.setTag('axios_error', 'true');
+        if (error.response) {
+          scope.setTag('status', error.response.status);
+          const parsedData = JSON.parse(error.config.data);
+          const question = parsedData?.question || 'no_question';
+          scope.setExtra('user_question', question); // 유저 대화 내용
+          scope.setExtra('request_url', error.config?.url); //요청한 url
+          scope.setExtra('response_data', error.response.data); //응답 데이터
+        } else {
+          scope.setTag('error_type', 'network_error');
+        }
+        Sentry.captureException(error);
+      });
+      // Sentry 스코프를 사용하여 에러 태그 및 추가 정보를 설정
       console.error('instance Error: ', error.response);
       if (error.response && error.response.status === 419) {
         console.log('interseptor: 419 에러 발생');

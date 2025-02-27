@@ -120,7 +120,7 @@ const App: React.FC = () => {
 
   // 처음 앱을 실행할 때 amplitude에 로그인 화면에 진입했음을 알려준다.
   useEffect(() => {
-    console.log('⭐️⭐️⭐️ provider', getUserAccountProvider());
+    //console.log('⭐️⭐️⭐️ provider', getUserAccountProvider());
     Analytics.watchLoginScreen();
   }, []);
 

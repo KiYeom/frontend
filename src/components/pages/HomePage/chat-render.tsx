@@ -298,11 +298,12 @@ export const RenderTime = (props: TimeProps<IMessage>) => {
 };
 
 //보내기 버튼
+/*
 export const RenderSend = (props: SendProps<IMessage>, sendingStatus: boolean) => {
   return (
     <View
       style={{
-        /*backgroundColor: 'pink',*/
+        backgroundColor: 'pink',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-start',
@@ -320,13 +321,13 @@ export const RenderSend = (props: SendProps<IMessage>, sendingStatus: boolean) =
           //width: rsWidth * 30,
           //height: rsWidth * 30,
           //borderRadius: (rsWidth * 30) / 2,
-          /*backgroundColor: 'yellow',*/
+          //backgroundColor: 'yellow',
         }}>
         <Icon name="airplane" />
       </Send>
     </View>
   );
-};
+};*/
 
 export const RenderDay = (props: DayProps) => {
   props.dateFormat = 'YYYY년 MM월 DD일';
@@ -449,29 +450,6 @@ export const RenderInputToolbar = (props: InputToolbarProps<IMessage>, sendingSt
     )}
   />
 );
-
-/*
-export const RenderComposer = (props: ComposerProps, disable: boolean = false) => (
-  <Composer {...props} multiline={false} disableComposer={disable} />
-);*/
-
-//글자가 입력되는 공간의 INPUT 창
-/*export const RenderComposer = (props: ComposerProps, disable: boolean = false) => (
-  <View
-    style={{
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
-      width: '100%',
-      backgroundColor: 'blue',
-      paddingHorizontal: 10,
-      paddingVertical: 10,
-      paddingBottom: 10,
-    }}>
-    <Text>테스트</Text>
-  </View>
-);*/
 
 export const RenderLoading = () => (
   <View

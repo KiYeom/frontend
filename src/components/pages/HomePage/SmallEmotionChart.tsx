@@ -193,7 +193,8 @@ const SmallEmotionChart = ({ navigation }) => {
             primary={false}
             disabled={selectedEmotions.length < MINIMUM_EMOTION_COUNT}
             onPress={async () => {
-              Analytics.clickRecordButton();
+              //Analytics.clickRecordButton();
+              Analytics.clickEmotionRecordButton();
               setRecordedEmotions(selectedEmotions); // 상태 업데이트
               await todayEmotion(selectedEmotions, text);
               navigation.navigate(TabScreenName.Home);
@@ -203,6 +204,7 @@ const SmallEmotionChart = ({ navigation }) => {
             title="마음일기 쓰러가기"
             primary={true}
             onPress={() => {
+              Analytics.clickGotoDiaryWriteButton();
               navigation.navigate(HomeStackName.DailyDairy);
             }}
           />

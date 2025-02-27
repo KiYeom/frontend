@@ -230,6 +230,16 @@ export default class Analytics {
   public static watchEmotionRecordScreen = (): void => {
     this.sendEvent('감정 기록 화면 진입', 'emotionRecordScreen');
   };
+  //감정 기록 - <감정만 기록하기> 버튼 클릭
+  public static clickEmotionRecordButton = (): void => {
+    this.sendEvent('감정 기록 - <감정만 기록하기> 버튼 클릭', 'emotionRecordButton');
+  };
+
+  //감정 기록 - <마음일기 쓰러가기> 버튼 클릭
+  public static clickGotoDiaryWriteButton = (): void => {
+    this.sendEvent('감정 기록 - <마음일기 쓰러가기> 버튼 클릭', 'gotoDiaryWriteButton');
+  };
+
   //감정 기록 - 기록하기 버튼 클릭
   public static clickRecordButton = (): void => {
     this.sendEvent('감정 기록 - 기록하기 버튼 클릭', 'emotionRecordButton');

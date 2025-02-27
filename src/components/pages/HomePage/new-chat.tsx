@@ -30,12 +30,10 @@ import { TabScreenName } from '../../../constants/Constants';
 import {
   RenderAvatar,
   RenderBubble,
-  RenderComposer,
   RenderDay,
   RenderFooter,
   RenderInputToolbar,
   RenderLoading,
-  RenderSend,
   RenderSystemMessage,
   RenderTime,
 } from './chat-render';
@@ -68,11 +66,11 @@ const NewChat: React.FC = ({ navigation }) => {
   const [screenLoading, setScreenLoading] = useState<boolean>(false);
   const [refreshTimerMS, setRefreshTimerMS] = useState<number>(500);
 
-  const [messages, setMessages] = useState<IMessage[]>([]);
-  const [sending, setSending] = useState<boolean>(false);
-  const [buffer, setBuffer] = useState<string | null>(null);
+  const [messages, setMessages] = useState<IMessage[]>([]); //채팅 메시지 목록을 관리하는 상태
+  const [sending, setSending] = useState<boolean>(false); //메시지를 보내고 있는 중인지 여부를 나타내는 상태
+  const [buffer, setBuffer] = useState<string | null>(null); //사용자가 입력한 메시지를 저장하는 임시 버퍼
 
-  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null); //타이핑 시간을 관리하는 타이머 (초기값 null, 이후 setTimeout의 반환값인 NodeJS.Timeout 객체를 저장)
   const refreshTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const [riskScore, setRiskScore] = React.useState<number>(0);
@@ -96,10 +94,36 @@ const NewChat: React.FC = ({ navigation }) => {
     });
   };
 
+  /*
+  getIMessageFromServer 함수
+    *** 매개변수 lastMessageDate : 가장 최근에 생성된 대화의 날짜를 가져옴
+    *** serverMessages : 서버에서 받아온 전체 대화 내역 {"chats": [{"status": "user", "text": "안뇽
+", "utcTime": "2025-02-27T02:14:16.781Z"}, {"status": "bot", "text": "안녕하세요 dd님!  저는 멍뭉이숲에서 온 쿠키예요! 🐾 dd님을 만나서 정말정말 반가워요!  무슨 일로 저를 찾아오셨나요? 😊
+", "utcTime": "2025-02-27T02:14:19.781Z"}, {"status": "user", "text": "zn키야
+내 이름은
+냥뇽냥뇽이야
+", "utcTime": "2025-02-27T02:14:51.482Z"}, {"status": "bot", "text": "아, 냥뇽냥뇽님! 이름이 참 귀엽네요!💖  혹시 제가 dd님이라고 잘못 불렀나요?  제가 멍뭉이라서 가끔 헷갈릴 때가 있어요. 히히.  그런데 무슨 고민이 있으신가요?
+", "utcTime": "2025-02-27T02:14:54.482Z"}]} 
+  *** serverMessages.chat : 대화 내역을 담고 있는 배열 -> length : 쿠키와 유저의 총 대화 핑퐁 횟수
+  *** serverMessages.chat.status : 대화 내역의 상태 (user, bot)
+  *** serverMessages.chat.text : 대화 내역의 텍스트
+  *** serverMessages.chat.utcTime : 대화 내역의 시간
+
+  */
+
   const getIMessageFromServer = async (lastMessageDate: Date): Promise<IMessage[]> => {
+    //console.log('🚀~~~~getIMessageFromServer~~~~🚀');
     const messages: IMessage[] = [];
     const lastDateAddSecond = new Date(lastMessageDate.getTime() + 10 * 1000);
     const serverMessages = await getOldChatting(botObject._id, lastDateAddSecond.toISOString());
+    //console.log('👍serverMessages', serverMessages, `\n👍serverMessages\n`);
+    //console.log('❌serverMessages.chats', serverMessages?.chats, `\n❌serverMessages.chats\n`);
+    //console.log(
+    //'❌serverMessages.chats.length',
+    //serverMessages?.chats.length,
+    //`\n❌serverMessages.chats.length\n`,
+    //);
+    //서버에서 대화 내역을 가지고 옴
 
     if (serverMessages && serverMessages.chats && serverMessages.chats.length > 0) {
       for (let i = 0; i < serverMessages.chats.length; i++) {
@@ -123,7 +147,7 @@ const NewChat: React.FC = ({ navigation }) => {
               text: splitTexts[k],
               createdAt: new Date(new Date(chat.utcTime).getTime()),
               user: chat.status === 'user' ? userObject : botObject,
-            });
+            }); //대화 내용을 messages에 추가
           }
         }
       }
@@ -131,20 +155,31 @@ const NewChat: React.FC = ({ navigation }) => {
     return messages.reverse();
   };
 
+  /*
+  1. 대화 내역을 가지고 오는 getHistory 함수
+    서버에서 그 동안의 대화 내역을 가지고 오며, 대화 내역이 없는 경우 환영 메세지를 추가하여 반환
+  2. 비동기 처리가 완료된 후 리턴 타입
+    Imssage[] (배열)
+  -> 왜 로컬에서 대화를 먼저 가지고 오고, 서버에서 그 동안의 대화를 가지고 오는가?
+  */
   const getHistory = async (): Promise<IMessage[]> => {
     //대화 내역을 가져오는 함수
     let messages: IMessage[] = [];
     const deviceHistory = getNewIMessages();
+    //console.log('🎊🎊🎊🎊🎊🎊deviceHistory🎊🎊🎊🎊🎊', deviceHistory);
     if (deviceHistory) {
       const deviceArray = JSON.parse(deviceHistory);
       messages.push(...deviceArray);
-    }
+    } //이 부분 주석 처리하면 웰컴 메세지가 없음
 
-    //서버에서 그동안의 대화를 가져온다.
     const lastMessageDate: Date =
       messages.length > 0 ? new Date(messages[0].createdAt) : new Date(0);
     const serverMessages = await getIMessageFromServer(lastMessageDate);
+    //serverMessages : 이제까지 서버에서의 메세지를 다 들고와 저장함
+    //console.log('🤍🤍🤍🤍🤍serverMessages', serverMessages);
     messages = [...serverMessages, ...messages];
+
+    //console.log('-========message=========', messages[0]);
 
     //대화 내역이 없을 경우, 환영 메시지를 추가
     if (messages.length === 0) {
@@ -157,6 +192,7 @@ const NewChat: React.FC = ({ navigation }) => {
       messages.push(welcomeMessage);
       setNewIMessages(JSON.stringify([welcomeMessage]));
     }
+
     return messages;
   };
 
@@ -165,6 +201,7 @@ const NewChat: React.FC = ({ navigation }) => {
     setNewIMessages(messagesString);
   };
 
+  //유저가 서버로 메세지를 보내는 sendMessageToServer 함수
   const sendMessageToServer = () => {
     if (!buffer) return;
     setSending(true);
@@ -212,6 +249,11 @@ const NewChat: React.FC = ({ navigation }) => {
       });
   };
 
+  /*
+  디바운싱을 담당하는 resetTimer 함수
+    1. 타이머가 돌아가고 있다면 타이머를 초기화한다
+    2. 입력이 모두 끝나고 2초 후에 타이머가 sendMessageToServer() 함수를 실행한다.
+  */
   const resetTimer = () => {
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
@@ -222,6 +264,9 @@ const NewChat: React.FC = ({ navigation }) => {
     }, 2 * 1000);
   };
 
+  /*
+  resetRefreshTimer 함수
+  */
   const resetRefreshTimer = (height: number, ms: number) => {
     if (refreshTimeoutRef.current) {
       clearTimeout(refreshTimeoutRef.current);
@@ -233,13 +278,21 @@ const NewChat: React.FC = ({ navigation }) => {
     }, Math.floor(ms));
   };
 
+  /* 
+  채팅 화면이 처음 보였을 때 대화 기록을 가지고 오는 과정
+  getHistory() : 서버에서 그 동안의 모든 대화 히스토리를 가지고 옴
+  ** 성공할 경우 (then) : 서버에서 가지고 온 대화인 messageHistory를 messages 상태에 저장
+  ** 실패할 경우 (catch) : 사용자에게 안내와 함께 홈 화면으로 이동
+  */
   useEffect(() => {
+    //console.log('===========useEffect 실행===========');
     setInit(true);
     if (getRefreshChat() === 0) {
       Analytics.watchNewChatScreen();
     }
     getHistory()
       .then((messageHistory) => {
+        //console.log('messageHistory', messageHistory);
         setMessages(messageHistory);
         setInit(false);
       })
@@ -249,9 +302,20 @@ const NewChat: React.FC = ({ navigation }) => {
       });
   }, []);
 
+  /*
+  1. onSend 함수
+    비행기 버튼을 눌렀을 때 실행되는 메세지 전송 버튼, 매개변수로 내가 TextInput에 작성한 newMessages를 받음
+    newMessages : [{"_id": "953961d0-d7c3-4f43-9275-a7ba62157062", "createdAt": 2025-02-27T03:33:31.172Z, "text": "바부", "user": {"_id": 0, "name": "나"}}]
+    *** 빈 화면에서 전송 버튼을 누르면 실행되지 않으나.. 버튼을 비활성화 시키는 게 더 현명해보임
+    *** 유저가 작성한 메세지가 여러 개인 경우 buffer로 쌓이고, 최종 전송될 때 buffer에 있는 메세지 전부 보냄
+    *** 보낼 때 한 줄 씩 띄워서 전송하게 됨
+  */
   const onSend = (newMessages: IMessage[] = []) => {
     Analytics.clickChatSendButton();
-    if (newMessages.length !== 1 || !newMessages[0].text.trim()) return;
+    if (!newMessages[0].text.trim()) {
+      console.log('실행 안됨');
+      return;
+    }
     setBuffer(buffer ? buffer + newMessages[0].text + '\n' : newMessages[0].text + '\n');
     setMessages((previousMessages) => {
       setIMessages(previousMessages, newMessages.reverse());
@@ -259,6 +323,8 @@ const NewChat: React.FC = ({ navigation }) => {
     });
   };
 
+  //버퍼가 변경됨에 따라 타이머를 재설정함
+  //타이머 = 유저의 타이핑 시간 (연속된 타이핑인지를 체크)
   useEffect(() => {
     if (buffer) {
       resetTimer();
@@ -335,7 +401,7 @@ const NewChat: React.FC = ({ navigation }) => {
     });
   };
 
-  //채팅 화면
+  /* 채팅 화면 전체 구성 */
   return (
     <SafeAreaView
       style={{ flex: 1 }}

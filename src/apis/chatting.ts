@@ -2,28 +2,37 @@ import * as Sentry from '@sentry/react-native';
 import { TChatAnswer, TOldAnswer } from './chatting.types';
 import { instance } from './interceptor';
 
+const errorMessage: TChatAnswer = {
+  answer: '너무 죄송하지만 다시 한 번 말해줄 수 있나요?🥺🐶',
+};
+
 export const chatting = async (
   characterId: number,
   question: string,
   isDemo: boolean = false,
 ): Promise<TChatAnswer | undefined> => {
-  try {
-    const res = await instance.post('/v1/chat/memory', {
-      characterId,
-      question,
-      isDemo,
-    });
-    return res.data; //ai의 답변을 return
-  } catch (error) {
-    Sentry.captureException(error, {
-      extra: {
-        screen: 'chatting',
-        action: 'ai의 답변을 받는 과정 (post /v1/chat/memory)',
-        time: new Date().toISOString(),
-        apiEndPoinnt: '/v1/chat/memory',
-      },
-    }); // Sentry에 에러 전송
-    return;
+  let attempts = 0;
+  while (attempts < 3) {
+    try {
+      attempts++;
+      const res = await instance.post('/v1/chat/memory', {
+        characterId,
+        question,
+        isDemo,
+      });
+      if (attempts >= 2) {
+        // 2번째 시도부터 성공 시 로그를 남김
+        Sentry.captureMessage(`성공 : ${attempts}번째 성공`);
+      }
+      return res.data; //ai의 답변을 return
+    } catch (error) {
+      Sentry.captureMessage(`실패 : ${attempts}번째 실패`);
+      if (attempts >= 3) {
+        Sentry.captureMessage(`최종 실패 : ${attempts}번째 실패`);
+        Sentry.captureException(error); // Sentry에 에러 전송
+        return errorMessage;
+      }
+    }
   }
 };
 
