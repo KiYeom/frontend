@@ -87,7 +87,7 @@ const NewChat: React.FC = ({ navigation }) => {
           getRefreshChat() <= 2
         ) {
           addRefreshChat(1);
-          navigation.replace(HomeStackName.NewChatRefresh);
+          //navigation.replace(HomeStackName.NewChatRefresh);
         }
       }
       setScreenLoading(false);
@@ -439,14 +439,16 @@ const NewChat: React.FC = ({ navigation }) => {
           navigation.navigate(TabScreenName.Home);
         }}
         isRight
-        rightFunction={handleDangerPress}
-        rightIcon={
+        //rightFunction={handleDangerPress}
+        rightIcon="side-menu-bar"
+        rightFunction={() => navigation.openDrawer()}
+        /*rightIcon={
           riskStatus === 'danger'
             ? 'danger-sign'
             : riskStatus === 'danger-opened'
               ? 'danger-sign-opened'
               : 'information'
-        }
+        }*/
       />
       <Hint
         visible={hintStatus}
@@ -459,7 +461,11 @@ const NewChat: React.FC = ({ navigation }) => {
           font-size: ${16 * rsFont + 'px'};
           color: ${palette.neutral[900]};
         `}
-        onPress={() => setHintStatus(false)}
+        onPress={() => {
+          //console.log('힌트 누름');
+          setHintStatus(false);
+          //navigation.openDrawer();
+        }}
         onBackgroundPress={() => setHintStatus(false)}
         backdropColor={'rgba(0, 0, 0, 0.5)'}>
         <View />

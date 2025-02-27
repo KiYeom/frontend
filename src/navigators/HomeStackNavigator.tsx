@@ -11,7 +11,7 @@ import Chat from '../components/pages/HomePage/Chat';
 import DailyDairy from '../components/pages/HomePage/DailyDairy';
 import { formatDate } from '../utils/Chatting';
 import { Alert } from 'react-native';
-
+import DrawerNavigator from './DrawerNavigator';
 const HomeStack = createNativeStackNavigator();
 
 const HomeStackNavigator: React.FC = () => {
@@ -19,13 +19,6 @@ const HomeStackNavigator: React.FC = () => {
 
   return (
     <HomeStack.Navigator>
-      <HomeStack.Screen
-        name={HomeStackName.Chat}
-        component={Chat}
-        options={{
-          header: () => <Header title="쿠키의 채팅방" />,
-        }}
-      />
       <HomeStack.Screen
         name={HomeStackName.SmallEmotionChart}
         component={SmallEmotionChart}
@@ -85,6 +78,16 @@ const HomeStackNavigator: React.FC = () => {
       />
       <HomeStack.Screen
         name={HomeStackName.NewChat}
+        component={DrawerNavigator}
+        options={{ headerShown: false }}
+      />
+      {/*<HomeStack.Screen
+        name={HomeStackName.NewChatRefresh}
+        component={DrawerNavigator}
+        options={{ headerShown: false, animation: 'none' }}
+      />*/}
+      {/*<HomeStack.Screen
+        name={HomeStackName.NewChat}
         component={NewChat}
         options={{ headerShown: false }}
       />
@@ -92,7 +95,7 @@ const HomeStackNavigator: React.FC = () => {
         name={HomeStackName.NewChatRefresh}
         component={NewChat}
         options={{ headerShown: false, animation: 'none' }}
-      />
+      />*/}
       <HomeStack.Screen
         name={HomeStackName.ChatList}
         component={ChatList}

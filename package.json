@@ -21,6 +21,7 @@
     "@react-native-firebase/app": "^21.2.0",
     "@react-native-google-signin/google-signin": "^12.2.1",
     "@react-navigation/bottom-tabs": "^6.5.20",
+    "@react-navigation/drawer": "^6.7.2",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/native-stack": "^6.9.26",
     "@sentry/react-native": "~5.34.0",
