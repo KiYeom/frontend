@@ -11,7 +11,7 @@ import {
 
 export type SwitchRowProps = {
   title: string;
-  desc: string;
+  desc?: string;
   disabled?: boolean;
   isEnabled: boolean;
   onPress?: () => void;

@@ -12,15 +12,28 @@ import {
 import { Linking } from 'react-native';
 import NewChat from '../components/pages/HomePage/new-chat';
 import Icon from '../components/icons/icons';
+import SwitchRow from '../components/switch-row/switch-row';
+import { useState, useEffect } from 'react';
 
 const Drawer = createDrawerNavigator();
 
-const CustomDrawerContent = (props) => (
-  <DrawerContentScrollView {...props}>
-    <DrawerItemList {...props} />
-    <DrawerItem label="Help" onPress={() => Linking.openURL('https://mywebsite.com/help')} />
-  </DrawerContentScrollView>
-);
+const CustomDrawerContent = (props) => {
+  //대화체를 관리하는 isCasualMode state
+  const [isCasualMode, setIsCasualMode] = useState(true);
+  return (
+    <DrawerContentScrollView {...props}>
+      <SwitchRow
+        title="반말 사용하기"
+        isEnabled={isCasualMode}
+        disabled={false}
+        onPress={() => {
+          setIsCasualMode(!isCasualMode);
+          //console.log('눌렀음');
+        }}
+      />
+    </DrawerContentScrollView>
+  );
+};
 
 const DrawerNavigator: React.FC = () => {
   return (
