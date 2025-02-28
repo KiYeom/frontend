@@ -226,18 +226,62 @@ export default class Analytics {
     this.sendEvent('채팅 - 헤더의 좌측 뒤로가기 버튼 클릭', 'headerBackButton');
   };
 
-  //감정 기록 화면
+  //채팅 - 우측 사이드바 버튼 클릭
+  public static clickHeaderSideMenuButton = (): void => {
+    this.sendEvent('채팅 - 헤더의 우측 사이드바 버튼 클릭', 'headerSideMenuButton');
+  };
+
+  //채팅 - 사이드바 오픈
+  public static watchOpenedSideMenuScreen = (): void => {
+    this.sendEvent('채팅 - 사이드바 오픈 진입', 'openedSideMenuScreen');
+  };
+
+  //채팅 - 사이드바 - 대화방 관리의 토글 클릭
+  public static clickChattingRoomSettingSwitch = (
+    switchLabel: string,
+    newStatus: boolean,
+  ): void => {
+    this.sendEvent('채팅 - 사이드바 - 대화방 관리 스위치 클릭', 'clickChattingRoomSettingSwitch', {
+      switchLabel,
+      newStatus,
+    });
+  };
+
+  //채팅 - 사이드바 - '제안 및 문의' 클릭
+  public static clickSideMenuInquiryButton = (): void => {
+    this.sendEvent('채팅 - 사이드바 - 제안 및 문의 클릭', 'sideMenuInquiryButton');
+  };
+  //채팅 - 사이드바 - '버그 제보하기' 클릭
+  public static clickSideMenuBugReportButton = (): void => {
+    this.sendEvent('채팅 - 사이드바 - 버그 제보하기 클릭', 'sideMenuBugReportButton');
+  };
+  //채팅 - 사이드바 - '쿠키 팬아트 보내기' 클릭
+  public static clickSideMenuCookieFanArtButton = (): void => {
+    this.sendEvent('채팅 - 사이드바 - 쿠키 팬아트 보내기 클릭', 'sideMenuCookieArtButton');
+  };
+
+  //감정 기록 화면 진입
   public static watchEmotionRecordScreen = (): void => {
     this.sendEvent('감정 기록 화면 진입', 'emotionRecordScreen');
   };
-  //감정 기록 - <감정만 기록하기> 버튼 클릭
+  //감정 기록 화면 - <감정만 기록하기> 버튼 클릭
   public static clickEmotionRecordButton = (): void => {
     this.sendEvent('감정 기록 - <감정만 기록하기> 버튼 클릭', 'emotionRecordButton');
   };
 
-  //감정 기록 - <마음일기 쓰러가기> 버튼 클릭
+  //감정 기록 화면 - <마음일기 쓰러가기> 버튼 클릭
   public static clickGotoDiaryWriteButton = (): void => {
-    this.sendEvent('감정 기록 - <마음일기 쓰러가기> 버튼 클릭', 'gotoDiaryWriteButton');
+    this.sendEvent('감정 기록 화면 - <마음일기 쓰러가기> 버튼 클릭', 'gotoDiaryWriteButton');
+  };
+
+  //일기 기록 화면 진입
+  public static watchDiaryWriteScreen = (): void => {
+    this.sendEvent('일기 기록 화면 진입', 'diaryWriteScreen');
+  };
+
+  //일기 기록 화면 - <쿠키에게 알려주기> 버튼 클릭
+  public static clickDiaryWriteButton = (): void => {
+    this.sendEvent('일기 기록 화면 - <일기 기록하기> 버튼 클릭', 'diaryWriteButton');
   };
 
   //감정 기록 - 기록하기 버튼 클릭

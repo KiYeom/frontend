@@ -81,11 +81,11 @@ const HomeStackNavigator: React.FC = () => {
         component={DrawerNavigator}
         options={{ headerShown: false }}
       />
-      {/*<HomeStack.Screen
+      <HomeStack.Screen
         name={HomeStackName.NewChatRefresh}
         component={DrawerNavigator}
         options={{ headerShown: false, animation: 'none' }}
-      />*/}
+      />
       {/*<HomeStack.Screen
         name={HomeStackName.NewChat}
         component={NewChat}

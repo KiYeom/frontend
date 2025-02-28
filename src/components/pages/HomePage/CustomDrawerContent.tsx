@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { DrawerContentScrollView } from '@react-navigation/drawer';
 import {
   UserSettingContainer,
@@ -11,6 +11,7 @@ import { Linking, Platform } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import * as MailComposer from 'expo-mail-composer';
 import { getUserNickname } from '../../../utils/storageUtils';
+import Analytics from '../../../utils/analytics';
 
 const sendMail = async () => {
   const options = {
@@ -33,6 +34,10 @@ const sendMail = async () => {
 };
 
 const CustomDrawerContent = (props) => {
+  useEffect(() => {
+    console.log('사이드바 메뉴 열림');
+    Analytics.watchOpenedSideMenuScreen();
+  }, []);
   //대화체를 관리하는 isCasualMode state
   const [isCasualMode, setIsCasualMode] = useState(true);
   return (
@@ -48,6 +53,7 @@ const CustomDrawerContent = (props) => {
           isEnabled={isCasualMode}
           disabled={false}
           onPress={() => {
+            Analytics.clickChattingRoomSettingSwitch('반말 사용하기 (on/off)', !isCasualMode);
             setIsCasualMode(!isCasualMode);
           }}
         />
@@ -59,7 +65,7 @@ const CustomDrawerContent = (props) => {
         <MenuRow
           text="버그 제보하기"
           onPress={async () => {
-            //Analytics.clickTabSettingLogoutButton();
+            Analytics.clickSideMenuBugReportButton();
             if (Platform.OS === 'android') {
               await Linking.openURL('https://j2wk7.channel.io/home');
             } else {
@@ -70,10 +76,17 @@ const CustomDrawerContent = (props) => {
         <MenuRow
           text="제안 및 문의"
           onPress={async () => {
+            Analytics.clickSideMenuInquiryButton();
             await Linking.openURL('https://asked.kr/remind_cookie');
           }}
         />
-        <MenuRow text="쿠키 팬아트 보내기" onPress={sendMail} />
+        <MenuRow
+          text="쿠키 팬아트 보내기"
+          onPress={() => {
+            Analytics.clickSideMenuCookieFanArtButton();
+            sendMail();
+          }}
+        />
       </UserSettingContainer>
     </DrawerContentScrollView>
   );

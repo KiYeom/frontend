@@ -57,7 +57,7 @@ const DailyDairy = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const { selectedEmotions, setSelectedEmotions } = useEmotionStore();
   useEffect(() => {
-    Analytics.watchEmotionRecordScreen();
+    Analytics.watchDiaryWriteScreen();
     todayEmotionCheck().then((data) => {
       setText(data?.todayFeeling ?? '');
     });
@@ -147,6 +147,7 @@ const DailyDairy = ({ navigation }) => {
             primary={true}
             disabled={validateDairy(text) === 'correct' ? false : true}
             onPress={async () => {
+              Analytics.clickDiaryWriteButton();
               await todayEmotion(selectedEmotions, text);
               navigation.navigate(TabScreenName.Home);
             }}

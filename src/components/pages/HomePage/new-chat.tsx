@@ -441,7 +441,10 @@ const NewChat: React.FC = ({ navigation }) => {
         isRight
         //rightFunction={handleDangerPress}
         rightIcon="side-menu-bar"
-        rightFunction={() => navigation.openDrawer()}
+        rightFunction={() => {
+          Analytics.clickHeaderSideMenuButton();
+          navigation.openDrawer();
+        }}
         /*rightIcon={
           riskStatus === 'danger'
             ? 'danger-sign'
