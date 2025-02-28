@@ -24,6 +24,7 @@ export const chatting = async (
         // 2번째 시도부터 성공 시 로그를 남김
         Sentry.captureMessage(`성공 : ${attempts}번째 성공`);
       }
+      console.log('  😀    ', res.data);
       return res.data; //ai의 답변을 return
     } catch (error) {
       Sentry.captureMessage(`실패 : ${attempts}번째 실패`);

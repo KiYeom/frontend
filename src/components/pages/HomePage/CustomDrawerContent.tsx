@@ -82,9 +82,14 @@ const CustomDrawerContent = (props) => {
         />
         <MenuRow
           text="쿠키 팬아트 보내기"
-          onPress={() => {
+          onPress={async () => {
             Analytics.clickSideMenuCookieFanArtButton();
-            sendMail();
+            //sendMail();
+            if (Platform.OS === 'android') {
+              await Linking.openURL('https://3kpe9.channel.io/home');
+            } else {
+              WebBrowser.openBrowserAsync('https://3kpe9.channel.io/home');
+            }
           }}
         />
       </UserSettingContainer>
