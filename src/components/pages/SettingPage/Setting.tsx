@@ -193,7 +193,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
               });
             }}
           />
-          <MenuRow text="앱 정보" showVersion={!loading} isLatest={isLatest} />
+          <MenuRow text="앱 정보" showVersion={!loading} isLatest={true} />
         </AppSettingContainer>
         <UserSettingContainer>
           <SubjectTextContainer>

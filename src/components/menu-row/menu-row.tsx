@@ -15,6 +15,7 @@ import {
   VersionText,
 } from './menu-row.styles';
 import { getIsDemo } from '../../utils/storageUtils';
+import SwitchComponent from '../switch/switch';
 
 export type MenuRowProps = {
   text: string;
@@ -22,6 +23,10 @@ export type MenuRowProps = {
   isLatest?: boolean;
   onPress?: () => void;
   latestVersion?: string;
+  showIcon?: boolean;
+  showToggle?: boolean;
+  isEnabled?: boolean;
+  disabled?: boolean;
 };
 
 const linkingToStore = (
@@ -46,7 +51,16 @@ const linkingToStore = (
 };
 
 const MenuRow = (props: MenuRowProps) => {
-  const { text, showVersion = false, isLatest = true, onPress = () => {} } = props;
+  const {
+    text,
+    showVersion = false,
+    isLatest = true,
+    onPress = () => {},
+    showIcon = true,
+    showToggle = false,
+    isEnabled = true,
+    disabled = false,
+  } = props;
 
   return (
     <MenuRowContainer
@@ -73,13 +87,16 @@ const MenuRow = (props: MenuRowProps) => {
             color={palette.neutral[300]}
           />
         )
-      ) : (
+      ) : showIcon ? (
         <Icon
           name="arrow-right"
           width={rsWidth * 9}
           height={rsHeight * 18}
           color={palette.neutral[300]}
         />
+      ) : null}
+      {showToggle && (
+        <SwitchComponent isEnabled={isEnabled} disabled={disabled} onPress={onPress} />
       )}
     </MenuRowContainer>
   );
