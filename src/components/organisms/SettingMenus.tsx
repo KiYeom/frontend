@@ -1,3 +1,4 @@
+/*
 import * as Notifications from 'expo-notifications';
 import React from 'react';
 import { Alert, StyleSheet, Text, View } from 'react-native';
@@ -100,3 +101,4 @@ const styles = StyleSheet.create({
 });
 
 export default SettingMenus;
+*/

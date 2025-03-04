@@ -44,18 +44,6 @@ const Setting: React.FC<any> = ({ navigation }) => {
   const [isLatest, setIsLatest] = React.useState<boolean>(true);
   const insets = useSafeAreaInsets();
 
-  //브라우저 열기
-  const openWeb = async () => {
-    console.log('📢 브라우저 열기 시도!');
-
-    const result = await WebBrowser.openBrowserAsync('https://example.com', {
-      createTask: false, // 앱 내부에서 실행
-      showInRecents: true, // 최근 앱 목록에 유지
-    });
-
-    console.log('✅ 브라우저 결과:', result);
-  };
-
   //로그아웃
   const logoutRequest = async () => {
     try {

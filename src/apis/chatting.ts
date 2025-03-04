@@ -17,20 +17,15 @@ export const chatting = async (
       attempts++;
       const res = await instance.post('/v1/chat/memory', {
         characterId,
-        question,
+        question: ' '.repeat(attempts - 1) + question,
         isDemo,
       });
-      if (attempts >= 2) {
-        // 2번째 시도부터 성공 시 로그를 남김
-        Sentry.captureMessage(`성공 : ${attempts}번째 성공`);
-      }
-      console.log('  😀    ', res.data);
       return res.data; //ai의 답변을 return
     } catch (error) {
-      Sentry.captureMessage(`실패 : ${attempts}번째 실패`);
+      //Sentry.captureMessage(`실패 : ${attempts}번째 실패`);
       if (attempts >= 3) {
-        Sentry.captureMessage(`최종 실패 : ${attempts}번째 실패`);
-        Sentry.captureException(error); // Sentry에 에러 전송
+        //Sentry.captureMessage(`최종 실패 : ${attempts}번째 실패`);
+        //Sentry.captureException(error); // Sentry에 에러 전송
         return errorMessage;
       }
     }
