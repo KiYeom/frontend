@@ -2,30 +2,30 @@ import { css } from '@emotion/native';
 import React, { useEffect } from 'react';
 import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { userEditInfo } from '../../../apis/userEditInfo'; //api 수정해야 함
-import palette from '../../../assets/styles/theme';
-import { TGender } from '../../../constants/types';
-import Analytics from '../../../utils/analytics';
+import { userEditInfo } from '../../../../apis/userEditInfo'; //api 수정해야 함
+import palette from '../../../../assets/styles/theme';
+import { TGender } from '../../../../constants/types';
+import Analytics from '../../../../utils/analytics';
 import {
   getUserBirthdate,
   getUserGender,
   getUserNickname,
   setUserInfo,
-} from '../../../utils/storageUtils';
-import { validateBirth } from '../../../utils/ValidateBirth';
-import { validateName } from '../../../utils/ValidateName';
-import Button from '../../button/button';
-import Input from '../../input/input';
-import { ContentContainer } from '../sign-up/input-name/input-name.styles';
+} from '../../../../utils/storageUtils';
+import { validateBirth } from '../../../../utils/ValidateBirth';
+import { validateName } from '../../../../utils/ValidateName';
+import Button from '../../../button/button';
+import Input from '../../../input/input';
+import { ContentContainer } from '../../sign-up/input-name/input-name.styles';
 import {
   BtnLabel,
   ButtonGroup,
   FormContainer,
   GenderButton,
   Label,
-} from '../sign-up/input-profile/input-profile.styles';
+} from '../../sign-up/input-profile/input-profile.styles';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { rsWidth } from '../../../utils/responsive-size';
+import { rsWidth } from '../../../../utils/responsive-size';
 //설정 - 프로필 수정 화면
 
 //date가 존재할 경우 'yyyy.mm.dd' 형태로 바꾸는 함수

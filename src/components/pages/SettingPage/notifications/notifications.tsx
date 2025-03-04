@@ -3,7 +3,7 @@ import { getNotificationStatus, setNotificationStatus } from '../../../../apis/n
 import Analytics from '../../../../utils/analytics';
 import SwitchRow from '../../../switch-row/switch-row';
 import { ScrollContainer } from './notifications.styles';
-
+//설정 - 알림설정
 const Notifications = () => {
   const [systemSwitchState, setSystemSwitchState] = React.useState(false);
   const [cookieSwitchState, setCookieSwitchState] = React.useState(false);

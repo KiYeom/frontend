@@ -116,6 +116,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
         paddingTop: insets.top,
       }}>
       <SettingContainer>
+        {/* 유저 정보 수정 */}
         <UserInfoContainer
           activeOpacity={1}
           onPress={() => {
@@ -133,6 +134,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
             color={palette.neutral[300]}
           />
         </UserInfoContainer>
+        {/* 앱 내의 설정 */}
         <AppSettingContainer>
           <MenuRow
             text="알림설정"
@@ -183,6 +185,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
           />
           <MenuRow text="앱 정보" showVersion={!loading} isLatest={true} />
         </AppSettingContainer>
+        {/* 계정 정보 수정 */}
         <UserSettingContainer>
           <SubjectTextContainer>
             <SubjectText>계정 설정</SubjectText>
