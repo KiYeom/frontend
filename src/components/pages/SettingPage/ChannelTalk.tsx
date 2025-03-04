@@ -5,6 +5,7 @@ import { WebView } from 'react-native-webview';
 
 const ChannelTalk: React.FC = () => {
   const insets = useSafeAreaInsets();
+  console.log('채널톡 열림');
   return (
     <View
       style={{

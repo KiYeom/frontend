@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import Header from '../components/header/header';
-import ChannelTalk from '../components/pages/SettingPage/ChannelTalk'; //채널톡 페이지
+//import ChannelTalk from '../components/pages/SettingPage/ChannelTalk'; //채널톡 페이지
 import DeactivateReason from '../components/pages/SettingPage/deactivate/deactivate-reason/DeactivateReason';
 import DeactivateAlert from '../components/pages/SettingPage/deactivate/deactivate-alert/DeactivateAlert';
 import EditUserInfo from '../components/pages/SettingPage/EditUserInfo'; //개인정보 수정 페이지
@@ -37,13 +37,13 @@ const SettingStackNavigator: React.FC = () => {
           header: () => <Header title="알림 설정" />,
         }}
       />
-      <SettingStack.Screen
+      {/*<SettingStack.Screen
         name={SettingStackName.ChannelTalk}
         component={ChannelTalk}
         options={{
           header: () => <Header title="문의하기" />,
         }}
-      />
+      />*/}
       <SettingStack.Screen
         name={SettingStackName.LicensePage}
         component={LicensePage}
