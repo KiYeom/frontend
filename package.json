@@ -104,7 +104,8 @@
     "eslint-plugin-prettier": "^5.2.1",
     "prettier": "^3.3.3",
     "react-native-svg-transformer": "^1.5.0",
-    "typescript": "~5.3.3"
+    "typescript": "~5.3.3",
+    "expo-atlas": "^0.3.0"
   },
   "private": true,
   "proxy": "http://34.125.112.144:8000"
