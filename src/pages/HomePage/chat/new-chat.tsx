@@ -443,7 +443,7 @@ const NewChat: React.FC = ({ navigation }) => {
         }}
         isRight
         //rightFunction={handleDangerPress}
-        rightIcon="side-menu-bar"
+        rightIcon="side-menu-bar-alert"
         rightFunction={() => {
           Analytics.clickHeaderSideMenuButton();
           navigation.openDrawer();
