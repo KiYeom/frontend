@@ -2,14 +2,14 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import Header from '../components/header/header';
 //import ChannelTalk from '../components/pages/SettingPage/ChannelTalk'; //채널톡 페이지
-import DeactivateReason from '../components/pages/SettingPage/deactivate/deactivate-reason/DeactivateReason';
-import DeactivateAlert from '../components/pages/SettingPage/deactivate/deactivate-alert/DeactivateAlert';
-import EditUserInfo from '../components/pages/SettingPage/editInfo/EditUserInfo'; //개인정보 수정 페이지
-import LicenseDetailPage from '../components/pages/SettingPage/license/LicenseDetailPage'; //오픈소스 라이센스 상세 페이지
-import LicensePage from '../components/pages/SettingPage/license/LicensePage'; //오픈소스 라이센스 페이지
-import UserNotifications from '../components/pages/SettingPage/notifications/notifications'; //알림설정 페이지
-import OrganizationConnect from '../components/pages/SettingPage/organization/organization-connect/organization-connect';
-import OrganizationStatus from '../components/pages/SettingPage/organization/organization-status/organization-status';
+import DeactivateReason from '../pages/SettingPage/deactivate/deactivate-reason/DeactivateReason';
+import DeactivateAlert from '../pages/SettingPage/deactivate/deactivate-alert/DeactivateAlert';
+import EditUserInfo from '../pages/SettingPage/editInfo/EditUserInfo'; //개인정보 수정 페이지
+import LicenseDetailPage from '../pages/SettingPage/license/LicenseDetailPage'; //오픈소스 라이센스 상세 페이지
+import LicensePage from '../pages/SettingPage/license/LicensePage'; //오픈소스 라이센스 페이지
+import UserNotifications from '../pages/SettingPage/notifications/notifications'; //알림설정 페이지
+import OrganizationConnect from '../pages/SettingPage/organization/organization-connect/organization-connect';
+import OrganizationStatus from '../pages/SettingPage/organization/organization-status/organization-status';
 //import PrivacyPolicy from '../components/pages/SettingPage/PrivacyPolicy'; //개인정보처리방침 페이지
 import { SettingStackName } from '../constants/Constants';
 

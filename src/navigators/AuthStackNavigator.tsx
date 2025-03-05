@@ -2,9 +2,9 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import Header from '../components/header/header';
-import Login from '../components/pages/sign-in/sign-in';
-import InputName from '../components/pages/sign-up/input-name/input-name';
-import InputProfile from '../components/pages/sign-up/input-profile/input-profile';
+import Login from '../pages/sign-in/sign-in';
+import InputName from '../pages/sign-up/input-name/input-name';
+import InputProfile from '../pages/sign-up/input-profile/input-profile';
 import { AuthStackName } from '../constants/Constants';
 import { UseRightStatus } from '../utils/right-status';
 
