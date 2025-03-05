@@ -8,6 +8,7 @@ import { SectionTitle } from '../StatisticMain.style';
 import Icon from '../../../components/icons/icons';
 import { Hint } from 'react-native-ui-lib';
 import palette from '../../../assets/styles/theme';
+import HintComponent from '../HintComponent';
 
 const HINT_NAME = 'period-keyword';
 const HINT_MESSAGE = '그 동안 쿠키와 나눴던 이야기를 키워드로 정리해봤어요!';
@@ -24,7 +25,7 @@ const PeriodKeywordArea: React.FC<any> = (props: any) => {
       <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
         <SectionTitle>그 동안 이런 이야기를 나눴어요</SectionTitle>
         <View style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}>
-          <Hint
+          {/*<Hint
             visible={hintStatus && hintStatus === HINT_NAME}
             position={Hint.positions.TOP}
             message={HINT_MESSAGE}
@@ -45,8 +46,20 @@ const PeriodKeywordArea: React.FC<any> = (props: any) => {
                 <Icon name="information" width={16} height={16} />
               </TouchableOpacity>
             </View>
-          </Hint>
+          </Hint>*/}
+          <HintComponent
+            visible={hintStatus && hintStatus === HINT_NAME}
+            onClose={() => setHintStatus(undefined)}
+            onToggle={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}
+            message={HINT_MESSAGE}
+          />
         </View>
+        {/*<HintComponent
+          visible={hintStatus && hintStatus === HINT_NAME}
+          onClose={() => setHintStatus(undefined)}
+          onToggle={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}
+          message={HINT_MESSAGE}
+        />*/}
       </View>
       <View
         style={css`

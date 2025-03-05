@@ -46,6 +46,7 @@ import * as Clipboard from 'expo-clipboard';
 import Toast from 'react-native-root-toast';
 import { Hint } from 'react-native-ui-lib';
 import palette from '../../../assets/styles/theme';
+import HintComponent from '../../StatisticPage/HintComponent';
 //import cookieprofile from '@assets/images/cookieprofile.png';
 //import cookieProfile from '@assets/images/cookieprofile.png';
 
@@ -455,7 +456,7 @@ const NewChat: React.FC = ({ navigation }) => {
               : 'information'
         }*/
       />
-      <Hint
+      {/*<Hint
         visible={hintStatus}
         position={Hint.positions.BOTTOM}
         message={HINT_MESSAGE}
@@ -474,7 +475,7 @@ const NewChat: React.FC = ({ navigation }) => {
         onBackgroundPress={() => setHintStatus(false)}
         backdropColor={'rgba(0, 0, 0, 0.5)'}>
         <View />
-      </Hint>
+      </Hint>*/}
 
       <GiftedChat
         messages={messages}

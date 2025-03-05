@@ -11,6 +11,7 @@ import { getIsDemo, setIsScoreDemo } from '../../../utils/storageUtils';
 import Icon from '../../../components/icons/icons';
 import { Hint } from 'react-native-ui-lib';
 import palette from '../../../assets/styles/theme';
+import HintComponent from '../HintComponent';
 
 const fillMissingDates = (data, startDate, endDate) => {
   const result = [];
@@ -60,7 +61,7 @@ const PeriodFlowChart = ({ emotionsData, startDate, endDate, hintStatus, setHint
         <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
           <SectionTitle>얼마나 많은 감정 변화가 있었을까요?</SectionTitle>
           <View style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}>
-            <Hint
+            {/*<Hint
               visible={hintStatus && hintStatus === HINT_NAME}
               position={Hint.positions.TOP}
               message={HINT_MESSAGE}
@@ -76,12 +77,23 @@ const PeriodFlowChart = ({ emotionsData, startDate, endDate, hintStatus, setHint
               <View>
                 <TouchableOpacity
                   activeOpacity={1}
-                  style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}
+                  style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginLeft: 4,
+                    backgroundColor: 'yellow',
+                  }}
                   onPress={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}>
                   <Icon name="information" width={16} height={16} />
                 </TouchableOpacity>
               </View>
-            </Hint>
+            </Hint>*/}
+            <HintComponent
+              visible={hintStatus && hintStatus === HINT_NAME}
+              onClose={() => setHintStatus(undefined)}
+              onToggle={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}
+              message={HINT_MESSAGE}
+            />
           </View>
         </View>
         <View

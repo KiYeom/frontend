@@ -24,6 +24,7 @@ import { DateLineContainer, DateLineText, StatisticTitle } from './StatisticMain
 import { Hint } from 'react-native-ui-lib';
 import Icon from '../../components/icons/icons';
 import PeriodEmotionArea from './Period_Emotion/PeriodEmotionArea';
+import HintComponent from './HintComponent';
 
 const HINT_NAME = 'main';
 const HINT_MESSAGE =
@@ -161,7 +162,14 @@ const PeriodStatisticPage: React.FC<any> = () => {
                   </DateLineText>
                 </TouchableOpacity>
                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                  <Hint
+                  <HintComponent
+                    visible={hintStatus && hintStatus === HINT_NAME}
+                    position={Hint.positions.BOTTOM}
+                    message={HINT_MESSAGE}
+                    onClose={() => setHintStatus(undefined)}
+                    onToggle={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}
+                  />
+                  {/*<Hint
                     visible={hintStatus && hintStatus === HINT_NAME}
                     position={Hint.positions.BOTTOM}
                     message={HINT_MESSAGE}
@@ -174,16 +182,16 @@ const PeriodStatisticPage: React.FC<any> = () => {
                     `}
                     onPress={() => setHintStatus(undefined)}
                     onBackgroundPress={() => setHintStatus(undefined)}
-                    backdropColor={'rgba(0, 0, 0, 0.5)'}>
-                    <View>
-                      <TouchableOpacity
-                        activeOpacity={1}
-                        style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}
-                        onPress={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}>
-                        <Icon name="information" width={14} height={14} />
-                      </TouchableOpacity>
-                    </View>
-                  </Hint>
+                    backdropColor={'rgba(0, 0, 0, 0.5)'}>*/}
+                  {/*<View>
+                    <TouchableOpacity
+                      activeOpacity={1}
+                      style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}
+                      onPress={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}>
+                      <Icon name="information" width={14} height={14} />
+                    </TouchableOpacity>
+                  </View>*/}
+                  {/*</Hint>*/}
                 </View>
               </DateLineContainer>
               <StatisticTitle>쿠키와의 대화에서{'\n'}마음을 살펴보았어요</StatisticTitle>

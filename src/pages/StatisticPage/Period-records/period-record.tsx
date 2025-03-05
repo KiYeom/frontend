@@ -17,6 +17,7 @@ import palette from '../../../assets/styles/theme';
 import { Hint } from 'react-native-ui-lib';
 import { rsFont } from '../../../utils/responsive-size';
 import { css } from '@emotion/native';
+import HintComponent from '../HintComponent';
 
 const HINT_NAME = 'period-record';
 const HINT_MESSAGE = '자신이 기록한 날들을 한 눈에 볼 수 있어요!';
@@ -64,7 +65,7 @@ const PeriodRecord = (props: any) => {
       <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
         <SectionTitle>내가 기록한 하루들</SectionTitle>
         <View style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}>
-          <Hint
+          {/*<Hint
             visible={hintStatus && hintStatus === HINT_NAME}
             position={Hint.positions.TOP}
             message={HINT_MESSAGE}
@@ -85,8 +86,20 @@ const PeriodRecord = (props: any) => {
                 <Icon name="information" width={16} height={16} />
               </TouchableOpacity>
             </View>
-          </Hint>
+          </Hint>*/}
+          <HintComponent
+            visible={hintStatus && hintStatus === HINT_NAME}
+            onClose={() => setHintStatus(undefined)}
+            onToggle={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}
+            message={HINT_MESSAGE}
+          />
         </View>
+        {/*<HintComponent
+          visible={hintStatus && hintStatus === HINT_NAME}
+          onClose={() => setHintStatus(undefined)}
+          onToggle={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}
+          message={HINT_MESSAGE}
+        />*/}
       </View>
       {records.length === 0 ? (
         <Empty type="채팅기록"></Empty>

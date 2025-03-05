@@ -24,14 +24,14 @@ import {
   PageHintText,
   StatisticTitle,
 } from './StatisticMain.style';
-import { Hint } from 'react-native-ui-lib';
+//import { Hint } from 'react-native-ui-lib';
+import HintComponent from './HintComponent';
 import Icon from '../../components/icons/icons';
 import {
   getKoreanRealDateString,
   getKoreanServerTodayDateString,
   getKoreanServerYesterdayDateString,
 } from '../../utils/times';
-import { getIsDemo } from '../../utils/storageUtils';
 
 const START_HOUR_OF_DAY = 6;
 
@@ -74,20 +74,18 @@ const StatisticMain: React.FC<any> = () => {
     setDate(new Date(newDate));
   }, []);
 
+  //앱이 처음 실행됐을 때 실행되는 부분
   useEffect(() => {
-    Analytics.watchDailyStatisticScreen();
+    Analytics.watchDailyStatisticScreen(); //일일 리포트 화면 진입
     dailyAnalyzeStatus(2025).then((data) => {
+      //2025년도에 대한 데이터를 가져옴
       if (!data) {
         setAvailableDates([getKoreanServerTodayDateString(new Date())]);
       } else {
         setAvailableDates([...data.dates, getKoreanServerTodayDateString(new Date())]);
       }
     });
-    if (getIsDemo()) {
-      setDate(new Date(`${getKoreanServerTodayDateString(new Date())}T00:00:00.000+09:00`));
-    } else {
-      setDate(new Date(`${getKoreanServerYesterdayDateString(new Date())}T00:00:00.000+09:00`));
-    }
+    setDate(new Date(`${getKoreanServerYesterdayDateString(new Date())}T00:00:00.000+09:00`));
   }, []);
 
   const fetchData = async () => {
@@ -126,6 +124,7 @@ const StatisticMain: React.FC<any> = () => {
     };
   }, [navigation]);
 
+  //날짜가 바뀜에 따라 데이터를 다시 api를 통해 불러옴
   useEffect(() => {
     console.log('useEffect date');
     fetchData();
@@ -172,13 +171,14 @@ const StatisticMain: React.FC<any> = () => {
                 uri: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/statistic/reportlogo.png',
               }}
             />
-            <View style={{ marginVertical: 10 * rsHeight }}>
+            <View style={{ marginVertical: 10 * rsHeight, backgroundColor: 'yellow' }}>
+              {/* 현재 날짜와 쿠키의 안내 말 */}
               <DateLineContainer>
                 <TouchableOpacity onPress={() => setOpenModal(true)}>
                   <DateLineText>{getDateKoreanString(date)}</DateLineText>
                 </TouchableOpacity>
                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                  <Hint
+                  {/*<Hint
                     visible={hintStatus && hintStatus === HINT_NAME}
                     position={Hint.positions.BOTTOM}
                     message={HINT_MESSAGE}
@@ -200,7 +200,13 @@ const StatisticMain: React.FC<any> = () => {
                         <Icon name="information" width={14} height={14} />
                       </TouchableOpacity>
                     </View>
-                  </Hint>
+                  </Hint>*/}
+                  <HintComponent
+                    visible={hintStatus && hintStatus === HINT_NAME}
+                    onClose={() => setHintStatus(undefined)}
+                    onToggle={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}
+                    message={HINT_MESSAGE}
+                  />
                 </View>
               </DateLineContainer>
               <StatisticTitle>쿠키와의 대화에서{'\n'}마음을 살펴보았어요</StatisticTitle>
