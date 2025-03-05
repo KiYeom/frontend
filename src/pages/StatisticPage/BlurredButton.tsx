@@ -6,6 +6,7 @@ import palette from '../../assets/styles/theme';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';
 
 const BlurredButton = ({ blurredImageUri, text, buttonText, onPress }) => {
+  console.log('BlurredButton');
   const regex = /(나의 마음)/;
   const [beforeHighlight, highlight, afterHighlight] = text.split(regex);
 

@@ -127,9 +127,10 @@ const StatisticMain: React.FC<any> = () => {
   }, [navigation]);
 
   useEffect(() => {
+    console.log('useEffect date');
     fetchData();
   }, [date]);
-
+  console.log('🎨🎨🎨🎨🎨🎨Rendering statistic🎨🎨🎨🎨🎨🎨');
   return (
     <View
       style={{
