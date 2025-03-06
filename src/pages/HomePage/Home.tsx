@@ -119,7 +119,8 @@ const Home: React.FC<any> = ({ navigation }) => {
     else setRiskStatus('danger');
   };
 
-  //헤더 아이콘 설정하기
+  /* 화면에 진입할 때마다 위험 점수를 갱신한다.
+   */
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', refreshRiskScore);
     // 컴포넌트 unmount 시 리스너를 해제

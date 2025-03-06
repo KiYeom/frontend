@@ -15,7 +15,7 @@ export const chatting = async (
   while (attempts < 3) {
     try {
       attempts++;
-      const res = await instance.post('/v1/chat/memory', {
+      const res = await instance.post('/v2/chat/memory', {
         characterId,
         question: ' '.repeat(attempts - 1) + question,
         isDemo,

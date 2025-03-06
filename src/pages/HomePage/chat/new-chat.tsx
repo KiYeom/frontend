@@ -50,7 +50,7 @@ import HintComponent from '../../StatisticPage/HintComponent';
 //import cookieprofile from '@assets/images/cookieprofile.png';
 //import cookieProfile from '@assets/images/cookieprofile.png';
 
-const HINT_MESSAGE = 'AI로 생성된 답변입니다. 상담 필요 시 전문가와 상의하세요.';
+//const HINT_MESSAGE = 'AI로 생성된 답변입니다. 상담 필요 시 전문가와 상의하세요.';
 
 const userObject = {
   _id: 0,
@@ -78,7 +78,7 @@ const NewChat: React.FC = ({ navigation }) => {
 
   const [riskScore, setRiskScore] = React.useState<number>(0);
   const [riskStatus, setRiskStatus] = React.useState<'safe' | 'danger' | 'danger-opened'>('safe');
-  const [hintStatus, setHintStatus] = React.useState<boolean>(false);
+  //const [hintStatus, setHintStatus] = React.useState<boolean>(false);
 
   const decideRefreshScreen = (viewHeight: number) => {
     NavigationBar.getVisibilityAsync().then((navBarStatus) => {
@@ -361,12 +361,13 @@ const NewChat: React.FC = ({ navigation }) => {
       return;
     }
     if (riskStatus === 'safe') {
-      setHintStatus(true);
+      //setHintStatus(true);
       return;
     }
   };
 
   const refreshRiskScore = () => {
+    console.log('🥬🥬🥬🥬🥬 refreshRiskScore 🥬🥬🥬🥬');
     const date = getKoreanServerTodayDateString(new Date());
     getRiskScore(date).then((res) => {
       setRiskScore(res);
@@ -386,9 +387,14 @@ const NewChat: React.FC = ({ navigation }) => {
     if (!riskData) setRiskStatus('safe');
     else if (riskData.isRead) setRiskStatus('danger-opened');
     else setRiskStatus('danger');
+    //setRiskStatus('danger');
   };
 
-  //헤더 아이콘 설정하기
+  /*
+  채팅 스크린에 처음 진입 시, 위험 지수를 받아와서 화면에 업데이트를 해 주어야 함
+  따라서 스크린 포커스 시 위험 점수를 받아올 수 있도록 리스너를 추가.
+  스크린 밖을 나갈 때 (= 컴포넌트 언마운트) 리스너를 해제하여 메모리 누수를 방지
+  */
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', refreshRiskScore);
     // 컴포넌트 unmount 시 리스너를 해제
@@ -441,13 +447,16 @@ const NewChat: React.FC = ({ navigation }) => {
           if (getIsDemo()) requestAnalytics();
           navigation.navigate(TabScreenName.Home);
         }}
-        isRight
+        isRight={false}
         //rightFunction={handleDangerPress}
-        rightIcon="side-menu-bar-alert"
+        //rightIcon="side-menu-bar-alert"
+        /*
+        점검 끝나면 다시 풀어둘 코드
+        rightIcon={riskStatus === 'danger' ? 'side-menu-bar-alert' : 'side-menu-bar'}
         rightFunction={() => {
           Analytics.clickHeaderSideMenuButton();
           navigation.openDrawer();
-        }}
+        }}*/
         /*rightIcon={
           riskStatus === 'danger'
             ? 'danger-sign'

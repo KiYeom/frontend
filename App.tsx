@@ -137,6 +137,10 @@ const App: React.FC = () => {
     );
   }
 
+  alert(
+    '쿠키와의 시간에 불편을 드려 죄송합니다.🥺 현재 서비스 점검중이며, 오늘(3/6) 저녁 6시 이후 쿠키를 만나뵈실 수 있습니다!',
+  );
+
   return (
     <KeyboardProvider>
       <SafeAreaProvider>
