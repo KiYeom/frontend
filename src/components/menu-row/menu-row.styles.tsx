@@ -2,12 +2,13 @@ import styled from '@emotion/native';
 import palette from '../../assets/styles/theme';
 import { rsFont, rsHeight, rsWidth } from '../../utils/responsive-size';
 
-export const MenuRowContainer = styled.TouchableOpacity`
+export const MenuRowContainer = styled.TouchableOpacity<{ showEventIcon?: boolean }>`
   width: 100%;
   padding-horizontal: ${rsWidth * 20 + 'px'};
   padding-vertical: ${rsHeight * 16 + 'px'};
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: ${(props) => (props.showEventIcon === true ? 'center' : 'space-between')};
+  //justify-content: space-between;W
   align-items: center;
   background-color: green;
 `;

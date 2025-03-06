@@ -28,6 +28,7 @@ export type MenuRowProps = {
   isEnabled?: boolean;
   disabled?: boolean;
   showEventIcon?: boolean;
+  eventName?: string;
   shouldBlockTouch?: boolean;
 };
 
@@ -66,6 +67,7 @@ const MenuRow = (props: MenuRowProps) => {
     isEnabled = true,
     disabled = false,
     showEventIcon = false,
+    eventName = String,
     shouldBlockTouch = false,
   } = props;
 
@@ -77,8 +79,9 @@ const MenuRow = (props: MenuRowProps) => {
               console.log('초록색 누름');
               linkingToStore(props.showVersion, props.isLatest, props.onPress);
             }
-          : null
+          : undefined
       }
+      showEventIcon={showEventIcon}
       activeOpacity={1}>
       <MenuRowTextContainer>
         {text && <MenuRowText>{text}</MenuRowText>}
@@ -90,6 +93,7 @@ const MenuRow = (props: MenuRowProps) => {
             </VersionStatus>
           </>
         )}
+        {showEventIcon && <Icon name={'danger-sign'} width={90} />}
       </MenuRowTextContainer>
 
       {showVersion ? (

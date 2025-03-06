@@ -9,14 +9,14 @@ import {
 import MenuRow from '../../components/menu-row/menu-row';
 import { Linking, Platform } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
-import * as MailComposer from 'expo-mail-composer';
-import { getUserNickname } from '../../utils/storageUtils';
+import { useNavigation } from '@react-navigation/native';
 import Analytics from '../../utils/analytics';
 import { switchChatTone, getUserInfo } from '../../apis/setting';
 import { getRiskScore } from '../../apis/riskscore';
 import { getRiskData, setRiskData } from '../../utils/storageUtils';
 import { getKoreanServerTodayDateString } from '../../utils/times';
 import { RISK_SCORE_THRESHOLD } from '../../constants/Constants';
+import { DANGER_LETTER, DangerStackName, RootStackName } from '../../constants/Constants';
 
 const CustomDrawerContent = (props: any) => {
   //대화체를 관리하는 isCasualMode state
@@ -24,6 +24,7 @@ const CustomDrawerContent = (props: any) => {
   //위험 점수와 상태를 관리하는 state
   const [riskScore, setRiskScore] = React.useState<number>(0);
   const [riskStatus, setRiskStatus] = React.useState<'safe' | 'danger' | 'danger-opened'>('danger');
+  const navigation = useNavigation();
 
   /*
   사이드바를 오픈했을 때 실행되는 useEffect 훅
@@ -84,11 +85,16 @@ const CustomDrawerContent = (props: any) => {
             //text="이제 여기 아이콘 와야함, 초록색 컨테이너임"
             showIcon={false}
             showEventIcon={true}
+            eventName={riskStatus === 'danger' ? 'danger-sign' : 'danger-sign-opened'}
             showToggle={false}
             isEnabled={isInFormalMode}
             disabled={false}
             onPress={() => {
-              console.log('편지');
+              const letterIndex = Math.floor(Math.random() * DANGER_LETTER.length);
+              navigation.navigate(RootStackName.DangerStackNavigator, {
+                screen: DangerStackName.DangerAlert,
+                params: { letterIndex },
+              }); //쿠키 편지 화면으로 이동한다
             }}
           />
         </UserSettingContainer>
