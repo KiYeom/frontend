@@ -14,6 +14,9 @@ import { getUserNickname } from '../../utils/storageUtils';
 import Analytics from '../../utils/analytics';
 import { switchChatTone, getUserInfo } from '../../apis/setting';
 import { getRiskScore } from '../../apis/riskscore';
+import { getRiskData, setRiskData } from '../../utils/storageUtils';
+import { getKoreanServerTodayDateString } from '../../utils/times';
+import { RISK_SCORE_THRESHOLD } from '../../constants/Constants';
 
 const CustomDrawerContent = (props: any) => {
   //대화체를 관리하는 isCasualMode state
@@ -26,14 +29,13 @@ const CustomDrawerContent = (props: any) => {
   사이드바를 오픈했을 때 실행되는 useEffect 훅
   1. 사이드바가 오픈되면 유저의 대화 문체 정보를 서버에서 가져와서 isFormalMode state를 업데이트한다.
    */
+
   useEffect(() => {
     //console.log('사이드바 메뉴 열림');
     Analytics.watchOpenedSideMenuScreen();
     getUserInfo()
       .then((res) => {
-        //console.log('😀😀😀😀😀😀😀😀v', res);
         if (res) {
-          console.log('then', res);
           setIsInformalMode(res.isInFormal);
         } else {
           console.log('????');
@@ -44,16 +46,44 @@ const CustomDrawerContent = (props: any) => {
       });
   }, []);
 
+  const refreshRiskScore = () => {
+    const date = getKoreanServerTodayDateString(new Date());
+    getRiskScore(date).then((res) => {
+      setRiskScore(res);
+      if (res >= RISK_SCORE_THRESHOLD && !getRiskData()) {
+        setRiskData({
+          timestamp: new Date().getTime(),
+          isRead: false,
+          letterIndex: null,
+        });
+      }
+      refreshRiskStatus();
+    });
+  };
+
+  const refreshRiskStatus = () => {
+    const riskData = getRiskData();
+    if (!riskData) setRiskStatus('safe');
+    else if (riskData.isRead) setRiskStatus('danger-opened');
+    else setRiskStatus('danger');
+    //setRiskStatus('danger');
+  };
+
   return (
     <DrawerContentScrollView {...props}>
-      {riskStatus !== 'safe' && (
+      {(riskStatus === 'danger' || riskStatus === 'danger-opened') && (
         <UserSettingContainer>
           <SubjectTextContainer>
-            <SubjectText>언제나 곁에서 힘이 되어드리고 싶어요</SubjectText>
+            <SubjectText>
+              {riskStatus === 'danger'
+                ? '쿠키에게 편지가 왔어요'
+                : '언제나 곁에서 힘이 되어드리고 싶어요'}
+            </SubjectText>
           </SubjectTextContainer>
           <MenuRow
-            text="메세지 올 자리"
+            //text="이제 여기 아이콘 와야함, 초록색 컨테이너임"
             showIcon={false}
+            showEventIcon={true}
             showToggle={false}
             isEnabled={isInFormalMode}
             disabled={false}
@@ -73,6 +103,7 @@ const CustomDrawerContent = (props: any) => {
           showToggle={true}
           isEnabled={isInFormalMode}
           disabled={false}
+          shouldBlockTouch={true}
           onPress={async () => {
             switchChatTone(!isInFormalMode); //변경 사항을 서버에 patch로 업데이트
             setIsInformalMode(!isInFormalMode); //화면의 토글이 변경

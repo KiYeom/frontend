@@ -447,17 +447,16 @@ const NewChat: React.FC = ({ navigation }) => {
           if (getIsDemo()) requestAnalytics();
           navigation.navigate(TabScreenName.Home);
         }}
-        isRight={false}
+        isRight={true}
         //rightFunction={handleDangerPress}
         //rightIcon="side-menu-bar-alert"
-        /*
-        점검 끝나면 다시 풀어둘 코드
-        rightIcon={riskStatus === 'danger' ? 'side-menu-bar-alert' : 'side-menu-bar'}
+        rightIcon={riskStatus !== 'safe' ? 'side-menu-bar-alert' : 'side-menu-bar'}
         rightFunction={() => {
           Analytics.clickHeaderSideMenuButton();
           navigation.openDrawer();
-        }}*/
-        /*rightIcon={
+        }}
+        /* 
+        rightIcon={
           riskStatus === 'danger'
             ? 'danger-sign'
             : riskStatus === 'danger-opened'
@@ -465,27 +464,6 @@ const NewChat: React.FC = ({ navigation }) => {
               : 'information'
         }*/
       />
-      {/*<Hint
-        visible={hintStatus}
-        position={Hint.positions.BOTTOM}
-        message={HINT_MESSAGE}
-        color={'white'}
-        enableShadow
-        messageStyle={css`
-          font-family: Pretendard-Regular;
-          font-size: ${16 * rsFont + 'px'};
-          color: ${palette.neutral[900]};
-        `}
-        onPress={() => {
-          //console.log('힌트 누름');
-          setHintStatus(false);
-          //navigation.openDrawer();
-        }}
-        onBackgroundPress={() => setHintStatus(false)}
-        backdropColor={'rgba(0, 0, 0, 0.5)'}>
-        <View />
-      </Hint>*/}
-
       <GiftedChat
         messages={messages}
         onSend={(messages) => onSend(messages)}

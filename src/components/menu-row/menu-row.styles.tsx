@@ -9,18 +9,21 @@ export const MenuRowContainer = styled.TouchableOpacity`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  background-color: green;
 `;
 
 export const MenuRowTextContainer = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: start;
+  background-color: yellow;
 `;
 
 export const MenuRowText = styled.Text`
   font-size: ${rsFont * 18 + 'px'};
   font-family: Pretendard-Medium;
   color: ${palette.neutral[500]};
+  background-color: red;
 `;
 
 export const VersionText = styled.Text`

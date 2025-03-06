@@ -44,7 +44,7 @@ export const DateLineContainer = styled.View`
   align-items: center;
   justify-content: center;
   gap: ${rsWidth * 4 + 'px'};
-  background-color: red;
+  //background-color: red;
 `;
 
 //변경된 날짜 폰트

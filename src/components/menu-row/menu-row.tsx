@@ -18,7 +18,7 @@ import { getIsDemo } from '../../utils/storageUtils';
 import SwitchComponent from '../switch/switch';
 
 export type MenuRowProps = {
-  text: string;
+  text?: string;
   showVersion?: boolean;
   isLatest?: boolean;
   onPress?: () => void;
@@ -27,6 +27,8 @@ export type MenuRowProps = {
   showToggle?: boolean;
   isEnabled?: boolean;
   disabled?: boolean;
+  showEventIcon?: boolean;
+  shouldBlockTouch?: boolean;
 };
 
 const linkingToStore = (
@@ -34,6 +36,9 @@ const linkingToStore = (
   isLatest: boolean | undefined,
   func: (() => void) | undefined,
 ) => {
+  console.log('"linkingtostore 함수 실행');
+  console.log('showVersion : ', showVersion);
+  console.log('isLatest :', isLatest);
   if (showVersion === true && isLatest === false) {
     //버전 표시 하고, 업데이트 필요할 때
     Analytics.clickTabSettingUpdateButton();
@@ -60,14 +65,23 @@ const MenuRow = (props: MenuRowProps) => {
     showToggle = false,
     isEnabled = true,
     disabled = false,
+    showEventIcon = false,
+    shouldBlockTouch = false,
   } = props;
 
   return (
     <MenuRowContainer
-      onPress={() => linkingToStore(props.showVersion, props.isLatest, props.onPress)}
+      onPress={
+        !shouldBlockTouch
+          ? () => {
+              console.log('초록색 누름');
+              linkingToStore(props.showVersion, props.isLatest, props.onPress);
+            }
+          : null
+      }
       activeOpacity={1}>
       <MenuRowTextContainer>
-        <MenuRowText>{text}</MenuRowText>
+        {text && <MenuRowText>{text}</MenuRowText>}
         {showVersion && (
           <>
             <VersionText>{'v' + getAppVersion()}</VersionText>
