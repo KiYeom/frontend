@@ -64,19 +64,19 @@ const HomeChatBtn = ({ navigation }) => {
           />
         </HomeBtnDescription>
       </View>
-      {riskStatusV2 === 'safe' ? (
+      {riskStatusV2 !== 'safe' ? (
         <RiskCookieImage
           style={{
             resizeMode: 'contain',
           }}
-          source={require('../../../assets/images/homebuttonrainbowimage.png')}
+          source={require('@assets/images/homebuttonrainbowimage.png')}
         />
       ) : (
         <CookieImage
           style={{
             resizeMode: 'contain',
           }}
-          source={require('../../../assets/images/homebuttonimage.png')}
+          source={require('@assets/images/homebuttonimage.png')}
         />
       )}
     </HomeBtn>
