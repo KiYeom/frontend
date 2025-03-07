@@ -29,29 +29,6 @@ const CustomDrawerContent = (props: any) => {
   const { riskScoreV2, riskStatusV2, setRiskScoreV2, setRiskStatusV2, setHandleDangerPressV2 } =
     useRiskStoreVer2();
 
-  const getLetterIndex = (): number => {
-    const riskData = getRiskData();
-    return riskData?.letterIndex ?? 0;
-    //편지의 인덱스값 반환, 없는 경우 0으로
-  };
-
-  /*
-  사이드바를 오픈했을 때 실행되는 useEffect 훅
-  1. 사이드바가 오픈되면 유저의 대화 문체 정보를 서버에서 가져와서 isFormalMode state를 업데이트한다.
-   */
-
-  //이 화면에 왔을 때는 props를 내려 받아야 할 것 같은데....
-  //과연 이제까지 리스너를 달아서, 마운트 되는 것을 확인하고 risk 점수를 가지고 오는게 맞는지 전혀 모르겠음
-
-  /*useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', setRiskScoreV2);
-    //스크린이 포커스 될 때마다 refreshRiskScore 함수를 실행하여 위험 상태를 safe / danger / danger-opened 로 변경한다
-    return () => {
-      // 컴포넌트 unmount 시 리스너를 해제
-      unsubscribe();
-    };
-  }, [navigation]);*/
-
   useEffect(() => {
     Analytics.watchOpenedSideMenuScreen();
     getUserInfo() //반말 존댓말 정보 가져옴
@@ -66,28 +43,6 @@ const CustomDrawerContent = (props: any) => {
         console.log('catch');
       });
   }, []);
-
-  /*const refreshRiskScore = () => {
-    const date = getKoreanServerTodayDateString(new Date());
-    getRiskScore(date).then((res) => {
-      setRiskScore(res);
-      if (res >= RISK_SCORE_THRESHOLD && !getRiskData()) {
-        setRiskData({
-          timestamp: new Date().getTime(),
-          isRead: false,
-          letterIndex: null,
-        });
-      }
-      refreshRiskStatus();
-    });
-  };*/
-
-  /*const refreshRiskStatus = () => {
-    const riskData = getRiskData();
-    if (!riskData) setRiskStatus('safe');
-    else if (riskData.isRead) setRiskStatus('danger-opened');
-    else setRiskStatus('danger');
-  };*/
 
   return (
     <DrawerContentScrollView {...props}>
@@ -105,6 +60,7 @@ const CustomDrawerContent = (props: any) => {
             showEventIcon={true}
             eventName={riskStatusV2 === 'danger' ? 'danger-sign' : 'danger-sign-opened'}
             isEnabled={isInFormalMode}
+            shouldBlockTouch={true}
             onPress={() => {
               //쿠키 편지 화면으로 이동한다
               console.log('쿠키 편지를 클릭함');
@@ -120,7 +76,7 @@ const CustomDrawerContent = (props: any) => {
                 setHandleDangerPressV2();
                 navigation.navigate(RootStackName.DangerStackNavigator, {
                   screen: DangerStackName.DangerAlert,
-                  params: { letterIndex: getLetterIndex() },
+                  params: { letterIndex: getRiskData()?.letterIndex ?? 0 },
                 }); //쿠키 편지 화면으로 이동한다
                 return;
               }
@@ -131,7 +87,7 @@ const CustomDrawerContent = (props: any) => {
                 //const letterIndex = getRiskData()?.letterIndex;
                 navigation.navigate(RootStackName.DangerStackNavigator, {
                   screen: DangerStackName.DangerAlert,
-                  params: { letterIndex: getLetterIndex() },
+                  params: { letterIndex: getRiskData()?.letterIndex ?? 0 },
                 }); //쿠키 편지 화면으로 이동한다
                 return;
               }
@@ -196,3 +152,42 @@ const CustomDrawerContent = (props: any) => {
   );
 };
 export default CustomDrawerContent;
+
+///
+/*const refreshRiskScore = () => {
+    const date = getKoreanServerTodayDateString(new Date());
+    getRiskScore(date).then((res) => {
+      setRiskScore(res);
+      if (res >= RISK_SCORE_THRESHOLD && !getRiskData()) {
+        setRiskData({
+          timestamp: new Date().getTime(),
+          isRead: false,
+          letterIndex: null,
+        });
+      }
+      refreshRiskStatus();
+    });
+  };*/
+
+/*const refreshRiskStatus = () => {
+    const riskData = getRiskData();
+    if (!riskData) setRiskStatus('safe');
+    else if (riskData.isRead) setRiskStatus('danger-opened');
+    else setRiskStatus('danger');
+  };*/
+/*
+  사이드바를 오픈했을 때 실행되는 useEffect 훅
+  1. 사이드바가 오픈되면 유저의 대화 문체 정보를 서버에서 가져와서 isFormalMode state를 업데이트한다.
+   */
+
+//이 화면에 왔을 때는 props를 내려 받아야 할 것 같은데....
+//과연 이제까지 리스너를 달아서, 마운트 되는 것을 확인하고 risk 점수를 가지고 오는게 맞는지 전혀 모르겠음
+
+/*useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', setRiskScoreV2);
+    //스크린이 포커스 될 때마다 refreshRiskScore 함수를 실행하여 위험 상태를 safe / danger / danger-opened 로 변경한다
+    return () => {
+      // 컴포넌트 unmount 시 리스너를 해제
+      unsubscribe();
+    };
+  }, [navigation]);*/

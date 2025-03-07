@@ -76,9 +76,6 @@ const NewChat: React.FC = ({ navigation }) => {
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null); //타이핑 시간을 관리하는 타이머 (초기값 null, 이후 setTimeout의 반환값인 NodeJS.Timeout 객체를 저장)
   const refreshTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const [riskScore, setRiskScore] = React.useState<number>(0);
-  const [riskStatus, setRiskStatus] = React.useState<'safe' | 'danger' | 'danger-opened'>('safe');
-
   const { riskStatusV2, riskScoreV2, setRiskScoreV2, setRiskStatusV2, setHandleDangerPressV2 } =
     useRiskStoreVer2();
 
@@ -99,36 +96,10 @@ const NewChat: React.FC = ({ navigation }) => {
     });
   };
 
-  /*
-  getIMessageFromServer 함수
-    *** 매개변수 lastMessageDate : 가장 최근에 생성된 대화의 날짜를 가져옴
-    *** serverMessages : 서버에서 받아온 전체 대화 내역 {"chats": [{"status": "user", "text": "안뇽
-", "utcTime": "2025-02-27T02:14:16.781Z"}, {"status": "bot", "text": "안녕하세요 dd님!  저는 멍뭉이숲에서 온 쿠키예요! 🐾 dd님을 만나서 정말정말 반가워요!  무슨 일로 저를 찾아오셨나요? 😊
-", "utcTime": "2025-02-27T02:14:19.781Z"}, {"status": "user", "text": "zn키야
-내 이름은
-냥뇽냥뇽이야
-", "utcTime": "2025-02-27T02:14:51.482Z"}, {"status": "bot", "text": "아, 냥뇽냥뇽님! 이름이 참 귀엽네요!💖  혹시 제가 dd님이라고 잘못 불렀나요?  제가 멍뭉이라서 가끔 헷갈릴 때가 있어요. 히히.  그런데 무슨 고민이 있으신가요?
-", "utcTime": "2025-02-27T02:14:54.482Z"}]} 
-  *** serverMessages.chat : 대화 내역을 담고 있는 배열 -> length : 쿠키와 유저의 총 대화 핑퐁 횟수
-  *** serverMessages.chat.status : 대화 내역의 상태 (user, bot)
-  *** serverMessages.chat.text : 대화 내역의 텍스트
-  *** serverMessages.chat.utcTime : 대화 내역의 시간
-
-  */
-
   const getIMessageFromServer = async (lastMessageDate: Date): Promise<IMessage[]> => {
-    //console.log('🚀~~~~getIMessageFromServer~~~~🚀');
     const messages: IMessage[] = [];
     const lastDateAddSecond = new Date(lastMessageDate.getTime() + 10 * 1000);
     const serverMessages = await getOldChatting(botObject._id, lastDateAddSecond.toISOString());
-    //console.log('👍serverMessages', serverMessages, `\n👍serverMessages\n`);
-    //console.log('❌serverMessages.chats', serverMessages?.chats, `\n❌serverMessages.chats\n`);
-    //console.log(
-    //'❌serverMessages.chats.length',
-    //serverMessages?.chats.length,
-    //`\n❌serverMessages.chats.length\n`,
-    //);
-    //서버에서 대화 내역을 가지고 옴
 
     if (serverMessages && serverMessages.chats && serverMessages.chats.length > 0) {
       for (let i = 0; i < serverMessages.chats.length; i++) {
@@ -180,11 +151,7 @@ const NewChat: React.FC = ({ navigation }) => {
     const lastMessageDate: Date =
       messages.length > 0 ? new Date(messages[0].createdAt) : new Date(0);
     const serverMessages = await getIMessageFromServer(lastMessageDate);
-    //serverMessages : 이제까지 서버에서의 메세지를 다 들고와 저장함
-    //console.log('🤍🤍🤍🤍🤍serverMessages', serverMessages);
     messages = [...serverMessages, ...messages];
-
-    //console.log('-========message=========', messages[0]);
 
     //대화 내역이 없을 경우, 환영 메시지를 추가
     if (messages.length === 0) {
@@ -336,81 +303,20 @@ const NewChat: React.FC = ({ navigation }) => {
     }
   }, [buffer]);
 
-  //헤더 아이콘 클릭했을 때 이동 페이지
-  const handleDangerPress = () => {
-    if (riskStatus === 'danger') {
-      Analytics.clickDangerLetterButton(riskScore);
-      const letterIndex = Math.floor(Math.random() * DANGER_LETTER.length);
-      setRiskData({
-        timestamp: new Date().getTime(),
-        isRead: true,
-        letterIndex,
-      });
-      navigation.navigate(RootStackName.DangerStackNavigator, {
-        screen: DangerStackName.DangerAlert,
-        params: { letterIndex },
-      }); //쿠키 편지 화면으로 이동한다
-      return;
-    }
-    if (riskStatus === 'danger-opened') {
-      //위험한 상태일 때 확인을 했으면
-      Analytics.clickOpenedDangerLetterButton(riskScore);
-      const letterIndex = getRiskData()?.letterIndex;
-      navigation.navigate(RootStackName.DangerStackNavigator, {
-        screen: DangerStackName.DangerAlert,
-        params: { letterIndex: letterIndex ?? 0 },
-      }); //쿠키 편지 화면으로 이동한다
-      return;
-    }
-    if (riskStatus === 'safe') {
-      //setHintStatus(true);
-      return;
-    }
-  };
-
-  const refreshRiskScore = () => {
-    console.log('🥬🥬🥬🥬🥬 refreshRiskScore 🥬🥬🥬🥬');
-    const date = getKoreanServerTodayDateString(new Date());
-    getRiskScore(date).then((res) => {
-      setRiskScore(res);
-      if (res >= RISK_SCORE_THRESHOLD && !getRiskData()) {
-        setRiskData({
-          timestamp: new Date().getTime(),
-          isRead: false,
-          letterIndex: null,
-        });
-      }
-      refreshRiskStatus();
-    });
-  };
-
-  const refreshRiskStatus = () => {
-    const riskData = getRiskData();
-    if (!riskData) setRiskStatus('safe');
-    else if (riskData.isRead) setRiskStatus('danger-opened');
-    else setRiskStatus('danger');
-    //setRiskStatus('danger');
-  };
-
-  /*
-  채팅 스크린에 처음 진입 시, 위험 지수를 받아와서 화면에 업데이트를 해 주어야 함
-  따라서 스크린 포커스 시 위험 점수를 받아올 수 있도록 리스너를 추가.
-  스크린 밖을 나갈 때 (= 컴포넌트 언마운트) 리스너를 해제하여 메모리 누수를 방지
-  */
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', refreshRiskScore);
-    // 컴포넌트 unmount 시 리스너를 해제
-    return () => {
-      unsubscribe();
-    };
-  }, [navigation]);
-
   const showToast = () => {
     Toast.show('메시지가 복사했습니다.', {
       duration: Toast.durations.SHORT,
       position: Toast.positions.CENTER,
     });
   };
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', setRiskScoreV2);
+    // 컴포넌트 unmount 시 리스너를 해제
+    return () => {
+      unsubscribe();
+    };
+  }, [navigation]);
 
   /* 채팅 화면 전체 구성 */
   return (
@@ -450,21 +356,11 @@ const NewChat: React.FC = ({ navigation }) => {
           navigation.navigate(TabScreenName.Home);
         }}
         isRight={true}
-        //rightFunction={handleDangerPress}
-        //rightIcon="side-menu-bar-alert"
         rightIcon={riskStatusV2 !== 'danger' ? 'side-menu-bar' : 'side-menu-bar-alert'}
         rightFunction={() => {
           Analytics.clickHeaderSideMenuButton();
           navigation.openDrawer();
         }}
-        /* 
-        rightIcon={
-          riskStatus === 'danger'
-            ? 'danger-sign'
-            : riskStatus === 'danger-opened'
-              ? 'danger-sign-opened'
-              : 'information'
-        }*/
       />
       <GiftedChat
         messages={messages}
@@ -513,3 +409,77 @@ const NewChat: React.FC = ({ navigation }) => {
 };
 
 export default NewChat;
+
+// 위험 감지 이전 코드
+/*
+const refreshRiskStatus = () => {
+  const riskData = getRiskData();
+  if (!riskData) setRiskStatus('safe');
+  else if (riskData.isRead) setRiskStatus('danger-opened');
+  else setRiskStatus('danger');
+  //setRiskStatus('danger');
+};*/
+
+/*
+채팅 스크린에 처음 진입 시, 위험 지수를 받아와서 화면에 업데이트를 해 주어야 함
+따라서 스크린 포커스 시 위험 점수를 받아올 수 있도록 리스너를 추가.
+스크린 밖을 나갈 때 (= 컴포넌트 언마운트) 리스너를 해제하여 메모리 누수를 방지
+*/
+/*
+useEffect(() => {
+  const unsubscribe = navigation.addListener('focus', refreshRiskScore);
+  // 컴포넌트 unmount 시 리스너를 해제
+  return () => {
+    unsubscribe();
+  };
+}, [navigation]);*/
+//헤더 아이콘 클릭했을 때 이동 페이지
+/*
+  const handleDangerPress = () => {
+    if (riskStatus === 'danger') {
+      Analytics.clickDangerLetterButton(riskScore);
+      const letterIndex = Math.floor(Math.random() * DANGER_LETTER.length);
+      setRiskData({
+        timestamp: new Date().getTime(),
+        isRead: true,
+        letterIndex,
+      });
+      navigation.navigate(RootStackName.DangerStackNavigator, {
+        screen: DangerStackName.DangerAlert,
+        params: { letterIndex },
+      }); //쿠키 편지 화면으로 이동한다
+      return;
+    }
+    if (riskStatus === 'danger-opened') {
+      //위험한 상태일 때 확인을 했으면
+      Analytics.clickOpenedDangerLetterButton(riskScore);
+      const letterIndex = getRiskData()?.letterIndex;
+      navigation.navigate(RootStackName.DangerStackNavigator, {
+        screen: DangerStackName.DangerAlert,
+        params: { letterIndex: letterIndex ?? 0 },
+      }); //쿠키 편지 화면으로 이동한다
+      return;
+    }
+    if (riskStatus === 'safe') {
+      //setHintStatus(true);
+      return;
+    }
+  };*/
+/*
+  const refreshRiskScore = () => {
+    console.log('🥬🥬🥬🥬🥬 refreshRiskScore 🥬🥬🥬🥬');
+    const date = getKoreanServerTodayDateString(new Date());
+    getRiskScore(date).then((res) => {
+      setRiskScore(res);
+      if (res >= RISK_SCORE_THRESHOLD && !getRiskData()) {
+        setRiskData({
+          timestamp: new Date().getTime(),
+          isRead: false,
+          letterIndex: null,
+        });
+      }
+      refreshRiskStatus();
+    });
+  };*/
+//const [riskScore, setRiskScore] = React.useState<number>(0);
+//const [riskStatus, setRiskStatus] = React.useState<'safe' | 'danger' | 'danger-opened'>('safe');

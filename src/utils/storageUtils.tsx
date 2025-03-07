@@ -334,6 +334,7 @@ export const getRiskData = (): TRiskData | undefined => {
   const riskData = JSON.parse(data);
   const nowApiDateString = getKoreanServerTodayDateString(new Date());
   const riskDateApiDateString = getKoreanServerTodayDateString(new Date(riskData.timestamp));
+  //위험 편지를 처음 받고, 하루가 지나가면 삭제
   if (riskDateApiDateString === nowApiDateString) {
     return riskData;
   } else {

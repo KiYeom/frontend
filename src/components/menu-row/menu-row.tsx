@@ -5,7 +5,8 @@ import palette from '../../assets/styles/theme';
 import Analytics from '../../utils/analytics';
 import { getAppVersion } from '../../utils/device-info';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';
-import Icon from '../icons/icons';
+import { TouchableOpacity } from 'react-native';
+import Icon, { TIconName } from '../icons/icons';
 import './menu-row.styles';
 import {
   MenuRowContainer,
@@ -28,7 +29,7 @@ export type MenuRowProps = {
   isEnabled?: boolean;
   disabled?: boolean;
   showEventIcon?: boolean;
-  eventName?: string;
+  eventName?: TIconName | undefined;
   shouldBlockTouch?: boolean;
 };
 
@@ -64,7 +65,7 @@ const MenuRow = (props: MenuRowProps) => {
     isEnabled = true,
     disabled = false,
     showEventIcon = false,
-    eventName = String,
+    eventName = '',
     shouldBlockTouch = false,
   } = props;
 
@@ -90,7 +91,11 @@ const MenuRow = (props: MenuRowProps) => {
             </VersionStatus>
           </>
         )}
-        {showEventIcon && <Icon name={eventName} width={90} height={45} />}
+        {showEventIcon && (
+          <TouchableOpacity onPress={onPress}>
+            {eventName && <Icon name={eventName} width={90} height={45} />}
+          </TouchableOpacity>
+        )}
       </MenuRowTextContainer>
 
       {showVersion ? (

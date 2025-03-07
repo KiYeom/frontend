@@ -42,8 +42,8 @@ const defaultHomeCarousel = [
 ];
 
 const Home: React.FC<any> = ({ navigation }) => {
-  const [riskScore, setRiskScore] = React.useState<number>(0);
-  const [riskStatus, setRiskStatus] = React.useState<'safe' | 'danger' | 'danger-opened'>('safe');
+  //const [riskScore, setRiskScore] = React.useState<number>(0);
+  //const [riskStatus, setRiskStatus] = React.useState<'safe' | 'danger' | 'danger-opened'>('safe');
   const [carousels, setCarousels] = React.useState<TCarousel[]>(defaultHomeCarousel);
   const insets = useSafeAreaInsets();
   const { riskScoreV2, riskStatusV2, setRiskScoreV2, setRiskStatusV2, setHandleDangerPressV2 } =
@@ -65,73 +65,10 @@ const Home: React.FC<any> = ({ navigation }) => {
     });
   }, []);
 
-  //헤더 아이콘 클릭했을 때 이동 페이지
-  /*const handleDangerPress = () => {
-    if (riskStatus === 'danger') {
-      Analytics.clickDangerLetterButton(riskScore);
-      const letterIndex = Math.floor(Math.random() * DANGER_LETTER.length);
-      setRiskData({
-        timestamp: new Date().getTime(),
-        isRead: true,
-        letterIndex,
-      });
-      navigation.navigate(RootStackName.DangerStackNavigator, {
-        screen: DangerStackName.DangerAlert,
-        params: { letterIndex },
-      }); //쿠키 편지 화면으로 이동한다
-      return;
-    }
-    if (riskStatus === 'danger-opened') {
-      //위험한 상태일 때 확인을 했으면
-      Analytics.clickOpenedDangerLetterButton(riskScore);
-      const letterIndex = getRiskData()?.letterIndex;
-      navigation.navigate(RootStackName.DangerStackNavigator, {
-        screen: DangerStackName.DangerAlert,
-        params: { letterIndex: letterIndex ?? 0 },
-      }); //쿠키 편지 화면으로 이동한다
-      return;
-    }
-    if (riskStatus === 'safe') {
-      //상담 기관 안내
-      Analytics.clickClinicInfoButton(riskScore);
-      WebBrowser.openBrowserAsync(
-        'https://autumn-flier-d18.notion.site/1268e75d989680f7b4f2d63d66f4a08a?pvs=4',
-      );
-    }
-  };*/
-
-  //api 호출을 하여 위험 점수를 갱신하는 함수
-  /*const refreshRiskScore = () => {
-    const date = getKoreanServerTodayDateString(new Date());
-    getRiskScore(date).then((res) => {
-      setRiskScore(res); //점수를 저장
-      if (res >= RISK_SCORE_THRESHOLD && !getRiskData()) {
-        setRiskData({
-          timestamp: new Date().getTime(),
-          isRead: false,
-          letterIndex: null,
-        });
-      }
-      refreshRiskStatus();
-    });
-  };*/
-
-  //점수를 불러와서 "위험 상태"를 갱신함
-  /*const refreshRiskStatus = () => {
-    const riskData = getRiskData();
-    if (!riskData) setRiskStatus('safe');
-    else if (riskData.isRead) setRiskStatus('danger-opened');
-    else setRiskStatus('danger');
-  };*/
-
-  /*
-    홈 화면으로 포커스 될 때마다 위험 점수를 갱신한다.
-   */
+  //홈 화면으로 포커스 될 때마다 위험 점수를 갱신한다.
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', setRiskScoreV2);
-    //스크린이 포커스 될 때마다 refreshRiskScore 함수를 실행하여 위험 상태를 safe / danger / danger-opened 로 변경한다
     return () => {
-      // 컴포넌트 unmount 시 리스너를 해제
       unsubscribe();
     };
   }, [navigation]);
@@ -153,9 +90,9 @@ const Home: React.FC<any> = ({ navigation }) => {
           <Header
             riskStatus={riskStatusV2}
             onIconPress={() => {
-              if (riskStatus === 'safe') {
+              if (riskStatusV2 === 'safe') {
                 //상담 기관 안내
-                Analytics.clickClinicInfoButton(riskScore);
+                Analytics.clickClinicInfoButton(riskScoreV2);
                 WebBrowser.openBrowserAsync(
                   'https://autumn-flier-d18.notion.site/1268e75d989680f7b4f2d63d66f4a08a?pvs=4',
                 );
@@ -164,7 +101,7 @@ const Home: React.FC<any> = ({ navigation }) => {
                 setHandleDangerPressV2();
                 navigation.navigate(RootStackName.DangerStackNavigator, {
                   screen: DangerStackName.DangerAlert,
-                  params: 0,
+                  params: { letterIndex: getRiskData()?.letterIndex ?? 0 },
                 }); //쿠키 편지 화면으로 이동한다
               }
             }}
@@ -210,3 +147,62 @@ const Home: React.FC<any> = ({ navigation }) => {
 };
 
 export default Home;
+
+//헤더 아이콘 클릭했을 때 이동 페이지
+/*const handleDangerPress = () => {
+    if (riskStatus === 'danger') {
+      Analytics.clickDangerLetterButton(riskScore);
+      const letterIndex = Math.floor(Math.random() * DANGER_LETTER.length);
+      setRiskData({
+        timestamp: new Date().getTime(),
+        isRead: true,
+        letterIndex,
+      });
+      navigation.navigate(RootStackName.DangerStackNavigator, {
+        screen: DangerStackName.DangerAlert,
+        params: { letterIndex },
+      }); //쿠키 편지 화면으로 이동한다
+      return;
+    }
+    if (riskStatus === 'danger-opened') {
+      //위험한 상태일 때 확인을 했으면
+      Analytics.clickOpenedDangerLetterButton(riskScore);
+      const letterIndex = getRiskData()?.letterIndex;
+      navigation.navigate(RootStackName.DangerStackNavigator, {
+        screen: DangerStackName.DangerAlert,
+        params: { letterIndex: letterIndex ?? 0 },
+      }); //쿠키 편지 화면으로 이동한다
+      return;
+    }
+    if (riskStatus === 'safe') {
+      //상담 기관 안내
+      Analytics.clickClinicInfoButton(riskScore);
+      WebBrowser.openBrowserAsync(
+        'https://autumn-flier-d18.notion.site/1268e75d989680f7b4f2d63d66f4a08a?pvs=4',
+      );
+    }
+  };*/
+
+//api 호출을 하여 위험 점수를 갱신하는 함수
+/*const refreshRiskScore = () => {
+    const date = getKoreanServerTodayDateString(new Date());
+    getRiskScore(date).then((res) => {
+      setRiskScore(res); //점수를 저장
+      if (res >= RISK_SCORE_THRESHOLD && !getRiskData()) {
+        setRiskData({
+          timestamp: new Date().getTime(),
+          isRead: false,
+          letterIndex: null,
+        });
+      }
+      refreshRiskStatus();
+    });
+  };*/
+
+//점수를 불러와서 "위험 상태"를 갱신함
+/*const refreshRiskStatus = () => {
+    const riskData = getRiskData();
+    if (!riskData) setRiskStatus('safe');
+    else if (riskData.isRead) setRiskStatus('danger-opened');
+    else setRiskStatus('danger');
+  };*/
