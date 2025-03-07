@@ -37,9 +37,6 @@ const linkingToStore = (
   isLatest: boolean | undefined,
   func: (() => void) | undefined,
 ) => {
-  console.log('"linkingtostore 함수 실행');
-  console.log('showVersion : ', showVersion);
-  console.log('isLatest :', isLatest);
   if (showVersion === true && isLatest === false) {
     //버전 표시 하고, 업데이트 필요할 때
     Analytics.clickTabSettingUpdateButton();
@@ -93,7 +90,7 @@ const MenuRow = (props: MenuRowProps) => {
             </VersionStatus>
           </>
         )}
-        {showEventIcon && <Icon name={eventName} width={90} />}
+        {showEventIcon && <Icon name={eventName} width={90} height={45} />}
       </MenuRowTextContainer>
 
       {showVersion ? (
