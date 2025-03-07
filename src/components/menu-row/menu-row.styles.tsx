@@ -10,21 +10,21 @@ export const MenuRowContainer = styled.TouchableOpacity<{ showEventIcon?: boolea
   justify-content: ${(props) => (props.showEventIcon === true ? 'center' : 'space-between')};
   //justify-content: space-between;W
   align-items: center;
-  background-color: green;
+  //background-color: green;
 `;
 
 export const MenuRowTextContainer = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: start;
-  background-color: yellow;
+  //background-color: yellow;
 `;
 
 export const MenuRowText = styled.Text`
   font-size: ${rsFont * 18 + 'px'};
   font-family: Pretendard-Medium;
   color: ${palette.neutral[500]};
-  background-color: red;
+  //background-color: red;
 `;
 
 export const VersionText = styled.Text`
