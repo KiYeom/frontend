@@ -226,7 +226,7 @@ export default class Analytics {
     this.sendEvent('채팅 - 헤더의 좌측 뒤로가기 버튼 클릭', 'headerBackButton');
   };
 
-  //채팅 - 우측 사이드바 버튼 클릭
+  //채팅 - 사이드바 버튼 클릭
   public static clickHeaderSideMenuButton = (): void => {
     this.sendEvent('채팅 - 헤더의 우측 사이드바 버튼 클릭', 'headerSideMenuButton');
   };
@@ -241,19 +241,42 @@ export default class Analytics {
     switchLabel: string,
     newStatus: boolean,
   ): void => {
-    this.sendEvent('채팅 - 사이드바 - 대화방 관리 스위치 클릭', 'clickChattingRoomSettingSwitch', {
-      switchLabel,
-      newStatus,
-    });
+    this.sendEvent(
+      '채팅 - 사이드바 - 대화방 관리 반말 사용하기 스위치 클릭',
+      'clickChattingRoomSettingSwitch',
+      {
+        switchLabel,
+        newStatus,
+      },
+    );
   };
 
-  //채팅 - 사이드바 - '제안 및 문의' 클릭
-  public static clickSideMenuInquiryButton = (): void => {
-    this.sendEvent('채팅 - 사이드바 - 제안 및 문의 클릭', 'sideMenuInquiryButton');
+  //채팅 - 사이드바 - '닫힌 편지 클릭'
+  public static clickSideMenuDangerLetterButton = (score: number | undefined = undefined): void => {
+    this.sendEvent('채팅 - 사이드바 - 위험 편지 클릭', 'sideMenuClosedLetterButton', {
+      score: score ? score : -1,
+    });
   };
+  //채팅 - 사이드바 - '열린 편지 보기' 클릭
+  public static clickSideMenuOpenedDangerLetterButton = (
+    score: number | undefined = undefined,
+  ): void => {
+    this.sendEvent(
+      '채팅 - 사이드바 - 한 번 살펴봤던 위험 편지 보기 클릭',
+      'sideMenuOpenedLetterButton',
+      {
+        score: score ? score : -1,
+      },
+    );
+  };
+
   //채팅 - 사이드바 - '버그 제보하기' 클릭
   public static clickSideMenuBugReportButton = (): void => {
     this.sendEvent('채팅 - 사이드바 - 버그 제보하기 클릭', 'sideMenuBugReportButton');
+  };
+  //채팅 - 사이드바 - '제안 및 문의' 클릭
+  public static clickSideMenuInquiryButton = (): void => {
+    this.sendEvent('채팅 - 사이드바 - 제안 및 문의 클릭', 'sideMenuInquiryButton');
   };
   //채팅 - 사이드바 - '쿠키 팬아트 보내기' 클릭
   public static clickSideMenuCookieFanArtButton = (): void => {

@@ -42,12 +42,22 @@ const defaultHomeCarousel = [
 ];
 
 const Home: React.FC<any> = ({ navigation }) => {
+  //console.log('홈 화면 렌더링 🏠');
   //const [riskScore, setRiskScore] = React.useState<number>(0);
   //const [riskStatus, setRiskStatus] = React.useState<'safe' | 'danger' | 'danger-opened'>('safe');
   const [carousels, setCarousels] = React.useState<TCarousel[]>(defaultHomeCarousel);
   const insets = useSafeAreaInsets();
   const { riskScoreV2, riskStatusV2, setRiskScoreV2, setRiskStatusV2, setHandleDangerPressV2 } =
     useRiskStoreVer2();
+
+  //위험 상태에 따른 클릭 이벤트 처리 (쿠키 편지로 이동)
+  const navigateToDangerAlert = () => {
+    setHandleDangerPressV2();
+    navigation.navigate(RootStackName.DangerStackNavigator, {
+      screen: DangerStackName.DangerAlert,
+      params: { letterIndex: getRiskData()?.letterIndex ?? 0 },
+    });
+  };
 
   useEffect(() => {
     Analytics.watchTabHomeScreen();
@@ -90,20 +100,21 @@ const Home: React.FC<any> = ({ navigation }) => {
           <Header
             riskStatus={riskStatusV2}
             onIconPress={() => {
-              if (riskStatusV2 === 'safe') {
-                //상담 기관 안내
-                Analytics.clickClinicInfoButton(riskScoreV2);
-                WebBrowser.openBrowserAsync(
-                  'https://autumn-flier-d18.notion.site/1268e75d989680f7b4f2d63d66f4a08a?pvs=4',
-                );
-              } else {
-                console.log('onIconPress');
-                setHandleDangerPressV2();
-                navigation.navigate(RootStackName.DangerStackNavigator, {
-                  screen: DangerStackName.DangerAlert,
-                  params: { letterIndex: getRiskData()?.letterIndex ?? 0 },
-                }); //쿠키 편지 화면으로 이동한다
+              switch (riskStatusV2) {
+                case 'safe':
+                  Analytics.clickClinicInfoButton(riskScoreV2);
+                  WebBrowser.openBrowserAsync(
+                    'https://autumn-flier-d18.notion.site/1268e75d989680f7b4f2d63d66f4a08a?pvs=4',
+                  );
+                  return;
+                case 'danger':
+                  Analytics.clickDangerLetterButton(riskScoreV2);
+                  break;
+                case 'danger-opened':
+                  Analytics.clickOpenedDangerLetterButton(riskScoreV2);
+                  break;
               }
+              navigateToDangerAlert();
             }}
           />
           <Carousel

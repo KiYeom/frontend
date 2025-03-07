@@ -29,6 +29,15 @@ const CustomDrawerContent = (props: any) => {
   const { riskScoreV2, riskStatusV2, setRiskScoreV2, setRiskStatusV2, setHandleDangerPressV2 } =
     useRiskStoreVer2();
 
+  //위험 상태에 따른 클릭 이벤트 처리 (쿠키 편지로 이동)
+  const navigateToDangerAlert = () => {
+    setHandleDangerPressV2();
+    navigation.navigate(RootStackName.DangerStackNavigator, {
+      screen: DangerStackName.DangerAlert,
+      params: { letterIndex: getRiskData()?.letterIndex ?? 0 },
+    });
+  };
+
   useEffect(() => {
     Analytics.watchOpenedSideMenuScreen();
     getUserInfo() //반말 존댓말 정보 가져옴
@@ -66,29 +75,16 @@ const CustomDrawerContent = (props: any) => {
               console.log('쿠키 편지를 클릭함');
               if (riskStatusV2 === 'danger') {
                 console.log('위험 상태일 때');
-                Analytics.clickDangerLetterButton(riskScore);
-                /*const letterIndex = Math.floor(Math.random() * DANGER_LETTER.length);
-                setRiskData({
-                  timestamp: new Date().getTime(),
-                  isRead: true,
-                  letterIndex,
-                });*/
-                setHandleDangerPressV2();
-                navigation.navigate(RootStackName.DangerStackNavigator, {
-                  screen: DangerStackName.DangerAlert,
-                  params: { letterIndex: getRiskData()?.letterIndex ?? 0 },
-                }); //쿠키 편지 화면으로 이동한다
+                Analytics.clickSideMenuDangerLetterButton(riskScoreV2);
+                navigateToDangerAlert();
                 return;
               }
               if (riskStatusV2 === 'danger-opened') {
                 //위험한 상태일 때 확인을 했으면
                 console.log('위험 상태일 때 확인을 했으면');
-                Analytics.clickOpenedDangerLetterButton(riskScore);
+                Analytics.clickSideMenuOpenedDangerLetterButton(riskScoreV2);
                 //const letterIndex = getRiskData()?.letterIndex;
-                navigation.navigate(RootStackName.DangerStackNavigator, {
-                  screen: DangerStackName.DangerAlert,
-                  params: { letterIndex: getRiskData()?.letterIndex ?? 0 },
-                }); //쿠키 편지 화면으로 이동한다
+                navigateToDangerAlert();
                 return;
               }
             }}
