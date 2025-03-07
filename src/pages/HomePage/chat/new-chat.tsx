@@ -78,7 +78,6 @@ const NewChat: React.FC = ({ navigation }) => {
 
   const [riskScore, setRiskScore] = React.useState<number>(0);
   const [riskStatus, setRiskStatus] = React.useState<'safe' | 'danger' | 'danger-opened'>('safe');
-  //const [hintStatus, setHintStatus] = React.useState<boolean>(false);
 
   const decideRefreshScreen = (viewHeight: number) => {
     NavigationBar.getVisibilityAsync().then((navBarStatus) => {

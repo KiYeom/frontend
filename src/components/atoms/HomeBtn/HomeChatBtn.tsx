@@ -20,7 +20,7 @@ const getRandomHello = (): string => {
   return helloTexts[randomIndex];
 };
 
-const HomeChatBtn = ({ navigation, riskScore }) => {
+const HomeChatBtn = ({ navigation, riskStatus }) => {
   const [name, setName] = React.useState<string>('');
   const hello = getRandomHello();
 
@@ -37,7 +37,7 @@ const HomeChatBtn = ({ navigation, riskScore }) => {
     <HomeBtn
       os={Platform.OS}
       onPress={() => {
-        Analytics.clickTabHomeChatButton(riskScore);
+        Analytics.clickTabHomeChatButton(riskStatus);
         setRefreshChat(0);
         navigation.navigate(RootStackName.HomeStackNavigator, {
           screen: HomeStackName.NewChat,
@@ -45,13 +45,14 @@ const HomeChatBtn = ({ navigation, riskScore }) => {
         //navigation.navigate(RootStackName.HomeStackNavigator, { screen: HomeStackName.NewChat });
       }}
       status={'home'}
-      riskScore={riskScore}>
+      riskStatus={riskStatus}>
       <HomeBtnTitle>
         {name}님,{'\n'}
         {hello}
       </HomeBtnTitle>
       <View>
-        <HomeBtnDescription color={riskScore >= 85 ? palette.risk[200] : palette.primary[400]}>
+        <HomeBtnDescription
+          color={riskStatus === 'safe' ? palette.primary[400] : palette.risk[200]}>
           <HomeBtnText status={'home'}>쿠키와 대화하러 가기</HomeBtnText>
           <Icon
             name="arrow-right"
@@ -61,7 +62,7 @@ const HomeChatBtn = ({ navigation, riskScore }) => {
           />
         </HomeBtnDescription>
       </View>
-      {riskScore >= 85 ? (
+      {riskStatus === 'safe' ? (
         <RiskCookieImage
           style={{
             resizeMode: 'contain',

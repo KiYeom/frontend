@@ -24,6 +24,7 @@ import EmotionBtn from '../../components/atoms/EmotionBtn/EmotionBtn';
 import HomeChatBtn from '../../components/atoms/HomeBtn/HomeChatBtn';
 import Header from './Homeheader';
 import { getKoreanServerTodayDateString } from '../../utils/times';
+import { useRiskStoreVer2 } from '../../store/useRiskStoreVer2';
 
 const defaultHomeCarousel = [
   {
@@ -45,6 +46,8 @@ const Home: React.FC<any> = ({ navigation }) => {
   const [riskStatus, setRiskStatus] = React.useState<'safe' | 'danger' | 'danger-opened'>('safe');
   const [carousels, setCarousels] = React.useState<TCarousel[]>(defaultHomeCarousel);
   const insets = useSafeAreaInsets();
+  const { riskScoreV2, riskStatusV2, setRiskScoreV2, setRiskStatusV2, setHandleDangerPressV2 } =
+    useRiskStoreVer2();
 
   useEffect(() => {
     Analytics.watchTabHomeScreen();
@@ -125,7 +128,7 @@ const Home: React.FC<any> = ({ navigation }) => {
     홈 화면으로 포커스 될 때마다 위험 점수를 갱신한다.
    */
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', refreshRiskScore);
+    const unsubscribe = navigation.addListener('focus', setRiskScoreV2);
     //스크린이 포커스 될 때마다 refreshRiskScore 함수를 실행하여 위험 상태를 safe / danger / danger-opened 로 변경한다
     return () => {
       // 컴포넌트 unmount 시 리스너를 해제
@@ -147,7 +150,7 @@ const Home: React.FC<any> = ({ navigation }) => {
             flex: 1;
             gap: ${rsHeight * 20 + 'px'};
           `}>
-          <Header riskStatus={riskStatus} onIconPress={handleDangerPress} />
+          <Header riskStatus={riskStatusV2} onIconPress={setHandleDangerPressV2} />
           <Carousel
             key={carousels.length}
             containerStyle={css`
@@ -179,7 +182,7 @@ const Home: React.FC<any> = ({ navigation }) => {
             ))}
           </Carousel>
 
-          <HomeChatBtn navigation={navigation} riskScore={riskScore} />
+          <HomeChatBtn navigation={navigation} riskStatus={riskStatusV2} />
 
           <EmotionBtn navigation={navigation} />
         </View>

@@ -2,11 +2,11 @@ import styled from '@emotion/native';
 import palette from '../../../assets/styles/theme';
 import { ratio, rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 
-export const HomeBtn = styled.TouchableOpacity<{ status: string; os: string; riskScore: number }>`
+export const HomeBtn = styled.TouchableOpacity<{ status: string; os: string; riskStatus: string }>`
   height: ${rsHeight * 279 + 'px'};
   background-color: ${(props) =>
     props.status === 'home'
-      ? props.riskScore >= 85
+      ? props.riskStatus === 'danger' || 'danger-opened'
         ? palette.risk[100]
         : palette.primary[50]
       : palette.neutral[50]};
