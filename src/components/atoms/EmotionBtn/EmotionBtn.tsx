@@ -11,14 +11,14 @@ import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { getUserNickname } from '../../../utils/storageUtils';
 import Icon from '../../icons/icons';
 import EmotionCard from '../EmotionCard/EmotionCard';
-import '../HomeBtn/HomeChatBtn';
+import '../../HomeBtn/HomeChatBtn';
 import {
   EmotionImage,
   HomeBtn,
   HomeBtnDescription,
   HomeBtnText,
   HomeBtnTitle,
-} from '../HomeBtn/HomeChatBtn.style';
+} from '../../HomeBtn/HomeChatBtn.style';
 
 const EmotionBtn = ({ navigation }) => {
   const [name, setName] = useState<string>('');

@@ -1,6 +1,6 @@
 import styled from '@emotion/native';
-import palette from '../../../assets/styles/theme';
-import { ratio, rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
+import palette from '../../assets/styles/theme';
+import { ratio, rsFont, rsHeight, rsWidth } from '../../utils/responsive-size';
 
 export const HomeBtn = styled.TouchableOpacity<{ status: string; os: string; riskStatus: string }>`
   height: ${rsHeight * 279 + 'px'};

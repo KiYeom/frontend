@@ -21,7 +21,7 @@ import requestNotificationPermission from '../../utils/NotificationToken';
 import { ratio, rsHeight, rsWidth } from '../../utils/responsive-size';
 import { getRiskData, getUserAccountProvider, setRiskData } from '../../utils/storageUtils';
 import EmotionBtn from '../../components/atoms/EmotionBtn/EmotionBtn';
-import HomeChatBtn from '../../components/atoms/HomeBtn/HomeChatBtn';
+import HomeChatBtn from '../../components/HomeBtn/HomeChatBtn';
 import Header from './Homeheader';
 import { getKoreanServerTodayDateString } from '../../utils/times';
 import { useRiskStoreVer2 } from '../../store/useRiskStoreVer2';
@@ -182,7 +182,7 @@ const Home: React.FC<any> = ({ navigation }) => {
             ))}
           </Carousel>
 
-          <HomeChatBtn navigation={navigation} riskStatus={riskStatusV2} />
+          <HomeChatBtn navigation={navigation} />
 
           <EmotionBtn navigation={navigation} />
         </View>
