@@ -66,7 +66,7 @@ const Home: React.FC<any> = ({ navigation }) => {
   }, []);
 
   //헤더 아이콘 클릭했을 때 이동 페이지
-  const handleDangerPress = () => {
+  /*const handleDangerPress = () => {
     if (riskStatus === 'danger') {
       Analytics.clickDangerLetterButton(riskScore);
       const letterIndex = Math.floor(Math.random() * DANGER_LETTER.length);
@@ -98,7 +98,7 @@ const Home: React.FC<any> = ({ navigation }) => {
         'https://autumn-flier-d18.notion.site/1268e75d989680f7b4f2d63d66f4a08a?pvs=4',
       );
     }
-  };
+  };*/
 
   //api 호출을 하여 위험 점수를 갱신하는 함수
   /*const refreshRiskScore = () => {

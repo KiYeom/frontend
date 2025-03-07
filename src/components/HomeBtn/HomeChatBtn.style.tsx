@@ -12,7 +12,7 @@ export const HomeBtnContainer = styled.TouchableOpacity<{
   height: ${rsHeight * 279 + 'px'};
   background-color: ${(props) =>
     props.usage === 'home'
-      ? props.riskStatus === 'danger' || 'danger-opened'
+      ? props.riskStatus === 'danger' || props.riskStatus === 'danger-opened'
         ? palette.risk[100]
         : palette.primary[50]
       : palette.neutral[50]};

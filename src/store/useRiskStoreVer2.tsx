@@ -24,7 +24,7 @@ export const useRiskStoreVer2 = create<RiskState>()((set, get) => ({
     try {
       const score = await getRiskScore(data);
       set({ riskScoreV2: score }); //위험 점수 갱신
-      if (score >= 0 && !getRiskData()) {
+      if (score >= 85 && !getRiskData()) {
         //푸시 하기 전에 숫자 변수로 바꾸기
         setRiskData({
           timestamp: new Date().getTime(),
