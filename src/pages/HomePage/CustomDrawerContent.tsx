@@ -17,6 +17,7 @@ import { getRiskData, setRiskData } from '../../utils/storageUtils';
 import { getKoreanServerTodayDateString } from '../../utils/times';
 import { RISK_SCORE_THRESHOLD } from '../../constants/Constants';
 import { DANGER_LETTER, DangerStackName, RootStackName } from '../../constants/Constants';
+import { useRiskStoreVer2 } from '../../store/useRiskStoreVer2';
 
 const CustomDrawerContent = (props: any) => {
   //대화체를 관리하는 isCasualMode state
@@ -25,6 +26,14 @@ const CustomDrawerContent = (props: any) => {
   const [riskScore, setRiskScore] = React.useState<number>(0);
   const [riskStatus, setRiskStatus] = React.useState<'safe' | 'danger' | 'danger-opened'>('safe');
   const navigation = useNavigation();
+  const { riskScoreV2, riskStatusV2, setRiskScoreV2, setRiskStatusV2, setHandleDangerPressV2 } =
+    useRiskStoreVer2();
+
+  const getLetterIndex = (): number => {
+    const riskData = getRiskData();
+    return riskData?.letterIndex ?? 0;
+    //편지의 인덱스값 반환, 없는 경우 0으로
+  };
 
   /*
   사이드바를 오픈했을 때 실행되는 useEffect 훅
@@ -34,18 +43,18 @@ const CustomDrawerContent = (props: any) => {
   //이 화면에 왔을 때는 props를 내려 받아야 할 것 같은데....
   //과연 이제까지 리스너를 달아서, 마운트 되는 것을 확인하고 risk 점수를 가지고 오는게 맞는지 전혀 모르겠음
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', refreshRiskScore);
+  /*useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', setRiskScoreV2);
     //스크린이 포커스 될 때마다 refreshRiskScore 함수를 실행하여 위험 상태를 safe / danger / danger-opened 로 변경한다
     return () => {
       // 컴포넌트 unmount 시 리스너를 해제
       unsubscribe();
     };
-  }, [navigation]);
+  }, [navigation]);*/
 
   useEffect(() => {
     Analytics.watchOpenedSideMenuScreen();
-    getUserInfo()
+    getUserInfo() //반말 존댓말 정보 가져옴
       .then((res) => {
         if (res) {
           setIsInformalMode(res.isInFormal);
@@ -58,7 +67,7 @@ const CustomDrawerContent = (props: any) => {
       });
   }, []);
 
-  const refreshRiskScore = () => {
+  /*const refreshRiskScore = () => {
     const date = getKoreanServerTodayDateString(new Date());
     getRiskScore(date).then((res) => {
       setRiskScore(res);
@@ -71,61 +80,58 @@ const CustomDrawerContent = (props: any) => {
       }
       refreshRiskStatus();
     });
-  };
+  };*/
 
-  const refreshRiskStatus = () => {
+  /*const refreshRiskStatus = () => {
     const riskData = getRiskData();
     if (!riskData) setRiskStatus('safe');
     else if (riskData.isRead) setRiskStatus('danger-opened');
     else setRiskStatus('danger');
-    //setRiskStatus('danger');
-  };
+  };*/
 
   return (
     <DrawerContentScrollView {...props}>
-      {(riskStatus === 'danger' || riskStatus === 'danger-opened') && (
+      {(riskStatusV2 === 'danger' || riskStatusV2 === 'danger-opened') && (
         <UserSettingContainer>
           <SubjectTextContainer>
             <SubjectText>
-              {riskStatus === 'danger'
+              {riskStatusV2 === 'danger'
                 ? '쿠키에게 편지가 왔어요'
                 : '언제나 곁에서 힘이 되어드리고 싶어요'}
             </SubjectText>
           </SubjectTextContainer>
           <MenuRow
-            //text="이제 여기 아이콘 와야함, 초록색 컨테이너임"
             showIcon={false}
             showEventIcon={true}
-            eventName={riskStatus === 'danger' ? 'danger-sign' : 'danger-sign-opened'}
-            showToggle={false}
+            eventName={riskStatusV2 === 'danger' ? 'danger-sign' : 'danger-sign-opened'}
             isEnabled={isInFormalMode}
-            disabled={false}
             onPress={() => {
               //쿠키 편지 화면으로 이동한다
-              console.log('쿠키 편지로 이동함', riskStatus);
-              if (riskStatus === 'danger') {
+              console.log('쿠키 편지를 클릭함');
+              if (riskStatusV2 === 'danger') {
                 console.log('위험 상태일 때');
                 Analytics.clickDangerLetterButton(riskScore);
-                const letterIndex = Math.floor(Math.random() * DANGER_LETTER.length);
+                /*const letterIndex = Math.floor(Math.random() * DANGER_LETTER.length);
                 setRiskData({
                   timestamp: new Date().getTime(),
                   isRead: true,
                   letterIndex,
-                });
+                });*/
+                setHandleDangerPressV2();
                 navigation.navigate(RootStackName.DangerStackNavigator, {
                   screen: DangerStackName.DangerAlert,
-                  params: { letterIndex },
+                  params: { letterIndex: getLetterIndex() },
                 }); //쿠키 편지 화면으로 이동한다
                 return;
               }
-              if (riskStatus === 'danger-opened') {
+              if (riskStatusV2 === 'danger-opened') {
                 //위험한 상태일 때 확인을 했으면
                 console.log('위험 상태일 때 확인을 했으면');
                 Analytics.clickOpenedDangerLetterButton(riskScore);
-                const letterIndex = getRiskData()?.letterIndex;
+                //const letterIndex = getRiskData()?.letterIndex;
                 navigation.navigate(RootStackName.DangerStackNavigator, {
                   screen: DangerStackName.DangerAlert,
-                  params: { letterIndex: letterIndex ?? 0 },
+                  params: { letterIndex: getLetterIndex() },
                 }); //쿠키 편지 화면으로 이동한다
                 return;
               }

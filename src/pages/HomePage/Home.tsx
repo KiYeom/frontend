@@ -101,7 +101,7 @@ const Home: React.FC<any> = ({ navigation }) => {
   };
 
   //api 호출을 하여 위험 점수를 갱신하는 함수
-  const refreshRiskScore = () => {
+  /*const refreshRiskScore = () => {
     const date = getKoreanServerTodayDateString(new Date());
     getRiskScore(date).then((res) => {
       setRiskScore(res); //점수를 저장
@@ -114,15 +114,15 @@ const Home: React.FC<any> = ({ navigation }) => {
       }
       refreshRiskStatus();
     });
-  };
+  };*/
 
   //점수를 불러와서 "위험 상태"를 갱신함
-  const refreshRiskStatus = () => {
+  /*const refreshRiskStatus = () => {
     const riskData = getRiskData();
     if (!riskData) setRiskStatus('safe');
     else if (riskData.isRead) setRiskStatus('danger-opened');
     else setRiskStatus('danger');
-  };
+  };*/
 
   /*
     홈 화면으로 포커스 될 때마다 위험 점수를 갱신한다.
@@ -150,7 +150,17 @@ const Home: React.FC<any> = ({ navigation }) => {
             flex: 1;
             gap: ${rsHeight * 20 + 'px'};
           `}>
-          <Header riskStatus={riskStatusV2} onIconPress={setHandleDangerPressV2} />
+          <Header
+            riskStatus={riskStatusV2}
+            onIconPress={() => {
+              console.log('onIconPress');
+              setHandleDangerPressV2();
+              navigation.navigate(RootStackName.DangerStackNavigator, {
+                screen: DangerStackName.DangerAlert,
+                params: 0,
+              }); //쿠키 편지 화면으로 이동한다
+            }}
+          />
           <Carousel
             key={carousels.length}
             containerStyle={css`
