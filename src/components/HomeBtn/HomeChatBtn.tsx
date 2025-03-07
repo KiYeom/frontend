@@ -8,7 +8,7 @@ import { getUserNickname, setRefreshChat } from '../../utils/storageUtils';
 import Icon from '../icons/icons';
 import {
   CookieImage,
-  HomeBtn,
+  HomeBtnContainer,
   HomeBtnDescription,
   HomeBtnText,
   HomeBtnTitle,
@@ -36,7 +36,7 @@ const HomeChatBtn = ({ navigation }) => {
   }, [navigation]);
 
   return (
-    <HomeBtn
+    <HomeBtnContainer
       os={Platform.OS}
       onPress={() => {
         Analytics.clickTabHomeChatButton(riskScoreV2);
@@ -46,25 +46,25 @@ const HomeChatBtn = ({ navigation }) => {
         }); //쿠키 편지 화면으로 이동한다
         //navigation.navigate(RootStackName.HomeStackNavigator, { screen: HomeStackName.NewChat });
       }}
-      status={'home'}
+      usage={'home'}
       riskStatus={riskStatusV2}>
       <HomeBtnTitle>
         {name}님,{'\n'}
         {hello}
       </HomeBtnTitle>
-      <View>
-        <HomeBtnDescription
-          color={riskStatusV2 === 'safe' ? palette.primary[400] : palette.risk[200]}>
-          <HomeBtnText status={'home'}>쿠키와 대화하러 가기</HomeBtnText>
-          <Icon
-            name="arrow-right"
-            width={rsWidth * 6 + 'px'}
-            height={rsHeight * 12 + 'px'}
-            color={palette.primary[50]}
-          />
-        </HomeBtnDescription>
-      </View>
-      {riskStatusV2 !== 'safe' ? (
+      {/*<View>*/}
+      <HomeBtnDescription
+        color={riskStatusV2 === 'safe' ? palette.primary[400] : palette.risk[200]}>
+        <HomeBtnText status={'home'}>쿠키와 대화하러 가기</HomeBtnText>
+        <Icon
+          name="arrow-right"
+          width={rsWidth * 6 + 'px'}
+          height={rsHeight * 12 + 'px'}
+          color={palette.primary[50]}
+        />
+      </HomeBtnDescription>
+      {/*</View>*/}
+      {riskStatusV2 === 'safe' ? (
         <RiskCookieImage
           style={{
             resizeMode: 'contain',
@@ -79,7 +79,7 @@ const HomeChatBtn = ({ navigation }) => {
           source={require('@assets/images/homebuttonimage.png')}
         />
       )}
-    </HomeBtn>
+    </HomeBtnContainer>
   );
 };
 export default HomeChatBtn;

@@ -2,23 +2,23 @@ import { css } from '@emotion/native';
 import React, { useEffect, useState } from 'react';
 import { Platform, View } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
-import { todayEmotionCheck } from '../../../apis/analyze';
-import palette from '../../../assets/styles/theme';
-import { HomeStackName, RootStackName } from '../../../constants/Constants';
-import Analytics from '../../../utils/analytics';
-import useRecordedEmotionStore from '../../../utils/emotion-recorded';
-import { rsHeight, rsWidth } from '../../../utils/responsive-size';
-import { getUserNickname } from '../../../utils/storageUtils';
-import Icon from '../../icons/icons';
-import EmotionCard from '../EmotionCard/EmotionCard';
-import '../../HomeBtn/HomeChatBtn';
+import { todayEmotionCheck } from '../../apis/analyze';
+import palette from '../../assets/styles/theme';
+import { HomeStackName, RootStackName } from '../../constants/Constants';
+import Analytics from '../../utils/analytics';
+import useRecordedEmotionStore from '../../utils/emotion-recorded';
+import { rsHeight, rsWidth } from '../../utils/responsive-size';
+import { getUserNickname } from '../../utils/storageUtils';
+import Icon from '../icons/icons';
+import EmotionCard from '../atoms/EmotionCard/EmotionCard';
+import '../HomeBtn/HomeChatBtn';
 import {
   EmotionImage,
-  HomeBtn,
+  HomeBtnContainer,
   HomeBtnDescription,
   HomeBtnText,
   HomeBtnTitle,
-} from '../../HomeBtn/HomeChatBtn.style';
+} from '../HomeBtn/HomeChatBtn.style';
 
 const EmotionBtn = ({ navigation }) => {
   const [name, setName] = useState<string>('');
@@ -73,7 +73,7 @@ const EmotionBtn = ({ navigation }) => {
   }
 
   return (
-    <HomeBtn
+    <HomeBtnContainer
       os={Platform.OS}
       onPress={() => {
         Analytics.clickTabHomeEmotionRecordButton(isNULL);
@@ -81,51 +81,48 @@ const EmotionBtn = ({ navigation }) => {
           screen: HomeStackName.SmallEmotionChart,
         });
       }}
-      status={'emotion'}
-      riskScore={0}>
-      <>
-        <HomeBtnTitle>
-          {!isNULL
-            ? `${name}님,${'\n'}오늘의 마음을 확인해보세요!`
-            : `${name}님,${'\n'}오늘의 마음은 어떤가요?`}
-        </HomeBtnTitle>
-        <HomeBtnDescription color={palette.neutral[500]}>
-          <HomeBtnText status={'mood'}>{!isNULL ? `감정 수정하기` : `감정 기록하기`}</HomeBtnText>
-          <Icon
-            name="arrow-right"
-            width={rsWidth * 6 + 'px'}
-            height={rsHeight * 12 + 'px'}
-            color={palette.neutral[50]}
+      usage={'emotion'}>
+      <HomeBtnTitle>
+        {!isNULL
+          ? `${name}님,${'\n'}오늘의 마음을 확인해보세요!`
+          : `${name}님,${'\n'}오늘의 마음은 어떤가요?`}
+      </HomeBtnTitle>
+      <HomeBtnDescription color={palette.neutral[500]}>
+        <HomeBtnText status={'mood'}>{!isNULL ? `감정 수정하기` : `감정 기록하기`}</HomeBtnText>
+        <Icon
+          name="arrow-right"
+          width={rsWidth * 6 + 'px'}
+          height={rsHeight * 12 + 'px'}
+          color={palette.neutral[50]}
+        />
+      </HomeBtnDescription>
+      <View
+        style={css`
+          position: absolute;
+          right: 0;
+          bottom: 0;
+          width: 100%;
+          height: ${rsHeight * 130 + 'px'};
+          justify-content: center;
+          align-items: center;
+          flex-direction: row;
+          padding-left: ${rsWidth * 8 + 'px'};
+          gap: ${rsWidth * 8 + 'px'};
+        `}>
+        {!isNULL ? (
+          recordedEmotions.map((emotion, index) => (
+            <EmotionCard key={index} emotion={emotion} status={'simple'} />
+          ))
+        ) : (
+          <EmotionImage
+            style={{
+              resizeMode: 'contain',
+            }}
+            source={require('@assets/images/test.png')}
           />
-        </HomeBtnDescription>
-        <View
-          style={css`
-            position: absolute;
-            right: 0;
-            bottom: 0;
-            width: 100%;
-            height: ${rsHeight * 130 + 'px'};
-            justify-content: center;
-            align-items: center;
-            flex-direction: row;
-            padding-left: ${rsWidth * 8 + 'px'};
-            gap: ${rsWidth * 8 + 'px'};
-          `}>
-          {!isNULL ? (
-            recordedEmotions.map((emotion, index) => (
-              <EmotionCard key={index} emotion={emotion} status={'simple'} />
-            ))
-          ) : (
-            <EmotionImage
-              style={{
-                resizeMode: 'contain',
-              }}
-              source={require('../../../assets/images/test.png')}
-            />
-          )}
-        </View>
-      </>
-    </HomeBtn>
+        )}
+      </View>
+    </HomeBtnContainer>
   );
 };
 export default EmotionBtn;

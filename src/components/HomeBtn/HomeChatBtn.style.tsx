@@ -2,10 +2,16 @@ import styled from '@emotion/native';
 import palette from '../../assets/styles/theme';
 import { ratio, rsFont, rsHeight, rsWidth } from '../../utils/responsive-size';
 
-export const HomeBtn = styled.TouchableOpacity<{ status: string; os: string; riskStatus: string }>`
+//홈 화면에서의 버튼 컴포넌트
+//채팅 화면의 버튼인지, 감정 기록의 버튼인지를 usage로 구분함
+export const HomeBtnContainer = styled.TouchableOpacity<{
+  usage: string;
+  os: string;
+  riskStatus?: string;
+}>`
   height: ${rsHeight * 279 + 'px'};
   background-color: ${(props) =>
-    props.status === 'home'
+    props.usage === 'home'
       ? props.riskStatus === 'danger' || 'danger-opened'
         ? palette.risk[100]
         : palette.primary[50]

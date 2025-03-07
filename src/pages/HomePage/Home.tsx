@@ -20,7 +20,7 @@ import Analytics from '../../utils/analytics';
 import requestNotificationPermission from '../../utils/NotificationToken';
 import { ratio, rsHeight, rsWidth } from '../../utils/responsive-size';
 import { getRiskData, getUserAccountProvider, setRiskData } from '../../utils/storageUtils';
-import EmotionBtn from '../../components/atoms/EmotionBtn/EmotionBtn';
+import EmotionBtn from '../../components/EmotionBtn/EmotionBtn';
 import HomeChatBtn from '../../components/HomeBtn/HomeChatBtn';
 import Header from './Homeheader';
 import { getKoreanServerTodayDateString } from '../../utils/times';
