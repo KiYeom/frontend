@@ -18,16 +18,18 @@ import { getKoreanServerTodayDateString } from '../../utils/times';
 import { RISK_SCORE_THRESHOLD } from '../../constants/Constants';
 import { DANGER_LETTER, DangerStackName, RootStackName } from '../../constants/Constants';
 import { useRiskStoreVer2 } from '../../store/useRiskStoreVer2';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const CustomDrawerContent = (props: any) => {
   //대화체를 관리하는 isCasualMode state
   const [isInFormalMode, setIsInformalMode] = useState(true);
   //위험 점수와 상태를 관리하는 state
-  const [riskScore, setRiskScore] = React.useState<number>(0);
-  const [riskStatus, setRiskStatus] = React.useState<'safe' | 'danger' | 'danger-opened'>('safe');
+  //const [riskScore, setRiskScore] = React.useState<number>(0);
+  //const [riskStatus, setRiskStatus] = React.useState<'safe' | 'danger' | 'danger-opened'>('safe');
   const navigation = useNavigation();
   const { riskScoreV2, riskStatusV2, setRiskScoreV2, setRiskStatusV2, setHandleDangerPressV2 } =
     useRiskStoreVer2();
+  const insets = useSafeAreaInsets();
 
   //위험 상태에 따른 클릭 이벤트 처리 (쿠키 편지로 이동)
   const navigateToDangerAlert = () => {
@@ -54,7 +56,7 @@ const CustomDrawerContent = (props: any) => {
   }, []);
 
   return (
-    <DrawerContentScrollView {...props}>
+    <DrawerContentScrollView {...props} style={{ paddingTop: insets.top }}>
       {(riskStatusV2 === 'danger' || riskStatusV2 === 'danger-opened') && (
         <UserSettingContainer>
           <SubjectTextContainer>
