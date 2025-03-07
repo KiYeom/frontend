@@ -46,7 +46,7 @@ import * as Clipboard from 'expo-clipboard';
 import Toast from 'react-native-root-toast';
 import { Hint } from 'react-native-ui-lib';
 import palette from '../../../assets/styles/theme';
-import HintComponent from '../../StatisticPage/HintComponent';
+import { useRiskStoreVer2 } from '../../../store/useRiskStoreVer2';
 //import cookieprofile from '@assets/images/cookieprofile.png';
 //import cookieProfile from '@assets/images/cookieprofile.png';
 
@@ -78,6 +78,9 @@ const NewChat: React.FC = ({ navigation }) => {
 
   const [riskScore, setRiskScore] = React.useState<number>(0);
   const [riskStatus, setRiskStatus] = React.useState<'safe' | 'danger' | 'danger-opened'>('safe');
+
+  const { riskStatusV2, riskScoreV2, setRiskScoreV2, setRiskStatusV2, setHandleDangerPressV2 } =
+    useRiskStoreVer2();
 
   const decideRefreshScreen = (viewHeight: number) => {
     NavigationBar.getVisibilityAsync().then((navBarStatus) => {
@@ -449,7 +452,7 @@ const NewChat: React.FC = ({ navigation }) => {
         isRight={true}
         //rightFunction={handleDangerPress}
         //rightIcon="side-menu-bar-alert"
-        rightIcon={riskStatus !== 'danger' ? 'side-menu-bar' : 'side-menu-bar-alert'}
+        rightIcon={riskStatusV2 !== 'danger' ? 'side-menu-bar' : 'side-menu-bar-alert'}
         rightFunction={() => {
           Analytics.clickHeaderSideMenuButton();
           navigation.openDrawer();
