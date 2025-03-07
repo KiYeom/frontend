@@ -23,7 +23,7 @@ const CustomDrawerContent = (props: any) => {
   const [isInFormalMode, setIsInformalMode] = useState(true);
   //위험 점수와 상태를 관리하는 state
   const [riskScore, setRiskScore] = React.useState<number>(0);
-  const [riskStatus, setRiskStatus] = React.useState<'safe' | 'danger' | 'danger-opened'>('danger');
+  const [riskStatus, setRiskStatus] = React.useState<'safe' | 'danger' | 'danger-opened'>('safe');
   const navigation = useNavigation();
 
   /*
@@ -31,15 +31,26 @@ const CustomDrawerContent = (props: any) => {
   1. 사이드바가 오픈되면 유저의 대화 문체 정보를 서버에서 가져와서 isFormalMode state를 업데이트한다.
    */
 
+  //이 화면에 왔을 때는 props를 내려 받아야 할 것 같은데....
+  //과연 이제까지 리스너를 달아서, 마운트 되는 것을 확인하고 risk 점수를 가지고 오는게 맞는지 전혀 모르겠음
+
   useEffect(() => {
-    //console.log('사이드바 메뉴 열림');
+    const unsubscribe = navigation.addListener('focus', refreshRiskScore);
+    //스크린이 포커스 될 때마다 refreshRiskScore 함수를 실행하여 위험 상태를 safe / danger / danger-opened 로 변경한다
+    return () => {
+      // 컴포넌트 unmount 시 리스너를 해제
+      unsubscribe();
+    };
+  }, [navigation]);
+
+  useEffect(() => {
     Analytics.watchOpenedSideMenuScreen();
     getUserInfo()
       .then((res) => {
         if (res) {
           setIsInformalMode(res.isInFormal);
         } else {
-          console.log('????');
+          return;
         }
       })
       .catch((error) => {
@@ -90,11 +101,34 @@ const CustomDrawerContent = (props: any) => {
             isEnabled={isInFormalMode}
             disabled={false}
             onPress={() => {
-              const letterIndex = Math.floor(Math.random() * DANGER_LETTER.length);
-              navigation.navigate(RootStackName.DangerStackNavigator, {
-                screen: DangerStackName.DangerAlert,
-                params: { letterIndex },
-              }); //쿠키 편지 화면으로 이동한다
+              //쿠키 편지 화면으로 이동한다
+              console.log('쿠키 편지로 이동함', riskStatus);
+              if (riskStatus === 'danger') {
+                console.log('위험 상태일 때');
+                Analytics.clickDangerLetterButton(riskScore);
+                const letterIndex = Math.floor(Math.random() * DANGER_LETTER.length);
+                setRiskData({
+                  timestamp: new Date().getTime(),
+                  isRead: true,
+                  letterIndex,
+                });
+                navigation.navigate(RootStackName.DangerStackNavigator, {
+                  screen: DangerStackName.DangerAlert,
+                  params: { letterIndex },
+                }); //쿠키 편지 화면으로 이동한다
+                return;
+              }
+              if (riskStatus === 'danger-opened') {
+                //위험한 상태일 때 확인을 했으면
+                console.log('위험 상태일 때 확인을 했으면');
+                Analytics.clickOpenedDangerLetterButton(riskScore);
+                const letterIndex = getRiskData()?.letterIndex;
+                navigation.navigate(RootStackName.DangerStackNavigator, {
+                  screen: DangerStackName.DangerAlert,
+                  params: { letterIndex: letterIndex ?? 0 },
+                }); //쿠키 편지 화면으로 이동한다
+                return;
+              }
             }}
           />
         </UserSettingContainer>

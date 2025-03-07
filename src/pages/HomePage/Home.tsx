@@ -97,10 +97,11 @@ const Home: React.FC<any> = ({ navigation }) => {
     }
   };
 
+  //api 호출을 하여 위험 점수를 갱신하는 함수
   const refreshRiskScore = () => {
     const date = getKoreanServerTodayDateString(new Date());
     getRiskScore(date).then((res) => {
-      setRiskScore(res);
+      setRiskScore(res); //점수를 저장
       if (res >= RISK_SCORE_THRESHOLD && !getRiskData()) {
         setRiskData({
           timestamp: new Date().getTime(),
@@ -112,6 +113,7 @@ const Home: React.FC<any> = ({ navigation }) => {
     });
   };
 
+  //점수를 불러와서 "위험 상태"를 갱신함
   const refreshRiskStatus = () => {
     const riskData = getRiskData();
     if (!riskData) setRiskStatus('safe');
@@ -119,12 +121,14 @@ const Home: React.FC<any> = ({ navigation }) => {
     else setRiskStatus('danger');
   };
 
-  /* 화면에 진입할 때마다 위험 점수를 갱신한다.
+  /*
+    홈 화면으로 포커스 될 때마다 위험 점수를 갱신한다.
    */
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', refreshRiskScore);
-    // 컴포넌트 unmount 시 리스너를 해제
+    //스크린이 포커스 될 때마다 refreshRiskScore 함수를 실행하여 위험 상태를 safe / danger / danger-opened 로 변경한다
     return () => {
+      // 컴포넌트 unmount 시 리스너를 해제
       unsubscribe();
     };
   }, [navigation]);

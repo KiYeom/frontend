@@ -4,6 +4,7 @@ import palette from '../../assets/styles/theme';
 import { rsFont, rsHeight, rsWidth } from '../../utils/responsive-size';
 import Icon from '../../components/icons/icons';
 import { Homeheader } from './Homeheader.style';
+import useRiskStateVer2 from '../../store/useRiskStateVer2';
 
 const Header = ({
   riskStatus,

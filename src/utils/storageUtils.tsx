@@ -325,8 +325,11 @@ export type TRiskData = {
   letterIndex: number | null;
 };
 
+// 사용자의 위험 데이터 상황을 로컬에서 가지고 오는 함수
+// {"timestamp":1741267035726,"isRead":true,"letterIndex":3}
 export const getRiskData = (): TRiskData | undefined => {
   const data = storage.getString(RISK_WITH_LETTER_ID);
+  console.log('getRiskData data : ', data);
   if (!data) return undefined;
   const riskData = JSON.parse(data);
   const nowApiDateString = getKoreanServerTodayDateString(new Date());

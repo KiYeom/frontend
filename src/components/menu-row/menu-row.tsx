@@ -93,7 +93,7 @@ const MenuRow = (props: MenuRowProps) => {
             </VersionStatus>
           </>
         )}
-        {showEventIcon && <Icon name={'danger-sign'} width={90} />}
+        {showEventIcon && <Icon name={eventName} width={90} />}
       </MenuRowTextContainer>
 
       {showVersion ? (
