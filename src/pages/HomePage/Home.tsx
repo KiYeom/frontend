@@ -153,12 +153,20 @@ const Home: React.FC<any> = ({ navigation }) => {
           <Header
             riskStatus={riskStatusV2}
             onIconPress={() => {
-              console.log('onIconPress');
-              setHandleDangerPressV2();
-              navigation.navigate(RootStackName.DangerStackNavigator, {
-                screen: DangerStackName.DangerAlert,
-                params: 0,
-              }); //쿠키 편지 화면으로 이동한다
+              if (riskStatus === 'safe') {
+                //상담 기관 안내
+                Analytics.clickClinicInfoButton(riskScore);
+                WebBrowser.openBrowserAsync(
+                  'https://autumn-flier-d18.notion.site/1268e75d989680f7b4f2d63d66f4a08a?pvs=4',
+                );
+              } else {
+                console.log('onIconPress');
+                setHandleDangerPressV2();
+                navigation.navigate(RootStackName.DangerStackNavigator, {
+                  screen: DangerStackName.DangerAlert,
+                  params: 0,
+                }); //쿠키 편지 화면으로 이동한다
+              }
             }}
           />
           <Carousel
