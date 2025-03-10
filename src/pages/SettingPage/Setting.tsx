@@ -92,15 +92,15 @@ const Setting: React.FC<any> = ({ navigation }) => {
     setLoading(true);
     getLatestVersion()
       .then((res) => {
-        console.log('getLatestVersion 😀😀😀😀😀😀😀😀😀😀', res.latestVersion);
-        console.log('getLatestVersion 😀😀😀😀😀😀😀😀😀😀', typeof res.latestVersion);
+        //console.log('getLatestVersion 😀😀😀😀😀😀😀😀😀😀', res.latestVersion);
+        //console.log('getLatestVersion 😀😀😀😀😀😀😀😀😀😀', typeof res.latestVersion);
         const deviceVersion = getAppVersion() ?? undefined; //사용자가 사용중인 앱 버전을 가지고 옴
-        console.log('deviceVersion 🥹🥹🥹🥹🥹🥹🥹🥹🥹 1.2.6', deviceVersion);
-        console.log('deviceVersion 🥹🥹🥹🥹🥹🥹🥹🥹🥹', typeof deviceVersion);
-        console.log('➡️➡️➡️➡️➡️➡️', deviceVersion < res.latestVersion);
+        //console.log('deviceVersion 🥹🥹🥹🥹🥹🥹🥹🥹🥹 1.2.6', deviceVersion);
+        //console.log('deviceVersion 🥹🥹🥹🥹🥹🥹🥹🥹🥹', typeof deviceVersion);
+        //console.log('➡️➡️➡️➡️➡️➡️', deviceVersion < res.latestVersion);
         //사용자가 사용중인 앱 버전 (deviceVersion) 1.2.6 < 서버에서 받아온 앱 버전 (res.latestVersion) 1.2.7
         if (res && deviceVersion && deviceVersion !== res.latestVersion) {
-          console.log('🙇‍♀️🙇‍♀️🙇‍♀️🙇‍♀️🙇‍♀️🙇‍♀️🙇‍♀️🙇‍♀️🙇‍♀️🙇‍♀️');
+          //console.log('🙇‍♀️🙇‍♀️🙇‍♀️🙇‍♀️🙇‍♀️🙇‍♀️🙇‍♀️🙇‍♀️🙇‍♀️🙇‍♀️');
           setIsLatest(false);
           return;
         }

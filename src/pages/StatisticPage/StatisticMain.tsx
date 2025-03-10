@@ -126,10 +126,10 @@ const StatisticMain: React.FC<any> = () => {
 
   //날짜가 바뀜에 따라 데이터를 다시 api를 통해 불러옴
   useEffect(() => {
-    console.log('useEffect date');
+    //console.log('useEffect date');
     fetchData();
   }, [date]);
-  console.log('🎨🎨🎨🎨🎨🎨Rendering statistic🎨🎨🎨🎨🎨🎨');
+  //console.log('🎨🎨🎨🎨🎨🎨Rendering statistic🎨🎨🎨🎨🎨🎨');
   return (
     <View
       style={{

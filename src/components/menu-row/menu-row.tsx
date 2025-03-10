@@ -68,21 +68,21 @@ const MenuRow = (props: MenuRowProps) => {
     eventName = '',
     shouldBlockTouch = false,
   } = props;
-  console.log(
-    'showVersionshowVersionshowVersionshowVersion',
-    getAppVersion(),
-    'showVersion',
-    showVersion,
-    'isLatest',
-    isLatest,
-  );
+  //console.log(
+  //'showVersionshowVersionshowVersionshowVersion',
+  //getAppVersion(),
+  //'showVersion',
+  //showVersion,
+  //'isLatest',
+  //isLatest,
+  //);
 
   return (
     <MenuRowContainer
       onPress={
         !shouldBlockTouch
           ? () => {
-              console.log('초록색 누름');
+              //console.log('초록색 누름');
               linkingToStore(props.showVersion, props.isLatest, props.onPress);
             }
           : undefined

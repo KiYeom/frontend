@@ -11,7 +11,7 @@ export const cookieRepoInfo = async (): Promise<TCookieRepoInfo | undefined> => 
     const res = await instance.get('/v1/users/defend');
     return res.data;
   } catch (error) {
-    console.log('[ERROR] cookieRepoInfo', error);
+    //console.log('[ERROR] cookieRepoInfo', error);
     return;
   }
 };

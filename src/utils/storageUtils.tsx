@@ -329,7 +329,7 @@ export type TRiskData = {
 // {"timestamp":1741267035726,"isRead":true,"letterIndex":3}
 export const getRiskData = (): TRiskData | undefined => {
   const data = storage.getString(RISK_WITH_LETTER_ID);
-  console.log('getRiskData data : ', data);
+  //console.log('getRiskData data : ', data);
   if (!data) return undefined;
   const riskData = JSON.parse(data);
   const nowApiDateString = getKoreanServerTodayDateString(new Date());

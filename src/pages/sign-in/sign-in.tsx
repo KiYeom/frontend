@@ -45,7 +45,7 @@ const guestLogin = async (): Promise<OauthResult> => {
     return OauthResult.UnknownError;
   }
   const res = await ssoLogin(deviceId, AuthProvider.Guest);
-  console.log('res', res);
+  //console.log('res', res);
   if (!res) {
     return OauthResult.BackendError;
   }
@@ -225,7 +225,7 @@ const Login: React.FC<any> = ({ navigation }) => {
   };
 
   React.useEffect(() => {
-    console.log('😀😀😀😀😀Login Page😀😀😀😀😀😀', getUserAccountProvider());
+    //console.log('😀😀😀😀😀Login Page😀😀😀😀😀😀', getUserAccountProvider());
   }, []);
 
   return (

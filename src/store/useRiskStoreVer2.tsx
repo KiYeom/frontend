@@ -34,7 +34,7 @@ export const useRiskStoreVer2 = create<RiskState>()((set, get) => ({
       }
       get().setRiskStatusV2(); //riskStatusV2 갱신
     } catch (error) {
-      console.log('에러');
+      //console.log('에러');
     }
   },
   setRiskStatusV2: () => {
@@ -46,7 +46,7 @@ export const useRiskStoreVer2 = create<RiskState>()((set, get) => ({
   setHandleDangerPressV2: () => {
     //편지를 안 본 상태에서 버튼을 눌렀을 때 데이터와 상태를 다시 정의
     if (get().riskStatusV2 === 'danger') {
-      console.log('위험 상태일 때 누르는 버튼');
+      //console.log('위험 상태일 때 누르는 버튼');
       const letterIndex = Math.floor(Math.random() * DANGER_LETTER.length);
       setRiskData({
         timestamp: new Date().getTime(),

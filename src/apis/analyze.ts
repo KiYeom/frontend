@@ -15,10 +15,10 @@ export const dailyAnalyzeStatus = async (
 ): Promise<TDailyAnalyzeStatus | undefined> => {
   try {
     const res = await instance.get('/v1/analyze/daily-status', { params: { year } });
-    console.log('res.data', res.data);
+    //console.log('res.data', res.data);
     return res.data; //record, summary, classification 리턴
   } catch (error) {
-    console.log('[ERROR] daily analyze', error);
+    //console.log('[ERROR] daily analyze', error);
     return;
   }
 };
@@ -29,7 +29,7 @@ export const dailyAnalyze = async (today: string): Promise<TDailyAnalyze | undef
     const res = await instance.get('/v1/analyze/daily', { params: { date: today } });
     return res.data; //record, summary, classification 리턴
   } catch (error) {
-    console.log('[ERROR] daily analyze', error);
+    //console.log('[ERROR] daily analyze', error);
     return;
   }
 };
@@ -45,7 +45,7 @@ export const periodKeyword = async (
     });
     return res.data;
   } catch (error) {
-    console.log('[ERROR] period keyword', error);
+    //console.log('[ERROR] period keyword', error);
     return undefined;
   }
 };
@@ -61,7 +61,7 @@ export const periodTotalEmotion = async (
     });
     return res.data;
   } catch (error) {
-    console.log('[ERROR] period emotion', error);
+    //console.log('[ERROR] period emotion', error);
     return undefined;
   }
 };
@@ -77,7 +77,7 @@ export const periodRecordEmotions = async (
     });
     return res.data;
   } catch (error) {
-    console.log('[ERROR] period keyword', error);
+    //console.log('[ERROR] period keyword', error);
     return undefined;
   }
 };
@@ -93,7 +93,7 @@ export const periodChart = async (
     });
     return res.data;
   } catch (error) {
-    console.log('[ERROR] period chart analyze', error);
+    //console.log('[ERROR] period chart analyze', error);
     return undefined;
   }
 };
@@ -111,7 +111,7 @@ export const todayEmotion = async (
     });
     return res;
   } catch (error) {
-    console.log('[ERROR] todayEmotion', error);
+    //console.log('[ERROR] todayEmotion', error);
     return;
   }
 };
