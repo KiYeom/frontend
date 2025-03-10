@@ -133,3 +133,16 @@ export const disconnectOrganizationApi = async (): Promise<{ result: boolean } |
     return;
   }
 };
+
+// ========== 🍔🍔🍔🍔🍔 사이드바 설정 함수 🍔🍔🍔🍔🍔 ==========//
+// 햄버거바에서 사용자의 채팅 문체를 직접 설정하는setChatStyle 함수
+export const switchChatTone = async (isInFormal: boolean): Promise<boolean> => {
+  try {
+    const res = await instance.patch('/v1/users/update-format', { isInFormal });
+    console.log('updateChattingFormat success', res);
+    return true;
+  } catch (error) {
+    console.log('error');
+  }
+  return false;
+};

@@ -1,6 +1,10 @@
 import { SvgXml } from 'react-native-svg';
 
-export const EmotionThinkingCookie = ({ width = 90, height = 72, color = '#111111' }) => {
+export const EmotionThinkingCookie = ({
+  width = 90,
+  height = 72,
+  color = '#111111',
+}: IconProps) => {
   const svg = `
   <svg width=${width} height=${height} viewBox="0 0 270 214" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M52.974 131.084C56.7521 174.268 99.7106 188.243 151.195 183.739C202.678 179.235 232.549 164.134 230.218 115.577C226.44 72.3934 183.927 34.2963 132.444 38.8005C80.9596 43.3048 49.1959 87.9003 52.974 131.084Z" fill="#F8E9D3"/>

@@ -2,16 +2,16 @@ import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import Header from '../components/header/header';
-import ChatList from '../components/pages/HomePage/ChatList';
-import SmallEmotionChart from '../components/pages/HomePage/SmallEmotionChart';
-import Profile from '../components/pages/Profile/profile';
+//import ChatList from '../components/pages/HomePage/ChatList';
+import SmallEmotionChart from '../pages/HomePage/diary/SmallEmotionChart';
+import Profile from '../pages/HomePage/Profile/profile';
 import { HomeStackName, RootStackName, TabScreenName } from '../constants/Constants';
-import NewChat from '../components/pages/HomePage/new-chat';
-import Chat from '../components/pages/HomePage/Chat';
-import DailyDairy from '../components/pages/HomePage/DailyDairy';
+import NewChat from '../pages/HomePage/chat/new-chat';
+//import Chat from '../components/pages/HomePage/Chat';
+import DailyDairy from '../pages/HomePage/diary/DailyDairy';
 import { formatDate } from '../utils/Chatting';
 import { Alert } from 'react-native';
-
+import DrawerNavigator from './DrawerNavigator';
 const HomeStack = createNativeStackNavigator();
 
 const HomeStackNavigator: React.FC = () => {
@@ -19,13 +19,6 @@ const HomeStackNavigator: React.FC = () => {
 
   return (
     <HomeStack.Navigator>
-      <HomeStack.Screen
-        name={HomeStackName.Chat}
-        component={Chat}
-        options={{
-          header: () => <Header title="쿠키의 채팅방" />,
-        }}
-      />
       <HomeStack.Screen
         name={HomeStackName.SmallEmotionChart}
         component={SmallEmotionChart}
@@ -85,18 +78,13 @@ const HomeStackNavigator: React.FC = () => {
       />
       <HomeStack.Screen
         name={HomeStackName.NewChat}
-        component={NewChat}
+        component={DrawerNavigator}
         options={{ headerShown: false }}
       />
       <HomeStack.Screen
         name={HomeStackName.NewChatRefresh}
-        component={NewChat}
+        component={DrawerNavigator}
         options={{ headerShown: false, animation: 'none' }}
-      />
-      <HomeStack.Screen
-        name={HomeStackName.ChatList}
-        component={ChatList}
-        options={{ header: () => <Header title="채팅 목록" /> }}
       />
     </HomeStack.Navigator>
   );
