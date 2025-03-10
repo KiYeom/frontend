@@ -9,7 +9,6 @@ type TCookieRepoInfo = {
 export const cookieRepoInfo = async (): Promise<TCookieRepoInfo | undefined> => {
   try {
     const res = await instance.get('/v1/users/defend');
-    console.log('🐶🐶🐶🐶🐶🐶', res.data);
     return res.data;
   } catch (error) {
     console.log('[ERROR] cookieRepoInfo', error);

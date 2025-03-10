@@ -16,6 +16,7 @@ export const getDeviceOS = (): string => {
   return '' + Device.osName + Device.osVersion;
 };
 
+//현재 사용자가 사용하는 앱의 버전을 가지고 옴
 export const getAppVersion = (): string | null => {
   return Application.nativeApplicationVersion ?? 'unknown';
 };

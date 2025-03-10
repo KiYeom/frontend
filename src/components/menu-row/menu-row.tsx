@@ -68,6 +68,14 @@ const MenuRow = (props: MenuRowProps) => {
     eventName = '',
     shouldBlockTouch = false,
   } = props;
+  console.log(
+    'showVersionshowVersionshowVersionshowVersion',
+    getAppVersion(),
+    'showVersion',
+    showVersion,
+    'isLatest',
+    isLatest,
+  );
 
   return (
     <MenuRowContainer
