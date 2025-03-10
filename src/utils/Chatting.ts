@@ -79,6 +79,7 @@ export const saveChatLogs = (logs: any) => {
 };
 
 //앱을 처음 실행할 때 스토리지에 저장된 대화를 꺼내오는 함수
+/*
 export const loadChatLogs = ({ data, setData }: any) => {
   try {
     const chatLogs = getChatting();
@@ -88,4 +89,4 @@ export const loadChatLogs = ({ data, setData }: any) => {
   } catch (error) {
     return;
   }
-};
+};*/

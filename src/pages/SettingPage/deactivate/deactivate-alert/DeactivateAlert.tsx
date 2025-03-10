@@ -18,19 +18,28 @@ import { css } from '@emotion/native';
 import { rsHeight, rsWidth } from '../../../../utils/responsive-size';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { cookieRepoInfo } from '../../../../apis/user-cookie-repo';
 
 const DeactivateAlert: React.FC = ({ navigation }) => {
-  const chats = getChatting();
+  //const chats = getChatting(); 왜 undefinec
   const insets = useSafeAreaInsets();
+  const [totalChat, setTotalChat] = React.useState<number>(0);
+  const [totalDays, setTotalDays] = React.useState<number>(0);
 
-  let chatCount = 0;
-  if (chats) {
-    const chatArray = JSON.parse(chats);
-    chatCount = chatArray.length - 1;
-  }
+  //let chatCount = 10;
+  //console.log('chats', chats);
+  //if (chats) {
+  //const chatArray = JSON.parse(chats);
+  //chatCount = chatArray.length - 1;
+  //console.log('⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️', chatCount);
+  //}
 
   useEffect(() => {
     Analytics.watchWithdrawalDefenseScreen();
+    cookieRepoInfo().then((data) => {
+      setTotalChat((data?.totalChats ?? 0) * 2);
+      setTotalDays(data?.totalDays ?? 0);
+    });
   }, []);
 
   return (
@@ -42,9 +51,9 @@ const DeactivateAlert: React.FC = ({ navigation }) => {
       <Container>
         <SignOutTitleContainer>
           <SignOutTitle status="default">
-            reMIND에서 쿠키와{'\n'}
-            <SignOutTitle status="number">{chatCount}</SignOutTitle>
-            번의 대화를 나누었어요!
+            쿠키와 <SignOutTitle status="number">{totalDays}</SignOutTitle>일동안{'\n'}
+            <SignOutTitle status="number">{totalChat}</SignOutTitle>
+            번의 추억을 쌓아왔어요.
           </SignOutTitle>
         </SignOutTitleContainer>
         <ImageContainer>
