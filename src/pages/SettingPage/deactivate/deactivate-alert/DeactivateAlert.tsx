@@ -51,9 +51,8 @@ const DeactivateAlert: React.FC = ({ navigation }) => {
       <Container>
         <SignOutTitleContainer>
           <SignOutTitle status="default">
-            쿠키와 <SignOutTitle status="number">{totalDays}</SignOutTitle>일동안{'\n'}
-            <SignOutTitle status="number">{totalChat}</SignOutTitle>
-            번의 추억을 쌓아왔어요.
+            쿠키와 <SignOutTitle status="number">{totalDays + 1}일</SignOutTitle>동안{'\n'}
+            <SignOutTitle status="number">{totalChat}번</SignOutTitle>의 추억을 쌓아왔어요.
           </SignOutTitle>
         </SignOutTitleContainer>
         <ImageContainer>
