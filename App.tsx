@@ -73,7 +73,7 @@ const App: React.FC = () => {
     const refreshToken = getRefreshToken();
     if (!refreshToken) {
       //토큰이 없으면, 다른 기기에서 접근한 것이거나 우리의 회원이 아니다. 로그인 화면을 보여준다.
-      console.log('[APP START] LogOut: 1, SigninStatus: ', SigninStatus);
+      //console.log('[APP START] LogOut: 1, SigninStatus: ', SigninStatus);
       return false;
     }
 
@@ -81,7 +81,7 @@ const App: React.FC = () => {
     await reissueAccessToken(refreshToken, true);
     const accessToken = getAccessToken();
     if (!accessToken) {
-      console.log('[APP START] LogOut: 2, SigninStatus: ', SigninStatus);
+      //console.log('[APP START] LogOut: 2, SigninStatus: ', SigninStatus);
       return false;
     }
 
@@ -92,7 +92,7 @@ const App: React.FC = () => {
     setStatusBarStyle('dark');
     const deviceId = await getDeviceId();
     if (deviceId === null) {
-      console.error('DeviceId is undefined');
+      //console.error('DeviceId is undefined');
       alert('지원하지 않는 운영체제입니다. 문의: admin@remind4u.co.kr');
       return;
     }

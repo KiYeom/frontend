@@ -285,7 +285,7 @@ const NewChat: React.FC = ({ navigation }) => {
   const onSend = (newMessages: IMessage[] = []) => {
     Analytics.clickChatSendButton();
     if (!newMessages[0].text.trim()) {
-      console.log('실행 안됨');
+      //console.log('실행 안됨');
       return;
     }
     setBuffer(buffer ? buffer + newMessages[0].text + '\n' : newMessages[0].text + '\n');
