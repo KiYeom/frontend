@@ -22,6 +22,10 @@ import Analytics from './src/utils/analytics';
 import { getDeviceId } from './src/utils/device-info';
 import { UseSigninStatus } from './src/utils/signin-status';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
+import { getLatestVersion } from './src/apis/setting';
+import { getAppVersion } from './src/utils/device-info';
+import { Platform, Alert } from 'react-native';
+import * as WebBrowser from 'expo-web-browser';
 import {
   clearInfoWhenLogout,
   getAccessToken,
@@ -105,6 +109,43 @@ const App: React.FC = () => {
     if (accessToken) Analytics.setUser(accessToken);
     setSigninStatus(signinResult);
   };
+  //업데이트 알림
+  const updateAlert = () => {
+    Alert.alert(
+      '⚠️업데이트 필요⚠️',
+      '새로운 버전의 앱이 출시되었습니다. 업데이트 후 사용 가능합니다‼️',
+      [
+        {
+          text: '업데이트',
+          onPress: () => {
+            if (Platform.OS === 'ios') {
+              WebBrowser.openBrowserAsync('https://apps.apple.com/app/remind/id6544783154');
+            } else if (Platform.OS === 'android') {
+              WebBrowser.openBrowserAsync(
+                'https://play.google.com/store/apps/details?id=com.ceunnseo.reMIND',
+              );
+            }
+            Analytics.clickUpdateAlertButton(getAppVersion() ?? 'undefined', Platform.OS);
+          },
+        },
+      ],
+      { cancelable: false }, // 닫을 수 없는 알림
+    );
+  };
+
+  //앱 버전 체크
+  const checkAppVersion = () => {
+    getLatestVersion()
+      .then((res) => {
+        const deviceVersion = getAppVersion() ?? undefined;
+        if (res && deviceVersion && deviceVersion !== res.latestVersion) {
+          //console.log('😀deviceVersion: ', deviceVersion, 'latestVersion: ', res.latestVersion);
+          updateAlert();
+          return;
+        }
+      })
+      .catch((error) => console.error(error));
+  };
 
   //앱 처음 실행 시 폰트 로드 진행. 완료되면 로그인 여부를 판단한 뒤에 로딩 화면을 숨김
   useEffect(() => {
@@ -114,6 +155,7 @@ const App: React.FC = () => {
     if (loaded) {
       bootstrap().then(() => {
         setLoading(false);
+        checkAppVersion();
       });
     }
   }, [loaded, error]);

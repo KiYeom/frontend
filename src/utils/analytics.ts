@@ -26,6 +26,11 @@ export default class Analytics {
     analytics().setUserId(String(userId));
   };
 
+  //바로 나오는 업데이트 버튼 클릭
+  public static clickUpdateAlertButton = (appVersion: string, os: string): void => {
+    this.sendEvent('바로 나오는 업데이트 버튼 클릭', 'updateAlertButton', { os, appVersion });
+  };
+
   //로그인 화면
   public static watchLoginScreen = (): void => {
     this.sendEvent('로그인 화면 진입', 'loginScreen');
