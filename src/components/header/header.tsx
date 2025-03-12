@@ -7,6 +7,7 @@ import Icon, { TIconName } from '../icons/icons';
 import {
   HeaderCenter,
   HeaderContainer,
+  HeaderEvent,
   HeaderLeft,
   HeaderRight,
   HeaderTitle,
@@ -25,6 +26,11 @@ type HeaderProps = {
   rightIcon?: TIconName;
   rightText?: string;
   rightFunction?: () => void;
+
+  isEvent?: boolean;
+  eventIcon?: TIconName;
+  eventText?: string;
+  eventFunction?: () => void;
 };
 const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
   const insets = useSafeAreaInsets();
@@ -44,6 +50,11 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
     rightIcon,
     rightText = undefined,
     rightFunction = () => {},
+
+    isEvent = false,
+    eventIcon = 'event-icon',
+    eventText = undefined,
+    eventFunction = () => {},
   } = props;
   return (
     <HeaderContainer isTitle={title !== undefined} insets={insets}>
@@ -67,6 +78,12 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
             <Icon name={rightIcon} height={rsHeight * 30 + 'px'} color={palette.neutral[900]} />
           )}
         </HeaderRight>
+      )}
+      {isEvent && (
+        <HeaderEvent onPress={eventFunction} activeOpacity={1} isTitle={title !== undefined}>
+          <Icon name={eventIcon} width={rsWidth * 30 + 'px'} />
+          {eventText !== undefined && <OptionText>{eventText}</OptionText>}
+        </HeaderEvent>
       )}
     </HeaderContainer>
   );

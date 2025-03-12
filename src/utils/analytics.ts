@@ -128,6 +128,13 @@ export default class Analytics {
   public static clickTabSettingNotificationButton = (): void => {
     this.sendEvent('탭 - 설정 화면 - 알림 설정 버튼 클릭', 'tabSettingNotificationButton');
   };
+
+  //03.13 코드푸시 추가
+  //탭 - 설정 화면 - 대화방 설정 버튼 클릭
+  public static clickTabSettingChattingSetting = (): void => {
+    this.sendEvent('탭 - 설정 화면 - 대화방 설정 버튼 클릭', 'tabSettingChattingSetting');
+  };
+
   //탭 - 설정 화면 - 문의하기 버튼 클릭
   public static clickTabSettingInquiryButton = (): void => {
     this.sendEvent('탭 - 설정 화면 - 문의하기 버튼 클릭', 'tabSettingInquiryButton');
@@ -229,6 +236,12 @@ export default class Analytics {
   //채팅 - 헤더 좌측 뒤로가기 버튼 클릭
   public static clickHeaderBackButton = (): void => {
     this.sendEvent('채팅 - 헤더의 좌측 뒤로가기 버튼 클릭', 'headerBackButton');
+  };
+
+  //1.4.7 긴급 추가
+  //채팅 - 헤더 우측 선물 상자 버튼 클릭
+  public static clickHeaderGiftBoxButton = (eventUrl: string): void => {
+    this.sendEvent('채팅 - 헤더의 우측 선물 상자 버튼 클릭', 'headerGiftBoxButton', { eventUrl });
   };
 
   //채팅 - 사이드바 버튼 클릭
@@ -336,6 +349,18 @@ export default class Analytics {
     newStatus: boolean,
   ): void => {
     this.sendEvent('알림 설정 - 스위치 클릭', 'notificationSwitch', { switchLabel, newStatus });
+  };
+
+  //대화방 설정 화면
+  public static watchChattingSettingScreen = (): void => {
+    this.sendEvent('설정 - 대화방 설정 - 대화방 설정 화면 진입', 'chattingSettingScreen');
+  };
+
+  //대화방 설정 - 반말 모드 스위치 클릭
+  public static clickChattingSettingSwitch = (isInformal: boolean): void => {
+    this.sendEvent('대화방 설정 - 반말 모드 스위치 클릭', 'chattingSettingSwitch', {
+      isInformal,
+    });
   };
 
   //오픈 소스 화면

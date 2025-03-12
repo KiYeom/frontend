@@ -3,6 +3,7 @@ import { Dimensions, Platform, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GiftedChat, IMessage, SendProps } from 'react-native-gifted-chat';
 import Header from '../../../components/header/header';
+import * as WebBrowser from 'expo-web-browser';
 import {
   DANGER_LETTER,
   DangerStackName,
@@ -27,6 +28,7 @@ import Analytics from '../../../utils/analytics';
 import { rsFont, rsWidth } from '../../../utils/responsive-size';
 import { chatting, getOldChatting } from '../../../apis/chatting';
 import { TabScreenName } from '../../../constants/Constants';
+import { Linking } from 'react-native';
 import {
   RenderAvatar,
   RenderBubble,
@@ -47,6 +49,7 @@ import Toast from 'react-native-root-toast';
 import { Hint } from 'react-native-ui-lib';
 import palette from '../../../assets/styles/theme';
 import { useRiskStoreVer2 } from '../../../store/useRiskStoreVer2';
+import clickHeaderGiftBoxButton from '../../../utils/analytics';
 //import cookieprofile from '@assets/images/cookieprofile.png';
 //import cookieProfile from '@assets/images/cookieprofile.png';
 
@@ -360,6 +363,17 @@ const NewChat: React.FC = ({ navigation }) => {
         rightFunction={() => {
           Analytics.clickHeaderSideMenuButton();
           navigation.openDrawer();
+        }}
+        isEvent={true}
+        eventIcon="event-icon"
+        eventFunction={async () => {
+          //console.log('이벤트 누름');
+          await Linking.openURL(
+            'https://autumn-flier-d18.notion.site/reMIND-1b48e75d989680f2b4c7e7fa8dbfc1ad?pvs=4',
+          );
+          Analytics.clickHeaderGiftBoxButton(
+            'https://autumn-flier-d18.notion.site/reMIND-1b48e75d989680f2b4c7e7fa8dbfc1ad?pvs=4',
+          );
         }}
       />
       <GiftedChat

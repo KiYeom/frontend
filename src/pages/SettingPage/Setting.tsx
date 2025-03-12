@@ -143,7 +143,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
             color={palette.neutral[300]}
           />
         </UserInfoContainer>
-        {/* 앱 내의 설정 */}
+        {/* 앱 내의 설정*/}
         <AppSettingContainer>
           <MenuRow
             text="알림설정"
@@ -151,6 +151,15 @@ const Setting: React.FC<any> = ({ navigation }) => {
               Analytics.clickTabSettingNotificationButton();
               navigation.navigate(RootStackName.SettingStackNavigator, {
                 screen: SettingStackName.UserNotifications,
+              });
+            }}
+          />
+          <MenuRow
+            text="대화방 설정"
+            onPress={() => {
+              Analytics.clickTabSettingChattingSetting();
+              navigation.navigate(RootStackName.SettingStackNavigator, {
+                screen: SettingStackName.UserChattingSetting,
               });
             }}
           />

@@ -42,6 +42,20 @@ export const HeaderRight = styled.TouchableOpacity<{ isTitle: boolean }>`
   gap: ${rsWidth * 4 + 'px'};
 `;
 
+export const HeaderEvent = styled.TouchableOpacity<{ isTitle: boolean }>`
+  position: absolute;
+  right: 50px;
+  margin-right: ${rsWidth * 13 + 'px'};
+  padding-left: ${rsWidth * 10 + 'px'};
+  padding-right: ${rsWidth * 10 + 'px'};
+  height: 75%;
+  align-items: center;
+  justify-content: left;
+  flex-direction: row;
+  gap: ${rsWidth * 4 + 'px'};
+  //background-color: black;
+`;
+
 export const HeaderCenter = styled.View`
   justify-content: center;
   align-items: center;

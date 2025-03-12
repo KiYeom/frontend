@@ -71,6 +71,7 @@ export enum SettingStackName {
   EditUserInfo = 'EditUserInfo',
   PrivacyPolicy = 'PrivacyPolicy',
   UserNotifications = 'UserNotifications',
+  UserChattingSetting = 'UserChattingSetting',
   ChannelTalk = 'ChannelTalk',
   DeactivateAlert = 'DeactivateAlert',
   DeactivateReason = 'DeactivateReason',
