@@ -12,30 +12,45 @@ import Icon from '../../../components/icons/icons';
 import { Hint } from 'react-native-ui-lib';
 import palette from '../../../assets/styles/theme';
 import HintComponent from '../HintComponent';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 
-const fillMissingDates = (data, startDate, endDate) => {
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+const fillMissingDates = (data: object, startDate: string, endDate: string) => {
   const result = [];
-  let currentDate = dayjs(startDate);
+  let currentDate = dayjs(startDate); //
 
   const endDateObj = dayjs(endDate);
+  //console.log('😀data', startDate, endDate, data);
+  //console.log('😀data type😀', typeof startDate, typeof endDate, data);
+  //console.log('😀currentDate', currentDate);
+  //console.log('😀endDateObj', endDateObj);
+
+  const newCurrentDate = dayjs.tz(startDate, 'Asia/Seoul');
+  //console.log('😀newCurrentDate', newCurrentDate.format());
 
   let dataIndex = 0;
 
-  while (currentDate.isBefore(endDateObj)) {
+  while (currentDate.isBefore(endDateObj.add(1, 'day'))) {
     const currentDateString = currentDate.format('YYYY-MM-DD');
+    //console.log('😀😀😀😀😀', currentDateString);
 
     if (dataIndex < data.length && data[dataIndex].date === currentDateString) {
       // 데이터에 현재 날짜가 있으면 그대로 추가
+      //console.log(currentDateString, 'currentDateString 있음😀😀😀😀😀', data[dataIndex]);
       result.push(data[dataIndex]);
       dataIndex++; // 다음 데이터 포인터로 이동
     } else {
       // 데이터에 현재 날짜가 없으면 value: 0으로 추가
+      //console.log(currentDateString, 'currentDateString 없음😀😀😀😀😀', data[dataIndex]);
       result.push({ date: currentDateString, value: 0 });
     }
 
     currentDate = currentDate.add(1, 'day'); // 다음 날짜로 이동
   }
-
+  //console.log('👍👍👍👍👍 result ', result);
   return result;
 };
 
