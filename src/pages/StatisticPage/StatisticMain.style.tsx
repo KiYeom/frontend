@@ -60,7 +60,7 @@ export const StatisticTitle = styled.Text`
   font-size: ${24 * rsFont + 'px'};
   color: ${palette.neutral[900]};
   text-align: center;
-  background-color: red;
+  //background-color: red;
   height: ${rsHeight * 70 + 'px'};
   padding: ${rsHeight * 8 + 'px'} 0 ${rsHeight * 8 + 'px'} 0;
 `;

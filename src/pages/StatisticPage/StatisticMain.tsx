@@ -171,7 +171,7 @@ const StatisticMain: React.FC<any> = () => {
                 uri: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/statistic/reportlogo.png',
               }}
             />
-            <View style={{ marginVertical: 10 * rsHeight, backgroundColor: 'yellow' }}>
+            <View style={{ marginVertical: 10 * rsHeight }}>
               {/* 현재 날짜와 쿠키의 안내 말 */}
               <DateLineContainer>
                 <TouchableOpacity onPress={() => setOpenModal(true)}>
