@@ -45,6 +45,7 @@ import {
 } from 'react-native-keyboard-controller';
 import palette from '../../../assets/styles/theme';
 import { Alert } from 'react-native';
+import { useRoute } from '@react-navigation/native';
 
 const validateDairy = (sentence: string): 'error' | 'default' | 'correct' => {
   if (sentence.length > 0 && sentence.length <= 300) return 'correct';
@@ -56,6 +57,15 @@ const DailyDairy = ({ navigation }) => {
   const maxLength = 300;
   const insets = useSafeAreaInsets();
   const { selectedEmotions, setSelectedEmotions } = useEmotionStore();
+  const route = useRoute();
+  console.log('📌 Route Object:', route);
+  console.log('📌 Route Params:', route.params);
+  const { date } = route.params || {};
+  console.log('일기장 화면 date', date);
+
+  useEffect(() => {
+    console.log('Updated params:', route.params);
+  }, [route.params]);
   useEffect(() => {
     Analytics.watchDiaryWriteScreen();
     todayEmotionCheck().then((data) => {

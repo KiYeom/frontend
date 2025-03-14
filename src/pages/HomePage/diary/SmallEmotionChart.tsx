@@ -1,6 +1,7 @@
 import { css } from '@emotion/native';
 import { useHeaderHeight } from '@react-navigation/elements';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { useRoute, useFocusEffect } from '@react-navigation/native';
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -27,6 +28,7 @@ import {
   MINIMUM_EMOTION_COUNT,
   TabScreenName,
 } from '../../../constants/Constants';
+import Header from '../../../components/header/header';
 import EmotionTitleBox from './emotionTitleBox';
 import Analytics from '../../../utils/analytics';
 import useRecordedEmotionStore from '../../../utils/emotion-recorded';
@@ -44,6 +46,7 @@ import {
   KeyboardStickyView,
 } from 'react-native-keyboard-controller';
 import palette from '../../../assets/styles/theme';
+import { RootStackName } from '../../../constants/Constants';
 
 const SmallEmotionChart = ({ navigation }) => {
   const insets = useSafeAreaInsets();
@@ -53,6 +56,15 @@ const SmallEmotionChart = ({ navigation }) => {
   const [text, setText] = useState('');
   const headerHeight = useHeaderHeight();
   const [buttonHeight, setButtonHeight] = useState(0);
+  const route = useRoute();
+  const [date, setDate] = useState(route.params?.date);
+  //const { date } = route.params;
+  console.log('-----', date);
+
+  // 화면이 다시 포커스될 때 params를 확인해서 유지
+  useEffect(() => {
+    if (route.params?.date) setDate(route.params.date);
+  }, [route.params]);
 
   useEffect(() => {
     Analytics.watchEmotionRecordScreen();
@@ -205,7 +217,12 @@ const SmallEmotionChart = ({ navigation }) => {
             primary={true}
             onPress={() => {
               Analytics.clickGotoDiaryWriteButton();
-              navigation.navigate(HomeStackName.DailyDairy);
+              //console.log('마음일기 date', date);
+              //console.log('🔥 Navigating with:', date);
+              //console.log('🔥 date.dateString:', date?.dateString);
+
+              navigation.navigate(HomeStackName.DailyDairy, { date: date });
+              //새로운 화면이 push
             }}
           />
         </View>

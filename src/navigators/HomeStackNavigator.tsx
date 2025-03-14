@@ -22,26 +22,46 @@ const HomeStackNavigator: React.FC = () => {
       <HomeStack.Screen
         name={HomeStackName.SmallEmotionChart}
         component={SmallEmotionChart}
-        options={{
-          header: () => (
-            <Header
-              leftFunction={() =>
-                navigation.navigate(RootStackName.BottomTabNavigator, {
-                  screen: TabScreenName.Home,
-                })
-              }
-              title={formatDate(new Date()).slice(5)}
-            />
-          ),
-        }}
+        //initialParams={{ date: new Date().toISOString() }}
+        options={({ route, navigation }) => ({
+          header: () => <Header />,
+        })}
       />
       <HomeStack.Screen
         name={HomeStackName.DailyDairy}
         component={DailyDairy}
-        options={{
-          header: () => (
+        //initialParams={{ date: new Date() }}
+        options={({ route, navigation }) => ({
+          header: () => <Header />,
+        })}
+      />
+      <HomeStack.Screen
+        name={HomeStackName.Profile}
+        component={Profile}
+        options={{ header: () => <Header /> }}
+      />
+      <HomeStack.Screen
+        name={HomeStackName.NewChat}
+        component={DrawerNavigator}
+        options={{ headerShown: false }}
+      />
+      <HomeStack.Screen
+        name={HomeStackName.NewChatRefresh}
+        component={DrawerNavigator}
+        options={{ headerShown: false, animation: 'none' }}
+      />
+    </HomeStack.Navigator>
+  );
+};
+export default HomeStackNavigator;
+
+/*header: () => (
             <Header
-              title={formatDate(new Date()).slice(5)}
+              title={
+                route.params?.date
+                  ? new Date(route.params.date).toLocaleDateString()
+                  : 'Default Title'
+              }
               leftFunction={() => {
                 Alert.alert(
                   '뒤로 가시겠어요?', // 첫번째 text: 타이틀 큰 제목
@@ -68,25 +88,18 @@ const HomeStackNavigator: React.FC = () => {
                 );
               }}
             />
-          ),
-        }}
-      />
-      <HomeStack.Screen
-        name={HomeStackName.Profile}
-        component={Profile}
-        options={{ header: () => <Header /> }}
-      />
-      <HomeStack.Screen
-        name={HomeStackName.NewChat}
-        component={DrawerNavigator}
-        options={{ headerShown: false }}
-      />
-      <HomeStack.Screen
-        name={HomeStackName.NewChatRefresh}
-        component={DrawerNavigator}
-        options={{ headerShown: false, animation: 'none' }}
-      />
-    </HomeStack.Navigator>
-  );
-};
-export default HomeStackNavigator;
+          ),*/
+
+/*
+<Header
+              leftFunction={() =>
+                navigation.navigate(RootStackName.BottomTabNavigator, {
+                  screen: TabScreenName.Home,
+                })
+              }
+              title={
+                route.params?.date
+                  ? new Date(route.params.date).toLocaleDateString()
+                  : 'Default Title'
+              }
+            />*/

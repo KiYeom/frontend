@@ -151,7 +151,7 @@ const Home: React.FC<any> = ({ navigation }) => {
           {/*<HomeChatBtn navigation={navigation} />
 
           <EmotionBtn navigation={navigation} />*/}
-          <CustomCalendar />
+          <CustomCalendar navigation={navigation} />
         </View>
       </ScrollView>
     </View>
