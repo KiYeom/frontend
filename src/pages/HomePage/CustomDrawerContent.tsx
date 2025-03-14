@@ -51,7 +51,7 @@ const CustomDrawerContent = (props: any) => {
         }
       })
       .catch((error) => {
-        console.log('catch');
+        //console.log('catch');
       });
   }, []);
 
@@ -74,16 +74,16 @@ const CustomDrawerContent = (props: any) => {
             shouldBlockTouch={true}
             onPress={() => {
               //쿠키 편지 화면으로 이동한다
-              console.log('쿠키 편지를 클릭함');
+              //console.log('쿠키 편지를 클릭함');
               if (riskStatusV2 === 'danger') {
-                console.log('위험 상태일 때');
+                //console.log('위험 상태일 때');
                 Analytics.clickSideMenuDangerLetterButton(riskScoreV2);
                 navigateToDangerAlert();
                 return;
               }
               if (riskStatusV2 === 'danger-opened') {
                 //위험한 상태일 때 확인을 했으면
-                console.log('위험 상태일 때 확인을 했으면');
+                //console.log('위험 상태일 때 확인을 했으면');
                 Analytics.clickSideMenuOpenedDangerLetterButton(riskScoreV2);
                 //const letterIndex = getRiskData()?.letterIndex;
                 navigateToDangerAlert();

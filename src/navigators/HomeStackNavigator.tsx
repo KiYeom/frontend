@@ -51,13 +51,13 @@ const HomeStackNavigator: React.FC = () => {
                       text: '아니오',
                       onPress: () => {
                         //Analytics.clickWithdrawalModalCancelButton();
-                        console.log('뒤로 가기 방지');
+                        //console.log('뒤로 가기 방지');
                       },
                     },
                     {
                       text: '네', // 버튼 제목
                       onPress: () => {
-                        console.log('뒤로 가기');
+                        //console.log('뒤로 가기');
                         navigation.navigate(RootStackName.HomeStackNavigator, {
                           screen: HomeStackName.SmallEmotionChart,
                         });

@@ -44,26 +44,26 @@ function setInterceptor(instance: any) {
       // Sentry 스코프를 사용하여 에러 태그 및 추가 정보를 설정
       console.error('instance Error: ', error.response);
       if (error.response && error.response.status === 419) {
-        console.log('interseptor: 419 에러 발생');
-        console.log('accessToken: ', getAccessToken());
+        //console.log('interseptor: 419 에러 발생');
+        //console.log('accessToken: ', getAccessToken());
         const refreshToken = getRefreshToken();
         if (!refreshToken) {
           // refreshToken이 없으면 로그인이 안되어있는 상태
           clearInfoWhenLogout();
           const { SigninStatus, setSigninStatus } = UseSigninStatus();
-          console.log('[Interceptor - NoRefresh] LogOut: 1, SigninStatus: ', SigninStatus);
+          //console.log('[Interceptor - NoRefresh] LogOut: 1, SigninStatus: ', SigninStatus);
           setSigninStatus(false);
           return;
         }
 
-        console.log('reissueAccessToken Run');
+        //console.log('reissueAccessToken Run');
         await reissueAccessToken(refreshToken, false);
         const accessToken = getAccessToken();
         if (!accessToken) {
           // refreshToken이 없으면 로그인이 안되어있는 상태
           clearInfoWhenLogout();
           const { SigninStatus, setSigninStatus } = UseSigninStatus();
-          console.log('[Interceptor - Reissue Wrong] LogOut: 2, SigninStatus: ', SigninStatus);
+          //console.log('[Interceptor - Reissue Wrong] LogOut: 2, SigninStatus: ', SigninStatus);
           setSigninStatus(false);
           return;
         }

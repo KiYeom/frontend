@@ -11,7 +11,7 @@ export const updateUserInfo = async (
     const res = await instance.patch('/v1/users/update-user', profile);
     return res.data;
   } catch (error) {
-    console.log('[ERROR] user edit info', error);
+    //console.log('[ERROR] user edit info', error);
     return;
   }
 };
@@ -139,10 +139,10 @@ export const disconnectOrganizationApi = async (): Promise<{ result: boolean } |
 export const switchChatTone = async (isInFormal: boolean): Promise<boolean> => {
   try {
     const res = await instance.patch('/v1/users/update-format', { isInFormal });
-    console.log('updateChattingFormat success', res);
+    //console.log('updateChattingFormat success', res);
     return true;
   } catch (error) {
-    console.log('error');
+    //console.log('error');
   }
   return false;
 };

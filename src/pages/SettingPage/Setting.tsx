@@ -92,8 +92,17 @@ const Setting: React.FC<any> = ({ navigation }) => {
     setLoading(true);
     getLatestVersion()
       .then((res) => {
-        const deviceVersion = getAppVersion() ?? undefined;
-        if (res && deviceVersion && deviceVersion < res.latestVersion) {
+        //console.log('getLatestVersion 😀😀😀😀😀😀😀😀😀😀', res.latestVersion);
+        //console.log('getLatestVersion 😀😀😀😀😀😀😀😀😀😀', typeof res.latestVersion);
+        const deviceVersion = getAppVersion() ?? undefined; //사용자가 사용중인 앱 버전을 가지고 옴
+        //console.log('deviceVersion 🥹🥹🥹🥹🥹🥹🥹🥹🥹 1.2.6', deviceVersion);
+        //console.log('deviceVersion 🥹🥹🥹🥹🥹🥹🥹🥹🥹', typeof deviceVersion);
+        //console.log('➡️➡️➡️➡️➡️➡️', deviceVersion < res.latestVersion);
+        //사용자가 사용중인 앱 버전 (deviceVersion) 1.2.6 < 서버에서 받아온 앱 버전 (res.latestVersion) 1.2.7
+        console.log('deviceVersion', deviceVersion);
+        console.log('deviceVersion', res.latestVersion);
+        if (res && deviceVersion && deviceVersion !== res.latestVersion) {
+          //console.log('🙇‍♀️🙇‍♀️🙇‍♀️🙇‍♀️🙇‍♀️🙇‍♀️🙇‍♀️🙇‍♀️🙇‍♀️🙇‍♀️');
           setIsLatest(false);
           return;
         }
@@ -134,7 +143,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
             color={palette.neutral[300]}
           />
         </UserInfoContainer>
-        {/* 앱 내의 설정 */}
+        {/* 앱 내의 설정*/}
         <AppSettingContainer>
           <MenuRow
             text="알림설정"
@@ -142,6 +151,15 @@ const Setting: React.FC<any> = ({ navigation }) => {
               Analytics.clickTabSettingNotificationButton();
               navigation.navigate(RootStackName.SettingStackNavigator, {
                 screen: SettingStackName.UserNotifications,
+              });
+            }}
+          />
+          <MenuRow
+            text="대화방 설정"
+            onPress={() => {
+              Analytics.clickTabSettingChattingSetting();
+              navigation.navigate(RootStackName.SettingStackNavigator, {
+                screen: SettingStackName.UserChattingSetting,
               });
             }}
           />
@@ -183,7 +201,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
               });
             }}
           />
-          <MenuRow text="앱 정보" showVersion={!loading} isLatest={true} />
+          <MenuRow text="앱 정보" showVersion={!loading} isLatest={isLatest} />
         </AppSettingContainer>
         {/* 계정 정보 수정 */}
         <UserSettingContainer>

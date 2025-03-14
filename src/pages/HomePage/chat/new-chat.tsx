@@ -3,6 +3,7 @@ import { Dimensions, Platform, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GiftedChat, IMessage, SendProps } from 'react-native-gifted-chat';
 import Header from '../../../components/header/header';
+import * as WebBrowser from 'expo-web-browser';
 import {
   DANGER_LETTER,
   DangerStackName,
@@ -27,6 +28,7 @@ import Analytics from '../../../utils/analytics';
 import { rsFont, rsWidth } from '../../../utils/responsive-size';
 import { chatting, getOldChatting } from '../../../apis/chatting';
 import { TabScreenName } from '../../../constants/Constants';
+import { Linking } from 'react-native';
 import {
   RenderAvatar,
   RenderBubble,
@@ -47,6 +49,7 @@ import Toast from 'react-native-root-toast';
 import { Hint } from 'react-native-ui-lib';
 import palette from '../../../assets/styles/theme';
 import { useRiskStoreVer2 } from '../../../store/useRiskStoreVer2';
+import clickHeaderGiftBoxButton from '../../../utils/analytics';
 //import cookieprofile from '@assets/images/cookieprofile.png';
 //import cookieProfile from '@assets/images/cookieprofile.png';
 
@@ -157,7 +160,7 @@ const NewChat: React.FC = ({ navigation }) => {
     if (messages.length === 0) {
       const welcomeMessage = {
         _id: new Date().getTime(),
-        text: `반가워요, ${getUserNickname()}님!💚 저는 ${getUserNickname()}님 곁에서 힘이 되어드리고 싶은 골든 리트리버 쿠키예요🐶 이 곳은 ${getUserNickname()}님과 저만의 비밀 공간이니, 어떤 이야기도 편하게 나눠주세요!\n\n반말이 편할까요, 아니면 존댓말이 좋으실까요? 원하는 말투로 대화할게요! 🍀💕`,
+        text: `반가워요, ${getUserNickname()}님!💚 저는 ${getUserNickname()}님 곁에서 힘이 되어드리고 싶은 골든 리트리버 쿠키예요🐶 이 곳은 ${getUserNickname()}님과 저만의 비밀 공간이니, 어떤 이야기도 편하게 나눠주세요!\n\n 반말로 대화를 나누고 싶으시다면 위에서 오른쪽에 있는 탭 바를 열고, 반말 모드를 켜 주세요!🍀💕`,
         createdAt: new Date(),
         user: botObject,
       };
@@ -285,7 +288,7 @@ const NewChat: React.FC = ({ navigation }) => {
   const onSend = (newMessages: IMessage[] = []) => {
     Analytics.clickChatSendButton();
     if (!newMessages[0].text.trim()) {
-      console.log('실행 안됨');
+      //console.log('실행 안됨');
       return;
     }
     setBuffer(buffer ? buffer + newMessages[0].text + '\n' : newMessages[0].text + '\n');
@@ -360,6 +363,17 @@ const NewChat: React.FC = ({ navigation }) => {
         rightFunction={() => {
           Analytics.clickHeaderSideMenuButton();
           navigation.openDrawer();
+        }}
+        isEvent={true}
+        eventIcon="event-icon"
+        eventFunction={async () => {
+          //console.log('이벤트 누름');
+          await Linking.openURL(
+            'https://autumn-flier-d18.notion.site/reMIND-1b48e75d989680f2b4c7e7fa8dbfc1ad?pvs=4',
+          );
+          Analytics.clickHeaderGiftBoxButton(
+            'https://autumn-flier-d18.notion.site/reMIND-1b48e75d989680f2b4c7e7fa8dbfc1ad?pvs=4',
+          );
         }}
       />
       <GiftedChat

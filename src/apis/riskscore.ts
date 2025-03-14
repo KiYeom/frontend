@@ -9,7 +9,7 @@ getRiskScore
 return : number (위험 점수 0  ~ 100)
 */
 export const getRiskScore = async (today: string): Promise<number> => {
-  console.log('getRiskScore 실행됨');
+  //console.log('getRiskScore 실행됨');
   try {
     if (getIsScoreDemo()) return 99;
     const res = await instance.get('/v1/analyze/daily/score', {

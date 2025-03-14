@@ -29,7 +29,7 @@ export const getKoreanServerTodayDateString = (date: Date): string => {
     '-' +
     String(nowKoreanTimeByUTC.getUTCDate()).padStart(2, '0');
 
-  console.log('KoreanServerTodayDate: ' + result);
+  //console.log('KoreanServerTodayDate: ' + result);
 
   return result;
 };
@@ -51,7 +51,7 @@ export const getKoreanServerYesterdayDateString = (testDate: Date): string => {
     '-' +
     String(nowKoreanTimeByUTC.getUTCDate()).padStart(2, '0');
 
-  console.log('result: ' + result);
+  //console.log('result: ' + result);
 
   return result;
 };

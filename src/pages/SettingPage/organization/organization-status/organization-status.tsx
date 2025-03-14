@@ -52,7 +52,7 @@ const OrganizationStatus: React.FC = ({ navigation }) => {
       })
       .catch((error) => {
         alert('기관 정보를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요.');
-        console.log('error', error);
+        //console.log('error', error);
         navigation.goBack();
       });
   }, []);

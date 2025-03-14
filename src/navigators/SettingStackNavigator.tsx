@@ -8,6 +8,7 @@ import EditUserInfo from '../pages/SettingPage/editInfo/EditUserInfo'; //개인�
 import LicenseDetailPage from '../pages/SettingPage/license/LicenseDetailPage'; //오픈소스 라이센스 상세 페이지
 import LicensePage from '../pages/SettingPage/license/LicensePage'; //오픈소스 라이센스 페이지
 import UserNotifications from '../pages/SettingPage/notifications/notifications'; //알림설정 페이지
+import Chattingsetting from '../pages/SettingPage/chattingsetting/chattingsetting';
 import OrganizationConnect from '../pages/SettingPage/organization/organization-connect/organization-connect';
 import OrganizationStatus from '../pages/SettingPage/organization/organization-status/organization-status';
 //import PrivacyPolicy from '../components/pages/SettingPage/PrivacyPolicy'; //개인정보처리방침 페이지
@@ -35,6 +36,13 @@ const SettingStackNavigator: React.FC = () => {
         component={UserNotifications}
         options={{
           header: () => <Header title="알림 설정" />,
+        }}
+      />
+      <SettingStack.Screen
+        name={SettingStackName.UserChattingSetting}
+        component={Chattingsetting}
+        options={{
+          header: () => <Header title="대화방 설정" />,
         }}
       />
       <SettingStack.Screen

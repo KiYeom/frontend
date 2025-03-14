@@ -89,7 +89,7 @@ const StatisticMain: React.FC<any> = () => {
   }, []);
 
   const fetchData = async () => {
-    console.log('fetchData date: ', date);
+    //console.log('fetchData date: ', date);
     //console.log('fetchData date: ', new Date());
     const dailyStatistics = await dailyAnalyze(getKoreanRealDateString(date)); //date -> new Date()
     if (!dailyStatistics) {
@@ -126,10 +126,10 @@ const StatisticMain: React.FC<any> = () => {
 
   //날짜가 바뀜에 따라 데이터를 다시 api를 통해 불러옴
   useEffect(() => {
-    console.log('useEffect date');
+    //console.log('useEffect date');
     fetchData();
   }, [date]);
-  console.log('🎨🎨🎨🎨🎨🎨Rendering statistic🎨🎨🎨🎨🎨🎨');
+  //console.log('🎨🎨🎨🎨🎨🎨Rendering statistic🎨🎨🎨🎨🎨🎨');
   return (
     <View
       style={{
@@ -178,29 +178,6 @@ const StatisticMain: React.FC<any> = () => {
                   <DateLineText>{getDateKoreanString(date)}</DateLineText>
                 </TouchableOpacity>
                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                  {/*<Hint
-                    visible={hintStatus && hintStatus === HINT_NAME}
-                    position={Hint.positions.BOTTOM}
-                    message={HINT_MESSAGE}
-                    color={'white'}
-                    enableShadow
-                    messageStyle={css`
-                      font-family: Kyobo-handwriting;
-                      font-size: ${16 * rsFont + 'px'};
-                      color: ${palette.neutral[900]};
-                    `}
-                    onPress={() => setHintStatus(undefined)}
-                    onBackgroundPress={() => setHintStatus(undefined)}
-                    backdropColor={'rgba(0, 0, 0, 0.5)'}>
-                    <View>
-                      <TouchableOpacity
-                        activeOpacity={1}
-                        style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}
-                        onPress={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}>
-                        <Icon name="information" width={14} height={14} />
-                      </TouchableOpacity>
-                    </View>
-                  </Hint>*/}
                   <HintComponent
                     visible={hintStatus && hintStatus === HINT_NAME}
                     onClose={() => setHintStatus(undefined)}

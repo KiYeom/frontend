@@ -9,7 +9,7 @@ export const getCarousel = async (
     const res = await instance.get('/v1/users/banners', { params: { type } });
     return res.data;
   } catch (error) {
-    console.log('[ERROR] daily analyze', error);
+    //console.log('[ERROR] daily analyze', error);
     return;
   }
 };

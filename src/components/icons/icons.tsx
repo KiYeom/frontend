@@ -30,6 +30,7 @@ import DairyCookie from './svg/DairyCookie';
 import EmotionThinkingCookie from './svg/emotion-thinking-cookie';
 import SideMenuBar from './svg/side-menu-bar';
 import SideMenuBarAlert from './svg/side-menu-bar-alart';
+import EventIcon from './svg/event-icon';
 
 export type TIconName =
   | 'airplane'
@@ -63,7 +64,8 @@ export type TIconName =
   | 'dairy-cookie'
   | 'emotion-thinking-cookie'
   | 'side-menu-bar'
-  | 'side-menu-bar-alert';
+  | 'side-menu-bar-alert'
+  | 'event-icon';
 
 export default function Icon({
   width,
@@ -141,5 +143,7 @@ export default function Icon({
       return <SideMenuBar width={width} height={height} color={color} />;
     case 'side-menu-bar-alert':
       return <SideMenuBarAlert width={width} height={height} color={color} />;
+    case 'event-icon':
+      return <EventIcon width={width} height={height} color={color} />;
   }
 }
