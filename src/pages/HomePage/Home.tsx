@@ -25,7 +25,7 @@ import HomeChatBtn from '../../components/HomeBtn/HomeChatBtn';
 import Header from './Homeheader';
 import { getKoreanServerTodayDateString } from '../../utils/times';
 import { useRiskStoreVer2 } from '../../store/useRiskStoreVer2';
-
+import CustomCalendar from '../../components/customCalendar/customCalendar';
 const defaultHomeCarousel = [
   {
     page: 1,
@@ -148,9 +148,10 @@ const Home: React.FC<any> = ({ navigation }) => {
             ))}
           </Carousel>
 
-          <HomeChatBtn navigation={navigation} />
+          {/*<HomeChatBtn navigation={navigation} />
 
-          <EmotionBtn navigation={navigation} />
+          <EmotionBtn navigation={navigation} />*/}
+          <CustomCalendar />
         </View>
       </ScrollView>
     </View>
