@@ -111,11 +111,6 @@ const CustomCalendar = ({ navigation }) => {
   const { calendarData, fetchCalendarData, updateEntryStatus, logCalendarState } =
     useCalendarStore();
 
-  //const [today, setToday] = useState<string>('');
-  //useEffect(() => {
-  //console.log('date, ', new Date().toISOString().split('T')[0]);
-  //setToday(new Date().toISOString().split('T')[0]);
-  //}, []);
   useEffect(() => {
     fetchCalendarData();
   }, []);
@@ -140,7 +135,7 @@ const CustomCalendar = ({ navigation }) => {
         'stylesheet.calendar.main': {
           //캘린더 전체 바디 스타일 변경
           container: {
-            backgroundColor: 'blue',
+            //backgroundColor: 'blue',
             paddingHorizontal: rsWidth * 14,
             paddingVertical: rsHeight * 20,
           },
@@ -153,14 +148,6 @@ const CustomCalendar = ({ navigation }) => {
       onDayPress={(day: DateData) => {
         console.log('day pressed', day);
         setSelected(day.dateString);
-      }}
-      //커스텀 헤더
-      customeHeader={() => {
-        return (
-          <View>
-            <Text>test</Text>
-          </View>
-        );
       }}
       //dayComponent를 override
       dayComponent={({ date, state }) => {
@@ -196,8 +183,9 @@ const CustomCalendar = ({ navigation }) => {
                   console.log('date', date);
                   navigation.navigate(RootStackName.HomeStackNavigator, {
                     screen: HomeStackName.SmallEmotionChart,
-                    params: { date: date.dateString },
+                    params: { dateID: date.dateString },
                   });
+                  console.log('홈 화면 달력을 누름', date.dateString);
                 }}>
                 {calendarData[date.dateString]?.status === 'today-no-entry' ? (
                   <Icon
@@ -218,12 +206,12 @@ const CustomCalendar = ({ navigation }) => {
         );
       }}
       // 특별한 날짜
-      markedDates={{
-        //today: { selected: true, disableTouchEvent: true, selectedDotColor: 'orange' },
-        [selected]: { selected: true, disableTouchEvent: true, selectedDotColor: 'orange' },
-        '2025-03-03': { selected: true },
-        today: { selected: true },
-      }}
+      /*markedDates={{
+          //today: { selected: true, disableTouchEvent: true, selectedDotColor: 'orange' },
+          [selected]: { selected: true, disableTouchEvent: true, selectedDotColor: 'orange' },
+          '2025-03-03': { selected: true },
+          today: { selected: true },
+        }}*/
     />
   );
 };

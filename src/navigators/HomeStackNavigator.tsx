@@ -23,22 +23,25 @@ const HomeStackNavigator: React.FC = () => {
         name={HomeStackName.SmallEmotionChart}
         component={SmallEmotionChart}
         //initialParams={{ date: new Date().toISOString() }}
-        options={({ route, navigation }) => ({
-          header: () => <Header />,
-        })}
+        //options={({ route, navigation }) => ({
+        //header: () => <Header />,
+        //})}
+        options={{ headerShown: false }}
       />
       <HomeStack.Screen
         name={HomeStackName.DailyDairy}
         component={DailyDairy}
         //initialParams={{ date: new Date() }}
-        options={({ route, navigation }) => ({
-          header: () => <Header />,
-        })}
+        //options={({ route, navigation }) => ({
+        //header: () => <Header />,
+        //})}
+        options={{ headerShown: false }}
       />
       <HomeStack.Screen
         name={HomeStackName.Profile}
         component={Profile}
         options={{ header: () => <Header /> }}
+        //options={{ headerShown: false }}
       />
       <HomeStack.Screen
         name={HomeStackName.NewChat}

@@ -48,7 +48,7 @@ import {
 import palette from '../../../assets/styles/theme';
 import { RootStackName } from '../../../constants/Constants';
 
-const SmallEmotionChart = ({ navigation }) => {
+const SmallEmotionChart = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
   const { selectedEmotions, setSelectedEmotions, addEmotion, removeEmotion } = useEmotionStore();
   const { recordedEmotions, setRecordedEmotions } = useRecordedEmotionStore();
@@ -56,15 +56,18 @@ const SmallEmotionChart = ({ navigation }) => {
   const [text, setText] = useState('');
   const headerHeight = useHeaderHeight();
   const [buttonHeight, setButtonHeight] = useState(0);
-  const route = useRoute();
-  const [date, setDate] = useState(route.params?.date);
+  //const route = useRoute();
+  //const [dateID, setDate] = useState(route.params?.date);
   //const { date } = route.params;
-  console.log('-----', date);
+  //console.log('-----', date);
+
+  const { dateID } = route.params;
+  console.log('감정 입력 페이지에서 받은 dateID', dateID);
 
   // 화면이 다시 포커스될 때 params를 확인해서 유지
-  useEffect(() => {
-    if (route.params?.date) setDate(route.params.date);
-  }, [route.params]);
+  //useEffect(() => {
+  //if (route.params?.date) setDate(route.params.date);
+  //}, [route.params]);
 
   useEffect(() => {
     Analytics.watchEmotionRecordScreen();
@@ -113,6 +116,7 @@ const SmallEmotionChart = ({ navigation }) => {
         padding-bottom: ${insets.bottom + 'px'};
         flex: 1;
       `}>
+      <Header title={dateID} />
       <KeyboardAwareScrollView
         bottomOffset={insets.bottom + 70}
         contentContainerStyle={css`
@@ -221,7 +225,7 @@ const SmallEmotionChart = ({ navigation }) => {
               //console.log('🔥 Navigating with:', date);
               //console.log('🔥 date.dateString:', date?.dateString);
 
-              navigation.navigate(HomeStackName.DailyDairy, { date: date });
+              navigation.navigate(HomeStackName.DailyDairy, { dateID: dateID });
               //새로운 화면이 push
             }}
           />

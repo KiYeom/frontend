@@ -46,26 +46,28 @@ import {
 import palette from '../../../assets/styles/theme';
 import { Alert } from 'react-native';
 import { useRoute } from '@react-navigation/native';
-
+import Header from '../../../components/header/header';
 const validateDairy = (sentence: string): 'error' | 'default' | 'correct' => {
   if (sentence.length > 0 && sentence.length <= 300) return 'correct';
   else return 'default';
 };
 
-const DailyDairy = ({ navigation }) => {
+const DailyDairy = ({ navigation, route }) => {
   const [text, setText] = useState<string>('');
   const maxLength = 300;
   const insets = useSafeAreaInsets();
   const { selectedEmotions, setSelectedEmotions } = useEmotionStore();
-  const route = useRoute();
-  console.log('📌 Route Object:', route);
-  console.log('📌 Route Params:', route.params);
-  const { date } = route.params || {};
-  console.log('일기장 화면 date', date);
+  //const route = useRoute();
+  ///console.log('📌 Route Object:', route);
+  //console.log('📌 Route Params:', route.params);
+  //const { date } = route.params || {};
+  //console.log('일기장 화면 date', date);
 
-  useEffect(() => {
-    console.log('Updated params:', route.params);
-  }, [route.params]);
+  //useEffect(() => {
+  //console.log('Updated params:', route.params);
+  //}, [route.params]);
+  const { dateID } = route.params;
+  console.log('일기 입력 페이지에서 받은 dateID', dateID);
   useEffect(() => {
     Analytics.watchDiaryWriteScreen();
     todayEmotionCheck().then((data) => {
@@ -79,13 +81,18 @@ const DailyDairy = ({ navigation }) => {
         style={css`
           padding-bottom: ${insets.bottom + 'px'};
           flex: 1;
-          margin-top: ${rsHeight * 12 + 'px'};
         `}>
-        <EmotionTitleBox
-          iconName={'dairy-cookie'}
-          mainTitle={'오늘 하루를 되돌아봐요.'}
-          subTitle={'이 감정을 가장 강하게 느낀 순간은 언제인가요?'}
-        />
+        <Header title={dateID} />
+        <View
+          style={css`
+            margin-top: ${rsHeight * 12 + 'px'};
+          `}>
+          <EmotionTitleBox
+            iconName={'dairy-cookie'}
+            mainTitle={'오늘 하루를 되돌아봐요.'}
+            subTitle={'이 감정을 가장 강하게 느낀 순간은 언제인가요?'}
+          />
+        </View>
         {selectedEmotions.length > 0 && (
           <View
             style={css`
