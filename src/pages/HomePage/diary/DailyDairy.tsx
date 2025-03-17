@@ -47,6 +47,7 @@ import palette from '../../../assets/styles/theme';
 import { Alert } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import Header from '../../../components/header/header';
+import { useCalendarStore } from '../../../store/calendarStore';
 const validateDairy = (sentence: string): 'error' | 'default' | 'correct' => {
   if (sentence.length > 0 && sentence.length <= 300) return 'correct';
   else return 'default';
@@ -57,6 +58,9 @@ const DailyDairy = ({ navigation, route }) => {
   const maxLength = 300;
   const insets = useSafeAreaInsets();
   const { selectedEmotions, setSelectedEmotions } = useEmotionStore();
+  const { calendarData, fetchCalendarData, updateEntryStatus, logCalendarState } =
+    useCalendarStore();
+
   //const route = useRoute();
   ///console.log('📌 Route Object:', route);
   //console.log('📌 Route Params:', route.params);
@@ -167,6 +171,8 @@ const DailyDairy = ({ navigation, route }) => {
               Analytics.clickDiaryWriteButton();
               await todayEmotion(selectedEmotions, text);
               navigation.navigate(TabScreenName.Home);
+              console.log('~~~~', selectedEmotions);
+              updateEntryStatus(dateID, `${selectedEmotions[0].group}-emotion`);
             }}
           />
         </View>

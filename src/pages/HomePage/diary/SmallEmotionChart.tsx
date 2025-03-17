@@ -128,7 +128,6 @@ const SmallEmotionChart = ({ navigation, route }) => {
           mainTitle={'지금 어떤 감정이 드나요?'}
           subTitle={'나의 마음을 표현해보세요.'}
         />
-
         <Carousel
           pageWidth={rsWidth * 150} //캐러셀의 너비
           initialPage={0} //앱이 처음 실행되고 보여줄 초기 페이지
