@@ -8,6 +8,7 @@ import palette from '../../assets/styles/theme';
 import { useNavigation } from '@react-navigation/native';
 import { periodRecordEmotions } from '../../apis/analyze';
 import { HomeStackName, RootStackName } from '../../constants/Constants';
+import Toast from 'react-native-root-toast';
 import { useCalendarStore } from '../../store/calendarStore';
 /*
 DateData 
@@ -151,7 +152,7 @@ const CustomCalendar = ({ navigation }) => {
       }}
       //dayComponent를 override
       dayComponent={({ date, state }) => {
-        console.log('datyCOmponent', date, calendarData[date.dateString]);
+        //console.log('datyCOmponent', date, calendarData[date.dateString]);
         return (
           state !== 'disabled' && (
             <View>
@@ -181,10 +182,19 @@ const CustomCalendar = ({ navigation }) => {
                 onPress={() => {
                   //console.log('state', state);
                   console.log('date', date);
-                  navigation.navigate(RootStackName.HomeStackNavigator, {
-                    screen: HomeStackName.SmallEmotionChart,
-                    params: { dateID: date.dateString },
-                  });
+                  if (date.dateString > '2025-03-17') {
+                    Toast.show(`미래의 감정 일기는 작성할 수 없어요`, {
+                      duration: Toast.durations.SHORT,
+                      position: Toast.positions.CENTER,
+                    });
+                  } else {
+                    //과거 혹은 현재를 클릭한 경우
+                    navigation.navigate(RootStackName.HomeStackNavigator, {
+                      screen: HomeStackName.SmallEmotionChart,
+                      params: { dateID: date.dateString },
+                    });
+                  }
+
                   console.log('홈 화면 달력을 누름', date.dateString);
                 }}>
                 {calendarData[date.dateString]?.status === 'today-no-entry' ? (
@@ -205,14 +215,15 @@ const CustomCalendar = ({ navigation }) => {
           )
         );
       }}
-      // 특별한 날짜
-      /*markedDates={{
+    />
+  );
+};
+export default CustomCalendar;
+
+// 특별한 날짜
+/*markedDates={{
           //today: { selected: true, disableTouchEvent: true, selectedDotColor: 'orange' },
           [selected]: { selected: true, disableTouchEvent: true, selectedDotColor: 'orange' },
           '2025-03-03': { selected: true },
           today: { selected: true },
         }}*/
-    />
-  );
-};
-export default CustomCalendar;
