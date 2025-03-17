@@ -32,7 +32,8 @@ const EmotionCard = (props: EmotionCardProps) => {
         border-radius: ${status === 'default' ? 100 + 'px' : 10 + 'px'};
         //border-radius: 10px;
         align-items: center;
-        justify-content: center;
+        justify-content: ${status === 'default-view' ? 'space-evenly' : 'center'};
+        //justify-content: center;
         text-align: center;
         //border: 1px solid ${palette.neutral[100]};
         border: ${status === 'default'
@@ -46,7 +47,7 @@ const EmotionCard = (props: EmotionCardProps) => {
       {status !== 'simple' && (
         <Text
           style={css`
-            margin-top: ${rsWidth * 10 + 'px'};
+            //margin-top: ${rsWidth * 10 + 'px'};
             font-family: Pretendard-Medium;
             font-size: ${rsFont * 14 + 'px'};
             color: ${palette.neutral[900]};
@@ -54,22 +55,6 @@ const EmotionCard = (props: EmotionCardProps) => {
           {emotion.keyword}
         </Text>
       )}
-      {/*status === 'default' && (
-        <TouchableOpacity
-          onPress={() => onPress(emotion)}
-          style={css`
-            position: absolute;
-            right: 0;
-            top: 0;
-            width: ${rsWidth * 20 + 'px'};
-            height: ${rsHeight * 22 + 'px'};
-            background-color: yellow;
-            align-items: center;
-            justify-content: center;
-          `}>
-          <Icon name={'cancel-icon'} width={rsWidth * 10 + 'px'} height={rsHeight * 10 + 'px'} />
-        </TouchableOpacity>
-      )*/}
     </View>
   );
 };
