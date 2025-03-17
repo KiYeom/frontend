@@ -110,6 +110,8 @@ const App: React.FC = () => {
     setSigninStatus(signinResult);
   };
   //업데이트 알림
+  //1.5.7 UPDATE : 앱 배포 시 updateAlert 주석처리한 거 다시 해제할 것
+  /*
   const updateAlert = () => {
     Alert.alert(
       '⚠️업데이트 필요⚠️',
@@ -131,7 +133,7 @@ const App: React.FC = () => {
       ],
       { cancelable: false }, // 닫을 수 없는 알림
     );
-  };
+  };*/
 
   //앱 버전 체크
   const checkAppVersion = () => {
@@ -140,7 +142,7 @@ const App: React.FC = () => {
         const deviceVersion = getAppVersion() ?? undefined;
         if (res && deviceVersion && deviceVersion !== res.latestVersion) {
           //console.log('😀deviceVersion: ', deviceVersion, 'latestVersion: ', res.latestVersion);
-          updateAlert();
+          // updateAlert(); 1.5.7 UPDATE : 주석한 거 해제하기!!!!
           return;
         }
       })

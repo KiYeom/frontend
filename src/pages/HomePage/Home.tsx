@@ -25,7 +25,7 @@ import HomeChatBtn from '../../components/HomeBtn/HomeChatBtn';
 import Header from './Homeheader';
 import { getKoreanServerTodayDateString } from '../../utils/times';
 import { useRiskStoreVer2 } from '../../store/useRiskStoreVer2';
-import CustomCalendar from '../../components/customCalendar/customCalendar';
+import CustomCalendar from '../../components/customCalendar/CustomCalendar';
 const defaultHomeCarousel = [
   {
     page: 1,

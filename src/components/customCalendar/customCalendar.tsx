@@ -6,8 +6,9 @@ import { rsHeight, rsWidth, rsFont } from '../../utils/responsive-size';
 import Icon from '../icons/icons';
 import palette from '../../assets/styles/theme';
 import { useNavigation } from '@react-navigation/native';
-import { HomeStackName, RootStackName } from '../../../src/constants/Constants';
-
+import { periodRecordEmotions } from '../../apis/analyze';
+import { HomeStackName, RootStackName } from '../../constants/Constants';
+import { useCalendarStore } from '../../store/calendarStore';
 /*
 DateData 
 {
@@ -54,20 +55,96 @@ LocaleConfig.locales['fr'] = {
 
 LocaleConfig.defaultLocale = 'fr';
 
+const getBackgroundColor = (status) => {
+  switch (status) {
+    case 'future_date':
+      return '#F8F8F8'; // 미래 날짜 (비활성화)
+    case 'past_no_entry':
+      return '#DFDFDF'; // 과거 작성 없음
+    case 'today-no-entry':
+      return `${palette.primary[50]}`; // 오늘 작성 없음 (플러스버튼)
+    case 'sad-emotion':
+      return '#BCB2FF'; // 감정 일기 기록 (슬픈)
+    case 'angry-emotion':
+      return '#F49B9B'; //감정 일기 기록 (분노)
+    case 'happy-emotion':
+      return '#FFE372'; // 감정 일기 기록 (행복)
+    case 'calm-emotion':
+      return '#ABEBC5'; // 감정 일기 기록 (평온)
+    case 'today_no_emotion_analysis':
+      return '#F1C40F'; // 감정 분석 안된 채팅
+    default:
+      return '#FFFFFF'; // 기본 색상
+  }
+};
+
+const getDate = (): string => {
+  const today = new Date();
+
+  const year = today.getFullYear();
+  const month = (today.getMonth() + 1).toString().padStart(2, '0');
+  const day = today.getDate().toString().padStart(2, '0');
+
+  const dateString = year + '-' + month + '-' + day; // 2023-06-18
+
+  return dateString;
+};
+/*
+날짜의 상태
+1. 과거의 날짜인데
+  - 작성 이력이 없는 날 : past_no_entry
+  - 네 가지 감정 중 하나가 작성된 날 record_emotion
+2. 현재의 날짜인데
+  - 작성 이력이 없는 날 today_no_entry
+  - 네 가지 감정 중 하나가 작성된 날 record_emotion
+  - 채팅을 하였지만, 감정은 분석이 안 된 날 today_no_emotion_analysis
+3. 미래의 날짜 future_date
+
+
+[1] 앱을 실행하면, 현재 날짜의 달의 모든 정보를 받아온다. (기간 리포트 api)
+[2] 정보에 따라 날짜의 상태를 구분한다.
+[3] 구분한 날짜의 상태대로 화면에 그린다.
+*/
+
 const CustomCalendar = ({ navigation }) => {
   const [selected, setSelected] = useState<string>('');
-  const [today, setToday] = useState<string>('');
+  const { calendarData, fetchCalendarData, updateEntryStatus, logCalendarState } =
+    useCalendarStore();
+
+  //const [today, setToday] = useState<string>('');
+  //useEffect(() => {
+  //console.log('date, ', new Date().toISOString().split('T')[0]);
+  //setToday(new Date().toISOString().split('T')[0]);
+  //}, []);
   useEffect(() => {
-    //console.log('date, ', new Date().toISOString().split('T')[0]);
-    setToday(new Date().toISOString().split('T')[0]);
+    fetchCalendarData();
   }, []);
+
   return (
     <Calendar
       style={{
         borderWidth: 1,
         borderColor: 'gray',
-        height: rsHeight * 410,
+        height: 'auto',
         width: rsWidth * 350,
+      }}
+      //캘린더에 미리 정의된 내부 스타일을 override하여 변경
+      theme={{
+        /*'stylesheet.calendar.header': {
+          //캘린더 헤더 스타일 변경
+          header: {
+            backgroundColor: 'red',
+            flexDirection: 'row',
+          },
+        },*/
+        'stylesheet.calendar.main': {
+          //캘린더 전체 바디 스타일 변경
+          container: {
+            backgroundColor: 'blue',
+            paddingHorizontal: rsWidth * 14,
+            paddingVertical: rsHeight * 20,
+          },
+        },
       }}
       //초기에 보이는 값, 기본값 : Date()
       //current={'2025-02-01'}
@@ -77,8 +154,17 @@ const CustomCalendar = ({ navigation }) => {
         console.log('day pressed', day);
         setSelected(day.dateString);
       }}
+      //커스텀 헤더
+      customeHeader={() => {
+        return (
+          <View>
+            <Text>test</Text>
+          </View>
+        );
+      }}
       //dayComponent를 override
       dayComponent={({ date, state }) => {
+        console.log('datyCOmponent', date, calendarData[date.dateString]);
         return (
           state !== 'disabled' && (
             <View>
@@ -86,16 +172,23 @@ const CustomCalendar = ({ navigation }) => {
                 style={{
                   fontSize: 13 * rsFont, //WARN : 디자인 폰트가 10인데 너무 작은 것 같음
                   textAlign: 'center',
-                  color: state === 'disabled' ? palette.neutral[50] : palette.neutral[400],
+                  color:
+                    date.dateString === '2025-03-17' ? palette.primary[500] : palette.neutral[400],
                 }}>
                 {date.day}
               </Text>
               <TouchableOpacity
                 style={{
-                  width: rsWidth * 28,
-                  height: rsHeight * 28,
-                  backgroundColor: '#DFDFDF',
+                  width: rsWidth * 35,
+                  height: rsHeight * 35,
+                  //backgroundColor: 'black',
+                  //backgroundColor: '#DFDFDF',
+                  backgroundColor: getBackgroundColor(
+                    calendarData[date.dateString]?.status || 'default_status',
+                  ),
                   borderRadius: 50,
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
                 onPress={() => {
                   //console.log('state', state);
@@ -104,7 +197,21 @@ const CustomCalendar = ({ navigation }) => {
                     screen: HomeStackName.SmallEmotionChart,
                     params: { date: date.dateString },
                   });
-                }}></TouchableOpacity>
+                }}>
+                {calendarData[date.dateString]?.status === 'today-no-entry' ? (
+                  <Icon
+                    name={calendarData[date.dateString]?.status}
+                    width={rsWidth * 16 + 'px'}
+                    height={rsHeight * 16 + 'px'}
+                  />
+                ) : (
+                  <Icon
+                    name={calendarData[date.dateString]?.status}
+                    width={rsWidth * 35 + 'px'}
+                    height={rsHeight * 35 + 'px'}
+                  />
+                )}
+              </TouchableOpacity>
             </View>
           )
         );

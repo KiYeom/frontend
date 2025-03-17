@@ -22,7 +22,7 @@ const EmotionChip = ({ group, keyword, onPress, isSelected }) => {
         border: 3px solid ${isSelected ? palette.primary[500] : 'transparent'};
       `}
       onPress={onPress}>
-      <Icon name={`${group}-emotion` as TIconName} width={rsWidth * 25 + 'px'} />
+      <Icon name={`${group}-emotion` as TIconName} width={rsWidth * 35 + 'px'} />
       <Text
         style={css`
           flex: 1;

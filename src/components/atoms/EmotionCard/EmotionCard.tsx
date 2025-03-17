@@ -42,12 +42,11 @@ const EmotionCard = (props: EmotionCardProps) => {
         padding-horizontal: ${status === 'default' ? rsWidth * 14 + 'px' : 'none'};
         //background-color: ${status === 'default' ? 'pink' : 'blue'};
       `}>
-      {status !== 'default' && (
-        <Icon name={`${emotion.group}-emotion` as TIconName} width={rsWidth * 25 + 'px'} />
-      )}
+      {status !== 'default' && <Icon name={`${emotion.group}-emotion` as TIconName} width={45} />}
       {status !== 'simple' && (
         <Text
           style={css`
+            margin-top: ${rsWidth * 10 + 'px'};
             font-family: Pretendard-Medium;
             font-size: ${rsFont * 14 + 'px'};
             color: ${palette.neutral[900]};

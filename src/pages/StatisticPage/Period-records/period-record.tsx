@@ -110,7 +110,7 @@ const PeriodRecord = (props: any) => {
             <RecordContainer key={index}>
               <RecordDateArea>
                 <RecordDateIcon>
-                  <Icon name={iconName} width={25} height={25} color={palette.neutral[300]} />
+                  <Icon name={iconName} width={40} height={40} color={palette.neutral[300]} />
                 </RecordDateIcon>
                 <RecordDateText>{getLocalDate(record.date, 'ko-KR')}</RecordDateText>
               </RecordDateArea>
