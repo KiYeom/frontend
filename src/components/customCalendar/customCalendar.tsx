@@ -172,6 +172,7 @@ const CustomCalendar = ({ navigation }) => {
                 style={{
                   fontSize: 13 * rsFont, //WARN : 디자인 폰트가 10인데 너무 작은 것 같음
                   textAlign: 'center',
+                  //1.5.7 UPDATE date.dateString 하드코딩 현재 날짜 계산으로 변경
                   color:
                     date.dateString === '2025-03-17' ? palette.primary[500] : palette.neutral[400],
                 }}>
