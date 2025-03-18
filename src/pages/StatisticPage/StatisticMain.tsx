@@ -57,7 +57,7 @@ const HINT_MESSAGE =
 //전체 통계 화면
 const StatisticMain: React.FC<any> = ({ navigation, route }) => {
   //const [date, setDate] = useState<Date>(new Date()); //서버에서 계산하는 날짜
-  const [date, setDate] = useState();
+  //const [date, setDate] = useState();
   const [openModal, setOpenModal] = React.useState(false);
   const [isNullClassification, setIsNullClassification] = useState(true);
   const [labelsClassification, setLabelsClassification] = useState<TLabel[]>([]);
@@ -93,7 +93,7 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
         setAvailableDates([...data.dates, getKoreanServerTodayDateString(new Date())]);
       }
     });
-    setDate(new Date(`${getKoreanServerYesterdayDateString(new Date())}T00:00:00.000+09:00`));
+    //setDate(new Date(`${getKoreanServerYesterdayDateString(new Date())}T00:00:00.000+09:00`));
   }, []);
 
   const fetchData = async () => {
@@ -136,7 +136,7 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
   //날짜가 바뀜에 따라 데이터를 다시 api를 통해 불러옴
   useEffect(() => {
     fetchData();
-  }, [date]);
+  }, [dateID]);
   //console.log('🎨🎨🎨🎨🎨🎨Rendering statistic🎨🎨🎨🎨🎨🎨');
   return (
     <View
@@ -145,7 +145,18 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
         backgroundColor: palette.neutral[50],
         //paddingTop: insets.top,
       }}>
-      <Header title={dateID} />
+      <Header
+        title={'감정 다이어리'}
+        isRight={true}
+        rightIcon={'edit-icon'}
+        rightFunction={() => {
+          navigation.navigate(RootStackName.HomeStackNavigator, {
+            screen: HomeStackName.SmallEmotionChart,
+            params: { dateID: dateID },
+          });
+          console.log('누름');
+        }}
+      />
       <ScrollView style={{ paddingTop: rsHeight * 12 }}>
         <View
           style={css`
@@ -183,19 +194,20 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
             />
             <View style={{ marginVertical: 10 * rsHeight }}>
               {/* 현재 날짜와 쿠키의 안내 말 */}
-              <DateLineContainer>
-                <TouchableOpacity onPress={() => setOpenModal(true)}>
-                  {/*<DateLineText>{getDateKoreanString(date)}</DateLineText> 1.5.7 UPDATE 잠시 주석 처리*/}
-                  <DateLineText>{dateID}</DateLineText>
-                </TouchableOpacity>
-                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+              <DateLineContainer onPress={() => setOpenModal(true)}>
+                {/*<TouchableOpacity onPress={() => setOpenModal(true)}>*/}
+                {/*<DateLineText>{getDateKoreanString(date)}</DateLineText> 1.5.7 UPDATE 잠시 주석 처리*/}
+                <DateLineText>{dateID}</DateLineText>
+                <Icon name="arrow-down" color={'white'} />
+                {/*</TouchableOpacity>*/}
+                {/*<View style={{ justifyContent: 'center', alignItems: 'center' }}>
                   <HintComponent
                     visible={hintStatus && hintStatus === HINT_NAME}
                     onClose={() => setHintStatus(undefined)}
                     onToggle={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}
                     message={HINT_MESSAGE}
                   />
-                </View>
+                </View>*/}
               </DateLineContainer>
               <StatisticTitle>쿠키와의 대화에서{'\n'}마음을 살펴보았어요</StatisticTitle>
             </View>

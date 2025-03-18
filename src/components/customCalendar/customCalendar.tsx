@@ -187,7 +187,7 @@ const CustomCalendar = ({ navigation }) => {
                   if (date.dateString > '2025-03-18') {
                     //1.5.7 UPDATE 미래 날짜 클릭 불가 하드 코딩
                     //미래를 클릭한 경우, 작성 불가
-                    Toast.show(`미래의 감정 일기는 작성할 수 없어요`, {
+                    Toast.show(`미래의 일기는 작성할 수 없어요! 😁`, {
                       duration: Toast.durations.SHORT,
                       position: Toast.positions.CENTER,
                     });
