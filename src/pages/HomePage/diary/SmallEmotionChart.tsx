@@ -32,7 +32,7 @@ import Header from '../../../components/header/header';
 import EmotionTitleBox from './emotionTitleBox';
 import Analytics from '../../../utils/analytics';
 import useRecordedEmotionStore from '../../../utils/emotion-recorded';
-import useEmotionStore from '../../../utils/emotion-status';
+import useEmotionStore from '../../../store/emotion-status';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { getUserNickname } from '../../../utils/storageUtils';
 import EmotionCard from '../../../components/atoms/EmotionCard/EmotionCard';
@@ -50,31 +50,38 @@ import { RootStackName } from '../../../constants/Constants';
 
 const SmallEmotionChart = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
-  const { selectedEmotions, setSelectedEmotions, addEmotion, removeEmotion } = useEmotionStore();
+  const {
+    selectedEmotions,
+    diaryText,
+    setSelectedEmotions,
+    addEmotion,
+    removeEmotion,
+    setDiaryText,
+  } = useEmotionStore();
+  //const [selectedEmotionsV2, setSelectedEmotionsV2] = useState([]);
   const { recordedEmotions, setRecordedEmotions } = useRecordedEmotionStore();
   const scrollViewRef = useRef(null);
-  const [text, setText] = useState('');
+  const [text, setText] = useState<string>('');
   const headerHeight = useHeaderHeight();
   const [buttonHeight, setButtonHeight] = useState(0);
-  //const route = useRoute();
-  //const [dateID, setDate] = useState(route.params?.date);
-  //const { date } = route.params;
-  //console.log('-----', date);
 
   const { dateID } = route.params;
   console.log('감정 입력 페이지에서 받은 dateID', dateID);
 
-  // 화면이 다시 포커스될 때 params를 확인해서 유지
-  //useEffect(() => {
-  //if (route.params?.date) setDate(route.params.date);
-  //}, [route.params]);
+  //일일 감정 데이터 가져오기
+  const fetchData = async () => {
+    const diaryData = await dailyAnalyze(dateID);
+    setSelectedEmotions(diaryData.record.Keywords);
+    setDiaryText(diaryData.record.todayFeeling ?? '');
+  };
 
   useEffect(() => {
     Analytics.watchEmotionRecordScreen();
-    //todayEmotionCheck().then((data) => {
-    //setText(data.todayFeeling);
-    //});
-    setSelectedEmotions(recordedEmotions);
+    todayEmotionCheck().then((data) => {
+      setText(data.todayFeeling);
+    });
+    fetchData();
+    //setSelectedEmotion(recordedEmotions);
   }, []);
 
   const handleEmotionListClick = async (emotion) => {

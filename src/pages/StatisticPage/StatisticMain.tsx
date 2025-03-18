@@ -116,23 +116,6 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
     //console.log('😀😀😀😀😀😀😀😀', dailyStatistics.record.todayFeeling);
   };
 
-  //헤더 아이콘 설정하기
-  /*useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      dailyAnalyzeStatus(2025).then((data) => {
-        if (!data) {
-          setAvailableDates([getKoreanServerTodayDateString(new Date())]);
-        } else {
-          setAvailableDates([...data.dates, getKoreanServerTodayDateString(new Date())]);
-        }
-      });
-    });
-    // 컴포넌트 unmount 시 리스너를 해제
-    return () => {
-      unsubscribe();
-    };
-  }, [navigation]);*/
-
   //날짜가 바뀜에 따라 데이터를 다시 api를 통해 불러옴
   useEffect(() => {
     fetchData();

@@ -10,6 +10,8 @@ import {
 import { instance } from './interceptor';
 
 //INFO : 일일 분석
+//연단위 : 유저 감정 일기와 키워드가 있는 날 조회 (구버전)
+//1.5.7 UPDATE 구버전 확인하고 삭제하기
 export const dailyAnalyzeStatus = async (
   year: number,
 ): Promise<TDailyAnalyzeStatus | undefined> => {
@@ -218,6 +220,7 @@ export const todayEmotion = async (
 export const todayEmotionCheck = async () => {
   try {
     const res = await instance.get('/v1/analyze/today-record');
+    console.log('todayEmotionCheck', res.data);
     return res.data;
   } catch (error) {
     return;
