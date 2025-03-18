@@ -32,6 +32,8 @@ import SideMenuBar from './svg/side-menu-bar';
 import SideMenuBarAlert from './svg/side-menu-bar-alart';
 import EventIcon from './svg/event-icon';
 import TodayNoEntry from './svg/today-no-entry';
+import Pencil from './svg/pencil';
+import GreenChatIcon from './svg/chat';
 
 export type TIconName =
   | 'airplane'
@@ -67,7 +69,9 @@ export type TIconName =
   | 'side-menu-bar'
   | 'side-menu-bar-alert'
   | 'event-icon'
-  | 'today-no-entry';
+  | 'today-no-entry'
+  | 'pencil'
+  | 'green-chat-icon';
 
 export default function Icon({
   width,
@@ -149,5 +153,9 @@ export default function Icon({
       return <EventIcon width={width} height={height} color={color} />;
     case 'today-no-entry':
       return <TodayNoEntry width={width} height={height} color={color} />;
+    case 'pencil':
+      return <Pencil width={width} height={height} color={color} />;
+    case 'green-chat-icon':
+      return <GreenChatIcon width={width} height={height} color={color} />;
   }
 }

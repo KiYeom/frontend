@@ -169,7 +169,7 @@ const DailyDairy = ({ navigation, route }) => {
             disabled={validateDairy(text) === 'correct' ? false : true}
             onPress={async () => {
               Analytics.clickDiaryWriteButton();
-              await todayEmotion(selectedEmotions, text);
+              await todayEmotion(dateID, selectedEmotions, text);
               navigation.navigate(TabScreenName.Home);
               console.log('~~~~', selectedEmotions);
               updateEntryStatus(dateID, `${selectedEmotions[0].group}-emotion`);

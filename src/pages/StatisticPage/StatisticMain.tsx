@@ -32,6 +32,7 @@ import {
   getKoreanServerTodayDateString,
   getKoreanServerYesterdayDateString,
 } from '../../utils/times';
+import EmptyBox from '../../components/emptybox/emptyBox';
 
 const START_HOUR_OF_DAY = 6;
 
@@ -78,7 +79,7 @@ const StatisticMain: React.FC<any> = () => {
   useEffect(() => {
     Analytics.watchDailyStatisticScreen(); //일일 리포트 화면 진입
     dailyAnalyzeStatus(2025).then((data) => {
-      //2025년도에 대한 데이터를 가져옴
+      //1.5.7 UPDATE 하드 코딩.. 2025년도에 대한 데이터를 가져옴
       if (!data) {
         setAvailableDates([getKoreanServerTodayDateString(new Date())]);
       } else {
@@ -91,7 +92,8 @@ const StatisticMain: React.FC<any> = () => {
   const fetchData = async () => {
     //console.log('fetchData date: ', date);
     //console.log('fetchData date: ', new Date());
-    const dailyStatistics = await dailyAnalyze(getKoreanRealDateString(date)); //date -> new Date()
+    // const dailyStatistics = await dailyAnalyze(getKoreanRealDateString(date)); //date -> new Date()
+    const dailyStatistics = await dailyAnalyze('2025-03-14');
     if (!dailyStatistics) {
       alert('네트워크 연결이 불안정합니다. 잠시 후 다시 시도해주세요.');
       return;
@@ -145,6 +147,7 @@ const StatisticMain: React.FC<any> = () => {
             background-color: ${palette.neutral[50]};
             padding-bottom: ${rsHeight * 20 + 'px'};
             gap: ${rsHeight * 16 + 'px'};
+            justify-content: center;
           `}>
           <ReportType
             type="기간리포트"
@@ -175,7 +178,8 @@ const StatisticMain: React.FC<any> = () => {
               {/* 현재 날짜와 쿠키의 안내 말 */}
               <DateLineContainer>
                 <TouchableOpacity onPress={() => setOpenModal(true)}>
-                  <DateLineText>{getDateKoreanString(date)}</DateLineText>
+                  {/*<DateLineText>{getDateKoreanString(date)}</DateLineText> 1.5.7 UPDATE 잠시 주석 처리*/}
+                  <DateLineText>2025년 03월 14일!</DateLineText>
                 </TouchableOpacity>
                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                   <HintComponent
@@ -258,6 +262,20 @@ const StatisticMain: React.FC<any> = () => {
                 />
               </>
             )}
+            <EmptyBox
+              mainTitle="나에게 어떤 하루였나요?"
+              subTitle="감정 일기를 작성하고, 마음 보고서를 완성해보세요"
+              isLeftIcon={true}
+              iconName="pencil"
+              iconSize={40}
+            />
+            <EmptyBox
+              mainTitle="쿠키에게 고민을 말해보세요"
+              subTitle="쿠키와의 대화가 부족해 마음을 들여다볼 수 없었어요"
+              isLeftIcon={true}
+              iconName="green-chat-icon"
+              iconSize={40}
+            />
           </Container>
         </View>
       </ScrollView>
