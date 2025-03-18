@@ -25,6 +25,7 @@ import { Hint } from 'react-native-ui-lib';
 import Icon from '../../components/icons/icons';
 import PeriodEmotionArea from './Period_Emotion/PeriodEmotionArea';
 import HintComponent from './HintComponent';
+import Header from '../../components/header/header';
 
 const HINT_NAME = 'main';
 const HINT_MESSAGE =
@@ -119,21 +120,22 @@ const PeriodStatisticPage: React.FC<any> = () => {
       style={css`
         /* background-color: ${palette.neutral[50]}; */
         flex: 1;
-        padding-top: ${insets.top + 'px'};
+        //padding-top: ${insets.top + 'px'};
       `}>
+      <Header title={'나의 감정 타임라인'} />
       <ScrollView>
         <View
           style={css`
             gap: ${rsHeight * 16 + 'px'};
             margin-vertical: ${rsHeight * 12 + 'px'};
           `}>
-          <ReportType
+          {/*<ReportType
             type="일일리포트"
             navigation={navigation}
             onPress={() => {
               Analytics.clickPeriodCalendarButton();
               setOpenModal(true);
-            }}></ReportType>
+            }}></ReportType>*/}
           <View
             style={{
               //backgroundColor: 'yellow',
@@ -141,6 +143,7 @@ const PeriodStatisticPage: React.FC<any> = () => {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
+            {/*
             <Image
               style={{
                 width: 70 * rsWidth,
@@ -151,7 +154,8 @@ const PeriodStatisticPage: React.FC<any> = () => {
               source={{
                 uri: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/statistic/reportlogo.png',
               }}
-            />
+            /> */}
+            <Icon name="calendar" width={70} height={70} />
             <View style={{ marginVertical: 10 * rsHeight }}>
               <DateLineContainer onPress={() => setOpenModal(true)}>
                 <DateLineText>
@@ -194,7 +198,10 @@ const PeriodStatisticPage: React.FC<any> = () => {
                   </Hint>
                 </View>*/}
               </DateLineContainer>
-              <StatisticTitle>쿠키와의 대화에서{'\n'}마음을 살펴보았어요</StatisticTitle>
+              <StatisticTitle>
+                쿠키와 함께 돌아보는
+                {'\n'}내 감정의 흐름
+              </StatisticTitle>
             </View>
           </View>
           {/*<PageName type={`쿠키가 생각했던${'\n'}주인님의 모습이에요`} />*/}

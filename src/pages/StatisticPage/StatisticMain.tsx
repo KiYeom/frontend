@@ -192,7 +192,10 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
                   />
                 </View>*/}
               </DateLineContainer>
-              <StatisticTitle>쿠키와의 대화에서{'\n'}마음을 살펴보았어요</StatisticTitle>
+              <StatisticTitle>
+                쿠키와 함께 돌아보는{'\n'}
+                어느 날의 감정
+              </StatisticTitle>
             </View>
           </View>
           <Container>
