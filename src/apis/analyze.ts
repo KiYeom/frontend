@@ -223,3 +223,17 @@ export const todayEmotionCheck = async () => {
     return;
   }
 };
+
+//연단위 - 유저 감정 일기와 키워드가 있는 날 조회 (신규 버전)
+export const dailyEmotionAnalyze = async (
+  year: number,
+): Promise<TDailyAnalyzeStatus | undefined> => {
+  try {
+    const res = await instance.get('/v2/analyze/daily-status', { params: { year } });
+    //console.log('res.data', res.data);
+    return res.data; //id, nickname, dates 리턴
+  } catch (error) {
+    console.log('😀[ERROR] daily analyze', error);
+    return;
+  }
+};

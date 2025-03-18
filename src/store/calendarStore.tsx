@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { periodRecordEmotions } from '../apis/analyze';
+import { dailyAnalyze, dailyEmotionAnalyze, periodRecordEmotions } from '../apis/analyze';
 
 type fetchCalendarData = {
   date: string; //일기를 작성한 날짜
@@ -27,27 +27,29 @@ type fetchCalendarData = {
 
 //날짜의 상태를 변경하는 함수
 const processCalendarData = (apiData, allDates) => {
-  console.log('processCalendarDate 실행', apiData[0].keywords);
+  console.log('processCalendarDate 실행', apiData);
   //1.5.7 UPDATE 현재 날짜 가져오는 형태로 변경
   const today = '2025-03-17';
-  apiData.forEach((item) => {
+  //console.log('_________apiData', apiData);
+  //console.log('_________apiData', apiData.dates);
+  //console.log('_________apiData', apiData.groups);
+  /*apiData.forEach((item) => {
     console.log('item', item);
-    const date = item.date;
-    const group_status = item.keywords[0].group;
+    const date = item.dates;
+    const group_status = item.groups;
+    console.log('------- 2️⃣ date, group_status', date, group_status);
 
-    /*if (date > today) {
-      allDates[date] = { status: 'future_date' };
-    } else if (!item.entry) {
-      allDates[date] = { status: date === today ? 'today_no_entry' : 'past_no_entry' };
-    } else {
-      allDates[date] = {
-        status: item.emotion ? 'today_with_emotion' : 'today_no_emotion_analysis',
-      };
-    }*/
     allDates[date] = { status: `${group_status}-emotion` };
     console.log('allDates[date]', allDates[date]);
-  });
+  });*/
   //console.log('processCalendarData 결과', allDates);
+
+  apiData.dates.forEach((date, index) => {
+    const group_status = apiData.groups[index];
+
+    allDates[date] = { status: `${group_status}-emotion` };
+  });
+
   return allDates;
 };
 
@@ -83,10 +85,12 @@ export const useCalendarStore = create((set, get) => ({
       //1.5.7 UPDATE 현재 날짜 가져와서 start, end 정의하도록 설정
       const startDate = '2025-03-01';
       const endDate = '2025-03-31';
-      const response = await periodRecordEmotions(startDate, endDate); //api 를 호출하여 감정 일기 작성날을 가져옴
+      //const response = await periodRecordEmotions(startDate, endDate); //1.5.7 UPDATE 새로 만든 api 확인되면 삭제하기api 를 호출하여 감정 일기 작성날을 가져옴
+      const responseV2 = await dailyEmotionAnalyze(2025); //1.5.7 2025 하드 코딩 변경하기
+      console.log('=== responseV2', responseV2);
       //response : "records": [{"date": "2025-03-14", "keywords": [Array], "todayFeeling": "힣lgpgp"}]}
       const allDates = generateAllDates();
-      const processData = processCalendarData(response?.records, allDates);
+      const processData = processCalendarData(responseV2, allDates);
       set({ calendarData: processData });
     } catch (error) {
       console.log('error', error);

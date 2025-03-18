@@ -26,6 +26,7 @@ import Header from './Homeheader';
 import { getKoreanServerTodayDateString } from '../../utils/times';
 import { useRiskStoreVer2 } from '../../store/useRiskStoreVer2';
 import CustomCalendar from '../../components/customCalendar/CustomCalendar';
+import { dailyEmotionAnalyze } from '~/src/apis/analyze';
 const defaultHomeCarousel = [
   {
     page: 1,
