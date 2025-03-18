@@ -30,24 +30,18 @@ const processCalendarData = (apiData, allDates) => {
   console.log('processCalendarDate 실행', apiData);
   //1.5.7 UPDATE 현재 날짜 가져오는 형태로 변경
   const today = '2025-03-18';
-  //console.log('_________apiData', apiData);
-  //console.log('_________apiData', apiData.dates);
-  //console.log('_________apiData', apiData.groups);
-  /*apiData.forEach((item) => {
-    console.log('item', item);
-    const date = item.dates;
-    const group_status = item.groups;
-    console.log('------- 2️⃣ date, group_status', date, group_status);
-
-    allDates[date] = { status: `${group_status}-emotion` };
-    console.log('allDates[date]', allDates[date]);
-  });*/
-  //console.log('processCalendarData 결과', allDates);
 
   apiData.dates.forEach((date, index) => {
     const group_status = apiData.groups[index];
-
-    allDates[date] = { status: `${group_status}-emotion` };
+    console.log('index', index);
+    console.log('group_status', group_status);
+    console.log('group_status', group_status);
+    if (group_status === null) {
+      allDates[date] = { status: 'normal-emotion' };
+      console.log('변경', allDates[date]);
+    } else {
+      allDates[date] = { status: `${group_status}-emotion` };
+    }
   });
 
   return allDates;

@@ -211,7 +211,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
               //Analytics.clickRecordButton();
               Analytics.clickEmotionRecordButton();
               setRecordedEmotions(selectedEmotions); // 상태 업데이트
-              await todayEmotion(selectedEmotions, text);
+              await todayEmotion(dateID, selectedEmotions, text);
               navigation.navigate(TabScreenName.Home);
             }}
           />

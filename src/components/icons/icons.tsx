@@ -34,6 +34,7 @@ import EventIcon from './svg/event-icon';
 import TodayNoEntry from './svg/today-no-entry';
 import Pencil from './svg/pencil';
 import GreenChatIcon from './svg/chat';
+import NormalEmotion from './svg/normal-emotion';
 
 export type TIconName =
   | 'airplane'
@@ -71,7 +72,8 @@ export type TIconName =
   | 'event-icon'
   | 'today-no-entry'
   | 'pencil'
-  | 'green-chat-icon';
+  | 'green-chat-icon'
+  | 'normal-emotion';
 
 export default function Icon({
   width,
@@ -157,5 +159,7 @@ export default function Icon({
       return <Pencil width={width} height={height} color={color} />;
     case 'green-chat-icon':
       return <GreenChatIcon width={width} height={height} color={color} />;
+    case 'normal-emotion':
+      return <NormalEmotion width={width} height={height} color={color} />;
   }
 }

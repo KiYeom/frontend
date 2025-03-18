@@ -72,6 +72,8 @@ const getBackgroundColor = (status) => {
       return '#FFE372'; // 감정 일기 기록 (행복)
     case 'calm-emotion':
       return '#ABEBC5'; // 감정 일기 기록 (평온)
+    case 'normal-emotion':
+      return '#D7D7D7'; // 감정 일기 기록 (평범)
     case 'today_no_emotion_analysis':
       return '#F1C40F'; // 감정 분석 안된 채팅
     default:
@@ -202,7 +204,7 @@ const CustomCalendar = ({ navigation }) => {
                       'calm-emotion',
                       'happy-emotion',
                       'sad-emotion',
-                      'nomal-emotion',
+                      'normal-emotion',
                     ].includes(calendarData[date.dateString]?.status)
                   ) {
                     navigation.navigate(RootStackName.HomeStackNavigator, {
