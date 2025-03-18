@@ -12,6 +12,7 @@ import DailyDairy from '../pages/HomePage/diary/DailyDairy';
 import { formatDate } from '../utils/Chatting';
 import { Alert } from 'react-native';
 import DrawerNavigator from './DrawerNavigator';
+import StatisticMain from '../pages/StatisticPage/StatisticMain';
 const HomeStack = createNativeStackNavigator();
 
 const HomeStackNavigator: React.FC = () => {
@@ -52,6 +53,12 @@ const HomeStackNavigator: React.FC = () => {
         name={HomeStackName.NewChatRefresh}
         component={DrawerNavigator}
         options={{ headerShown: false, animation: 'none' }}
+      />
+      {/* 1.5.7 UPDATE 일일보고서 추가 */}
+      <HomeStack.Screen
+        name={HomeStackName.Report}
+        component={StatisticMain}
+        options={{ headerShown: false }}
       />
     </HomeStack.Navigator>
   );

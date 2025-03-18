@@ -65,6 +65,7 @@ export enum HomeStackName {
   NewChat = 'NewChat',
   NewChatRefresh = 'NewChatRefresh',
   ChatList = 'ChatList',
+  Report = 'Report', //1.5.7 UPDATE 일일 보고서
 }
 
 export enum SettingStackName {

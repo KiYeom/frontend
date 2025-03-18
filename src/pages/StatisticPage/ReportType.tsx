@@ -32,7 +32,7 @@ const ReportType = (props: DateProps) => {
         `}>
         <Icon name="date-icon" width={rsWidth * 20} height={rsHeight * 22.86} color="black" />
       </TouchableDateLine>
-      <TouchableOpacity
+      {/*<TouchableOpacity
         style={css`
           width: auto;
           height: auto;
@@ -69,7 +69,7 @@ const ReportType = (props: DateProps) => {
           height={rsHeight * 10 + 'px'}
           color={palette.primary[500]}
         />
-      </TouchableOpacity>
+      </TouchableOpacity>*/}
     </View>
   );
 };

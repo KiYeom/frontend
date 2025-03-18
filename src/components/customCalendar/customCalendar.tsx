@@ -162,7 +162,7 @@ const CustomCalendar = ({ navigation }) => {
                   textAlign: 'center',
                   //1.5.7 UPDATE date.dateString 하드코딩 현재 날짜 계산으로 변경
                   color:
-                    date.dateString === '2025-03-17' ? palette.primary[500] : palette.neutral[400],
+                    date.dateString === '2025-03-18' ? palette.primary[500] : palette.neutral[400],
                 }}>
                 {date.day}
               </Text>
@@ -182,13 +182,35 @@ const CustomCalendar = ({ navigation }) => {
                 onPress={() => {
                   //console.log('state', state);
                   console.log('date', date);
-                  if (date.dateString > '2025-03-17') {
+                  if (date.dateString > '2025-03-18') {
+                    //1.5.7 UPDATE 미래 날짜 클릭 불가 하드 코딩
+                    //미래를 클릭한 경우, 작성 불가
                     Toast.show(`미래의 감정 일기는 작성할 수 없어요`, {
                       duration: Toast.durations.SHORT,
                       position: Toast.positions.CENTER,
                     });
-                  } else {
+                  } /*else {
                     //과거 혹은 현재를 클릭한 경우
+                    navigation.navigate(RootStackName.HomeStackNavigator, {
+                      screen: HomeStackName.Report,
+                      params: { dateID: date.dateString },
+                    });
+                  }*/ else if (
+                    //현재 혹은 과거 감정 데이터가 존재하는 경우, 일일 리포트로 이동
+                    [
+                      'angry-emotion',
+                      'calm-emotion',
+                      'happy-emotion',
+                      'sad-emotion',
+                      'nomal-emotion',
+                    ].includes(calendarData[date.dateString]?.status)
+                  ) {
+                    navigation.navigate(RootStackName.HomeStackNavigator, {
+                      screen: HomeStackName.Report,
+                      params: { dateID: date.dateString },
+                    });
+                  } else {
+                    //감정 데이터가 일기도, 채팅에도 존재하지 않는 경우 : 감정 입력하도록
                     navigation.navigate(RootStackName.HomeStackNavigator, {
                       screen: HomeStackName.SmallEmotionChart,
                       params: { dateID: date.dateString },

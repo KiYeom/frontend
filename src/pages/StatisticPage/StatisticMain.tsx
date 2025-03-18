@@ -33,6 +33,7 @@ import {
   getKoreanServerYesterdayDateString,
 } from '../../utils/times';
 import EmptyBox from '../../components/emptybox/emptyBox';
+import Header from '../../components/header/header';
 
 const START_HOUR_OF_DAY = 6;
 
@@ -54,8 +55,9 @@ const HINT_MESSAGE =
   '쿠키와의 대화를 통해 나의 감정을 객관적으로 확인하고 그날의 자신을 돌아볼 수 있어요!\n※ 일일 보고서는 매일 오전 6시에 갱신돼요.\n※ 본 보고서는 참고용이며, 필요 시 전문가와 상의하세요.';
 
 //전체 통계 화면
-const StatisticMain: React.FC<any> = () => {
-  const [date, setDate] = useState<Date>(new Date()); //서버에서 계산하는 날짜
+const StatisticMain: React.FC<any> = ({ navigation, route }) => {
+  //const [date, setDate] = useState<Date>(new Date()); //서버에서 계산하는 날짜
+  const [date, setDate] = useState();
   const [openModal, setOpenModal] = React.useState(false);
   const [isNullClassification, setIsNullClassification] = useState(true);
   const [labelsClassification, setLabelsClassification] = useState<TLabel[]>([]);
@@ -68,11 +70,16 @@ const StatisticMain: React.FC<any> = () => {
   const [hintStatus, setHintStatus] = useState<
     'emotion' | 'keyword' | 'record' | 'daily' | 'main' | undefined
   >(undefined);
-  const navigation = useNavigation();
+  //const navigation = useNavigation();
   const insets = useSafeAreaInsets();
 
+  //const { dateID } = route.params;
+  const [dateID, setDateID] = useState(route.params.dateID);
+  console.log('홈에서 받은 dateID', dateID);
+
   const onChange = useCallback((newDate) => {
-    setDate(new Date(newDate));
+    //setDate(new Date(newDate));
+    setDateID(getKoreanRealDateString(newDate));
   }, []);
 
   //앱이 처음 실행됐을 때 실행되는 부분
@@ -93,7 +100,7 @@ const StatisticMain: React.FC<any> = () => {
     //console.log('fetchData date: ', date);
     //console.log('fetchData date: ', new Date());
     // const dailyStatistics = await dailyAnalyze(getKoreanRealDateString(date)); //date -> new Date()
-    const dailyStatistics = await dailyAnalyze('2025-03-14');
+    const dailyStatistics = await dailyAnalyze(dateID);
     if (!dailyStatistics) {
       alert('네트워크 연결이 불안정합니다. 잠시 후 다시 시도해주세요.');
       return;
@@ -110,7 +117,7 @@ const StatisticMain: React.FC<any> = () => {
   };
 
   //헤더 아이콘 설정하기
-  useEffect(() => {
+  /*useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       dailyAnalyzeStatus(2025).then((data) => {
         if (!data) {
@@ -124,11 +131,10 @@ const StatisticMain: React.FC<any> = () => {
     return () => {
       unsubscribe();
     };
-  }, [navigation]);
+  }, [navigation]);*/
 
   //날짜가 바뀜에 따라 데이터를 다시 api를 통해 불러옴
   useEffect(() => {
-    //console.log('useEffect date');
     fetchData();
   }, [date]);
   //console.log('🎨🎨🎨🎨🎨🎨Rendering statistic🎨🎨🎨🎨🎨🎨');
@@ -137,8 +143,9 @@ const StatisticMain: React.FC<any> = () => {
       style={{
         flex: 1,
         backgroundColor: palette.neutral[50],
-        paddingTop: insets.top,
+        //paddingTop: insets.top,
       }}>
+      <Header title={dateID} />
       <ScrollView style={{ paddingTop: rsHeight * 12 }}>
         <View
           style={css`
@@ -149,13 +156,13 @@ const StatisticMain: React.FC<any> = () => {
             gap: ${rsHeight * 16 + 'px'};
             justify-content: center;
           `}>
-          <ReportType
+          {/*<ReportType
             type="기간리포트"
             navigation={navigation}
             onPress={() => {
               Analytics.clickDailyCalendarButton();
               setOpenModal(true);
-            }}></ReportType>
+            }}></ReportType>*/}
           <View
             style={{
               //backgroundColor: 'yellow',
@@ -179,7 +186,7 @@ const StatisticMain: React.FC<any> = () => {
               <DateLineContainer>
                 <TouchableOpacity onPress={() => setOpenModal(true)}>
                   {/*<DateLineText>{getDateKoreanString(date)}</DateLineText> 1.5.7 UPDATE 잠시 주석 처리*/}
-                  <DateLineText>2025년 03월 14일!</DateLineText>
+                  <DateLineText>{dateID}</DateLineText>
                 </TouchableOpacity>
                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                   <HintComponent
@@ -194,7 +201,7 @@ const StatisticMain: React.FC<any> = () => {
             </View>
           </View>
           <Container>
-            {!isNullClassification ? (
+            {!isNullClassification && (
               <>
                 <DailyEmotionClassification
                   labelsClassification={labelsClassification}
@@ -211,24 +218,8 @@ const StatisticMain: React.FC<any> = () => {
                   }}
                 />
               </>
-            ) : (
-              <>
-                <BlurredButton
-                  blurredImageUri={
-                    'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/statistic/blurgraph.png'
-                  }
-                  text={'지금 쿠키와 대화하고\n내일 나의 마음을 확인해보세요'}
-                  buttonText="쿠키랑 대화하기"
-                  onPress={async () => {
-                    Analytics.clickCTAChatButton();
-                    navigation.navigate(RootStackName.HomeStackNavigator, {
-                      screen: HomeStackName.NewChat,
-                    });
-                  }}
-                />
-              </>
             )}
-            {!isNullRecordKeywordList || todayFeeling !== '' ? (
+            {(!isNullRecordKeywordList || todayFeeling !== '') && (
               <>
                 <EmotionArea
                   isRecordKeywordList={isRecordKeywordList}
@@ -245,37 +236,25 @@ const StatisticMain: React.FC<any> = () => {
                   }}
                 />
               </>
-            ) : (
-              <>
-                <BlurredButton
-                  blurredImageUri={
-                    'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/statistic/sampleemotionkeyword.png'
-                  }
-                  text={'지금 내 마음속\n목소리를 들어볼까요?'}
-                  buttonText="감정 일기 작성하기"
-                  onPress={() => {
-                    Analytics.clickCTADiaryButton();
-                    navigation.navigate(RootStackName.HomeStackNavigator, {
-                      screen: HomeStackName.SmallEmotionChart,
-                    });
-                  }}
-                />
-              </>
             )}
-            <EmptyBox
-              mainTitle="나에게 어떤 하루였나요?"
-              subTitle="감정 일기를 작성하고, 마음 보고서를 완성해보세요"
-              isLeftIcon={true}
-              iconName="pencil"
-              iconSize={40}
-            />
-            <EmptyBox
-              mainTitle="쿠키에게 고민을 말해보세요"
-              subTitle="쿠키와의 대화가 부족해 마음을 들여다볼 수 없었어요"
-              isLeftIcon={true}
-              iconName="green-chat-icon"
-              iconSize={40}
-            />
+            {isNullClassification && (
+              <EmptyBox
+                mainTitle="쿠키에게 고민을 말해보세요"
+                subTitle="쿠키와의 대화가 부족해 마음을 들여다볼 수 없었어요"
+                isLeftIcon={true}
+                iconName="green-chat-icon"
+                iconSize={40}
+              />
+            )}
+            {isNullRecordKeywordList && (
+              <EmptyBox
+                mainTitle="나에게 어떤 하루였나요?"
+                subTitle="감정 일기를 작성하고, 마음 보고서를 완성해보세요"
+                isLeftIcon={true}
+                iconName="pencil"
+                iconSize={40}
+              />
+            )}
           </Container>
         </View>
       </ScrollView>

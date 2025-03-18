@@ -29,7 +29,7 @@ type fetchCalendarData = {
 const processCalendarData = (apiData, allDates) => {
   console.log('processCalendarDate 실행', apiData);
   //1.5.7 UPDATE 현재 날짜 가져오는 형태로 변경
-  const today = '2025-03-17';
+  const today = '2025-03-18';
   //console.log('_________apiData', apiData);
   //console.log('_________apiData', apiData.dates);
   //console.log('_________apiData', apiData.groups);
@@ -87,7 +87,7 @@ export const useCalendarStore = create((set, get) => ({
       const endDate = '2025-03-31';
       //const response = await periodRecordEmotions(startDate, endDate); //1.5.7 UPDATE 새로 만든 api 확인되면 삭제하기api 를 호출하여 감정 일기 작성날을 가져옴
       const responseV2 = await dailyEmotionAnalyze(2025); //1.5.7 2025 하드 코딩 변경하기
-      console.log('=== responseV2', responseV2);
+      //console.log('=== responseV2', responseV2);
       //response : "records": [{"date": "2025-03-14", "keywords": [Array], "todayFeeling": "힣lgpgp"}]}
       const allDates = generateAllDates();
       const processData = processCalendarData(responseV2, allDates);
