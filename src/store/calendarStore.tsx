@@ -47,7 +47,7 @@ const generateAllDates = (year) => {
     }
   }
 
-  console.log('generateYearDates 결과', dates);
+  //console.log('generateYearDates 결과', dates);
   return dates;
 };
 

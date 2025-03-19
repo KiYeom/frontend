@@ -25,6 +25,7 @@ import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { getLatestVersion } from './src/apis/setting';
 import { getAppVersion } from './src/utils/device-info';
 import { Platform, Alert } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as WebBrowser from 'expo-web-browser';
 import {
   clearInfoWhenLogout,

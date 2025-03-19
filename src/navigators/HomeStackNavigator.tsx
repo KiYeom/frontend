@@ -12,7 +12,9 @@ import DailyDairy from '../pages/HomePage/diary/DailyDairy';
 import { formatDate } from '../utils/Chatting';
 import { Alert } from 'react-native';
 import DrawerNavigator from './DrawerNavigator';
+import ActionSheetScreen from '../pages/HomePage/diary/pick-emotion';
 import StatisticMain from '../pages/StatisticPage/StatisticMain';
+import Home from '../pages/HomePage/Home';
 const HomeStack = createNativeStackNavigator();
 
 const HomeStackNavigator: React.FC = () => {
@@ -58,6 +60,12 @@ const HomeStackNavigator: React.FC = () => {
       <HomeStack.Screen
         name={HomeStackName.Report}
         component={StatisticMain}
+        options={{ headerShown: false }}
+      />
+      {/* 1.5.7 UPDATE 액션시트 테스트 */}
+      <HomeStack.Screen
+        name={HomeStackName.TestPage}
+        component={ActionSheetScreen}
         options={{ headerShown: false }}
       />
     </HomeStack.Navigator>

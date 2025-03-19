@@ -187,21 +187,24 @@ const SmallEmotionChart = ({ navigation, route }) => {
         <View
           style={css`
             padding: ${rsHeight * 10 + 'px'};
-            //background-color: pink;
-            flex-direction: row;
+            flex-direction: column;
             gap: ${rsWidth * 10 + 'px'};
             justify-content: center;
           `}>
           <Button
-            title="감정만 기록하기"
+            title="원하는 감정이 없어요"
             primary={false}
-            disabled={selectedEmotions.length < MINIMUM_EMOTION_COUNT}
+            //disabled={selectedEmotions.length < MINIMUM_EMOTION_COUNT}
             onPress={async () => {
               //Analytics.clickRecordButton();
-              Analytics.clickEmotionRecordButton();
-              setRecordedEmotions(selectedEmotions); // 상태 업데이트
-              await todayEmotion(dateID, selectedEmotions, text);
-              navigation.navigate(TabScreenName.Home);
+              console.log('bottom sheet 열기');
+              //Analytics.clickEmotionRecordButton();
+              //setRecordedEmotions(selectedEmotions); // 상태 업데이트
+              //await todayEmotion(dateID, selectedEmotions, text);
+              //navigation.navigate(TabScreenName.Home);
+              navigation.navigate(RootStackName.HomeStackNavigator, {
+                screen: HomeStackName.TestPage,
+              });
             }}
           />
           <Button
