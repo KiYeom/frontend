@@ -136,7 +136,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
           subTitle={'나의 마음을 표현해보세요.'}
         />
         <Carousel
-          pageWidth={rsWidth * 150} //캐러셀의 너비
+          pageWidth={rsWidth * 160} //캐러셀의 너비
           initialPage={0} //앱이 처음 실행되고 보여줄 초기 페이지
           itemSpacings={12 * rsWidth}>
           {emotionsByColumn.map((emotions, index) => (
@@ -192,24 +192,6 @@ const SmallEmotionChart = ({ navigation, route }) => {
             gap: ${rsWidth * 10 + 'px'};
             justify-content: center;
           `}>
-          {/*<Button
-            title={
-              selectedEmotions.length < MINIMUM_EMOTION_COUNT
-                ? `오늘의 마음을 알려주세요`
-                : `쿠키에게 알려주기`
-            }
-            primary={true}
-            disabled={
-              (selectedEmotions.length < MINIMUM_EMOTION_COUNT && (!text || text.trim() === '')) ||
-              selectedEmotions.length > MAXIMUM_EMOTION_COUNT
-            }
-            onPress={async () => {
-              Analytics.clickRecordButton();
-              setRecordedEmotions(selectedEmotions); // 상태 업데이트
-              await todayEmotion(selectedEmotions, text);
-              navigation.navigate(TabScreenName.Home);
-            }}
-          />*/}
           <Button
             title="감정만 기록하기"
             primary={false}
