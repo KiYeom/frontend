@@ -84,53 +84,6 @@ export const periodRecordEmotions = async (
   }
 };
 
-/*const mockDate = {
-  charts: [
-    {
-      category: 'anger',
-      chart: [
-        { date: '2025-03-05', value: 79.38144329896907 },
-        { date: '2025-03-07', value: 97.9381443298969 },
-      ],
-    },
-    {
-      category: 'sadness',
-      chart: [
-        { date: '2025-03-05', value: 1.5463917525773194 },
-        { date: '2025-03-07', value: 1.0309278350515463 },
-      ],
-    },
-    {
-      category: 'nerve',
-      chart: [
-        { date: '2025-03-05', value: 17.525773195876283 },
-        { date: '2025-03-07', value: 1.0309278350515463 },
-      ],
-    },
-    {
-      category: 'hurt',
-      chart: [
-        { date: '2025-03-05', value: 1.0309278350515463 },
-        { date: '2025-03-07', value: 0 },
-      ],
-    },
-    {
-      category: 'embarrassment',
-      chart: [
-        { date: '2025-03-05', value: 0.5154639175257731 },
-        { date: '2025-03-07', value: 0 },
-      ],
-    },
-    {
-      category: 'happy',
-      chart: [
-        { date: '2025-03-05', value: 0 },
-        { date: '2025-03-07', value: 0 },
-      ],
-    },
-  ],
-};*/
-
 //기간 분석 : 감정 추이 조회
 export const periodChart = async (
   start: string,
@@ -142,54 +95,6 @@ export const periodChart = async (
       params: { start_date: start, end_date: end },
     });
     return res.data;
-    /*return {
-      start_date: start,
-      end_date: end,
-      charts: [
-        {
-          category: 'anger',
-          chart: [
-            { date: '2025-03-05', value: 79.38144329896907 },
-            { date: '2025-03-07', value: 97.9381443298969 },
-          ],
-        },
-        {
-          category: 'sadness',
-          chart: [
-            { date: '2025-03-05', value: 1.5463917525773194 },
-            { date: '2025-03-07', value: 1.0309278350515463 },
-          ],
-        },
-        {
-          category: 'nerve',
-          chart: [
-            { date: '2025-03-05', value: 17.525773195876283 },
-            { date: '2025-03-07', value: 1.0309278350515463 },
-          ],
-        },
-        {
-          category: 'hurt',
-          chart: [
-            { date: '2025-03-05', value: 1.0309278350515463 },
-            { date: '2025-03-07', value: 0 },
-          ],
-        },
-        {
-          category: 'embarrassment',
-          chart: [
-            { date: '2025-03-05', value: 0.5154639175257731 },
-            { date: '2025-03-07', value: 0 },
-          ],
-        },
-        {
-          category: 'happy',
-          chart: [
-            { date: '2025-03-05', value: 0 },
-            { date: '2025-03-07', value: 0 },
-          ],
-        },
-      ],
-    };*/
   } catch (error) {
     //console.log('[ERROR] period chart analyze', error);
     return undefined;

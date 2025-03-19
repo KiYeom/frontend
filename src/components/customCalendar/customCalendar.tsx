@@ -10,6 +10,7 @@ import { periodRecordEmotions } from '../../apis/analyze';
 import { HomeStackName, RootStackName } from '../../constants/Constants';
 import Toast from 'react-native-root-toast';
 import { useCalendarStore } from '../../store/calendarStore';
+import { getDate, getMonthRange } from '../../utils/times';
 /*
 DateData 
 {
@@ -81,42 +82,21 @@ const getBackgroundColor = (status) => {
   }
 };
 
-const getDate = (): string => {
-  const today = new Date();
-
-  const year = today.getFullYear();
-  const month = (today.getMonth() + 1).toString().padStart(2, '0');
-  const day = today.getDate().toString().padStart(2, '0');
-
-  const dateString = year + '-' + month + '-' + day; // 2023-06-18
-
-  return dateString;
-};
-/*
-날짜의 상태
-1. 과거의 날짜인데
-  - 작성 이력이 없는 날 : past_no_entry
-  - 네 가지 감정 중 하나가 작성된 날 record_emotion
-2. 현재의 날짜인데
-  - 작성 이력이 없는 날 today_no_entry
-  - 네 가지 감정 중 하나가 작성된 날 record_emotion
-  - 채팅을 하였지만, 감정은 분석이 안 된 날 today_no_emotion_analysis
-3. 미래의 날짜 future_date
-
-
-[1] 앱을 실행하면, 현재 날짜의 달의 모든 정보를 받아온다. (기간 리포트 api)
-[2] 정보에 따라 날짜의 상태를 구분한다.
-[3] 구분한 날짜의 상태대로 화면에 그린다.
-*/
-
 const CustomCalendar = ({ navigation }) => {
   const [selected, setSelected] = useState<string>('');
   const { calendarData, fetchCalendarData, updateEntryStatus, logCalendarState } =
     useCalendarStore();
+  const [today, setToday] = useState<string>(getDate());
+  const [year, setYear] = useState<number>(new Date().getFullYear());
 
   useEffect(() => {
+    setToday(getDate());
     fetchCalendarData();
   }, []);
+
+  useEffect(() => {
+    fetchCalendarData(year);
+  }, [year]);
 
   return (
     <Calendar
@@ -147,6 +127,23 @@ const CustomCalendar = ({ navigation }) => {
       //초기에 보이는 값, 기본값 : Date()
       //current={'2025-02-01'}
 
+      //날짜가 바뀌었을 때
+      onMonthChange={(month) => {
+        console.log('month changed', month);
+        console.log('year', month.year);
+        if (month.year !== year) {
+          setYear(month.year);
+        }
+      }}
+      //화살표를 눌렀을 때
+      onPressArrowLeft={(subtractMonth) => {
+        //fetchCalendarData();
+        subtractMonth();
+      }}
+      onPressArrowRight={(addMonth) => {
+        //fetchCalendarData();
+        addMonth();
+      }}
       //날짜를 눌렀을 때 처리하는 콜백 함수
       onDayPress={(day: DateData) => {
         console.log('day pressed', day);
@@ -163,8 +160,7 @@ const CustomCalendar = ({ navigation }) => {
                   fontSize: 13 * rsFont, //WARN : 디자인 폰트가 10인데 너무 작은 것 같음
                   textAlign: 'center',
                   //1.5.7 UPDATE date.dateString 하드코딩 현재 날짜 계산으로 변경
-                  color:
-                    date.dateString === '2025-03-18' ? palette.primary[500] : palette.neutral[400],
+                  color: date.dateString === today ? palette.primary[500] : palette.neutral[400],
                 }}>
                 {date.day}
               </Text>
@@ -184,7 +180,7 @@ const CustomCalendar = ({ navigation }) => {
                 onPress={() => {
                   //console.log('state', state);
                   console.log('date', date);
-                  if (date.dateString > '2025-03-18') {
+                  if (date.dateString > today) {
                     //1.5.7 UPDATE 미래 날짜 클릭 불가 하드 코딩
                     //미래를 클릭한 경우, 작성 불가
                     Toast.show(`미래의 일기는 작성할 수 없어요! 😁`, {
