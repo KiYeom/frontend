@@ -44,10 +44,15 @@ const CustomMultiTextInput = (props: CustomMultiTextInputProps) => {
           bottom: 15,
         }}
         onPress={() => {
-          console.log('누름');
+          //console.log('누름');
           setIsShownEmoji(!isShownEmoji);
         }}>
-        <Icon name="emoji" width={rsFont * 20} height={rsFont * 20} />
+        <Icon
+          name="emoji"
+          width={rsFont * 20}
+          height={rsFont * 20}
+          color={isShownEmoji ? palette.neutral[400] : palette.neutral[300]}
+        />
       </TouchableOpacity>
     </View>
   );
