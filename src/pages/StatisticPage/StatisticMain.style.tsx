@@ -74,7 +74,7 @@ export const SectionTitle = styled.Text`
   font-family: Kyobo-handwriting;
   font-size: ${18 * rsFont + 'px'};
   color: ${palette.neutral[900]};
-  background-color: white;
+  //background-color: white;
   width: auto;
 `;
 

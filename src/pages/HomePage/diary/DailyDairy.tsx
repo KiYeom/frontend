@@ -49,6 +49,7 @@ import { useRoute } from '@react-navigation/native';
 import Header from '../../../components/header/header';
 import { useCalendarStore } from '../../../store/calendarStore';
 import { TEmotionCheck } from '~/src/apis/analyze.type';
+import { formatDateKorean } from '../../../utils/times';
 const validateDairy = (sentence: string): 'error' | 'default' | 'correct' => {
   if (sentence.length > 0 && sentence.length <= 300) return 'correct';
   else return 'default';
@@ -96,7 +97,7 @@ const DailyDairy = ({ navigation, route }) => {
           padding-bottom: ${insets.bottom + 'px'};
           flex: 1;
         `}>
-        <Header title={dateID} />
+        <Header title={formatDateKorean(dateID)} />
         <View
           style={css`
             margin-top: ${rsHeight * 12 + 'px'};

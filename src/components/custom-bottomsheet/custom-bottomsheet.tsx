@@ -187,7 +187,7 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
             value={text}
             onChangeText={setText}
           />
-          <TextLengthAlert>{text.length}/10</TextLengthAlert>
+          <TextLengthAlert text={text || ''}>{text.length}/10</TextLengthAlert>
         </BottomSheetTextInputContainer>
         <ButtonContainer>
           <Button

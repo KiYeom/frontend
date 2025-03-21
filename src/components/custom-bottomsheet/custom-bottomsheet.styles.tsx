@@ -46,8 +46,9 @@ export const StyledBottomSheetTextInput = styled(BottomSheetTextInput)`
   padding-horizontal: ${rsWidth * 18 + 'px'};
 `;
 
-export const TextLengthAlert = styled.Text`
-  color: ${palette.neutral[300]};
+export const TextLengthAlert = styled.Text<{ text?: string }>`
+  color: ${(props) =>
+    props.text?.length && props.text.length > 10 ? 'red' : palette.neutral[300]};
   font-size: ${rsFont * 12 + 'px'};
   margin-top: ${rsHeight * 4 + 'px'};
   width: 100%;
@@ -58,5 +59,5 @@ export const ButtonContainer = styled.View`
   padding-top: ${rsHeight * 20 + 'px'};
   width: 100%;
   padding-horizontal: ${rsWidth * 20 + 'px'};
-  background-color: blue;
+  //background-color: blue;
 `;
