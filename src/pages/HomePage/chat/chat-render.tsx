@@ -16,6 +16,7 @@ import {
   TimeProps,
   ComposerProps,
   Composer,
+  MessageText,
 } from 'react-native-gifted-chat';
 import CustomMultiTextInput from './CustomMultiTextInput';
 import { TextInput } from 'react-native';
@@ -30,6 +31,9 @@ import { reportChat } from '../../../apis/chatting';
 import { getNewIMessages } from '../../../utils/storageUtils';
 import Input from '../../../components/input/input';
 import { transparent } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
+import { EmotionIconContainer } from '../../../components/custom-bottomsheet/custom-bottomsheet.styles';
+import { EmotionIcon } from '../../../components/emotionIcon/emotionIcon';
+import { first_emoji } from '../../../utils/emoji';
 
 const getMessageSet = (
   currentMessage: IMessage,
@@ -141,6 +145,8 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
       return true;
     return false;
   };
+  const { currentMessage } = props; //currentMessage.user.id === 0 이면 나, currentMessage.text 로 보낸 말 확인
+  //console.log('=======currentMessage', currentMessage);
 
   return (
     <Animated.View
@@ -157,6 +163,23 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
           <Bubble
             {...props}
             renderTime={() => null}
+            renderMessageText={(props) => {
+              switch (props.currentMessage.text) {
+                case `*화난 표정 쿠키 이모티콘*`:
+                  return <Icon name="angry-emotion" width={`${rsWidth * 50}px`} />;
+                case `*슬픈 표정 쿠키 이모티콘*`:
+                  return <Icon name="sad-emotion" width={`${rsWidth * 50}px`} />;
+                case `*편안한 표정 쿠키 이모티콘*`:
+                  return <Icon name="normal-emotion" width={`${rsWidth * 50}px`} />;
+                case `*기쁜 표정 쿠키 이모티콘*`:
+                  return <Icon name="happy-emotion" width={`${rsWidth * 50}px`} />;
+                case `*만족하는 표정 쿠키 이모티콘*`:
+                  return <Icon name="calm-emotion" width={`${rsWidth * 50}px`} />;
+                default:
+                  // 조건에 해당하지 않으면 기본 메시지 텍스트 렌더링
+                  return <MessageText {...props} />;
+              }
+            }}
             textStyle={{
               left: css`
                 color: ${palette.neutral[500]};
@@ -199,6 +222,7 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
         </View>
       </TouchableOpacity>
 
+      {/*신고 버튼 */}
       {showReport() && (
         <TouchableOpacity activeOpacity={1} onPress={() => confirmReport(props.currentMessage)}>
           <View
@@ -372,11 +396,13 @@ export const RenderSystemMessage = (props: SystemMessageProps<IMessage>) => {
 
 //props: SendProps<IMessage>, sendingStatus: boolean
 //커스텀 인풋 툴 바
-export const RenderInputToolbar = (props: InputToolbarProps<IMessage>, sendingStatus: boolean) => (
+export const RenderInputToolbar = (
+  props: InputToolbarProps<IMessage>,
+  sendingStatus: boolean,
+  isShownEmoji: boolean,
+  setIsShownEmoji: (value: boolean) => void,
+) => (
   <View>
-    <View>
-      <Text>나지롱</Text>
-    </View>
     <InputToolbar
       {...props}
       containerStyle={{
@@ -390,11 +416,14 @@ export const RenderInputToolbar = (props: InputToolbarProps<IMessage>, sendingSt
         paddingHorizontal: rsWidth * 20,
         paddingVertical: rsHeight * 8,
         gap: rsWidth * 20,
+        position: 'relative',
       }}
       renderComposer={(composerProps) => (
         <CustomMultiTextInput
           value={composerProps.text}
           onChangeText={composerProps.onTextChanged}
+          isShownEmoji={isShownEmoji}
+          setIsShownEmoji={setIsShownEmoji}
         />
       )}
       renderSend={(sendProps) => (

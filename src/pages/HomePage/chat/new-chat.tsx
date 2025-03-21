@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Dimensions, Platform, View } from 'react-native';
+import { Dimensions, Platform, View, Text, UIManager, findNodeHandle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GiftedChat, IMessage, SendProps } from 'react-native-gifted-chat';
 import Header from '../../../components/header/header';
@@ -50,10 +50,18 @@ import { Hint } from 'react-native-ui-lib';
 import palette from '../../../assets/styles/theme';
 import { useRiskStoreVer2 } from '../../../store/useRiskStoreVer2';
 import clickHeaderGiftBoxButton from '../../../utils/analytics';
+import { EmotionIconContainer } from '../../../components/custom-bottomsheet/custom-bottomsheet.styles';
+import { EmotionIcon } from '../../../components/emotionIcon/emotionIcon';
+import { first_emoji } from '../../../utils/emoji';
 //import cookieprofile from '@assets/images/cookieprofile.png';
 //import cookieProfile from '@assets/images/cookieprofile.png';
 
 //const HINT_MESSAGE = 'AI로 생성된 답변입니다. 상담 필요 시 전문가와 상의하세요.';
+
+interface Emoji {
+  emotion: 'happy' | 'angry' | 'sad' | 'calm' | 'normal';
+  toServerString: string;
+}
 
 const userObject = {
   _id: 0,
@@ -79,6 +87,10 @@ const NewChat: React.FC = ({ navigation }) => {
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null); //타이핑 시간을 관리하는 타이머 (초기값 null, 이후 setTimeout의 반환값인 NodeJS.Timeout 객체를 저장)
   const refreshTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  //이모지를 보여줄 지 파악하는 상태
+  const [isShownEmoji, setIsShownEmoji] = useState<boolean>(false);
+  //CustomMultiTextInput 의 동적으로 바뀌는 높이를 추적하는 ref
+
   const { riskStatusV2, riskScoreV2, setRiskScoreV2, setRiskStatusV2, setHandleDangerPressV2 } =
     useRiskStoreVer2();
 
@@ -97,6 +109,20 @@ const NewChat: React.FC = ({ navigation }) => {
       }
       setScreenLoading(false);
     });
+  };
+
+  const sendEmojiMessage = (
+    emojiToServerString: string,
+    onSend: (message: IMessage[]) => void,
+    userObject: { _id: 0; name: string },
+  ) => {
+    const emojiMessage: IMessage = {
+      _id: uuid.v4().toString(),
+      text: emojiToServerString,
+      createdAt: new Date(),
+      user: userObject,
+    };
+    onSend([emojiMessage]);
   };
 
   const getIMessageFromServer = async (lastMessageDate: Date): Promise<IMessage[]> => {
@@ -286,6 +312,7 @@ const NewChat: React.FC = ({ navigation }) => {
     *** 보낼 때 한 줄 씩 띄워서 전송하게 됨
   */
   const onSend = (newMessages: IMessage[] = []) => {
+    //console.log('newMessages😀', newMessages);
     Analytics.clickChatSendButton();
     if (!newMessages[0].text.trim()) {
       //console.log('실행 안됨');
@@ -324,7 +351,7 @@ const NewChat: React.FC = ({ navigation }) => {
   /* 채팅 화면 전체 구성 */
   return (
     <SafeAreaView
-      style={{ flex: 1 }}
+      style={{ flex: 1, position: 'relative' }}
       edges={['bottom']}
       onLayout={(event) => {
         if (Platform.OS === 'android') {
@@ -407,7 +434,7 @@ const NewChat: React.FC = ({ navigation }) => {
         renderDay={RenderDay}
         renderSystemMessage={RenderSystemMessage}
         renderInputToolbar={(sendProps: SendProps<IMessage>) =>
-          RenderInputToolbar(sendProps, sending)
+          RenderInputToolbar(sendProps, sending, isShownEmoji, setIsShownEmoji)
         }
         //renderComposer={RenderComposer}
         textInputProps={{
@@ -418,6 +445,37 @@ const NewChat: React.FC = ({ navigation }) => {
         //renderSend={(sendProps: SendProps<IMessage>) => RenderSend(sendProps, sending)}
         alwaysShowSend
       />
+      {isShownEmoji && (
+        <View
+          style={{
+            top: 400,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            position: 'absolute',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            height: 100,
+          }}>
+          <Text>나지롱</Text>
+          <EmotionIconContainer>
+            {first_emoji.map((emoji) => (
+              <EmotionIcon
+                status={emoji.emotion}
+                size={50}
+                onPress={() => {
+                  console.log(`${emoji.emotion} 눌렀음😀`);
+                  sendEmojiMessage(emoji.toServerString, onSend, userObject);
+                }}
+              />
+            ))}
+
+            {/*<EmotionIcon status="sad" size={50} />
+            <EmotionIcon status="angry" size={50} />
+            <EmotionIcon status="calm" size={50} />
+            <EmotionIcon status="normal" size={50} />*/}
+          </EmotionIconContainer>
+        </View>
+      )}
     </SafeAreaView>
   );
 };
