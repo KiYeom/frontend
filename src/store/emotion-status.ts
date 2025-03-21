@@ -16,6 +16,7 @@ export interface EmotionStore {
   addEmotion: (emotion: Emotion) => void;
   removeEmotion: (emotionDetail: string) => void;
   clearEmotions: () => void;
+  updateEmotion: (emotionDetail: string, updatedEmotion: Emotion) => void;
   setDiaryText: (value: string) => void;
 }
 
@@ -32,6 +33,12 @@ const useEmotionStore = create<EmotionStore>((set) => ({
       selectedEmotions: state.selectedEmotions.filter((e) => e.keyword !== emotionDetail),
     })),
   clearEmotions: () => set({ selectedEmotions: [] }),
+  updateEmotion: (emotionDetail: string, updatedEmotion: Emotion) =>
+    set((state) => ({
+      selectedEmotions: state.selectedEmotions.map((e) =>
+        e.type === 'custom' ? updatedEmotion : e,
+      ),
+    })),
   setDiaryText: (value: string) => set({ diaryText: value }),
 }));
 export default useEmotionStore;

@@ -8,6 +8,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { EmotionIcon } from '../../components/emotionIcon/emotionIcon';
 import { Emotion } from '../../store/emotion-status';
 import Button from '../../components/button/button';
+import { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import {
   IntroText,
   IntroContainer,
@@ -38,7 +39,7 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
   // callbacks
   // 닫힐 때는 index -1 , 열릴 때는 index 0
 
-  const { selectedEmotions, setSelectedEmotion, addEmotion } = useEmotionStore();
+  const { selectedEmotions, setSelectedEmotion, addEmotion, updateEmotion } = useEmotionStore();
   const handleSheetChanges = useCallback((index: number) => {
     if (index === -1) {
       onClose();
@@ -56,9 +57,14 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
 
   //감정 적은 적 있는지 확인
   useEffect(() => {
+    console.log('selectedEmotionsssss', selectedEmotions);
     const customEmotion = selectedEmotions.find((emotion) => emotion.type === 'custom');
     console.log('customEmotion', customEmotion);
     console.log('selectedEmotions', selectedEmotions);
+    if (customEmotion) {
+      setText(customEmotion.keyword);
+      setSelectedStatus(emotions.indexOf(customEmotion.group));
+    }
   }, []);
 
   // 키보드 등장 시 높이 저장
@@ -126,8 +132,22 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
   const handlePress = (index: number) => {
     bottomSheetRef.current?.snapToIndex(index);
   };
+  // 항상 배경이 보이도록 appearsOnIndex와 disappearsOnIndex 조정, opacity를 1로 설정
+  const renderBackdrop = useCallback(
+    (props) => (
+      <BottomSheetBackdrop
+        {...props}
+        opacity={0.8} // 최대 불투명도
+        appearsOnIndex={0} // 배경이 나타났을 때 snap point index 지정
+        disappearsOnIndex={-1} // 배경이 사라질 때 snap point index 지정
+        onPress={handleClosePress} // 배경 클릭 시 닫히도록 설정
+      />
+    ),
+    [],
+  );
   return (
     <BottomSheet
+      backdropComponent={renderBackdrop}
       ref={bottomSheetRef}
       // 필요에 따라 snapPoints 설정 가능 (예: ['25%', '80%'])
       snapPoints={snapPoints}
@@ -182,12 +202,21 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
                 type: 'custom',
               });
                */
+              console.log('😀😀😀😀😀😀');
               const customEmotion: Emotion = {
                 keyword: text,
                 group: emotions[selectedStatus],
                 type: 'custom',
               };
-              addEmotion(customEmotion);
+              // 동일한 keyword를 가진 custom 타입의 감정이 있는지 확인
+              const exists = selectedEmotions.find((e) => e.type === 'custom');
+              console.log('exists', exists);
+
+              if (exists) {
+                updateEmotion(text, customEmotion);
+              } else {
+                addEmotion(customEmotion);
+              }
               handleClosePress();
             }}
           />

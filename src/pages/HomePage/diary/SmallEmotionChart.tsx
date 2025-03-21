@@ -78,17 +78,14 @@ const SmallEmotionChart = ({ navigation, route }) => {
 
   //일일 감정 데이터 가져오기
   const fetchData = async () => {
-    const diaryData = await dailyAnalyze(dateID);
-    console.log('diaryData', diaryData.record.Keywords);
-    setSelectedEmotions(diaryData.record.Keywords);
-    setDiaryText(diaryData.record.todayFeeling ?? '');
+    const diaryData = await todayEmotionCheck(dateID);
+    console.log('new diaryData', diaryData.Keywords);
+    setSelectedEmotions(diaryData.Keywords);
+    setDiaryText(diaryData.todayFeeling ?? '');
   };
 
   useEffect(() => {
     Analytics.watchEmotionRecordScreen();
-    todayEmotionCheck().then((data) => {
-      setText(data.todayFeeling);
-    });
     fetchData();
     //setSelectedEmotion(recordedEmotions);
   }, []);

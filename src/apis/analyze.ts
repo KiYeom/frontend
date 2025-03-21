@@ -11,7 +11,7 @@ import { instance } from './interceptor';
 
 //INFO : 일일 분석
 //연단위 : 유저 감정 일기와 키워드가 있는 날 조회 (구버전)
-//1.5.7 UPDATE 구버전 확인하고 삭제하기
+//1.5.7 UPDATE 구버전 확인하고 삭제하기!!
 export const dailyAnalyzeStatus = async (
   year: number,
 ): Promise<TDailyAnalyzeStatus | undefined> => {
@@ -109,7 +109,7 @@ export const todayEmotion = async (
   text: string,
 ): Promise<string[] | undefined> => {
   try {
-    const myEmotions = data.map(({ keyword, group }) => ({ keyword, group }));
+    const myEmotions = data.map(({ keyword, group, type }) => ({ keyword, group, type }));
     const res = await instance.post('/v1/analyze/today-record', {
       date: date,
       todayFeeling: text,
@@ -122,11 +122,11 @@ export const todayEmotion = async (
   }
 };
 
-//기록한 오늘의 기분 조회하기
-export const todayEmotionCheck = async () => {
+//1.5.7 신규 : 일일분석 - 감정 일기 조회
+export const todayEmotionCheck = async (date: string) => {
   try {
-    const res = await instance.get('/v1/analyze/today-record');
-    //console.log('todayEmotionCheck', res.data);
+    const res = await instance.get('/v1/analyze/today-record', { params: { date } });
+    console.log('todayEmotionCheck', res.data);
     return res.data;
   } catch (error) {
     return;
@@ -134,6 +134,7 @@ export const todayEmotionCheck = async () => {
 };
 
 //연단위 - 유저 감정 일기와 키워드가 있는 날 조회 (신규 버전)
+//앱을 켰을 때 홈 화면에 표시를 할 감정 일기들을 조회하기 위해 사용함
 export const dailyEmotionAnalyze = async (
   year: number,
 ): Promise<TDailyAnalyzeStatus | undefined> => {
