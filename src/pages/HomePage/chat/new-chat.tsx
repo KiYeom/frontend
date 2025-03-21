@@ -114,7 +114,7 @@ const NewChat: React.FC = ({ navigation }) => {
   const sendEmojiMessage = (
     emojiToServerString: string,
     onSend: (message: IMessage[]) => void,
-    userObject: { _id: 0; name: string },
+    userObject: { _id: number; name: string },
   ) => {
     const emojiMessage: IMessage = {
       _id: uuid.v4().toString(),
@@ -468,11 +468,6 @@ const NewChat: React.FC = ({ navigation }) => {
                 }}
               />
             ))}
-
-            {/*<EmotionIcon status="sad" size={50} />
-            <EmotionIcon status="angry" size={50} />
-            <EmotionIcon status="calm" size={50} />
-            <EmotionIcon status="normal" size={50} />*/}
           </EmotionIconContainer>
         </View>
       )}

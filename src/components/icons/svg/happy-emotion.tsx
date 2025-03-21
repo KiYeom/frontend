@@ -2,7 +2,7 @@ import { SvgXml } from 'react-native-svg';
 
 export const HappyEmotion = ({ width = 50, height = 50, color = '#3AD3EB' }: IconProps) => {
   const svg = `
-<svg width=${width} height=${height} viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="${width}" height="${height}" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_5222_53708)">
 <rect width="28" height="28" rx="14" fill="#FFE372"/>
 <g clip-path="url(#clip1_5222_53708)">

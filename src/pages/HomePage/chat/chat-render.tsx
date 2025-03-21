@@ -166,15 +166,15 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
             renderMessageText={(props) => {
               switch (props.currentMessage.text) {
                 case `*화난 표정 쿠키 이모티콘*`:
-                  return <Icon name="angry-emotion" width={`${rsWidth * 50}px`} />;
+                  return <Icon name="angry-emotion" width={80} height={80} />;
                 case `*슬픈 표정 쿠키 이모티콘*`:
-                  return <Icon name="sad-emotion" width={`${rsWidth * 50}px`} />;
+                  return <Icon name="sad-emotion" width={80} height={80} />;
                 case `*편안한 표정 쿠키 이모티콘*`:
-                  return <Icon name="normal-emotion" width={`${rsWidth * 50}px`} />;
+                  return <Icon name="normal-emotion" width={80} height={80} />;
                 case `*기쁜 표정 쿠키 이모티콘*`:
-                  return <Icon name="happy-emotion" width={`${rsWidth * 50}px`} />;
+                  return <Icon name="happy-emotion" width={80} height={80} />;
                 case `*만족하는 표정 쿠키 이모티콘*`:
-                  return <Icon name="calm-emotion" width={`${rsWidth * 50}px`} />;
+                  return <Icon name="calm-emotion" width={80} height={80} />;
                 default:
                   // 조건에 해당하지 않으면 기본 메시지 텍스트 렌더링
                   return <MessageText {...props} />;
