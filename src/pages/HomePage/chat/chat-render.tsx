@@ -401,6 +401,8 @@ export const RenderInputToolbar = (
   sendingStatus: boolean,
   isShownEmoji: boolean,
   setIsShownEmoji: (value: boolean) => void,
+  inputHeight: number,
+  setInputHeight: (value: number) => void,
 ) => (
   <View>
     <InputToolbar
@@ -408,7 +410,7 @@ export const RenderInputToolbar = (
       containerStyle={{
         borderTopColor: 'transparent',
         //backgroundColor: palette.neutral[50],
-        backgroundColor: 'green',
+        //backgroundColor: 'green',
         display: 'flex',
         flexDirection: 'row', // row로 두어야 Input과 Send 버튼이 나란히 배치됨
         justifyContent: 'center',
@@ -424,6 +426,8 @@ export const RenderInputToolbar = (
           onChangeText={composerProps.onTextChanged}
           isShownEmoji={isShownEmoji}
           setIsShownEmoji={setIsShownEmoji}
+          inputHeight={inputHeight}
+          setInputHeight={setInputHeight}
         />
       )}
       renderSend={(sendProps) => (

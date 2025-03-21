@@ -1,5 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Dimensions, Platform, View, Text, UIManager, findNodeHandle } from 'react-native';
+import {
+  Dimensions,
+  Platform,
+  View,
+  Text,
+  UIManager,
+  findNodeHandle,
+  Keyboard,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GiftedChat, IMessage, SendProps } from 'react-native-gifted-chat';
 import Header from '../../../components/header/header';
@@ -53,6 +61,7 @@ import clickHeaderGiftBoxButton from '../../../utils/analytics';
 import { EmotionIconContainer } from '../../../components/custom-bottomsheet/custom-bottomsheet.styles';
 import { EmotionIcon } from '../../../components/emotionIcon/emotionIcon';
 import { first_emoji } from '../../../utils/emoji';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 //import cookieprofile from '@assets/images/cookieprofile.png';
 //import cookieProfile from '@assets/images/cookieprofile.png';
 
@@ -87,9 +96,38 @@ const NewChat: React.FC = ({ navigation }) => {
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null); //타이핑 시간을 관리하는 타이머 (초기값 null, 이후 setTimeout의 반환값인 NodeJS.Timeout 객체를 저장)
   const refreshTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  //입력 필드 높이
+  const [inputHeight, setInputHeight] = useState(rsFont * 16 * 1.5 + 15 * 2);
+
   //이모지를 보여줄 지 파악하는 상태
   const [isShownEmoji, setIsShownEmoji] = useState<boolean>(false);
-  //CustomMultiTextInput 의 동적으로 바뀌는 높이를 추적하는 ref
+  //화면 높이
+  const { width, height } = Dimensions.get('window');
+  console.log('화면 너비:', width, '화면 높이:', height);
+  const [keyboardHeight, setKeyboardHeight] = useState<number>(0);
+  const insets = useSafeAreaInsets();
+  //위치하는 y좌표 자리는... 화면 높이 - 입력 필드 높이-키보드 높이
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', onKeyboardDidShow);
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', onKeyboardDidHide);
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
+  const onKeyboardDidShow = (event) => {
+    // event.endCoordinates.height를 통해 키보드 높이 정보를 얻습니다.
+    const keyboardHeight = event.endCoordinates.height;
+    setKeyboardHeight(keyboardHeight);
+    console.log('키보드 높이:', keyboardHeight);
+  };
+
+  const onKeyboardDidHide = () => {
+    setKeyboardHeight(0);
+    console.log('키보드가 숨겨졌습니다.');
+  };
 
   const { riskStatusV2, riskScoreV2, setRiskScoreV2, setRiskStatusV2, setHandleDangerPressV2 } =
     useRiskStoreVer2();
@@ -434,7 +472,14 @@ const NewChat: React.FC = ({ navigation }) => {
         renderDay={RenderDay}
         renderSystemMessage={RenderSystemMessage}
         renderInputToolbar={(sendProps: SendProps<IMessage>) =>
-          RenderInputToolbar(sendProps, sending, isShownEmoji, setIsShownEmoji)
+          RenderInputToolbar(
+            sendProps,
+            sending,
+            isShownEmoji,
+            setIsShownEmoji,
+            inputHeight,
+            setInputHeight,
+          )
         }
         //renderComposer={RenderComposer}
         textInputProps={{
@@ -448,23 +493,25 @@ const NewChat: React.FC = ({ navigation }) => {
       {isShownEmoji && (
         <View
           style={{
-            top: 400,
+            top: height - inputHeight - keyboardHeight - insets.bottom - 85,
             left: 0,
             right: 0,
             bottom: 0,
             position: 'absolute',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            height: 100,
+            backgroundColor: 'white',
+            height: 80,
           }}>
-          <Text>나지롱</Text>
           <EmotionIconContainer>
             {first_emoji.map((emoji) => (
               <EmotionIcon
+                key={emoji.emotion}
                 status={emoji.emotion}
+                selected={true}
                 size={50}
                 onPress={() => {
                   console.log(`${emoji.emotion} 눌렀음😀`);
                   sendEmojiMessage(emoji.toServerString, onSend, userObject);
+                  setIsShownEmoji(false);
                 }}
               />
             ))}
