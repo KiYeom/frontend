@@ -72,6 +72,7 @@ const PeriodFlowChart = ({ emotionsData, startDate, endDate, hintStatus, setHint
       <View
         style={css`
           padding-horizontal: ${rsWidth * 20 + 'px'};
+          width: 100%;
         `}>
         <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
           <SectionTitle>얼마나 많은 감정 변화가 있었을까요?</SectionTitle>

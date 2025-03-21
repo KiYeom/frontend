@@ -26,6 +26,8 @@ import Icon from '../../components/icons/icons';
 import PeriodEmotionArea from './Period_Emotion/PeriodEmotionArea';
 import HintComponent from './HintComponent';
 import Header from '../../components/header/header';
+import EmptyBox from '../../components/emptybox/emptyBox';
+import { RecordedEmotion } from '../HomePage/diary/EmotionChart.style';
 
 const HINT_NAME = 'main';
 const HINT_MESSAGE =
@@ -122,20 +124,16 @@ const PeriodStatisticPage: React.FC<any> = () => {
         flex: 1;
         //padding-top: ${insets.top + 'px'};
       `}>
-      <Header title={'나의 감정 타임라인'} />
+      <Header title={'나의 감정 타임라인'} bgcolor={`${palette.neutral[50]}`} />
       <ScrollView>
         <View
           style={css`
             gap: ${rsHeight * 16 + 'px'};
             margin-vertical: ${rsHeight * 12 + 'px'};
+            //background-color: pink;
+            justify-content: center;
+            align-items: center;
           `}>
-          {/*<ReportType
-            type="일일리포트"
-            navigation={navigation}
-            onPress={() => {
-              Analytics.clickPeriodCalendarButton();
-              setOpenModal(true);
-            }}></ReportType>*/}
           <View
             style={{
               //backgroundColor: 'yellow',
@@ -143,18 +141,6 @@ const PeriodStatisticPage: React.FC<any> = () => {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            {/*
-            <Image
-              style={{
-                width: 70 * rsWidth,
-                height: 70 * rsHeight,
-                aspectRatio: 1, // 가로 세로 비율을 고정
-                resizeMode: 'contain', // 이미지를 잘리지 않게 표시
-              }}
-              source={{
-                uri: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/statistic/reportlogo.png',
-              }}
-            /> */}
             <Icon name="calendar" width={70} height={70} />
             <View style={{ marginVertical: 10 * rsHeight }}>
               <DateLineContainer onPress={() => setOpenModal(true)}>
@@ -164,39 +150,6 @@ const PeriodStatisticPage: React.FC<any> = () => {
                     : '날짜를 선택해주세요'}
                 </DateLineText>
                 <Icon name="arrow-down" color={'white'} />
-
-                {/*<View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                  <HintComponent
-                    visible={hintStatus && hintStatus === HINT_NAME}
-                    position={Hint.positions.BOTTOM}
-                    message={HINT_MESSAGE}
-                    onClose={() => setHintStatus(undefined)}
-                    onToggle={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}
-                  />
-                  <Hint
-                    visible={hintStatus && hintStatus === HINT_NAME}
-                    position={Hint.positions.BOTTOM}
-                    message={HINT_MESSAGE}
-                    color={'white'}
-                    enableShadow
-                    messageStyle={css`
-                      font-family: Kyobo-handwriting;
-                      font-size: ${16 * rsFont + 'px'};
-                      color: ${palette.neutral[900]};
-                    `}
-                    onPress={() => setHintStatus(undefined)}
-                    onBackgroundPress={() => setHintStatus(undefined)}
-                    backdropColor={'rgba(0, 0, 0, 0.5)'}>
-                  <View>
-                    <TouchableOpacity
-                      activeOpacity={1}
-                      style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}
-                      onPress={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}>
-                      <Icon name="information" width={14} height={14} />
-                    </TouchableOpacity>
-                  </View>
-                  </Hint>
-                </View>*/}
               </DateLineContainer>
               <StatisticTitle>
                 쿠키와 함께 돌아보는
@@ -204,35 +157,58 @@ const PeriodStatisticPage: React.FC<any> = () => {
               </StatisticTitle>
             </View>
           </View>
-          {/*<PageName type={`쿠키가 생각했던${'\n'}주인님의 모습이에요`} />*/}
-          <PeriodFlowChart
-            emotionsData={emotionsData}
-            startDate={dayjs(range.startDate).format('YYYY-MM-DD')}
-            endDate={dayjs(range.endDate).format('YYYY-MM-DD')}
-            hintStatus={hintStatus}
-            setHintStatus={(hint: 'period-flow' | undefined) => {
-              setHintStatus(hint);
-            }}
-          />
-          <PeriodEmotionArea
-            periodEmotionList={totalEmotions}
-            hintStatus={hintStatus}
-            setHintStatus={(hint: 'period-emotion' | undefined) => {
-              setHintStatus(hint);
-            }}
-          />
-          <PeriodKeywordArea
-            periodKeywordList={periodKeywordList}
-            hintStatus={hintStatus}
-            setHintStatus={(hint: 'period-keyword' | undefined) => {
-              setHintStatus(hint);
-            }}
-          />
-          <PeriodRecord
-            records={recordEmotions ? recordEmotions.records : []}
-            hintStatus={hintStatus}
-            setHintStatus={setHintStatus}
-          />
+          {periodKeywordList && periodKeywordList.length > 0 && (
+            <>
+              <PeriodFlowChart
+                emotionsData={emotionsData}
+                startDate={dayjs(range.startDate).format('YYYY-MM-DD')}
+                endDate={dayjs(range.endDate).format('YYYY-MM-DD')}
+                hintStatus={hintStatus}
+                setHintStatus={(hint: 'period-flow' | undefined) => {
+                  setHintStatus(hint);
+                }}
+              />
+              <PeriodEmotionArea
+                periodEmotionList={totalEmotions}
+                hintStatus={hintStatus}
+                setHintStatus={(hint: 'period-emotion' | undefined) => {
+                  setHintStatus(hint);
+                }}
+              />
+              <PeriodKeywordArea
+                periodKeywordList={periodKeywordList}
+                hintStatus={hintStatus}
+                setHintStatus={(hint: 'period-keyword' | undefined) => {
+                  setHintStatus(hint);
+                }}
+              />
+            </>
+          )}
+
+          {recordEmotions && recordEmotions?.records.length > 0 ? (
+            <PeriodRecord
+              records={recordEmotions ? recordEmotions.records : []}
+              hintStatus={hintStatus}
+              setHintStatus={setHintStatus}
+            />
+          ) : (
+            <EmptyBox
+              mainTitle="나에게 어떤 하루였나요?"
+              subTitle="감정 일기를 작성하고, 마음 보고서를 완성해보세요"
+              isLeftIcon={true}
+              iconName="pencil"
+              iconSize={40}
+            />
+          )}
+          {periodKeywordList.length === 0 && (
+            <EmptyBox
+              mainTitle="쿠키에게 고민을 말해보세요"
+              subTitle="쿠키와의 대화가 부족해 마음을 들여다 볼 수 없었어요"
+              isLeftIcon={true}
+              iconName="green-chat-icon"
+              iconSize={40}
+            />
+          )}
         </View>
       </ScrollView>
       <RangeDatePickerModal

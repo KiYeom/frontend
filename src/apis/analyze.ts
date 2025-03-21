@@ -17,7 +17,7 @@ export const dailyAnalyzeStatus = async (
 ): Promise<TDailyAnalyzeStatus | undefined> => {
   try {
     const res = await instance.get('/v1/analyze/daily-status', { params: { year } });
-    //console.log('res.data', res.data);
+    //console.log('!!!!!!!!res.data', res.data);
     return res.data; //record, summary, classification 리턴
   } catch (error) {
     //console.log('[ERROR] daily analyze', error);
@@ -29,6 +29,7 @@ export const dailyAnalyzeStatus = async (
 export const dailyAnalyze = async (today: string): Promise<TDailyAnalyze | undefined> => {
   try {
     const res = await instance.get('/v1/analyze/daily', { params: { date: today } });
+    console.log('~~~~~~~', res.data);
     return res.data; //record, summary, classification 리턴
   } catch (error) {
     //console.log('[ERROR] daily analyze', error);
@@ -125,7 +126,7 @@ export const todayEmotion = async (
 export const todayEmotionCheck = async () => {
   try {
     const res = await instance.get('/v1/analyze/today-record');
-    console.log('todayEmotionCheck', res.data);
+    //console.log('todayEmotionCheck', res.data);
     return res.data;
   } catch (error) {
     return;

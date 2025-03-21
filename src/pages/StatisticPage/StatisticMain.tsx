@@ -17,6 +17,7 @@ import EmotionArea from './Daily_Keyword/EmotionArea';
 import EmotionDairy from './Daily_Keyword/EmotionDairy';
 import KeywordArea from './Daily_Keyword/KeywordArea';
 import ReportType from './ReportType';
+import { formatDateKorean } from '../../utils/times';
 import {
   Container,
   DateLineContainer,
@@ -36,19 +37,6 @@ import EmptyBox from '../../components/emptybox/emptyBox';
 import Header from '../../components/header/header';
 
 const START_HOUR_OF_DAY = 6;
-
-//checked at 24-11-25
-const getDateKoreanString = (utcDate: Date): string => {
-  const nowKoreanDate = new Date(utcDate.getTime() + 9 * 60 * 60 * 1000);
-  return (
-    nowKoreanDate?.getUTCFullYear() +
-    '년 ' +
-    String(nowKoreanDate.getUTCMonth() + 1).padStart(2, '0') +
-    '월 ' +
-    String(nowKoreanDate.getUTCDate()).padStart(2, '0') +
-    '일'
-  );
-};
 
 const HINT_NAME = 'main';
 const HINT_MESSAGE =
@@ -139,6 +127,7 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
           });
           console.log('누름');
         }}
+        bgcolor={`${palette.neutral[50]}`}
       />
       <ScrollView style={{ paddingTop: rsHeight * 12 }}>
         <View
@@ -150,13 +139,6 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
             gap: ${rsHeight * 16 + 'px'};
             justify-content: center;
           `}>
-          {/*<ReportType
-            type="기간리포트"
-            navigation={navigation}
-            onPress={() => {
-              Analytics.clickDailyCalendarButton();
-              setOpenModal(true);
-            }}></ReportType>*/}
           <View
             style={{
               //backgroundColor: 'yellow',
@@ -180,17 +162,8 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
               <DateLineContainer onPress={() => setOpenModal(true)}>
                 {/*<TouchableOpacity onPress={() => setOpenModal(true)}>*/}
                 {/*<DateLineText>{getDateKoreanString(date)}</DateLineText> 1.5.7 UPDATE 잠시 주석 처리*/}
-                <DateLineText>{dateID}</DateLineText>
+                <DateLineText>{formatDateKorean(dateID)}</DateLineText>
                 <Icon name="arrow-down" color={'white'} />
-                {/*</TouchableOpacity>*/}
-                {/*<View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                  <HintComponent
-                    visible={hintStatus && hintStatus === HINT_NAME}
-                    onClose={() => setHintStatus(undefined)}
-                    onToggle={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}
-                    message={HINT_MESSAGE}
-                  />
-                </View>*/}
               </DateLineContainer>
               <StatisticTitle>
                 쿠키와 함께 돌아보는{'\n'}
@@ -238,10 +211,15 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
             {isNullClassification && (
               <EmptyBox
                 mainTitle="쿠키에게 고민을 말해보세요"
-                subTitle="쿠키와의 대화가 부족해 마음을 들여다볼 수 없었어요"
+                subTitle="쿠키와의 대화가 부족해 마음을 들여다 볼 수 없었어요"
                 isLeftIcon={true}
                 iconName="green-chat-icon"
                 iconSize={40}
+                onPress={() =>
+                  navigation.navigate(RootStackName.HomeStackNavigator, {
+                    screen: HomeStackName.NewChat,
+                  })
+                }
               />
             )}
             {isNullRecordKeywordList && (
@@ -251,6 +229,13 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
                 isLeftIcon={true}
                 iconName="pencil"
                 iconSize={40}
+                onPress={() => {
+                  console.log('누름');
+                  navigation.navigate(RootStackName.HomeStackNavigator, {
+                    screen: HomeStackName.SmallEmotionChart,
+                    params: { dateID: dateID },
+                  });
+                }}
               />
             )}
           </Container>

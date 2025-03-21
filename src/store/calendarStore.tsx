@@ -4,7 +4,7 @@ import { getMonthRange } from '../utils/times';
 
 //날짜의 상태를 변경하는 함수
 const processCalendarData = (apiData, allDates) => {
-  console.log('processCalendarDate 실행', apiData);
+  //console.log('processCalendarDate 실행', apiData);
   //1.5.7 UPDATE 현재 날짜 가져오는 형태로 변경
 
   apiData.dates.forEach((date, index) => {
@@ -78,9 +78,9 @@ export const useCalendarStore = create<CalendarStore>((set, get) => ({
     try {
       //1.5.7 UPDATE 현재 날짜 가져와서 start, end 정의하도록 설정
       //const response = await periodRecordEmotions(startDate, endDate); //1.5.7 UPDATE 새로 만든 api 확인되면 삭제하기api 를 호출하여 감정 일기 작성날을 가져옴
-      console.log('year', year);
+      //console.log('year', year);
       const responseV2 = await dailyEmotionAnalyze(year);
-      console.log('=== responseV2', responseV2);
+      //console.log('=== responseV2', responseV2);
       //response : "records": [{"date": "2025-03-14", "keywords": [Array], "todayFeeling": "힣lgpgp"}]}
       const allDates = generateAllDates(year);
       const processData = processCalendarData(responseV2, allDates);

@@ -6,6 +6,7 @@ import { css } from '@emotion/native';
 import { rsWidth } from '../../utils/responsive-size';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { EmotionIcon } from '../../components/emotionIcon/emotionIcon';
+import { Emotion } from '../../store/emotion-status';
 import Button from '../../components/button/button';
 import {
   IntroText,

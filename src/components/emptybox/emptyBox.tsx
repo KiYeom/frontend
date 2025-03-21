@@ -11,11 +11,13 @@ type BoxProps = {
   isRightIcon?: boolean;
   iconName?: TIconName;
   iconSize?: number;
+  onPress?: () => void;
 };
 const EmptyBox: React.FC<BoxProps> = (props: BoxProps) => {
-  const { mainTitle, subTitle, isLeftIcon, isRightIcon, iconName, iconSize } = props;
+  const { mainTitle, subTitle, isLeftIcon, isRightIcon, iconName, iconSize, onPress } = props;
   return (
     <TouchableOpacity
+      onPress={onPress}
       style={css`
         background-color: #dcdcdc;
         border-radius: 10px;

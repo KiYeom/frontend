@@ -50,6 +50,7 @@ import {
 import palette from '../../../assets/styles/theme';
 import { RootStackName } from '../../../constants/Constants';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { formatDateKorean } from '../../../utils/times';
 
 const SmallEmotionChart = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
@@ -62,7 +63,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
     setDiaryText,
   } = useEmotionStore();
   //const [selectedEmotionsV2, setSelectedEmotionsV2] = useState([]);
-  const { recordedEmotions, setRecordedEmotions } = useRecordedEmotionStore();
+  //const { recordedEmotions, setRecordedEmotions } = useRecordedEmotionStore();
   const scrollViewRef = useRef(null);
   const [text, setText] = useState<string>('');
   const headerHeight = useHeaderHeight();
@@ -78,6 +79,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
   //일일 감정 데이터 가져오기
   const fetchData = async () => {
     const diaryData = await dailyAnalyze(dateID);
+    console.log('diaryData', diaryData.record.Keywords);
     setSelectedEmotions(diaryData.record.Keywords);
     setDiaryText(diaryData.record.todayFeeling ?? '');
   };
@@ -132,7 +134,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
           padding-bottom: ${insets.bottom + 'px'};
           flex: 1;
         `}>
-        <Header title={dateID} />
+        <Header title={formatDateKorean(dateID)} />
         <KeyboardAwareScrollView
           bottomOffset={insets.bottom + 70}
           contentContainerStyle={css`

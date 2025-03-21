@@ -55,6 +55,8 @@ const PeriodRecord = (props: any) => {
         return 'calm-emotion';
       case 'angry':
         return 'angry-emotion';
+      case 'normal':
+        return 'normal-emotion';
       default:
         return 'default-heart';
     }

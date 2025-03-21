@@ -89,5 +89,14 @@ export const getMonthRange = (): { start: string; end: string } => {
 };
 
 // 예시 출력
-console.log(getMonthRange());
+//console.log(getMonthRange());
 // 만약 오늘이 2025-03-16이면 { start: "2025-03-01", end: "2025-03-31" } 를 반환합니다.
+
+export const formatDateKorean = (dateStr: string): string => {
+  // '2025-03-01' 형태를 '-'로 분리합니다.
+  const [year, month, day] = dateStr.split('-');
+  // 앞의 0을 제거하기 위해 정수형으로 변환
+  const monthNumber = parseInt(month, 10);
+  const dayNumber = parseInt(day, 10);
+  return `${year}년 ${monthNumber}월 ${dayNumber}일`;
+};
