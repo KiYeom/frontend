@@ -373,50 +373,39 @@ export const RenderSystemMessage = (props: SystemMessageProps<IMessage>) => {
 //props: SendProps<IMessage>, sendingStatus: boolean
 //커스텀 인풋 툴 바
 export const RenderInputToolbar = (props: InputToolbarProps<IMessage>, sendingStatus: boolean) => (
-  <View>
-    <View>
-      <Text>나지롱</Text>
-    </View>
-    <InputToolbar
-      {...props}
-      containerStyle={{
-        borderTopColor: 'transparent',
-        //backgroundColor: palette.neutral[50],
-        backgroundColor: 'green',
-        display: 'flex',
-        flexDirection: 'row', // row로 두어야 Input과 Send 버튼이 나란히 배치됨
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingHorizontal: rsWidth * 20,
-        paddingVertical: rsHeight * 8,
-        gap: rsWidth * 20,
-      }}
-      renderComposer={(composerProps) => (
-        <CustomMultiTextInput
-          value={composerProps.text}
-          onChangeText={composerProps.onTextChanged}
-        />
-      )}
-      renderSend={(sendProps) => (
-        <Send
-          {...props}
-          disabled={sendingStatus}
-          containerStyle={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            alignSelf: 'center',
-            marginLeft: 20 * rsWidth,
-          }}>
-          <Icon
-            name="airplane"
-            color={sendingStatus ? palette.neutral[300] : palette.neutral[400]}
-          />
-        </Send>
-      )}
-    />
-  </View>
+  <InputToolbar
+    {...props}
+    containerStyle={{
+      borderTopColor: 'transparent',
+      //backgroundColor: palette.neutral[50],
+      //backgroundColor: 'green',
+      display: 'flex',
+      flexDirection: 'row', // row로 두어야 Input과 Send 버튼이 나란히 배치됨
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: rsWidth * 20,
+      paddingVertical: rsHeight * 8,
+      gap: rsWidth * 20,
+    }}
+    renderComposer={(composerProps) => (
+      <CustomMultiTextInput value={composerProps.text} onChangeText={composerProps.onTextChanged} />
+    )}
+    renderSend={(sendProps) => (
+      <Send
+        {...props}
+        disabled={sendingStatus}
+        containerStyle={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          alignSelf: 'center',
+          marginLeft: 20 * rsWidth,
+        }}>
+        <Icon name="airplane" color={sendingStatus ? palette.neutral[300] : palette.neutral[400]} />
+      </Send>
+    )}
+  />
 );
 
 export const RenderLoading = () => (
