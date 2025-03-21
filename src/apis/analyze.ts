@@ -10,12 +10,14 @@ import {
 import { instance } from './interceptor';
 
 //INFO : 일일 분석
+//연단위 : 유저 감정 일기와 키워드가 있는 날 조회 (구버전)
+//1.5.7 UPDATE 구버전 확인하고 삭제하기!!
 export const dailyAnalyzeStatus = async (
   year: number,
 ): Promise<TDailyAnalyzeStatus | undefined> => {
   try {
     const res = await instance.get('/v1/analyze/daily-status', { params: { year } });
-    //console.log('res.data', res.data);
+    //console.log('!!!!!!!!res.data', res.data);
     return res.data; //record, summary, classification 리턴
   } catch (error) {
     //console.log('[ERROR] daily analyze', error);
@@ -27,6 +29,7 @@ export const dailyAnalyzeStatus = async (
 export const dailyAnalyze = async (today: string): Promise<TDailyAnalyze | undefined> => {
   try {
     const res = await instance.get('/v1/analyze/daily', { params: { date: today } });
+    console.log('~~~~~~~', res.data);
     return res.data; //record, summary, classification 리턴
   } catch (error) {
     //console.log('[ERROR] daily analyze', error);
@@ -82,53 +85,6 @@ export const periodRecordEmotions = async (
   }
 };
 
-/*const mockDate = {
-  charts: [
-    {
-      category: 'anger',
-      chart: [
-        { date: '2025-03-05', value: 79.38144329896907 },
-        { date: '2025-03-07', value: 97.9381443298969 },
-      ],
-    },
-    {
-      category: 'sadness',
-      chart: [
-        { date: '2025-03-05', value: 1.5463917525773194 },
-        { date: '2025-03-07', value: 1.0309278350515463 },
-      ],
-    },
-    {
-      category: 'nerve',
-      chart: [
-        { date: '2025-03-05', value: 17.525773195876283 },
-        { date: '2025-03-07', value: 1.0309278350515463 },
-      ],
-    },
-    {
-      category: 'hurt',
-      chart: [
-        { date: '2025-03-05', value: 1.0309278350515463 },
-        { date: '2025-03-07', value: 0 },
-      ],
-    },
-    {
-      category: 'embarrassment',
-      chart: [
-        { date: '2025-03-05', value: 0.5154639175257731 },
-        { date: '2025-03-07', value: 0 },
-      ],
-    },
-    {
-      category: 'happy',
-      chart: [
-        { date: '2025-03-05', value: 0 },
-        { date: '2025-03-07', value: 0 },
-      ],
-    },
-  ],
-};*/
-
 //기간 분석 : 감정 추이 조회
 export const periodChart = async (
   start: string,
@@ -140,54 +96,6 @@ export const periodChart = async (
       params: { start_date: start, end_date: end },
     });
     return res.data;
-    /*return {
-      start_date: start,
-      end_date: end,
-      charts: [
-        {
-          category: 'anger',
-          chart: [
-            { date: '2025-03-05', value: 79.38144329896907 },
-            { date: '2025-03-07', value: 97.9381443298969 },
-          ],
-        },
-        {
-          category: 'sadness',
-          chart: [
-            { date: '2025-03-05', value: 1.5463917525773194 },
-            { date: '2025-03-07', value: 1.0309278350515463 },
-          ],
-        },
-        {
-          category: 'nerve',
-          chart: [
-            { date: '2025-03-05', value: 17.525773195876283 },
-            { date: '2025-03-07', value: 1.0309278350515463 },
-          ],
-        },
-        {
-          category: 'hurt',
-          chart: [
-            { date: '2025-03-05', value: 1.0309278350515463 },
-            { date: '2025-03-07', value: 0 },
-          ],
-        },
-        {
-          category: 'embarrassment',
-          chart: [
-            { date: '2025-03-05', value: 0.5154639175257731 },
-            { date: '2025-03-07', value: 0 },
-          ],
-        },
-        {
-          category: 'happy',
-          chart: [
-            { date: '2025-03-05', value: 0 },
-            { date: '2025-03-07', value: 0 },
-          ],
-        },
-      ],
-    };*/
   } catch (error) {
     //console.log('[ERROR] period chart analyze', error);
     return undefined;
@@ -196,12 +104,14 @@ export const periodChart = async (
 
 //오늘의 기분 기록
 export const todayEmotion = async (
+  date: string,
   data: TEmotionCheck[],
   text: string,
 ): Promise<string[] | undefined> => {
   try {
-    const myEmotions = data.map(({ keyword, group }) => ({ keyword, group }));
+    const myEmotions = data.map(({ keyword, group, type }) => ({ keyword, group, type }));
     const res = await instance.post('/v1/analyze/today-record', {
+      date: date,
       todayFeeling: text,
       keywords: myEmotions,
     });
@@ -212,12 +122,28 @@ export const todayEmotion = async (
   }
 };
 
-//기록한 오늘의 기분 조회하기
-export const todayEmotionCheck = async () => {
+//1.5.7 신규 : 일일분석 - 감정 일기 조회
+export const todayEmotionCheck = async (date: string) => {
   try {
-    const res = await instance.get('/v1/analyze/today-record');
+    const res = await instance.get('/v1/analyze/today-record', { params: { date } });
+    console.log('todayEmotionCheck', res.data);
     return res.data;
   } catch (error) {
+    return;
+  }
+};
+
+//연단위 - 유저 감정 일기와 키워드가 있는 날 조회 (신규 버전)
+//앱을 켰을 때 홈 화면에 표시를 할 감정 일기들을 조회하기 위해 사용함
+export const dailyEmotionAnalyze = async (
+  year: number,
+): Promise<TDailyAnalyzeStatus | undefined> => {
+  try {
+    const res = await instance.get('/v2/analyze/daily-status', { params: { year } });
+    //console.log('res.data', res.data);
+    return res.data; //id, nickname, dates 리턴
+  } catch (error) {
+    console.log('😀[ERROR] daily analyze', error);
     return;
   }
 };

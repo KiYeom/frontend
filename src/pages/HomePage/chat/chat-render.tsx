@@ -370,85 +370,53 @@ export const RenderSystemMessage = (props: SystemMessageProps<IMessage>) => {
   );
 };
 
-//글자가 입력되는 공간
-/*export const RenderInputToolbar = (props: InputToolbarProps<IMessage>) => (
-  <InputToolbar
-    {...props}
-    containerStyle={{
-      borderTopColor: 'transparent',
-      backgroundColor: palette.neutral[50],
-      display: 'flex',
-      flexDirection: 'column',
-      marginHorizontal: rsWidth * 20,
-      marginVertical: rsHeight * 8,
-      borderRadius: 10,
-    }}
-    //renderComposer와 보내기 버튼은 InputToolbar의 자식 요소임. 그래서 renderComposer(파란색)와 renderSend(분홍색)에 flex : 1을 주니까 절반을 차지한 것 같음. 그리고 InputToolbar의 flex direction은 기본 설정인 row 로 확인 됨
-    renderComposer={(props) => (
-      <View
-        style={{
-          display: 'flex',
-          flex: 1,
-          justifyContent: 'flex-start',
-          alignItems: 'stretch',
-          paddingVertical: 10,
-          paddingHorizontal: 10,
-        }}>
-        <TextInput
-          style={{
-            maxHeight: rsFont * 14 * 5,
-          }}
-          multiline
-          value={props.text}
-          onChangeText={props.onTextChanged}
-        />
-      </View>
-    )}
-    renderSned={(props) => (
-      <TouchableOpacity
-        style={styles.sendButton}
-        onPress={() => sendProps.onSend({ text: sendProps.text }, true)}>
-        <Text style={styles.sendButtonText}>Send</Text>
-      </TouchableOpacity>
-    )}
-  />
-);*/
 //props: SendProps<IMessage>, sendingStatus: boolean
 //커스텀 인풋 툴 바
 export const RenderInputToolbar = (props: InputToolbarProps<IMessage>, sendingStatus: boolean) => (
-  <InputToolbar
-    {...props}
-    containerStyle={{
-      borderTopColor: 'transparent',
-      //backgroundColor: palette.neutral[50],
-      //backgroundColor: 'green',
-      display: 'flex',
-      flexDirection: 'row', // row로 두어야 Input과 Send 버튼이 나란히 배치됨
-      justifyContent: 'center',
-      alignItems: 'center',
-      paddingHorizontal: rsWidth * 20,
-      paddingVertical: rsHeight * 8,
-      gap: rsWidth * 20,
-    }}
-    renderComposer={(composerProps) => (
-      <CustomMultiTextInput value={composerProps.text} onChangeText={composerProps.onTextChanged} />
-    )}
-    renderSend={(sendProps) => (
-      <Send
-        {...props}
-        disabled={sendingStatus}
-        containerStyle={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          alignSelf: 'center',
-          marginLeft: 20 * rsWidth,
-        }}>
-        <Icon name="airplane" color={sendingStatus ? palette.neutral[300] : palette.neutral[400]} />
-      </Send>
-    )}
-  />
+  <View>
+    <View>
+      <Text>나지롱</Text>
+    </View>
+    <InputToolbar
+      {...props}
+      containerStyle={{
+        borderTopColor: 'transparent',
+        //backgroundColor: palette.neutral[50],
+        backgroundColor: 'green',
+        display: 'flex',
+        flexDirection: 'row', // row로 두어야 Input과 Send 버튼이 나란히 배치됨
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: rsWidth * 20,
+        paddingVertical: rsHeight * 8,
+        gap: rsWidth * 20,
+      }}
+      renderComposer={(composerProps) => (
+        <CustomMultiTextInput
+          value={composerProps.text}
+          onChangeText={composerProps.onTextChanged}
+        />
+      )}
+      renderSend={(sendProps) => (
+        <Send
+          {...props}
+          disabled={sendingStatus}
+          containerStyle={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            alignSelf: 'center',
+            marginLeft: 20 * rsWidth,
+          }}>
+          <Icon
+            name="airplane"
+            color={sendingStatus ? palette.neutral[300] : palette.neutral[400]}
+          />
+        </Send>
+      )}
+    />
+  </View>
 );
 
 export const RenderLoading = () => (

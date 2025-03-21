@@ -19,7 +19,7 @@ export const useRiskStoreVer2 = create<RiskState>()((set, get) => ({
   riskStatusV2: 'safe',
   setRiskScoreV2: async () => {
     //api 호출에 따라 riskScoreV2를 갱신
-    //console.log('😀😀😀😀😀');
+    //console.log('😀😀😀😀😀'F8F8F8);
     const data = getKoreanServerTodayDateString(new Date());
     try {
       const score = await getRiskScore(data);

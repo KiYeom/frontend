@@ -11,6 +11,7 @@ const EmotionChip = ({ group, keyword, onPress, isSelected }) => {
       style={css`
         background-color: ${palette.neutral[100]};
         height: ${rsHeight * 45 + 'px'};
+        width: ${rsWidth * 150 + 'px'};
         flex-direction: row;
         align-items: center; /* 세로 중앙 정렬 */
         justify-content: center; /* 가로 중앙 정렬 */
@@ -22,7 +23,7 @@ const EmotionChip = ({ group, keyword, onPress, isSelected }) => {
         border: 3px solid ${isSelected ? palette.primary[500] : 'transparent'};
       `}
       onPress={onPress}>
-      <Icon name={`${group}-emotion` as TIconName} width={rsWidth * 25 + 'px'} />
+      <Icon name={`${group}-emotion` as TIconName} width={rsWidth * 35 + 'px'} />
       <Text
         style={css`
           flex: 1;

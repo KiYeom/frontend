@@ -133,7 +133,7 @@ const CustomDrawerContent = (props: any) => {
             await Linking.openURL('https://asked.kr/remind_cookie');
           }}
         />
-        <MenuRow
+        {/*<MenuRow
           text="쿠키 팬아트 보내기"
           onPress={async () => {
             Analytics.clickSideMenuCookieFanArtButton();
@@ -144,7 +144,7 @@ const CustomDrawerContent = (props: any) => {
               WebBrowser.openBrowserAsync('https://3kpe9.channel.io/home');
             }
           }}
-        />
+        />*/}
       </UserSettingContainer>
     </DrawerContentScrollView>
   );

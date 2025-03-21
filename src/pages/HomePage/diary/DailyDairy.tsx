@@ -30,7 +30,7 @@ import {
 import EmotionTitleBox from './emotionTitleBox';
 import Analytics from '../../../utils/analytics';
 import useRecordedEmotionStore from '../../../utils/emotion-recorded';
-import useEmotionStore from '../../../utils/emotion-status';
+import useEmotionStore from '../../../store/emotion-status';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { getUserNickname } from '../../../utils/storageUtils';
 import EmotionCard from '../../../components/atoms/EmotionCard/EmotionCard';
@@ -45,22 +45,48 @@ import {
 } from 'react-native-keyboard-controller';
 import palette from '../../../assets/styles/theme';
 import { Alert } from 'react-native';
-
+import { useRoute } from '@react-navigation/native';
+import Header from '../../../components/header/header';
+import { useCalendarStore } from '../../../store/calendarStore';
+import { TEmotionCheck } from '~/src/apis/analyze.type';
 const validateDairy = (sentence: string): 'error' | 'default' | 'correct' => {
   if (sentence.length > 0 && sentence.length <= 300) return 'correct';
   else return 'default';
 };
 
-const DailyDairy = ({ navigation }) => {
-  const [text, setText] = useState<string>('');
+const DailyDairy = ({ navigation, route }) => {
+  //const [text, setText] = useState<string>('');
   const maxLength = 300;
   const insets = useSafeAreaInsets();
-  const { selectedEmotions, setSelectedEmotions } = useEmotionStore();
+  const { selectedEmotions, setSelectedEmotions, diaryText, setDiaryText } = useEmotionStore();
+
+  const { calendarData, fetchCalendarData, updateEntryStatus, logCalendarState } =
+    useCalendarStore();
+  const [isRecordKeywordList, setIsRecordKeywordList] = useState<TEmotionCheck[]>([]);
+  const [isNullRecordKeywordList, setIsNullRecordKeywordList] = useState(true);
+
+  //const route = useRoute();
+  ///console.log('📌 Route Object:', route);
+  //console.log('📌 Route Params:', route.params);
+  //const { date } = route.params || {};
+  //console.log('일기장 화면 date', date);
+
+  //useEffect(() => {
+  //console.log('Updated params:', route.params);
+  //}, [route.params]);
+  const { dateID } = route.params;
+  console.log('일기 입력 페이지에서 받은 dateID', dateID);
+
+  const fetchData = async () => {
+    const dailyStatistics = await dailyAnalyze(dateID);
+    if (!dailyStatistics) return;
+    setIsRecordKeywordList(dailyStatistics.record.Keywords);
+    setIsNullRecordKeywordList(dailyStatistics.record.isNULL);
+  };
+
   useEffect(() => {
     Analytics.watchDiaryWriteScreen();
-    todayEmotionCheck().then((data) => {
-      setText(data?.todayFeeling ?? '');
-    });
+    fetchData();
   }, []);
 
   return (
@@ -69,13 +95,18 @@ const DailyDairy = ({ navigation }) => {
         style={css`
           padding-bottom: ${insets.bottom + 'px'};
           flex: 1;
-          margin-top: ${rsHeight * 12 + 'px'};
         `}>
-        <EmotionTitleBox
-          iconName={'dairy-cookie'}
-          mainTitle={'오늘 하루를 되돌아봐요.'}
-          subTitle={'이 감정을 가장 강하게 느낀 순간은 언제인가요?'}
-        />
+        <Header title={dateID} />
+        <View
+          style={css`
+            margin-top: ${rsHeight * 12 + 'px'};
+          `}>
+          <EmotionTitleBox
+            iconName={'dairy-cookie'}
+            mainTitle={'오늘 하루를 되돌아봐요.'}
+            subTitle={'이 감정을 가장 강하게 느낀 순간은 언제인가요?'}
+          />
+        </View>
         {selectedEmotions.length > 0 && (
           <View
             style={css`
@@ -116,22 +147,22 @@ const DailyDairy = ({ navigation }) => {
               font-family: Kyobo-handwriting;
             `}
             placeholder="오늘은 어떤 일이 있었나요?"
-            placeholderTextColor={palette.neutral[500]}
+            placeholderTextColor={palette.neutral[400]}
             multiline={true}
             scrollEnabled={true}
-            value={text}
-            onChangeText={(text) => setText(text)}
+            value={diaryText}
+            onChangeText={(diaryText) => setDiaryText(diaryText)}
           />
           <Text
             style={css`
               font-size: 12px;
               color: #666;
-              ${text.length >= maxLength &&
+              ${diaryText.length >= maxLength &&
               css`
                 color: red;
               `}
             `}>
-            {text.length} / {maxLength}
+            {diaryText.length} / {maxLength}
           </Text>
         </View>
 
@@ -145,11 +176,16 @@ const DailyDairy = ({ navigation }) => {
           <Button
             title="일기 기록하기"
             primary={true}
-            disabled={validateDairy(text) === 'correct' ? false : true}
+            disabled={validateDairy(diaryText) === 'correct' ? false : true}
             onPress={async () => {
               Analytics.clickDiaryWriteButton();
-              await todayEmotion(selectedEmotions, text);
+              await todayEmotion(dateID, selectedEmotions, diaryText);
               navigation.navigate(TabScreenName.Home);
+              console.log('~~~~', selectedEmotions);
+              const targetEmotion =
+                selectedEmotions.find((emotion) => emotion.type === 'custom') ||
+                selectedEmotions[0];
+              updateEntryStatus(dateID, `${targetEmotion.group}-emotion`);
             }}
           />
         </View>

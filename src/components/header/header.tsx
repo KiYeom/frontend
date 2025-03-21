@@ -31,6 +31,8 @@ type HeaderProps = {
   eventIcon?: TIconName;
   eventText?: string;
   eventFunction?: () => void;
+
+  bgcolor?: string;
 };
 const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
   const insets = useSafeAreaInsets();
@@ -55,9 +57,10 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
     eventIcon = 'event-icon',
     eventText = undefined,
     eventFunction = () => {},
+    bgcolor = 'white',
   } = props;
   return (
-    <HeaderContainer isTitle={title !== undefined} insets={insets}>
+    <HeaderContainer isTitle={title !== undefined} insets={insets} bgcolor={bgcolor}>
       <HeaderCenter>
         <HeaderTitle ellipsizeMode="tail" numberOfLines={1}>
           {title}

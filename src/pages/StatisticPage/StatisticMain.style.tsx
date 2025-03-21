@@ -39,21 +39,25 @@ export const DescText = styled.Text`
 `;
 
 //INFO : 변경
-export const DateLineContainer = styled.View`
+export const DateLineContainer = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: ${rsWidth * 4 + 'px'};
-  //background-color: red;
+  gap: ${rsHeight * 5 + 'px'};
+  background-color: ${palette.neutral[900]};
+  padding-horizontal: ${rsWidth * 10 + 'px'};
+  padding-vertical: ${rsHeight * 5 + 'px'};
+  border-radius: 20px;
 `;
 
 //변경된 날짜 폰트
 export const DateLineText = styled.Text`
-  font-family: Kyobo-handwriting;
+  font-family: Pretendard-SemiBold;
   font-size: ${16 * rsFont + 'px'};
-  color: ${palette.neutral[500]};
+  color: white;
   text-align: center;
 `;
+
 //변경된 리포트 제목 폰트
 export const StatisticTitle = styled.Text`
   font-family: Kyobo-handwriting;
@@ -70,6 +74,8 @@ export const SectionTitle = styled.Text`
   font-family: Kyobo-handwriting;
   font-size: ${18 * rsFont + 'px'};
   color: ${palette.neutral[900]};
+  background-color: white;
+  width: auto;
 `;
 
 export const PageHintText = styled.Text`
