@@ -14,12 +14,14 @@ import {
   View,
 } from 'react-native';
 import { useKeyboardHandler } from 'react-native-keyboard-controller';
+import BottomSheet, { BottomSheetTextInput, BottomSheetView } from '@gorhom/bottom-sheet';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import Icon from '../../../components/icons/icons';
 import Toast from 'react-native-root-toast';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Carousel } from 'react-native-ui-lib';
 import { dailyAnalyze, todayEmotion, todayEmotionCheck } from '../../../apis/analyze';
+import CustomBottomSheet from '../../../components/custom-bottomsheet/custom-bottomsheet';
 import {
   emotionData,
   emotionsByColumn,
@@ -47,6 +49,7 @@ import {
 } from 'react-native-keyboard-controller';
 import palette from '../../../assets/styles/theme';
 import { RootStackName } from '../../../constants/Constants';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const SmallEmotionChart = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
@@ -64,6 +67,10 @@ const SmallEmotionChart = ({ navigation, route }) => {
   const [text, setText] = useState<string>('');
   const headerHeight = useHeaderHeight();
   const [buttonHeight, setButtonHeight] = useState(0);
+  //-1이면 닫힘, 0이면 열림
+  const [bottomSheetIndex, setBottomSheetIndex] = useState(-1);
+  const openBottomSheet = () => setBottomSheetIndex(0);
+  const closeBottomSheet = () => setBottomSheetIndex(-1);
 
   const { dateID } = route.params;
   console.log('감정 입력 페이지에서 받은 dateID', dateID);
@@ -118,111 +125,117 @@ const SmallEmotionChart = ({ navigation, route }) => {
   }, [selectedEmotions]); // selectedEmotions가 변경될 때마다 실행
 
   return (
-    <View
-      style={css`
-        padding-bottom: ${insets.bottom + 'px'};
-        flex: 1;
-      `}>
-      <Header title={dateID} />
-      <KeyboardAwareScrollView
-        bottomOffset={insets.bottom + 70}
-        contentContainerStyle={css`
-          background-color: white;
-          margin-top: ${rsHeight * 12 + 'px'};
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <View
+        style={css`
+          padding-bottom: ${insets.bottom + 'px'};
+          flex: 1;
         `}>
-        <EmotionTitleBox
-          iconName={'emotion-thinking-cookie'}
-          mainTitle={'지금 어떤 감정이 드나요?'}
-          subTitle={'나의 마음을 표현해보세요.'}
-        />
-        <Carousel
-          pageWidth={rsWidth * 160} //캐러셀의 너비
-          initialPage={0} //앱이 처음 실행되고 보여줄 초기 페이지
-          itemSpacings={12 * rsWidth}>
-          {emotionsByColumn.map((emotions, index) => (
-            <View key={index}>
-              {emotions.map((emotion, i) => (
-                <EmotionChip
-                  key={i}
-                  group={emotion.group}
-                  keyword={emotion.keyword}
-                  isSelected={selectedEmotions.some((e) => e.keyword === emotion.keyword)} // 선택된 감정인지 확인
-                  onPress={() => handleEmotionListClick(emotion)}
-                />
-              ))}
-            </View>
-          ))}
-        </Carousel>
-        <EmotionDesc textAlign={'center'}>
-          {selectedEmotions.length > 0
-            ? `${selectedEmotions[selectedEmotions.length - 1].keyword} : ${emotionData[selectedEmotions[selectedEmotions.length - 1].keyword].desc}`
-            : ''}
-        </EmotionDesc>
+        <Header title={dateID} />
+        <KeyboardAwareScrollView
+          bottomOffset={insets.bottom + 70}
+          contentContainerStyle={css`
+            background-color: white;
+            margin-top: ${rsHeight * 12 + 'px'};
+          `}>
+          <EmotionTitleBox
+            iconName={'emotion-thinking-cookie'}
+            mainTitle={'지금 어떤 감정이 드나요?'}
+            subTitle={'나의 마음을 표현해보세요.'}
+          />
+          <Carousel
+            pageWidth={rsWidth * 160} //캐러셀의 너비
+            initialPage={0} //앱이 처음 실행되고 보여줄 초기 페이지
+            itemSpacings={12 * rsWidth}>
+            {emotionsByColumn.map((emotions, index) => (
+              <View key={index}>
+                {emotions.map((emotion, i) => (
+                  <EmotionChip
+                    key={i}
+                    group={emotion.group}
+                    keyword={emotion.keyword}
+                    isSelected={selectedEmotions.some((e) => e.keyword === emotion.keyword)} // 선택된 감정인지 확인
+                    onPress={() => handleEmotionListClick(emotion)}
+                  />
+                ))}
+              </View>
+            ))}
+          </Carousel>
+          <EmotionDesc textAlign={'center'}>
+            {selectedEmotions.length > 0
+              ? `${selectedEmotions[selectedEmotions.length - 1].keyword} : ${emotionData[selectedEmotions[selectedEmotions.length - 1].keyword].desc}`
+              : ''}
+          </EmotionDesc>
 
-        {selectedEmotions.length > 0 && (
+          {selectedEmotions.length > 0 && (
+            <View
+              style={css`
+                margin-top: ${rsHeight * 12 + 'px'};
+                //background-color: gray;
+                height: ${rsHeight * 80 + 'px'};
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: ${rsWidth * 6 + 'px'};
+                padding-horizontal: ${rsWidth * 24 + 'px'};
+              `}>
+              {selectedEmotions.length > 0
+                ? selectedEmotions.map((emotion, i) => (
+                    <EmotionCard
+                      key={i}
+                      emotion={emotion}
+                      onPress={handleRemoveEmotion}
+                      status={'default'}
+                    />
+                  ))
+                : ''}
+            </View>
+          )}
+        </KeyboardAwareScrollView>
+        <KeyboardStickyView
+          offset={{ closed: 0, opened: Platform.OS === 'ios' ? insets.bottom : 0 }}>
           <View
             style={css`
-              margin-top: ${rsHeight * 12 + 'px'};
-              //background-color: gray;
-              height: ${rsHeight * 80 + 'px'};
-              flex-direction: row;
-              flex-wrap: wrap;
-              gap: ${rsWidth * 6 + 'px'};
-              padding-horizontal: ${rsWidth * 24 + 'px'};
+              padding: ${rsHeight * 10 + 'px'};
+              flex-direction: column;
+              gap: ${rsWidth * 10 + 'px'};
+              justify-content: center;
             `}>
-            {selectedEmotions.length > 0
-              ? selectedEmotions.map((emotion, i) => (
-                  <EmotionCard
-                    key={i}
-                    emotion={emotion}
-                    onPress={handleRemoveEmotion}
-                    status={'default'}
-                  />
-                ))
-              : ''}
-          </View>
-        )}
-      </KeyboardAwareScrollView>
-      <KeyboardStickyView offset={{ closed: 0, opened: Platform.OS === 'ios' ? insets.bottom : 0 }}>
-        <View
-          style={css`
-            padding: ${rsHeight * 10 + 'px'};
-            flex-direction: column;
-            gap: ${rsWidth * 10 + 'px'};
-            justify-content: center;
-          `}>
-          <Button
-            title="원하는 감정이 없어요"
-            primary={false}
-            //disabled={selectedEmotions.length < MINIMUM_EMOTION_COUNT}
-            onPress={async () => {
-              //Analytics.clickRecordButton();
-              console.log('bottom sheet 열기');
-              //Analytics.clickEmotionRecordButton();
-              //setRecordedEmotions(selectedEmotions); // 상태 업데이트
-              //await todayEmotion(dateID, selectedEmotions, text);
-              //navigation.navigate(TabScreenName.Home);
-              navigation.navigate(RootStackName.HomeStackNavigator, {
+            <Button
+              title="원하는 감정이 없어요"
+              primary={false}
+              //disabled={selectedEmotions.length < MINIMUM_EMOTION_COUNT}
+              onPress={async () => {
+                openBottomSheet();
+                console.log('bottom sheet 열기');
+                //Analytics.clickEmotionRecordButton();
+                //setRecordedEmotions(selectedEmotions); // 상태 업데이트
+                //await todayEmotion(dateID, selectedEmotions, text);
+                //navigation.navigate(TabScreenName.Home);
+                /*navigation.navigate(RootStackName.HomeStackNavigator, {
                 screen: HomeStackName.TestPage,
-              });
-            }}
-          />
-          <Button
-            title="마음일기 쓰러가기"
-            primary={true}
-            onPress={() => {
-              Analytics.clickGotoDiaryWriteButton();
-              //console.log('마음일기 date', date);
-              //console.log('🔥 Navigating with:', date);
-              //console.log('🔥 date.dateString:', date?.dateString);
+              });*/
+              }}
+            />
+            <Button
+              title="마음일기 쓰러가기"
+              primary={true}
+              onPress={() => {
+                Analytics.clickGotoDiaryWriteButton();
+                //console.log('마음일기 date', date);
+                //console.log('🔥 Navigating with:', date);
+                //console.log('🔥 date.dateString:', date?.dateString);
 
-              navigation.navigate(HomeStackName.DailyDairy, { dateID: dateID });
-              //새로운 화면이 push
-            }}
-          />
-        </View>
-      </KeyboardStickyView>
-    </View>
+                navigation.navigate(HomeStackName.DailyDairy, { dateID: dateID });
+                //새로운 화면이 push
+              }}
+            />
+          </View>
+        </KeyboardStickyView>
+      </View>
+      {bottomSheetIndex !== -1 && (
+        <CustomBottomSheet indexNumber={bottomSheetIndex} onClose={closeBottomSheet} />
+      )}
+    </GestureHandlerRootView>
   );
 };
 
