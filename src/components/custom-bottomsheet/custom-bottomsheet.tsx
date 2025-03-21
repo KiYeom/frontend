@@ -16,6 +16,7 @@ import {
   ButtonContainer,
   TextLengthAlert,
 } from './custom-bottomsheet.styles';
+import useEmotionStore from '../../store/emotion-status';
 
 interface BottomSheetProps {
   indexNumber?: number;
@@ -25,11 +26,18 @@ interface BottomSheetProps {
   // 추가적인 props 가 필요하면 여기서 정의
 }
 
+const emotions = ['happy', 'angry', 'sad', 'calm', 'normal'];
+
 const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
   const { indexNumber, isOpen = false, onClose = () => {}, onSubmit = () => {} } = props;
+  //감정 입력 상태를 저장하는 state : boolean 타입, 5개
+  const [selectedStatus, setSelectedStatus] = useState<number>(-1);
+
   const [index, setIndex] = useState<number>(indexNumber);
   // callbacks
   // 닫힐 때는 index -1 , 열릴 때는 index 0
+
+  const { selectedEmotions, setSelectedEmotion, addEmotion } = useEmotionStore();
   const handleSheetChanges = useCallback((index: number) => {
     if (index === -1) {
       onClose();
@@ -44,6 +52,13 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
     bottomSheetRef.current.close();
   };
   const insets = useSafeAreaInsets();
+
+  //감정 적은 적 있는지 확인
+  useEffect(() => {
+    const customEmotion = selectedEmotions.find((emotion) => emotion.type === 'custom');
+    console.log('customEmotion', customEmotion);
+    console.log('selectedEmotions', selectedEmotions);
+  }, []);
 
   // 키보드 등장 시 높이 저장
   const handleKeyboardDidShow = useCallback((e: KeyboardEvent) => {
@@ -78,12 +93,30 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
 
   // 버튼 클릭 가능 여부
   const validateButton = (text: string): boolean => {
-    return text.length === 0 || text.length > 10;
+    return text.length === 0 || text.length > 10 || selectedStatus === -1;
   };
 
   // 감정 아이콘 클릭 이벤트
   const handleEmotionPress = (emotion: string) => {
     console.log(`${emotion} icon click`);
+    switch (emotion) {
+      case 'happy':
+        setSelectedStatus(0);
+        break;
+      case 'angry':
+        setSelectedStatus(1);
+        break;
+      case 'sad':
+        setSelectedStatus(2);
+        break;
+      case 'calm':
+        setSelectedStatus(3);
+        break;
+      case 'normal':
+        setSelectedStatus(4);
+        break;
+    }
+
     // 감정 선택 시 추가 로직 구현 가능
   };
   //console.log('custom-bottomsheet', bottomSheetRef);
@@ -115,36 +148,15 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
         </IntroContainer>
 
         <EmotionIconContainer>
-          <EmotionIcon
-            status="happy"
-            size={50}
-            onPress={() => handleEmotionPress('happy')}
-            selected={true}
-          />
-          <EmotionIcon
-            status="angry"
-            size={50}
-            onPress={() => handleEmotionPress('angry')}
-            selected={false}
-          />
-          <EmotionIcon
-            status="sad"
-            size={50}
-            onPress={() => handleEmotionPress('sad')}
-            selected={false}
-          />
-          <EmotionIcon
-            status="calm"
-            size={50}
-            onPress={() => handleEmotionPress('calm')}
-            selected={false}
-          />
-          <EmotionIcon
-            status="normal"
-            size={50}
-            onPress={() => handleEmotionPress('normal')}
-            selected={false}
-          />
+          {emotions.map((emotion, index) => (
+            <EmotionIcon
+              key={index}
+              status={emotion}
+              size={50}
+              onPress={() => handleEmotionPress(emotion)}
+              selected={selectedStatus === index}
+            />
+          ))}
         </EmotionIconContainer>
 
         <BottomSheetTextInputContainer>
@@ -158,11 +170,23 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
         </BottomSheetTextInputContainer>
         <ButtonContainer>
           <Button
-            title="나의 감정 기록하기"
+            title="나의 감정 추가하기"
             primary={true}
             disabled={validateButton(text)}
             onPress={() => {
-              console.log('나의 감정 기록하기');
+              /*
+              console.log('나의 감정 추가하기', {
+                keyword: text,
+                group: emotions[selectedStatus],
+                type: 'custom',
+              });
+               */
+              const customEmotion: Emotion = {
+                keyword: text,
+                group: emotions[selectedStatus],
+                type: 'custom',
+              };
+              addEmotion(customEmotion);
               handleClosePress();
             }}
           />

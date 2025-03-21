@@ -182,7 +182,10 @@ const DailyDairy = ({ navigation, route }) => {
               await todayEmotion(dateID, selectedEmotions, diaryText);
               navigation.navigate(TabScreenName.Home);
               console.log('~~~~', selectedEmotions);
-              updateEntryStatus(dateID, `${selectedEmotions[0].group}-emotion`);
+              const targetEmotion =
+                selectedEmotions.find((emotion) => emotion.type === 'custom') ||
+                selectedEmotions[0];
+              updateEntryStatus(dateID, `${targetEmotion.group}-emotion`);
             }}
           />
         </View>

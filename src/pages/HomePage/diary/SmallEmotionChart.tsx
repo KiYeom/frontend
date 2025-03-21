@@ -92,6 +92,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
   }, []);
 
   const handleEmotionListClick = async (emotion) => {
+    console.log('emotion', emotion);
     // 이미 선택된 감정인지 확인
     if (selectedEmotions.some((e) => e.keyword === emotion.keyword)) {
       removeEmotion(emotion.keyword);
@@ -162,7 +163,8 @@ const SmallEmotionChart = ({ navigation, route }) => {
             ))}
           </Carousel>
           <EmotionDesc textAlign={'center'}>
-            {selectedEmotions.length > 0
+            {selectedEmotions.length > 0 &&
+            emotionData[selectedEmotions[selectedEmotions.length - 1].keyword] !== undefined
               ? `${selectedEmotions[selectedEmotions.length - 1].keyword} : ${emotionData[selectedEmotions[selectedEmotions.length - 1].keyword].desc}`
               : ''}
           </EmotionDesc>
@@ -221,10 +223,6 @@ const SmallEmotionChart = ({ navigation, route }) => {
               primary={true}
               onPress={() => {
                 Analytics.clickGotoDiaryWriteButton();
-                //console.log('마음일기 date', date);
-                //console.log('🔥 Navigating with:', date);
-                //console.log('🔥 date.dateString:', date?.dateString);
-
                 navigation.navigate(HomeStackName.DailyDairy, { dateID: dateID });
                 //새로운 화면이 push
               }}

@@ -91,7 +91,7 @@ const CustomCalendar = ({ navigation }) => {
 
   useEffect(() => {
     setToday(getDate());
-    fetchCalendarData();
+    fetchCalendarData(year);
   }, []);
 
   useEffect(() => {
