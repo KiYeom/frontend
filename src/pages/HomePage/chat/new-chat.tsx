@@ -50,6 +50,7 @@ import { Hint } from 'react-native-ui-lib';
 import palette from '../../../assets/styles/theme';
 import { useRiskStoreVer2 } from '../../../store/useRiskStoreVer2';
 import clickHeaderGiftBoxButton from '../../../utils/analytics';
+import Home from '../Home';
 //import cookieprofile from '@assets/images/cookieprofile.png';
 //import cookieProfile from '@assets/images/cookieprofile.png';
 
@@ -263,7 +264,7 @@ const NewChat: React.FC = ({ navigation }) => {
     //console.log('===========useEffect 실행===========');
     setInit(true);
     if (getRefreshChat() === 0) {
-      Analytics.watchNewChatScreen();
+      //Analytics.watchNewChatScreen();
     }
     getHistory()
       .then((messageHistory) => {
@@ -286,7 +287,7 @@ const NewChat: React.FC = ({ navigation }) => {
     *** 보낼 때 한 줄 씩 띄워서 전송하게 됨
   */
   const onSend = (newMessages: IMessage[] = []) => {
-    Analytics.clickChatSendButton();
+    //Analytics.clickChatSendButton();
     if (!newMessages[0].text.trim()) {
       //console.log('실행 안됨');
       return;
@@ -354,14 +355,17 @@ const NewChat: React.FC = ({ navigation }) => {
       <Header
         title="쿠키의 채팅방"
         leftFunction={() => {
-          Analytics.clickHeaderBackButton();
-          if (getIsDemo()) requestAnalytics();
-          navigation.navigate(TabScreenName.Home);
+          //Analytics.clickHeaderBackButton();
+          //if (getIsDemo()) requestAnalytics();
+          //navigation.navigate(TabScreenName.Home);
+          navigation.navigate(RootStackName.BottomTabNavigator, {
+            screen: TabScreenName.Home,
+          });
         }}
         isRight={true}
         rightIcon={riskStatusV2 !== 'danger' ? 'side-menu-bar' : 'side-menu-bar-alert'}
         rightFunction={() => {
-          Analytics.clickHeaderSideMenuButton();
+          //Analytics.clickHeaderSideMenuButton();
           navigation.openDrawer();
         }}
         isEvent={true}
@@ -371,9 +375,9 @@ const NewChat: React.FC = ({ navigation }) => {
           await Linking.openURL(
             'https://autumn-flier-d18.notion.site/reMIND-1b48e75d989680f2b4c7e7fa8dbfc1ad?pvs=4',
           );
-          Analytics.clickHeaderGiftBoxButton(
-            'https://autumn-flier-d18.notion.site/reMIND-1b48e75d989680f2b4c7e7fa8dbfc1ad?pvs=4',
-          );
+          //Analytics.clickHeaderGiftBoxButton(
+          //'https://autumn-flier-d18.notion.site/reMIND-1b48e75d989680f2b4c7e7fa8dbfc1ad?pvs=4',
+          //);
         }}
       />
       <GiftedChat
@@ -385,12 +389,12 @@ const NewChat: React.FC = ({ navigation }) => {
             resetTimer();
           }
         }}
-        isStatusBarTranslucentAndroid
+        //isStatusBarTranslucentAndroid
         renderAvatar={RenderAvatar}
         showAvatarForEveryMessage
         renderAvatarOnTop
         onPressAvatar={() => {
-          Analytics.clickChatCharacterAvatar();
+          //Analytics.clickChatCharacterAvatar();
           navigation.navigate(HomeStackName.Profile);
         }}
         onLongPressAvatar={() => {
@@ -414,7 +418,7 @@ const NewChat: React.FC = ({ navigation }) => {
           placeholder: getIsDemo() ? '메시지 입력.' : '메시지 입력',
           marginLeft: rsWidth * 15,
         }}
-        keyboardShouldPersistTaps="never"
+        keyboardShouldPersistTaps={'never'}
         //renderSend={(sendProps: SendProps<IMessage>) => RenderSend(sendProps, sending)}
         alwaysShowSend
       />

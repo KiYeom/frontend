@@ -1,4 +1,3 @@
-import { setLogLevel } from '@react-native-firebase/app';
 import react, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Calendar, CalendarList, Agenda, DateData, LocaleConfig } from 'react-native-calendars';

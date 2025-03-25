@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+/*import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { View, Text, Keyboard, KeyboardEvent } from 'react-native';
 import BottomSheet, { BottomSheetTextInput, BottomSheetView } from '@gorhom/bottom-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -195,13 +195,6 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
             primary={true}
             disabled={validateButton(text)}
             onPress={() => {
-              /*
-              console.log('나의 감정 추가하기', {
-                keyword: text,
-                group: emotions[selectedStatus],
-                type: 'custom',
-              });
-               */
               console.log('😀😀😀😀😀😀');
               const customEmotion: Emotion = {
                 keyword: text,
@@ -226,4 +219,4 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
   );
 };
 
-export default CustomBottomSheet;
+export default CustomBottomSheet;*/
