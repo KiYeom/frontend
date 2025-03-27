@@ -9,7 +9,7 @@ import { HomeStackName, RootStackName, TabScreenName } from '../constants/Consta
 import NewChat from '../pages/HomePage/chat/new-chat';
 //import Chat from '../components/pages/HomePage/Chat';
 import DailyDairy from '../pages/HomePage/diary/DailyDairy';
-import { formatDate } from '../utils/Chatting';
+//import { formatDate } from '../utils/Chatting';
 import { Alert } from 'react-native';
 import DrawerNavigator from './DrawerNavigator';
 

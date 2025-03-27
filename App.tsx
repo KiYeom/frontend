@@ -103,6 +103,7 @@ const App: React.FC = () => {
       return;
     }
     setDeviceId(deviceId);
+    //console.log('setDevice ID', deviceId);
     const signinResult = await checkSignIn();
     if (!signinResult) {
       clearInfoWhenLogout();

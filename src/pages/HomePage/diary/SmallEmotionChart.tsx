@@ -21,7 +21,7 @@ import Toast from 'react-native-root-toast';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Carousel } from 'react-native-ui-lib';
 import { dailyAnalyze, todayEmotion, todayEmotionCheck } from '../../../apis/analyze';
-//import CustomBottomSheet from '../../../components/custom-bottomsheet/custom-bottomsheet';
+import CustomBottomSheet from '../../../components/custom-bottomsheet/custom-bottomsheet';
 import {
   emotionData,
   emotionsByColumn,
@@ -229,9 +229,9 @@ const SmallEmotionChart = ({ navigation, route }) => {
           </View>
         </KeyboardStickyView>
       </View>
-      {/*bottomSheetIndex !== -1 && (
+      {bottomSheetIndex !== -1 && (
         <CustomBottomSheet indexNumber={bottomSheetIndex} onClose={closeBottomSheet} />
-      )*/}
+      )}
     </GestureHandlerRootView>
   );
 };
