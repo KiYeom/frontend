@@ -50,6 +50,7 @@ import Header from '../../../components/header/header';
 import { useCalendarStore } from '../../../store/calendarStore';
 import { TEmotionCheck } from '~/src/apis/analyze.type';
 import { formatDateKorean } from '../../../utils/times';
+import { RootStackName } from '../../../constants/Constants';
 const validateDairy = (sentence: string): 'error' | 'default' | 'correct' => {
   if (sentence.length > 0 && sentence.length <= 300) return 'correct';
   else return 'default';
@@ -181,11 +182,14 @@ const DailyDairy = ({ navigation, route }) => {
             onPress={async () => {
               Analytics.clickDiaryWriteButton();
               await todayEmotion(dateID, selectedEmotions, diaryText);
-              navigation.navigate(TabScreenName.Home);
+              navigation.navigate(RootStackName.BottomTabNavigator, {
+                screen: TabScreenName.Home,
+              });
               console.log('~~~~', selectedEmotions);
               const targetEmotion =
                 selectedEmotions.find((emotion) => emotion.type === 'custom') ||
                 selectedEmotions[0];
+              console.log('targetEmtoin', targetEmotion);
               updateEntryStatus(dateID, `${targetEmotion.group}-emotion`);
             }}
           />

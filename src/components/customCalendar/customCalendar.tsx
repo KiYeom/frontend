@@ -100,8 +100,8 @@ const CustomCalendar = ({ navigation }) => {
   return (
     <Calendar
       style={{
-        borderWidth: 1,
-        borderColor: 'gray',
+        //borderWidth: 1,
+        //borderColor: 'gray',
         height: 'auto',
         width: rsWidth * 350,
       }}
