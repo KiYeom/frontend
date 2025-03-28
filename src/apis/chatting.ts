@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/react-native';
-import { TChatAnswer, TOldAnswer } from './chatting.types';
+import { TChatAnswer, TFavoriteChat, TOldAnswer } from './chatting.types';
 import { instance } from './interceptor';
 
 const errorMessage: TChatAnswer = {
@@ -67,5 +67,17 @@ export const reportChat = async (
   } catch (error) {
     Sentry.captureException(error);
     return false;
+  }
+};
+
+//1.5.7 UPDATE : 내가 저장한 대화 내역 가지고 오기
+export const getFavoriteChat = async (): Promise<TFavoriteChat | undefined> => {
+  try {
+    const res = await instance.get('/v3/chat/favorite');
+    //console.log('💚💚💚💚💚💚', res.data);
+    return res.data;
+  } catch (error) {
+    console.log('getFavoriteChat error', error);
+    return;
   }
 };

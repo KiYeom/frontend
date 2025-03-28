@@ -89,12 +89,12 @@ const PeriodRecord = (props: any) => {
               </TouchableOpacity>
             </View>
           </Hint>*/}
-          <HintComponent
+          {/*<HintComponent
             visible={hintStatus && hintStatus === HINT_NAME}
             onClose={() => setHintStatus(undefined)}
             onToggle={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}
             message={HINT_MESSAGE}
-          />
+          />*/}
         </View>
         {/*<HintComponent
           visible={hintStatus && hintStatus === HINT_NAME}

@@ -11,8 +11,7 @@ import { Linking, Platform } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import { useNavigation } from '@react-navigation/native';
 import Analytics from '../../utils/analytics';
-import { switchChatTone, getUserInfo } from '../../apis/setting';
-import { getRiskScore } from '../../apis/riskscore';
+import { switchChatTone, getUserInfo, switchEmojiTone } from '../../apis/setting';
 import { getRiskData, setRiskData } from '../../utils/storageUtils';
 import {
   DANGER_LETTER,
@@ -48,12 +47,12 @@ const deleteAllMessages = () => {
   );
 };
 const CustomDrawerContent = (props: any) => {
+  const navigation = useNavigation();
   //대화체를 관리하는 isCasualMode state
   const [isInFormalMode, setIsInformalMode] = useState(true);
-  //위험 점수와 상태를 관리하는 state
-  //const [riskScore, setRiskScore] = React.useState<number>(0);
-  //const [riskStatus, setRiskStatus] = React.useState<'safe' | 'danger' | 'danger-opened'>('safe');
-  const navigation = useNavigation();
+  //이모티콘 활성화를 관리하는 isEmojiMode state
+  const [isEmojiMode, setIsEmojiMode] = useState(true);
+
   const { riskScoreV2, riskStatusV2, setRiskScoreV2, setRiskStatusV2, setHandleDangerPressV2 } =
     useRiskStoreVer2();
   const insets = useSafeAreaInsets();
@@ -141,13 +140,12 @@ const CustomDrawerContent = (props: any) => {
           text="쿠키 답변에 이모티콘 추가하기"
           showIcon={false}
           showToggle={true}
-          isEnabled={isInFormalMode}
+          isEnabled={isEmojiMode}
           disabled={false}
           shouldBlockTouch={true}
           onPress={async () => {
-            switchChatTone(!isInFormalMode); //변경 사항을 서버에 patch로 업데이트
-            setIsInformalMode(!isInFormalMode); //화면의 토글이 변경
-            Analytics.clickChattingRoomSettingSwitch('반말 사용하기 (on/off)', !isInFormalMode);
+            switchEmojiTone(!isEmojiMode); //변경 사항을 서버에 patch로 업데이트
+            setIsEmojiMode(!isEmojiMode); //화면의 토글이 변경
           }}
         />
       </UserSettingContainer>
@@ -159,9 +157,6 @@ const CustomDrawerContent = (props: any) => {
           text="따스한 대화 보관함"
           onPress={() => {
             console.log('따스한 대화 보관함');
-            navigation.navigate(RootStackName.HomeStackNavigator, {
-              screen: HomeStackName.Favorites,
-            });
           }}
           iconName="favorite-icon"
         />

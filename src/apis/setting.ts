@@ -146,3 +146,15 @@ export const switchChatTone = async (isInFormal: boolean): Promise<boolean> => {
   }
   return false;
 };
+
+//1.5.7 UPDATE : 사용자 정보 (이모지 선호) 변경
+export const switchEmojiTone = async (wantsEmo: boolean): Promise<boolean> => {
+  try {
+    const res = await instance.patch('/v1/users/update-emoji', { wantsEmo });
+    //console.log('updateEmoji success', res);
+    return true;
+  } catch (error) {
+    //console.log('error');
+  }
+  return false;
+};

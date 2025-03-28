@@ -40,6 +40,7 @@ import { RootSiblingParent } from 'react-native-root-siblings';
 import { Appearance, useColorScheme } from 'react-native';
 import * as SystemUI from 'expo-system-ui';
 import 'react-native-gesture-handler';
+import Favorites from './src/pages/HomePage/favorites/favorites';
 
 Sentry.init({
   dsn: 'https://038362834934b1090d94fe368fdbcbf7@o4507944128020480.ingest.us.sentry.io/4507944132870145',
@@ -286,10 +287,12 @@ const App: React.FC = () => {
                     />
                   </>
                 ) : (
-                  <RootStack.Screen
-                    name={RootStackName.AuthStackNavigator}
-                    component={AuthStackNavigator}
-                  />
+                  <>
+                    <RootStack.Screen
+                      name={RootStackName.AuthStackNavigator}
+                      component={AuthStackNavigator}
+                    />
+                  </>
                 )}
               </RootStack.Navigator>
             </NavigationContainer>
