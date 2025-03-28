@@ -22,6 +22,31 @@ import {
 } from '../../constants/Constants';
 import { useRiskStoreVer2 } from '../../store/useRiskStoreVer2';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Alert } from 'react-native';
+
+const deleteAllMessages = () => {
+  Alert.alert(
+    '쿠키와의 모든 대화를 삭제합니다.', // 첫번째 text: 타이틀 큰 제목
+    `쿠키의 기억과 대화 모두 삭제되며,\n복구가 불가능합니다.`, // 두번째 text: 작은 제목
+    [
+      // 버튼 배열
+      {
+        text: '아니오', // 버튼 제목
+        style: 'cancel',
+        onPress: () => {
+          console.log('아니요 클릭');
+        },
+      },
+      {
+        text: '네',
+        onPress: () => {
+          console.log('확인 클릭');
+        },
+      },
+    ],
+    { cancelable: false }, //alert 밖에 눌렀을 때 alert 안 없어지도록
+  );
+};
 const CustomDrawerContent = (props: any) => {
   //대화체를 관리하는 isCasualMode state
   const [isInFormalMode, setIsInformalMode] = useState(true);
@@ -144,6 +169,7 @@ const CustomDrawerContent = (props: any) => {
           text="모든 대화 삭제하기"
           onPress={() => {
             console.log('모든 대화 삭제하기');
+            deleteAllMessages();
           }}
           iconName="trash-icon"
         />
