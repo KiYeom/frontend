@@ -98,16 +98,16 @@ const NewChat: React.FC = ({ navigation }) => {
   };
 
   const getIMessageFromServer = async (lastMessageDate: Date): Promise<IMessage[]> => {
-    console.log('4️⃣4️⃣4️⃣4️⃣4️⃣4️⃣4️⃣getIMessageFromServer4️⃣4️⃣4️⃣4️⃣4️⃣ 실행', getIMessageFromServer);
+    //console.log('4️⃣4️⃣4️⃣4️⃣4️⃣4️⃣4️⃣getIMessageFromServer4️⃣4️⃣4️⃣4️⃣4️⃣ 실행', getIMessageFromServer);
     const messages: IMessage[] = [];
     const lastDateAddSecond = new Date(lastMessageDate.getTime() + 10 * 1000);
     const serverMessages = await getOldChatting(botObject._id, lastDateAddSecond.toISOString());
-    console.log('⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️serverMessages⭐️⭐️⭐️⭐️⭐️', serverMessages);
+    //console.log('⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️serverMessages⭐️⭐️⭐️⭐️⭐️', serverMessages);
 
-    console.log(
+    /*console.log(
       'true / false',
       serverMessages && serverMessages.chats && serverMessages.chats.length > 0,
-    );
+    );*/
 
     if (serverMessages && serverMessages.chats && serverMessages.chats.length > 0) {
       for (let i = 0; i < serverMessages.chats.length; i++) {
@@ -136,7 +136,7 @@ const NewChat: React.FC = ({ navigation }) => {
         }
       }
     }
-    console.log('😀😀😀😀😀😀😀reverse 이전', messages);
+    //console.log('😀😀😀😀😀😀😀reverse 이전', messages);
     return messages.reverse();
   };
 
@@ -151,7 +151,7 @@ const NewChat: React.FC = ({ navigation }) => {
     //대화 내역을 가져오는 함수
     let messages: IMessage[] = [];
     const deviceHistory = getNewIMessages();
-    console.log('😀😀😀😀😀로컬에서 가지고 온 메세지😀😀😀😀😀😀', deviceHistory);
+    //console.log('😀😀😀😀😀로컬에서 가지고 온 메세지😀😀😀😀😀😀', deviceHistory);
     if (deviceHistory) {
       const deviceArray = JSON.parse(deviceHistory);
       messages.push(...deviceArray);
@@ -160,7 +160,7 @@ const NewChat: React.FC = ({ navigation }) => {
     const lastMessageDate: Date =
       messages.length > 0 ? new Date(messages[0].createdAt) : new Date(0);
     const serverMessages = await getIMessageFromServer(lastMessageDate);
-    console.log('🌱🌱🌱🌱🌱🌱🌱서버에서 가지고 온 메세지🌱🌱🌱🌱🌱🌱', serverMessages);
+    //console.log('🌱🌱🌱🌱🌱🌱🌱서버에서 가지고 온 메세지🌱🌱🌱🌱🌱🌱', serverMessages);
     messages = [...serverMessages, ...messages];
 
     //대화 내역이 없을 경우, 환영 메시지를 추가
@@ -272,7 +272,7 @@ const NewChat: React.FC = ({ navigation }) => {
     if (getRefreshChat() === 0) {
       //Analytics.watchNewChatScreen();
     }
-    console.log('🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨');
+    //console.log('🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨');
     getHistory()
       .then((messageHistory) => {
         //console.log('useEffect 결과', messageHistory);

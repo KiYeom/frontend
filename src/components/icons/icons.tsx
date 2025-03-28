@@ -36,6 +36,8 @@ import Pencil from './svg/pencil';
 import GreenChatIcon from './svg/chat';
 import NormalEmotion from './svg/normal-emotion';
 import EditIcon from './svg/edit-icon';
+import FavoriteIcon from './svg/favorite-icon';
+import TrashIcon from './svg/trash-icon';
 
 export type TIconName =
   | 'airplane'
@@ -75,7 +77,9 @@ export type TIconName =
   | 'pencil'
   | 'green-chat-icon'
   | 'normal-emotion'
-  | 'edit-icon';
+  | 'edit-icon'
+  | 'favorite-icon'
+  | 'trash-icon';
 
 export default function Icon({
   width,
@@ -165,5 +169,9 @@ export default function Icon({
       return <NormalEmotion width={width} height={height} color={color} />;
     case 'edit-icon':
       return <EditIcon width={width} height={height} color={color} />;
+    case 'favorite-icon':
+      return <FavoriteIcon width={width} height={height} color={color} />;
+    case 'trash-icon':
+      return <TrashIcon width={width} height={height} color={color} />;
   }
 }

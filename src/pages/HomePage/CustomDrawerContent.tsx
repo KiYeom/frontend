@@ -14,12 +14,14 @@ import Analytics from '../../utils/analytics';
 import { switchChatTone, getUserInfo } from '../../apis/setting';
 import { getRiskScore } from '../../apis/riskscore';
 import { getRiskData, setRiskData } from '../../utils/storageUtils';
-import { getKoreanServerTodayDateString } from '../../utils/times';
-import { RISK_SCORE_THRESHOLD } from '../../constants/Constants';
-import { DANGER_LETTER, DangerStackName, RootStackName } from '../../constants/Constants';
+import {
+  DANGER_LETTER,
+  DangerStackName,
+  RootStackName,
+  HomeStackName,
+} from '../../constants/Constants';
 import { useRiskStoreVer2 } from '../../store/useRiskStoreVer2';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
 const CustomDrawerContent = (props: any) => {
   //대화체를 관리하는 isCasualMode state
   const [isInFormalMode, setIsInformalMode] = useState(true);
@@ -109,6 +111,41 @@ const CustomDrawerContent = (props: any) => {
             setIsInformalMode(!isInFormalMode); //화면의 토글이 변경
             Analytics.clickChattingRoomSettingSwitch('반말 사용하기 (on/off)', !isInFormalMode);
           }}
+        />
+        <MenuRow
+          text="쿠키 답변에 이모티콘 추가하기"
+          showIcon={false}
+          showToggle={true}
+          isEnabled={isInFormalMode}
+          disabled={false}
+          shouldBlockTouch={true}
+          onPress={async () => {
+            switchChatTone(!isInFormalMode); //변경 사항을 서버에 patch로 업데이트
+            setIsInformalMode(!isInFormalMode); //화면의 토글이 변경
+            Analytics.clickChattingRoomSettingSwitch('반말 사용하기 (on/off)', !isInFormalMode);
+          }}
+        />
+      </UserSettingContainer>
+      <UserSettingContainer>
+        <SubjectTextContainer>
+          <SubjectText>쿠키와의 추억</SubjectText>
+        </SubjectTextContainer>
+        <MenuRow
+          text="따스한 대화 보관함"
+          onPress={() => {
+            console.log('따스한 대화 보관함');
+            navigation.navigate(RootStackName.HomeStackNavigator, {
+              screen: HomeStackName.Favorites,
+            });
+          }}
+          iconName="favorite-icon"
+        />
+        <MenuRow
+          text="모든 대화 삭제하기"
+          onPress={() => {
+            console.log('모든 대화 삭제하기');
+          }}
+          iconName="trash-icon"
         />
       </UserSettingContainer>
       <UserSettingContainer>

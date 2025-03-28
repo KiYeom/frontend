@@ -12,6 +12,7 @@ import DailyDairy from '../pages/HomePage/diary/DailyDairy';
 //import { formatDate } from '../utils/Chatting';
 import { Alert } from 'react-native';
 import DrawerNavigator from './DrawerNavigator';
+import Favorites from '../pages/HomePage/favorites/favorites';
 
 import StatisticMain from '../pages/StatisticPage/StatisticMain';
 import Home from '../pages/HomePage/Home';
@@ -25,26 +26,17 @@ const HomeStackNavigator: React.FC = () => {
       <HomeStack.Screen
         name={HomeStackName.SmallEmotionChart}
         component={SmallEmotionChart}
-        //initialParams={{ date: new Date().toISOString() }}
-        //options={({ route, navigation }) => ({
-        //header: () => <Header />,
-        //})}
         options={{ headerShown: false }}
       />
       <HomeStack.Screen
         name={HomeStackName.DailyDairy}
         component={DailyDairy}
-        //initialParams={{ date: new Date() }}
-        //options={({ route, navigation }) => ({
-        //header: () => <Header />,
-        //})}
         options={{ headerShown: false }}
       />
       <HomeStack.Screen
         name={HomeStackName.Profile}
         component={Profile}
         options={{ header: () => <Header /> }}
-        //options={{ headerShown: false }}
       />
       <HomeStack.Screen
         name={HomeStackName.NewChat}
@@ -60,6 +52,12 @@ const HomeStackNavigator: React.FC = () => {
       <HomeStack.Screen
         name={HomeStackName.Report}
         component={StatisticMain}
+        options={{ headerShown: false }}
+      />
+      {/* 1.5.7 UPDATE 즐겨찾기 추가 */}
+      <HomeStack.Screen
+        name={HomeStackName.Favorites}
+        component={Favorites}
         options={{ headerShown: false }}
       />
     </HomeStack.Navigator>
