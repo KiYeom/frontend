@@ -28,6 +28,7 @@ import HintComponent from './HintComponent';
 import Header from '../../components/header/header';
 import EmptyBox from '../../components/emptybox/emptyBox';
 import { RecordedEmotion } from '../HomePage/diary/EmotionChart.style';
+import { RootStackName, HomeStackName } from '../../constants/Constants';
 
 const HINT_NAME = 'main';
 const HINT_MESSAGE =
@@ -198,6 +199,12 @@ const PeriodStatisticPage: React.FC<any> = () => {
               isLeftIcon={true}
               iconName="pencil"
               iconSize={40}
+              onPress={() =>
+                navigation.navigate(RootStackName.HomeStackNavigator, {
+                  screen: HomeStackName.SmallEmotionChart,
+                  params: { dateID: dateID },
+                })
+              }
             />
           )}
           {periodKeywordList.length === 0 && (
@@ -207,6 +214,11 @@ const PeriodStatisticPage: React.FC<any> = () => {
               isLeftIcon={true}
               iconName="green-chat-icon"
               iconSize={40}
+              onPress={() =>
+                navigation.navigate(RootStackName.HomeStackNavigator, {
+                  screen: HomeStackName.NewChat,
+                })
+              }
             />
           )}
         </View>

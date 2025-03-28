@@ -50,11 +50,9 @@ import { Hint } from 'react-native-ui-lib';
 import palette from '../../../assets/styles/theme';
 import { useRiskStoreVer2 } from '../../../store/useRiskStoreVer2';
 import clickHeaderGiftBoxButton from '../../../utils/analytics';
-//import cookieprofile from '@assets/images/cookieprofile.png';
-//import cookieProfile from '@assets/images/cookieprofile.png';
+import Home from '../Home';
 
-//const HINT_MESSAGE = 'AI로 생성된 답변입니다. 상담 필요 시 전문가와 상의하세요.';
-
+//유저와 챗봇 오브젝트 정의
 const userObject = {
   _id: 0,
   name: '나',
@@ -100,9 +98,16 @@ const NewChat: React.FC = ({ navigation }) => {
   };
 
   const getIMessageFromServer = async (lastMessageDate: Date): Promise<IMessage[]> => {
+    console.log('4️⃣4️⃣4️⃣4️⃣4️⃣4️⃣4️⃣getIMessageFromServer4️⃣4️⃣4️⃣4️⃣4️⃣ 실행', getIMessageFromServer);
     const messages: IMessage[] = [];
     const lastDateAddSecond = new Date(lastMessageDate.getTime() + 10 * 1000);
     const serverMessages = await getOldChatting(botObject._id, lastDateAddSecond.toISOString());
+    console.log('⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️serverMessages⭐️⭐️⭐️⭐️⭐️', serverMessages);
+
+    console.log(
+      'true / false',
+      serverMessages && serverMessages.chats && serverMessages.chats.length > 0,
+    );
 
     if (serverMessages && serverMessages.chats && serverMessages.chats.length > 0) {
       for (let i = 0; i < serverMessages.chats.length; i++) {
@@ -131,6 +136,7 @@ const NewChat: React.FC = ({ navigation }) => {
         }
       }
     }
+    console.log('😀😀😀😀😀😀😀reverse 이전', messages);
     return messages.reverse();
   };
 
@@ -145,7 +151,7 @@ const NewChat: React.FC = ({ navigation }) => {
     //대화 내역을 가져오는 함수
     let messages: IMessage[] = [];
     const deviceHistory = getNewIMessages();
-    //console.log('🎊🎊🎊🎊🎊🎊deviceHistory🎊🎊🎊🎊🎊', deviceHistory);
+    console.log('😀😀😀😀😀로컬에서 가지고 온 메세지😀😀😀😀😀😀', deviceHistory);
     if (deviceHistory) {
       const deviceArray = JSON.parse(deviceHistory);
       messages.push(...deviceArray);
@@ -154,6 +160,7 @@ const NewChat: React.FC = ({ navigation }) => {
     const lastMessageDate: Date =
       messages.length > 0 ? new Date(messages[0].createdAt) : new Date(0);
     const serverMessages = await getIMessageFromServer(lastMessageDate);
+    console.log('🌱🌱🌱🌱🌱🌱🌱서버에서 가지고 온 메세지🌱🌱🌱🌱🌱🌱', serverMessages);
     messages = [...serverMessages, ...messages];
 
     //대화 내역이 없을 경우, 환영 메시지를 추가
@@ -263,11 +270,12 @@ const NewChat: React.FC = ({ navigation }) => {
     //console.log('===========useEffect 실행===========');
     setInit(true);
     if (getRefreshChat() === 0) {
-      Analytics.watchNewChatScreen();
+      //Analytics.watchNewChatScreen();
     }
+    console.log('🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨');
     getHistory()
       .then((messageHistory) => {
-        //console.log('messageHistory', messageHistory);
+        //console.log('useEffect 결과', messageHistory);
         setMessages(messageHistory);
         setInit(false);
       })
@@ -286,12 +294,12 @@ const NewChat: React.FC = ({ navigation }) => {
     *** 보낼 때 한 줄 씩 띄워서 전송하게 됨
   */
   const onSend = (newMessages: IMessage[] = []) => {
-    Analytics.clickChatSendButton();
+    //Analytics.clickChatSendButton();
     if (!newMessages[0].text.trim()) {
       //console.log('실행 안됨');
       return;
     }
-    setBuffer(buffer ? buffer + newMessages[0].text + '\n' : newMessages[0].text + '\n');
+    setBuffer(buffer ? buffer + newMessages[0].text + '\t' : newMessages[0].text + '\t');
     setMessages((previousMessages) => {
       setIMessages(previousMessages, newMessages.reverse());
       return GiftedChat.append(previousMessages, newMessages);
@@ -354,14 +362,17 @@ const NewChat: React.FC = ({ navigation }) => {
       <Header
         title="쿠키의 채팅방"
         leftFunction={() => {
-          Analytics.clickHeaderBackButton();
-          if (getIsDemo()) requestAnalytics();
-          navigation.navigate(TabScreenName.Home);
+          //Analytics.clickHeaderBackButton();
+          //if (getIsDemo()) requestAnalytics();
+          //navigation.navigate(TabScreenName.Home);
+          navigation.navigate(RootStackName.BottomTabNavigator, {
+            screen: TabScreenName.Home,
+          });
         }}
         isRight={true}
         rightIcon={riskStatusV2 !== 'danger' ? 'side-menu-bar' : 'side-menu-bar-alert'}
         rightFunction={() => {
-          Analytics.clickHeaderSideMenuButton();
+          //Analytics.clickHeaderSideMenuButton();
           navigation.openDrawer();
         }}
         isEvent={true}
@@ -371,9 +382,9 @@ const NewChat: React.FC = ({ navigation }) => {
           await Linking.openURL(
             'https://autumn-flier-d18.notion.site/reMIND-1b48e75d989680f2b4c7e7fa8dbfc1ad?pvs=4',
           );
-          Analytics.clickHeaderGiftBoxButton(
-            'https://autumn-flier-d18.notion.site/reMIND-1b48e75d989680f2b4c7e7fa8dbfc1ad?pvs=4',
-          );
+          //Analytics.clickHeaderGiftBoxButton(
+          //'https://autumn-flier-d18.notion.site/reMIND-1b48e75d989680f2b4c7e7fa8dbfc1ad?pvs=4',
+          //);
         }}
       />
       <GiftedChat
@@ -385,12 +396,12 @@ const NewChat: React.FC = ({ navigation }) => {
             resetTimer();
           }
         }}
-        isStatusBarTranslucentAndroid
+        //isStatusBarTranslucentAndroid
         renderAvatar={RenderAvatar}
         showAvatarForEveryMessage
         renderAvatarOnTop
         onPressAvatar={() => {
-          Analytics.clickChatCharacterAvatar();
+          //Analytics.clickChatCharacterAvatar();
           navigation.navigate(HomeStackName.Profile);
         }}
         onLongPressAvatar={() => {
@@ -414,7 +425,7 @@ const NewChat: React.FC = ({ navigation }) => {
           placeholder: getIsDemo() ? '메시지 입력.' : '메시지 입력',
           marginLeft: rsWidth * 15,
         }}
-        keyboardShouldPersistTaps="never"
+        keyboardShouldPersistTaps={'never'}
         //renderSend={(sendProps: SendProps<IMessage>) => RenderSend(sendProps, sending)}
         alwaysShowSend
       />
@@ -497,3 +508,8 @@ useEffect(() => {
   };*/
 //const [riskScore, setRiskScore] = React.useState<number>(0);
 //const [riskStatus, setRiskStatus] = React.useState<'safe' | 'danger' | 'danger-opened'>('safe');
+
+//import cookieprofile from '@assets/images/cookieprofile.png';
+//import cookieProfile from '@assets/images/cookieprofile.png';
+
+//const HINT_MESSAGE = 'AI로 생성된 답변입니다. 상담 필요 시 전문가와 상의하세요.';

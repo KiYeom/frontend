@@ -187,7 +187,7 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
             value={text}
             onChangeText={setText}
           />
-          <TextLengthAlert>{text.length}/10</TextLengthAlert>
+          <TextLengthAlert text={text || ''}>{text.length}/10</TextLengthAlert>
         </BottomSheetTextInputContainer>
         <ButtonContainer>
           <Button
@@ -195,13 +195,6 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
             primary={true}
             disabled={validateButton(text)}
             onPress={() => {
-              /*
-              console.log('나의 감정 추가하기', {
-                keyword: text,
-                group: emotions[selectedStatus],
-                type: 'custom',
-              });
-               */
               console.log('😀😀😀😀😀😀');
               const customEmotion: Emotion = {
                 keyword: text,

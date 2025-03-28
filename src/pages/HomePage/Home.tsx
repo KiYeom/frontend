@@ -25,7 +25,7 @@ import HomeChatBtn from '../../components/HomeBtn/HomeChatBtn';
 import Header from './Homeheader';
 import { getKoreanServerTodayDateString } from '../../utils/times';
 import { useRiskStoreVer2 } from '../../store/useRiskStoreVer2';
-import CustomCalendar from '../../components/customCalendar/CustomCalendar';
+import CustomCalendar from '../../components/customCalendar/customCalendar';
 import { dailyEmotionAnalyze } from '~/src/apis/analyze';
 const defaultHomeCarousel = [
   {
@@ -60,7 +60,7 @@ const Home: React.FC<any> = ({ navigation }) => {
     });
   };
 
-  useEffect(() => {
+  /*useEffect(() => {
     Analytics.watchTabHomeScreen();
     requestNotificationPermission();
     getCarousel('home')
@@ -74,15 +74,15 @@ const Home: React.FC<any> = ({ navigation }) => {
     navigation.navigate(RootStackName.HomeStackNavigator, {
       screen: HomeStackName.NewChat,
     });
-  }, []);
+  }, []);*/
 
   //홈 화면으로 포커스 될 때마다 위험 점수를 갱신한다.
-  useEffect(() => {
+  /*useEffect(() => {
     const unsubscribe = navigation.addListener('focus', setRiskScoreV2);
     return () => {
       unsubscribe();
     };
-  }, [navigation]);
+  }, [navigation]);*/
 
   return (
     <View
@@ -103,16 +103,16 @@ const Home: React.FC<any> = ({ navigation }) => {
             onIconPress={() => {
               switch (riskStatusV2) {
                 case 'safe':
-                  Analytics.clickClinicInfoButton(riskScoreV2);
+                  //Analytics.clickClinicInfoButton(riskScoreV2);
                   WebBrowser.openBrowserAsync(
                     'https://autumn-flier-d18.notion.site/1268e75d989680f7b4f2d63d66f4a08a?pvs=4',
                   );
                   return;
                 case 'danger':
-                  Analytics.clickDangerLetterButton(riskScoreV2);
+                  //Analytics.clickDangerLetterButton(riskScoreV2);
                   break;
                 case 'danger-opened':
-                  Analytics.clickOpenedDangerLetterButton(riskScoreV2);
+                  //Analytics.clickOpenedDangerLetterButton(riskScoreV2);
                   break;
               }
               navigateToDangerAlert();
@@ -134,7 +134,7 @@ const Home: React.FC<any> = ({ navigation }) => {
                 key={i}
                 activeOpacity={1}
                 onPress={() => {
-                  Analytics.clickTabHomeCarousel(carousel.image);
+                  //Analytics.clickTabHomeCarousel(carousel.image);
                   WebBrowser.openBrowserAsync(carousel.url);
                 }}>
                 <Image
@@ -149,9 +149,6 @@ const Home: React.FC<any> = ({ navigation }) => {
             ))}
           </Carousel>
 
-          {/*<HomeChatBtn navigation={navigation} />
-
-          <EmotionBtn navigation={navigation} />*/}
           <CustomCalendar navigation={navigation} />
         </View>
       </ScrollView>

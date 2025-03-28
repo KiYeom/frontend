@@ -103,6 +103,7 @@ const App: React.FC = () => {
       return;
     }
     setDeviceId(deviceId);
+    //console.log('setDevice ID', deviceId);
     const signinResult = await checkSignIn();
     if (!signinResult) {
       clearInfoWhenLogout();
@@ -138,7 +139,7 @@ const App: React.FC = () => {
   };*/
 
   //앱 버전 체크
-  const checkAppVersion = () => {
+  /*const checkAppVersion = () => {
     getLatestVersion()
       .then((res) => {
         const deviceVersion = getAppVersion() ?? undefined;
@@ -149,7 +150,7 @@ const App: React.FC = () => {
         }
       })
       .catch((error) => console.error(error));
-  };
+  };*/
 
   //앱 처음 실행 시 폰트 로드 진행. 완료되면 로그인 여부를 판단한 뒤에 로딩 화면을 숨김
   useEffect(() => {
@@ -159,7 +160,7 @@ const App: React.FC = () => {
     if (loaded) {
       bootstrap().then(() => {
         setLoading(false);
-        checkAppVersion();
+        //checkAppVersion();
       });
     }
   }, [loaded, error]);
@@ -188,116 +189,114 @@ const App: React.FC = () => {
   );*/
 
   return (
-    <GestureHandlerRootView>
-      <KeyboardProvider>
-        <SafeAreaProvider>
-          <PaperProvider>
-            <RootSiblingParent>
-              <NavigationContainer
-                theme={navTheme}
-                linking={{
-                  prefixes: [prefix],
-                  config: {
-                    // Configuration for linking
-                    screens: {
-                      // Define the linking configuration
-                      [RootStackName.HomeStackNavigator]: {
-                        screens: {
-                          [HomeStackName.NewChat]: 'chat', //{"url": "remind://chat" }
-                        },
+    <KeyboardProvider>
+      <SafeAreaProvider>
+        <PaperProvider>
+          <RootSiblingParent>
+            <NavigationContainer
+              theme={navTheme}
+              linking={{
+                prefixes: [prefix],
+                config: {
+                  // Configuration for linking
+                  screens: {
+                    // Define the linking configuration
+                    [RootStackName.HomeStackNavigator]: {
+                      screens: {
+                        [HomeStackName.NewChat]: 'chat', //{"url": "remind://chat" }
                       },
-                      [RootStackName.BottomTabNavigator]: {
-                        screens: {
-                          [TabScreenName.Statistic]: 'statistic/daily', //{"url": "remind://statistic/daily" }
-                        },
+                    },
+                    [RootStackName.BottomTabNavigator]: {
+                      screens: {
+                        [TabScreenName.Statistic]: 'statistic/daily', //{"url": "remind://statistic/daily" }
                       },
                     },
                   },
-                  async getInitialURL() {
-                    // First, you may want to do the default deep link handling
-                    // Check if app was opened from a deep link
-                    const url = await Linking.getInitialURL();
+                },
+                async getInitialURL() {
+                  // First, you may want to do the default deep link handling
+                  // Check if app was opened from a deep link
+                  const url = await Linking.getInitialURL();
 
-                    if (url != null) {
-                      return url;
-                    }
+                  if (url != null) {
+                    return url;
+                  }
 
-                    // Handle URL from expo push notifications
-                    const response = await Notifications.getLastNotificationResponseAsync();
+                  // Handle URL from expo push notifications
+                  const response = await Notifications.getLastNotificationResponseAsync();
 
-                    return response?.notification.request.content.data.url;
-                  },
-                  subscribe(listener) {
-                    const onReceiveURL = ({ url }: { url: string }) => listener(url);
+                  return response?.notification.request.content.data.url;
+                },
+                subscribe(listener) {
+                  const onReceiveURL = ({ url }: { url: string }) => listener(url);
 
-                    // Listen to incoming links from deep linking
-                    const eventListenerSubscription = Linking.addEventListener('url', onReceiveURL);
+                  // Listen to incoming links from deep linking
+                  const eventListenerSubscription = Linking.addEventListener('url', onReceiveURL);
 
-                    // Listen to expo push notifications
-                    const subscription = Notifications.addNotificationResponseReceivedListener(
-                      (response) => {
-                        const url = response.notification.request.content.data.url;
+                  // Listen to expo push notifications
+                  const subscription = Notifications.addNotificationResponseReceivedListener(
+                    (response) => {
+                      const url = response.notification.request.content.data.url;
 
-                        // Any custom logic to see whether the URL needs to be handled
-                        //...
+                      // Any custom logic to see whether the URL needs to be handled
+                      //...
 
-                        // Let React Navigation handle the URL
-                        listener(url);
-                      },
-                    );
+                      // Let React Navigation handle the URL
+                      listener(url);
+                    },
+                  );
 
-                    return () => {
-                      // Clean up the event listeners
-                      eventListenerSubscription.remove();
-                      subscription.remove();
-                    };
-                  },
-                }}
-                fallback={
-                  <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color={palette.primary[500]} />
-                  </View>
-                }>
-                <RootStack.Navigator
-                  screenOptions={{
-                    headerShown: false,
-                  }}>
-                  {SigninStatus ? (
-                    <>
-                      <RootStack.Screen
-                        name={RootStackName.BottomTabNavigator}
-                        component={BottomTabNavigator}
-                      />
-                      <RootStack.Screen
-                        name={RootStackName.StatisStackNavigator}
-                        component={StatisticStackNavigator}
-                      />
-                      <RootStack.Screen
-                        name={RootStackName.HomeStackNavigator}
-                        component={HomeStackNavigator}
-                      />
-                      <RootStack.Screen
-                        name={RootStackName.SettingStackNavigator}
-                        component={SettingStackNavigator}
-                      />
-                      <RootStack.Screen
-                        name={RootStackName.DangerStackNavigator}
-                        component={DangerStackNavigator}
-                      />
-                    </>
-                  ) : (
+                  return () => {
+                    // Clean up the event listeners
+                    eventListenerSubscription.remove();
+                    subscription.remove();
+                  };
+                },
+              }}
+              fallback={
+                <View style={styles.loadingContainer}>
+                  <ActivityIndicator size="large" color={palette.primary[500]} />
+                </View>
+              }>
+              <RootStack.Navigator
+                screenOptions={{
+                  headerShown: false,
+                }}>
+                {SigninStatus ? (
+                  <>
                     <RootStack.Screen
-                      name={RootStackName.AuthStackNavigator}
-                      component={AuthStackNavigator}
+                      name={RootStackName.BottomTabNavigator}
+                      component={BottomTabNavigator}
                     />
-                  )}
-                </RootStack.Navigator>
-              </NavigationContainer>
-            </RootSiblingParent>
-          </PaperProvider>
-        </SafeAreaProvider>
-      </KeyboardProvider>
-    </GestureHandlerRootView>
+                    <RootStack.Screen
+                      name={RootStackName.StatisStackNavigator}
+                      component={StatisticStackNavigator}
+                    />
+                    <RootStack.Screen
+                      name={RootStackName.HomeStackNavigator}
+                      component={HomeStackNavigator}
+                    />
+                    <RootStack.Screen
+                      name={RootStackName.SettingStackNavigator}
+                      component={SettingStackNavigator}
+                    />
+                    <RootStack.Screen
+                      name={RootStackName.DangerStackNavigator}
+                      component={DangerStackNavigator}
+                    />
+                  </>
+                ) : (
+                  <RootStack.Screen
+                    name={RootStackName.AuthStackNavigator}
+                    component={AuthStackNavigator}
+                  />
+                )}
+              </RootStack.Navigator>
+            </NavigationContainer>
+          </RootSiblingParent>
+        </PaperProvider>
+      </SafeAreaProvider>
+    </KeyboardProvider>
   );
 };
 

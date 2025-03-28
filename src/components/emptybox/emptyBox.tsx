@@ -1,5 +1,5 @@
 import React from 'react';
-import { css } from '@emotion/native';
+import styled, { css } from '@emotion/native';
 import { View, Text, TouchableOpacity } from 'react-native';
 import Icon, { TIconName } from '../icons/icons';
 import { rsWidth, rsHeight, rsFont } from '../../utils/responsive-size';
@@ -52,8 +52,8 @@ const EmptyBox: React.FC<BoxProps> = (props: BoxProps) => {
           style={css`
             font-family: Pretendard-SemiBold;
             font-size: ${18 * rsFont + 'px'};
-            letter-spacing: -2.5%;
-            line-height: auto;
+            //letter-spacing: -2.5%;
+            //line-height: auto;
             color: ${palette.neutral[900]};
           `}>
           {mainTitle}
@@ -62,8 +62,8 @@ const EmptyBox: React.FC<BoxProps> = (props: BoxProps) => {
           style={css`
             font-family: Pretendard-Regular;
             font-size: ${14 * rsFont + 'px'};
-            letter-spacing: -2.5%;
-            line-height: auto;
+            //letter-spacing: -2.5%;
+            //line-height: auto;
           `}>
           {subTitle}
         </Text>

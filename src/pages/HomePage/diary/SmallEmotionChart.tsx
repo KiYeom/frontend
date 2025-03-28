@@ -85,7 +85,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-    Analytics.watchEmotionRecordScreen();
+    //Analytics.watchEmotionRecordScreen();
     fetchData();
     //setSelectedEmotion(recordedEmotions);
   }, []);
@@ -221,7 +221,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
               title="마음일기 쓰러가기"
               primary={true}
               onPress={() => {
-                Analytics.clickGotoDiaryWriteButton();
+                //Analytics.clickGotoDiaryWriteButton();
                 navigation.navigate(HomeStackName.DailyDairy, { dateID: dateID });
                 //새로운 화면이 push
               }}

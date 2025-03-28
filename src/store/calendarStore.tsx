@@ -4,7 +4,7 @@ import { getMonthRange } from '../utils/times';
 
 //날짜의 상태를 변경하는 함수
 const processCalendarData = (apiData, allDates) => {
-  //console.log('processCalendarDate 실행', apiData);
+  console.log('processCalendarDate 실행', apiData);
   //1.5.7 UPDATE 현재 날짜 가져오는 형태로 변경
 
   apiData.dates.forEach((date, index) => {
@@ -19,14 +19,31 @@ const processCalendarData = (apiData, allDates) => {
       allDates[date] = { status: `${group_status}-emotion` };
     }
   });
+  console.log('precesscalendardata', allDates);
 
   return allDates;
 };
 
 //현재 달의 모든 날짜를 배열로 생성하는 함수
 const generateAllDates = (year: number) => {
+  //const today = new Date();
+  //const todayStr = today.toISOString().split('T')[0];
+  //console.log('+++++++++', todayStr);
+
   const today = new Date();
-  const todayStr = today.toISOString().split('T')[0];
+
+  // 현재 시간을 UTC 기준 타임스탬프로 변환한 후, 한국 시간(UTC+9) 오프셋을 적용
+  const utc = today.getTime() + today.getTimezoneOffset() * 60000;
+  const todayKorean = new Date(utc + 9 * 60 * 60000);
+
+  // 한국 시간 기준 연/월/일 추출
+  const today_year = todayKorean.getFullYear();
+  const today_month = String(todayKorean.getMonth() + 1).padStart(2, '0');
+  const today_day = String(todayKorean.getDate()).padStart(2, '0');
+  const todayStr = `${today_year}-${today_month}-${today_day}`;
+
+  //console.log('~~~~~~~~todayStr~~~~~~~~', todayStr);
+
   let dates = {};
 
   // 0: 1월, 11: 12월
@@ -80,7 +97,7 @@ export const useCalendarStore = create<CalendarStore>((set, get) => ({
       //const response = await periodRecordEmotions(startDate, endDate); //1.5.7 UPDATE 새로 만든 api 확인되면 삭제하기api 를 호출하여 감정 일기 작성날을 가져옴
       //console.log('year', year);
       const responseV2 = await dailyEmotionAnalyze(year);
-      //console.log('=== responseV2', responseV2);
+      console.log('=== responseV2', responseV2);
       //response : "records": [{"date": "2025-03-14", "keywords": [Array], "todayFeeling": "힣lgpgp"}]}
       const allDates = generateAllDates(year);
       const processData = processCalendarData(responseV2, allDates);

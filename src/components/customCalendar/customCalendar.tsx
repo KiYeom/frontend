@@ -1,4 +1,3 @@
-import { setLogLevel } from '@react-native-firebase/app';
 import react, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Calendar, CalendarList, Agenda, DateData, LocaleConfig } from 'react-native-calendars';
@@ -101,8 +100,8 @@ const CustomCalendar = ({ navigation }) => {
   return (
     <Calendar
       style={{
-        borderWidth: 1,
-        borderColor: 'gray',
+        //borderWidth: 1,
+        //borderColor: 'gray',
         height: 'auto',
         width: rsWidth * 350,
       }}
@@ -123,6 +122,7 @@ const CustomCalendar = ({ navigation }) => {
             paddingVertical: rsHeight * 20,
           },
         },
+        arrowColor: `${palette.neutral[300]}`,
       }}
       //초기에 보이는 값, 기본값 : Date()
       //current={'2025-02-01'}
@@ -233,6 +233,38 @@ const CustomCalendar = ({ navigation }) => {
               </TouchableOpacity>
             </View>
           )
+        );
+      }}
+      //해더
+      renderHeader={(dateString: string) => {
+        const date = new Date(dateString);
+        const month = date.getMonth() + 1;
+        const year = date.getFullYear();
+        return (
+          <View
+            style={{
+              justifyContent: 'center',
+              alignContent: 'center',
+            }}>
+            <Text
+              style={{
+                fontFamily: 'Pretendard-Medium',
+                fontSize: rsFont * 14,
+                color: `${palette.neutral[900]}`,
+                textAlign: `center`,
+              }}>
+              {year}년
+            </Text>
+            <Text
+              style={{
+                fontFamily: 'Pretendard-Semibold',
+                fontSize: rsFont * 24,
+                color: `${palette.neutral[900]}`,
+                textAlign: `center`,
+              }}>
+              {month}월
+            </Text>
+          </View>
         );
       }}
     />

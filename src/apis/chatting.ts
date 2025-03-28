@@ -40,6 +40,7 @@ export const getOldChatting = async (
     const res = await instance.get('/v1/chat/history', {
       params: { 'character-id': characterId, from },
     });
+    console.log('💚💚💚💚💚💚', res.data);
     return res.data;
   } catch (error) {
     Sentry.captureException(error, {
