@@ -1,6 +1,13 @@
 export type TChatAnswer = {
   answer: string;
 };
+//1.5.7 UPDATE
+export type TChatAnswerV3 = TChatLogV3[];
+export type TChatLogV3 = {
+  answer: string | null;
+  id: string;
+  question: string | null;
+};
 
 export type TOldAnswer = {
   chats: TAppChat[];

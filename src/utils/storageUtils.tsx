@@ -25,6 +25,8 @@ const CHATTING = 'chatting';
 
 //NewIMessages
 const NEW_I_MESSAGES = 'new_i_messages';
+//v3
+const V3_MESSAGES = 'v3_message';
 
 //RiskWithLetterId
 const RISK_WITH_LETTER_ID = 'RISK_WITH_LETTER_ID';
@@ -227,6 +229,21 @@ export const setNewIMessages = (newIMessages: string): void => {
 
 export const deleteNewIMessages = (): void => {
   storage.delete(NEW_I_MESSAGES);
+};
+
+//1.5.7 UPDATE : v3
+export const getNewIMessagesV3 = (): string | undefined => {
+  return storage.getString(V3_MESSAGES);
+};
+export const setNewIMessagesV3 = (newIMessages: string): void => {
+  storage.set(V3_MESSAGES, newIMessages);
+};
+export const deleteNewIMessagesV3 = (): void => {
+  storage.delete(V3_MESSAGES);
+};
+//v3 key가 있는지 확인하는 함수 (있으면 true 없으면 false)
+export const doesV3KeyExist = () => {
+  return storage.contains(V3_MESSAGES);
 };
 
 //refreshChattingPageTimes

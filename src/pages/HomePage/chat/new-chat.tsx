@@ -15,6 +15,7 @@ import {
 import * as NavigationBar from 'expo-navigation-bar';
 import {
   addRefreshChat,
+  deleteNewIMessages,
   getIsDemo,
   getNewIMessages,
   getRefreshChat,
@@ -22,6 +23,7 @@ import {
   getUserNickname,
   setIsScoreDemo,
   setNewIMessages,
+  setNewIMessagesV3,
   setRiskData,
 } from '../../../utils/storageUtils';
 import Analytics from '../../../utils/analytics';
@@ -51,6 +53,8 @@ import palette from '../../../assets/styles/theme';
 import { useRiskStoreVer2 } from '../../../store/useRiskStoreVer2';
 import clickHeaderGiftBoxButton from '../../../utils/analytics';
 import Home from '../Home';
+import { doesV3KeyExist, getNewIMessagesV3 } from '../../../utils/storageUtils';
+import { getV3OldChatting } from '../../../apis/chatting';
 
 //유저와 챗봇 오브젝트 정의
 const userObject = {
@@ -102,7 +106,7 @@ const NewChat: React.FC = ({ navigation }) => {
     const messages: IMessage[] = [];
     const lastDateAddSecond = new Date(lastMessageDate.getTime() + 10 * 1000);
     const serverMessages = await getOldChatting(botObject._id, lastDateAddSecond.toISOString());
-    //console.log('⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️serverMessages⭐️⭐️⭐️⭐️⭐️', serverMessages);
+    console.log('⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️serverMessages⭐️⭐️⭐️⭐️⭐️', serverMessages);
 
     /*console.log(
       'true / false',
@@ -140,41 +144,69 @@ const NewChat: React.FC = ({ navigation }) => {
     return messages.reverse();
   };
 
-  /*
-  1. 대화 내역을 가지고 오는 getHistory 함수
-    서버에서 그 동안의 대화 내역을 가지고 오며, 대화 내역이 없는 경우 환영 메세지를 추가하여 반환
-  2. 비동기 처리가 완료된 후 리턴 타입
-    Imssage[] (배열)
-  -> 왜 로컬에서 대화를 먼저 가지고 오고, 서버에서 그 동안의 대화를 가지고 오는가?
-  */
-  const getHistory = async (): Promise<IMessage[]> => {
-    //대화 내역을 가져오는 함수
-    let messages: IMessage[] = [];
-    const deviceHistory = getNewIMessages();
-    //console.log('😀😀😀😀😀로컬에서 가지고 온 메세지😀😀😀😀😀😀', deviceHistory);
-    if (deviceHistory) {
-      const deviceArray = JSON.parse(deviceHistory);
-      messages.push(...deviceArray);
-    } //이 부분 주석 처리하면 웰컴 메세지가 없음
-
-    const lastMessageDate: Date =
-      messages.length > 0 ? new Date(messages[0].createdAt) : new Date(0);
-    const serverMessages = await getIMessageFromServer(lastMessageDate);
-    //console.log('🌱🌱🌱🌱🌱🌱🌱서버에서 가지고 온 메세지🌱🌱🌱🌱🌱🌱', serverMessages);
-    messages = [...serverMessages, ...messages];
-
-    //대화 내역이 없을 경우, 환영 메시지를 추가
-    if (messages.length === 0) {
-      const welcomeMessage = {
-        _id: new Date().getTime(),
-        text: `반가워요, ${getUserNickname()}님!💚 저는 ${getUserNickname()}님 곁에서 힘이 되어드리고 싶은 골든 리트리버 쿠키예요🐶 이 곳은 ${getUserNickname()}님과 저만의 비밀 공간이니, 어떤 이야기도 편하게 나눠주세요!\n\n 반말로 대화를 나누고 싶으시다면 위에서 오른쪽에 있는 탭 바를 열고, 반말 모드를 켜 주세요!🍀💕`,
-        createdAt: new Date(),
-        user: botObject,
-      };
-      messages.push(welcomeMessage);
-      setNewIMessages(JSON.stringify([welcomeMessage]));
+  //1.5.7v3 서버에서 대화 내용을 불러오는 함수
+  const v3getIMessageFromServer = async (lastMessageDate: Date): Promise<IMessage[]> => {
+    const messages: IMessage[] = [];
+    const lastDateAddSecond = new Date(lastMessageDate.getTime() + 10 * 1000);
+    const serverMessages = await getV3OldChatting(botObject._id, lastDateAddSecond.toISOString());
+    //console.log('v3 데이터 확인하기', serverMessages);
+    if (serverMessages && serverMessages.chats && serverMessages.chats.length > 0) {
+      for (let i = 0; i < serverMessages.chats.length; i++) {
+        messages.push({
+          _id: serverMessages.chats[i].id,
+          text: serverMessages.chats[i].text,
+          createdAt: new Date(new Date(serverMessages.chats[i].utcTime).getTime()),
+          user: serverMessages.chats[i].status === 'user' ? userObject : botObject,
+        }); //대화 내용을 messages에 추가
+      }
     }
+    return messages.reverse();
+  };
 
+  //대화 내용을 불러오는 getHistory 함수
+  const getHistory = async (): Promise<IMessage[]> => {
+    // 1. 로컬에서 먼저 저장된 대화 내역들을 가지고 온다.
+    // 로그아웃을 하고 다시 실행하면, 디바이스에 저장한 대화를 삭제하기 때문에 undefined이다.
+    // 반대로 로그아웃 이후 한 번이라도 대화를 하게 되면 디바이스에 실시간으로 모든 대화들이 저장이 되기 때문에 모든 대화 로그가 있음
+    let messages: IMessage[] = [];
+    const isV3KeyExist = doesV3KeyExist();
+
+    if (!isV3KeyExist) {
+      //v3 키가 존재하지 않는 경우
+      console.log('🔑🔑🔑🔑🔑🔑🔑🔑🔑v3 키가 존재하지 않음🔑🔑🔑🔑🔑🔑🔑🔑', isV3KeyExist);
+      const v3lastMessageDate = new Date(0);
+      const v3ServerMessages = await v3getIMessageFromServer(v3lastMessageDate); //전체 데이터 가져오기
+      if (v3ServerMessages && v3ServerMessages.length > 0) {
+        console.log('💚💚💚💚💚💚💚💚💚💚💚이전에 썼던 사람 마이그레이션 하기💚💚💚💚💚💚💚💚');
+        setNewIMessagesV3(JSON.stringify(v3ServerMessages)); //로컬 마이그레이션
+        deleteNewIMessages(); //v3 이전 로컬 데이터 삭제
+        messages = [...v3ServerMessages, ...messages]; //데이터 화면에 보여주기
+      } else {
+        //새로 온 사람
+        console.log('🤖🤖🤖🤖🤖🤖🤖🤖새로 온 사람🤖🤖🤖🤖🤖🤖🤖🤖');
+        const welcomeMessage = {
+          _id: new Date().getTime(),
+          text: `반가워요, ${getUserNickname()}님!💚 저는 ${getUserNickname()}님 곁에서 힘이 되어드리고 싶은 골든 리트리버 쿠키예요🐶 이 곳은 ${getUserNickname()}님과 저만의 비밀 공간이니, 어떤 이야기도 편하게 나눠주세요!\n\n 반말로 대화를 나누고 싶으시다면 위에서 오른쪽에 있는 탭 바를 열고, 반말 모드를 켜 주세요!🍀💕`,
+          createdAt: new Date(),
+          user: botObject,
+        };
+        messages.push(welcomeMessage);
+        setNewIMessagesV3(JSON.stringify([welcomeMessage]));
+      }
+    } else {
+      //v3 키가 존재하는 경우
+      //console.log('👯👯👯👯👯👯👯👯v3 키가 존재함👯👯👯👯👯👯', isV3KeyExist);
+      const v3DeviceHistory = getNewIMessagesV3();
+      if (v3DeviceHistory) {
+        const v3DeviceArray = JSON.parse(v3DeviceHistory);
+        messages.push(...v3DeviceArray);
+      }
+      //console.log('🦈🦈🦈🦈🦈🦈v3DeviceHistory', v3DeviceHistory);
+      const v3lastMessageDate: Date =
+        messages.length > 0 ? new Date(messages[0].createdAt) : new Date(0);
+      const v3ServerMessages = await v3getIMessageFromServer(v3lastMessageDate);
+      messages = [...v3ServerMessages, ...messages];
+    }
     return messages;
   };
 
@@ -183,31 +215,65 @@ const NewChat: React.FC = ({ navigation }) => {
     setNewIMessages(messagesString);
   };
 
-  //유저가 서버로 메세지를 보내는 sendMessageToServer 함수
+  //v3로 저장된 메시지들을 로컬에 저장하는 함수
+  const setIMessagesV3 = (previousMessages: IMessage[], newMessages: IMessage[]) => {
+    const messagesString = JSON.stringify([...newMessages, ...previousMessages]);
+    setNewIMessagesV3(messagesString);
+  };
+
+  //버퍼에 저장된 메시지를 서버로 전송하는 sendMessageToServer 함수
   const sendMessageToServer = () => {
-    if (!buffer) return;
+    if (!buffer || sending) return;
     setSending(true);
     const question = buffer ?? '';
     const isDemo = getIsDemo();
-    chatting(1, question, isDemo)
+    chatting(1, question, isDemo) //버퍼에 저장된 메세지를 서버로 전송하여 질문 & 대화 전체 쌍을 받아옴
       .then((res) => {
-        if (res && res.answer) {
-          const answers =
-            res.answer.match(
-              /\s*([^.!?;:…。？！~…」»]+[.!?;:…。？！~…」»](?:\s*[\u{1F300}-\u{1F5FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}\u{1F004}\u{1F0CF}\u{1F170}-\u{1F251}]*)?)\s*/gu,
-            ) || [];
-          const newMessages: IMessage[] = [];
-          for (let i = 0; i < answers.length; i++) {
-            newMessages.push({
-              _id: uuid.v4().toString(),
-              text: answers[i],
-              createdAt: new Date(new Date().getTime() + i),
-              user: botObject,
-            });
-          }
+        //console.log('v3로 받은 유저와 쿠키의 답변', res);
+        //console.log('getOldChatting 결과', getNewIMessagesV3());
+        //console.log('화면에 나오는 메세지들', messages); //최신순으로 저장되어있음. messages[0]이 내가 보낸 가장 마지막 메세지
+        if (res) {
+          //const newMessages: IMessage[] = [];
+          //console.log('현재 저장된 메세지들', messages);
+          const sortedMessages = res?.reverse(); //결과를 역순으로 정렬하여 최신 메세지가 앞으로
+          const apiQuestions = sortedMessages.filter(
+            (item) => item.question !== null && item.question !== '' && item.answer === null,
+          );
+          const apiAnswers = sortedMessages.filter(
+            (item) => item.answer !== null && item.question === null,
+          );
+
           setMessages((previousMessages) => {
-            setIMessages(previousMessages, newMessages.reverse());
-            return GiftedChat.append(previousMessages, newMessages);
+            const updatedMessages = [...previousMessages];
+            for (let i = 0; i < apiQuestions.length; i++) {
+              /*console.log('apiQuestions[i]', apiQuestions[i]);
+              console.log('updatedMessages[i]', updatedMessages[i]);
+              console.log('apiQuestions[i].question', apiQuestions[i].question);
+              console.log('updatedMessages[i].text', updatedMessages[i].text);
+              console.log('updatedMessages[i]._id', updatedMessages[i]._id);
+              console.log('apiQuestions[i].id', apiQuestions[i].id);*/
+              if (updatedMessages[i] && updatedMessages[i].text === apiQuestions[i].question) {
+                updatedMessages[i] = {
+                  ...updatedMessages[i],
+                  _id: apiQuestions[i].id,
+                };
+              }
+            }
+            // API 응답에서 봇의 대답들만 필터링했다고 가정 (예: apiAnswers)
+            const newBotMessages: IMessage[] = apiAnswers.map((item, idx) => ({
+              _id: item.id,
+              text: item.answer ?? '', // API에서 받은 봇의 대답 텍스트
+              createdAt: new Date(), // 생성 시간 (API에 createdAt이 없으면 현재 시간에 idx를 더해서 대체)
+              user: botObject, // 봇을 나타내는 user 객체
+            }));
+
+            //setIMessages(updatedMessages, newMessages.reverse());
+            setIMessagesV3(updatedMessages, newBotMessages);
+            /*console.log(
+              '🥵🥵🥵🥵🥵🥵🥵확인하기 : 로컬에 저장된 값🥵🥵🥵🥵🥵🥵🥵',
+              getNewIMessagesV3(),
+            );*/
+            return GiftedChat.append(updatedMessages, newBotMessages);
           });
         }
       })
@@ -221,7 +287,7 @@ const NewChat: React.FC = ({ navigation }) => {
           },
         ];
         setMessages((previousMessages) => {
-          setIMessages(previousMessages, newMessages.reverse());
+          setIMessagesV3(previousMessages, newMessages);
           return GiftedChat.append(previousMessages, newMessages);
         });
       })
@@ -275,7 +341,7 @@ const NewChat: React.FC = ({ navigation }) => {
     //console.log('🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨');
     getHistory()
       .then((messageHistory) => {
-        //console.log('useEffect 결과', messageHistory);
+        console.log('😀😀😀😀😀😀useEffect 결과😀😀😀😀', messageHistory);
         setMessages(messageHistory);
         setInit(false);
       })
@@ -285,23 +351,15 @@ const NewChat: React.FC = ({ navigation }) => {
       });
   }, []);
 
-  /*
-  1. onSend 함수
-    비행기 버튼을 눌렀을 때 실행되는 메세지 전송 버튼, 매개변수로 내가 TextInput에 작성한 newMessages를 받음
-    newMessages : [{"_id": "953961d0-d7c3-4f43-9275-a7ba62157062", "createdAt": 2025-02-27T03:33:31.172Z, "text": "바부", "user": {"_id": 0, "name": "나"}}]
-    *** 빈 화면에서 전송 버튼을 누르면 실행되지 않으나.. 버튼을 비활성화 시키는 게 더 현명해보임
-    *** 유저가 작성한 메세지가 여러 개인 경우 buffer로 쌓이고, 최종 전송될 때 buffer에 있는 메세지 전부 보냄
-    *** 보낼 때 한 줄 씩 띄워서 전송하게 됨
-  */
+  //비행기를 클릭헀을 때 실행되는 onSend 함수
+  //api 로 유저 - 채팅 한 쌍을 받아오기 전에는 id 값을 임의로 설정하여 화면에 보여준다.
   const onSend = (newMessages: IMessage[] = []) => {
-    //Analytics.clickChatSendButton();
     if (!newMessages[0].text.trim()) {
-      //console.log('실행 안됨');
       return;
     }
     setBuffer(buffer ? buffer + newMessages[0].text + '\t' : newMessages[0].text + '\t');
     setMessages((previousMessages) => {
-      setIMessages(previousMessages, newMessages.reverse());
+      //setIMessagesV3(previousMessages, newMessages.reverse());
       return GiftedChat.append(previousMessages, newMessages);
     });
   };
