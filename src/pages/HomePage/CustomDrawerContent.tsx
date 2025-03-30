@@ -174,6 +174,9 @@ const CustomDrawerContent = (props: any) => {
           text="따스한 대화 보관함"
           onPress={() => {
             console.log('따스한 대화 보관함');
+            navigation.navigate(RootStackName.HomeStackNavigator, {
+              screen: HomeStackName.Favorites,
+            });
           }}
           iconName="favorite-icon"
         />

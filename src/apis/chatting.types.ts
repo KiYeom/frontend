@@ -21,7 +21,7 @@ export type TAppChat = {
 
 //좋아하는 데이터 불러오기
 export type TFavoriteChat = {
-  chats: TFavoriteChatLog[];
+  favorite: TFavoriteChatLog[];
 };
 export type TFavoriteChatLog = {
   id: string;

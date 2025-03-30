@@ -86,11 +86,15 @@ export default function Icon({
   height,
   color,
   name,
+  toggleable,
+  defaultFilled,
 }: {
   width?: number | string;
   height?: number | string;
   color?: string;
   name: TIconName;
+  toggleable?: boolean;
+  defaultFilled?: boolean;
 }) {
   switch (name) {
     case 'airplane':
@@ -170,7 +174,15 @@ export default function Icon({
     case 'edit-icon':
       return <EditIcon width={width} height={height} color={color} />;
     case 'favorite-icon':
-      return <FavoriteIcon width={width} height={height} color={color} />;
+      return (
+        <FavoriteIcon
+          width={width}
+          height={height}
+          color={color}
+          toggleable={toggleable}
+          defaultFilled={defaultFilled}
+        />
+      );
     case 'trash-icon':
       return <TrashIcon width={width} height={height} color={color} />;
   }

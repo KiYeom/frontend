@@ -238,7 +238,13 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
               flex: 1;
               justify-content: flex-end;
             `}>
-            <Icon name="favorite-icon" width={rsWidth * 14 + 'px'} height={rsHeight * 14 + 'px'} />
+            <Icon
+              name="favorite-icon"
+              width={rsWidth * 14 + 'px'}
+              height={rsHeight * 14 + 'px'}
+              toggleable
+              defaultFilled={false}
+            />
           </View>
         </TouchableOpacity>
       )}
