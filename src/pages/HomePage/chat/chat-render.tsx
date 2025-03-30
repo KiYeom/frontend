@@ -30,7 +30,7 @@ import { reportChat } from '../../../apis/chatting';
 import { getNewIMessages } from '../../../utils/storageUtils';
 import Input from '../../../components/input/input';
 import { transparent } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
-
+import { saveFavoriteChatLog } from '../../../apis/chatting';
 const getMessageSet = (
   currentMessage: IMessage,
   allMessages: IMessage[],
@@ -77,29 +77,61 @@ const getMessageSet = (
   };
 };
 
-const reportMessages = (message: IMessage) => {
+// 클릭한 말풍선의 모든 대화를 만드는 함수 (ex. 67e8218282ca763945508719-B-5)
+const generateIdList = (clickedId: string): string[] => {
+  console.log('clickedId', clickedId);
+  const parts = clickedId.split('-');
+  const maxIndex = parseInt(parts.pop() || '0', 10); // 마지막 숫자 추출
+  const baseId = parts.join('-') + '-'; // 나머지 부분을 재조합하여 기본 id를 만듭니다.
+
+  const idList: string[] = [];
+  for (let i = 0; i <= maxIndex; i++) {
+    idList.push(baseId + i);
+  }
+  console.log('idList', idList);
+  return idList;
+};
+
+const reportMessages = async (message: IMessage) => {
   if (message.user._id === null || isNaN(message.user._id)) return;
   //대화 내역을 가져오는 함수
-  let allMessages: IMessage[] = [];
-  const deviceHistory = getNewIMessages();
-  if (deviceHistory) {
+  console.log('🥵🥵🥵🥵🥵🥵message.user._id🥵🥵🥵🥵🥵', message._id);
+  console.log('⭐️⭐️⭐️⭐️⭐️⭐️ message._id type', typeof message._id);
+  const isSaved: boolean = true;
+  //const splitedMessages = message._id.split('-');
+  //const objectMessages = splitedMessages[0];
+  //console.log('objectMessages', objectMessages);
+  //console.log('objectMessages type', typeof objectMessages);
+  //const dummy = '67e8d33082ca7639455090eb-B-0';
+  const res = await saveFavoriteChatLog(message._id, isSaved);
+  console.log('api 결과', res);
+  //await saveFavoriteChatLog(objectMessages, true);
+  //const chatList = generateIdList(message._id);
+  /*for (const id of chatList) {
+    console.log('for문 실행');
+    await saveFavoriteChatLog(id, true);
+  }*/
+
+  //let allMessages: IMessage[] = [];
+  //const deviceHistory = getNewIMessages();
+  /*if (deviceHistory) {
     const deviceArray = JSON.parse(deviceHistory);
     allMessages.push(...deviceArray);
-  }
-  const chats = getMessageSet(message, allMessages);
-  if (chats === undefined) {
+  }*/
+  //const chats = getMessageSet(message, allMessages);
+  /*if (chats === undefined) {
     Alert.alert('신고 접수 실패', '쿠키와 대화를 진행한 후 다시 시도해주세요.');
     return;
-  }
+  }*/
 
-  reportChat(
+  /*reportChat(
     Number(message.user._id),
     chats.userChats,
     chats.botChats,
     new Date(message.createdAt).toISOString(),
   ).finally(() => {
     Alert.alert('신고 접수', '신고가 접수되었습니다. 감사합니다!');
-  });
+  });*/
 };
 
 const confirmReport = (message: IMessage) => {

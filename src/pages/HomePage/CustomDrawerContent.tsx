@@ -18,12 +18,17 @@ import {
   DangerStackName,
   RootStackName,
   HomeStackName,
+  TabScreenName,
 } from '../../constants/Constants';
 import { useRiskStoreVer2 } from '../../store/useRiskStoreVer2';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Alert } from 'react-native';
+import { DrawerActions } from '@react-navigation/native';
+import { deleteChatLog } from '../../apis/chatting';
+import { deleteNewIMessagesV3 } from '../../utils/storageUtils';
+import BottomTabNavigator from '~/src/navigators/BottomTabNavigator';
 
-const deleteAllMessages = () => {
+const deleteAllMessages = (onConfirm?: () => void): void => {
   Alert.alert(
     '쿠키와의 모든 대화를 삭제합니다.', // 첫번째 text: 타이틀 큰 제목
     `쿠키의 기억과 대화 모두 삭제되며,\n복구가 불가능합니다.`, // 두번째 text: 작은 제목
@@ -40,6 +45,7 @@ const deleteAllMessages = () => {
         text: '네',
         onPress: () => {
           console.log('확인 클릭');
+          if (onConfirm) onConfirm();
         },
       },
     ],
@@ -56,6 +62,17 @@ const CustomDrawerContent = (props: any) => {
   const { riskScoreV2, riskStatusV2, setRiskScoreV2, setRiskStatusV2, setHandleDangerPressV2 } =
     useRiskStoreVer2();
   const insets = useSafeAreaInsets();
+
+  //삭제 버튼 클릭 시 닫기, 로컬 데이터 초기화, messagess 배열 초기화, 서버 대화 초기화 (api 호출)
+  const handleDeleteAllMessages = async () => {
+    console.log('Drawer 닫기');
+    props.navigation.closeDrawer();
+    await deleteChatLog(); //백엔드 삭제
+    deleteNewIMessagesV3(); //로컬 삭제
+    props.navigation.navigate(RootStackName.BottomTabNavigator, {
+      screen: TabScreenName.Home,
+    });
+  };
 
   //위험 상태에 따른 클릭 이벤트 처리 (쿠키 편지로 이동)
   const navigateToDangerAlert = () => {
@@ -164,7 +181,7 @@ const CustomDrawerContent = (props: any) => {
           text="모든 대화 삭제하기"
           onPress={() => {
             console.log('모든 대화 삭제하기');
-            deleteAllMessages();
+            deleteAllMessages(handleDeleteAllMessages);
           }}
           iconName="trash-icon"
         />

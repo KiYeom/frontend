@@ -341,7 +341,7 @@ const NewChat: React.FC = ({ navigation }) => {
     //console.log('🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨');
     getHistory()
       .then((messageHistory) => {
-        console.log('😀😀😀😀😀😀useEffect 결과😀😀😀😀', messageHistory);
+        //console.log('😀😀😀😀😀😀useEffect 결과😀😀😀😀', messageHistory);
         setMessages(messageHistory);
         setInit(false);
       })

@@ -101,3 +101,31 @@ export const getV3OldChatting = async (
     return;
   }
 };
+
+//1.5.7 UPDATE 신규 - 좋아하는 대화 저장하기 (이상함)
+export const saveFavoriteChatLog = async (
+  messageId: string,
+  isSaved: boolean,
+): Promise<boolean> => {
+  console.log('messageId', messageId);
+  console.log('isSaved', isSaved);
+  console.log(JSON.stringify({ messageId, isSaved }));
+  try {
+    const res = await instance.post('/v3/chat/favorite', { messageId, isSaved });
+    return res.data;
+  } catch (error) {
+    console.log('saveFavoriteChat error', error);
+    return false;
+  }
+};
+
+//1.5.7 UPDATE 신규 - 대화 삭제하기
+export const deleteChatLog = async (): Promise<boolean> => {
+  try {
+    const res = await instance.delete('/v3/chat/init');
+    return res.data;
+  } catch (error) {
+    console.log('deleteChatLog error', error);
+    return false;
+  }
+};
