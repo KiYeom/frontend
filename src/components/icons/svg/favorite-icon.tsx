@@ -4,6 +4,8 @@ import { TouchableOpacity } from 'react-native';
 type FavoriteIconProps = IconProps & {
   toggleable?: boolean;
   defaultFilled?: boolean;
+  messageId?: string;
+  onFavoritePress?: (msg: string) => void;
 };
 
 export const FavoriteIcon = ({
@@ -12,12 +14,18 @@ export const FavoriteIcon = ({
   color = '#6e7781',
   toggleable = false,
   defaultFilled = true,
+  messageId,
+  onFavoritePress,
 }: FavoriteIconProps) => {
   const [isFilled, setIsFilled] = useState(defaultFilled);
   console.log('isFilled', isFilled);
   const handlePress = () => {
     if (toggleable) {
       setIsFilled((prev) => !prev);
+      if (onFavoritePress && messageId) {
+        console.log('messageId', messageId);
+        onFavoritePress(messageId);
+      }
     }
   };
   const fillValue = isFilled ? '#FF6F61' : 'none';

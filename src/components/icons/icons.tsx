@@ -88,6 +88,8 @@ export default function Icon({
   name,
   toggleable,
   defaultFilled,
+  messageId,
+  onFavoritePress,
 }: {
   width?: number | string;
   height?: number | string;
@@ -95,6 +97,8 @@ export default function Icon({
   name: TIconName;
   toggleable?: boolean;
   defaultFilled?: boolean;
+  messageId?: string;
+  onFavoritePress?: (messageId: string) => void;
 }) {
   switch (name) {
     case 'airplane':
@@ -181,6 +185,8 @@ export default function Icon({
           color={color}
           toggleable={toggleable}
           defaultFilled={defaultFilled}
+          messageId={messageId}
+          onFavoritePress={onFavoritePress}
         />
       );
     case 'trash-icon':
