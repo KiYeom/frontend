@@ -197,7 +197,9 @@ export const saveFavoriteChatLog = async (
   console.log('isSaved', isSaved);
   console.log(JSON.stringify({ messageId, isSaved }));
   try {
-    const res = await instance.post('/v3/chat/favorite', { messageId, isSaved });
+    const res = await instance.post('/v3/chat/favorite', null, {
+      params: { messageId, isSaved },
+    });
     return res.data;
   } catch (error) {
     console.log('saveFavoriteChat error', error);

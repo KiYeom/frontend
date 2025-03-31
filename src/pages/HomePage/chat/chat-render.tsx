@@ -92,19 +92,20 @@ const generateIdList = (clickedId: string): string[] => {
   return idList;
 };
 
-const reportMessages = (messageId: string): string | undefined => {
+const reportMessages = async (messageId: string): string | undefined => {
   console.log('reportMessags 실행', messageId);
   if (messageId === null) return;
   //대화 내역을 가져오는 함수
   //console.log('🥵🥵🥵🥵🥵🥵message.user._id🥵🥵🥵🥵🥵', message._id);
   //console.log('⭐️⭐️⭐️⭐️⭐️⭐️ message._id type', typeof message._id);
-  //const isSaved: boolean = true;
+  const isSaved: boolean = true;
   //const splitedMessages = message._id.split('-');
   //const objectMessages = splitedMessages[0];
   //console.log('objectMessages', objectMessages);
   //console.log('objectMessages type', typeof objectMessages);
   //const dummy = '67e8d33082ca7639455090eb-B-0';
-  //const res = await saveFavoriteChatLog(message._id, isSaved);
+  const res = await saveFavoriteChatLog(messageId, isSaved);
+  console.log('res');
   //console.log('api 결과', res);
   //await saveFavoriteChatLog(objectMessages, true);
   //const chatList = generateIdList(message._id);
