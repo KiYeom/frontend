@@ -355,11 +355,16 @@ const NewChat: React.FC = ({ navigation }) => {
     if (res?.nextCursor) {
       //검색 결과가 존재하는 경우
       scrollToMessageById(res.nextCursor);
-      setEnableUp(true);
+      if (enableUp) {
+        setEnableDown(true);
+      } else {
+        setEnableUp(true);
+      }
     } else {
       //검색 결과가 존재하지 않는 경우
       console.log('검색 결과가 없습니다');
       setEnableDown(false);
+      setEnableUp(false);
     }
     return res?.nextCursor;
   };

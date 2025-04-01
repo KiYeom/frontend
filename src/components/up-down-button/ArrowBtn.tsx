@@ -10,7 +10,11 @@ const ArrowBtn = (props) => {
       enable={enable}
       onPress={() => {
         console.log(iconName, '버튼 누름');
-        handleSearch(searchWord, 'up');
+        if (iconName === 'arrow-up') {
+          handleSearch(searchWord, 'up');
+        } else if (iconName === 'arrow-down') {
+          handleSearch(searchWord, 'down');
+        }
       }}>
       <Icon
         name={iconName}
