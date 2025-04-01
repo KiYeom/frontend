@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Dimensions, Platform, View } from 'react-native';
+import { Dimensions, Platform, View, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GiftedChat, IMessage, SendProps } from 'react-native-gifted-chat';
 import Header from '../../../components/header/header';
@@ -83,11 +83,14 @@ const NewChat: React.FC = ({ navigation }) => {
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null); //타이핑 시간을 관리하는 타이머 (초기값 null, 이후 setTimeout의 반환값인 NodeJS.Timeout 객체를 저장)
   const refreshTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  //1.5.7 검색 추가
   const nowCursor = React.useRef<string | null | undefined>(undefined); //api 결과값이자 현재 커서 값
+  const prevCursor = React.useRef<string | null | undefined>(undefined);
   const [searchWord, setSearchWord] = useState<string>(''); //검색어
   const [isSearchMode, setIsSearchMode] = useState<boolean>(false); //검색 비활성화
   const [enableUp, setEnableUp] = useState<boolean>(false);
   const [enableDown, setEnableDown] = useState<boolean>(false);
+  const [searchLoading, setSearchLoading] = useState<boolean>(false);
 
   const { riskStatusV2, riskScoreV2, setRiskScoreV2, setRiskStatusV2, setHandleDangerPressV2 } =
     useRiskStoreVer2();
@@ -339,40 +342,73 @@ const NewChat: React.FC = ({ navigation }) => {
     text: string,
     direction: null | 'up' | 'down',
   ): Promise<string | null> => {
-    console.log('새 함수 검색어 : ', text);
-    if (!scrollToMessageById || nowCursor.current === null) {
-      // 스크롤 함수 없거나 더 이상 검색할 결과가 없음
+    console.log('새 함수 검색어 : ', text, direction, nowCursor.current);
+    setSearchLoading(true);
+
+    // 스크롤 함수가 없거나 더 이상 검색 결과가 없을 경우
+    if (!scrollToMessageById || (nowCursor.current === null && prevCursor.current === null)) {
       console.log('검색 결과가 없습니다');
       Toast.show(`검색 결과가 없습니다`, {
         duration: Toast.durations.SHORT,
         position: Toast.positions.CENTER,
       });
+      setSearchLoading(false);
+      nowCursor.current = undefined; // 초기화
       return null;
     }
-    const isFirstSearch = nowCursor.current === undefined;
-    const apiCursor: string | null = isFirstSearch ? null : nowCursor.current;
 
-    const res = await searchChatWord(text, apiCursor, direction);
+    let res: any; // searchChatWord의 반환값 타입에 맞게 수정
+
+    // 검색 방향에 따른 커서 선택
+    if (direction === 'up' || direction === null) {
+      const apiCursor: string | null = nowCursor.current === undefined ? null : nowCursor.current;
+      res = await searchChatWord(text, apiCursor, direction);
+    } else if (direction === 'down') {
+      const apiCursor: string | null = prevCursor.current;
+      res = await searchChatWord(text, apiCursor, direction);
+    }
+
+    // 커서 업데이트
+    prevCursor.current = nowCursor.current;
     nowCursor.current = res?.nextCursor ?? null;
-    console.log('res', res);
+    setSearchLoading(false);
 
     if (res?.nextCursor) {
-      //검색 결과가 존재하는 경우
       scrollToMessageById(res.nextCursor);
-      if (enableUp) {
-        setEnableDown(true);
-      } else {
+      if (direction === 'up' || direction === null) {
+        // 최초 검색인 경우(prevCursor.current가 null 또는 undefined)
+        if (prevCursor.current === undefined || prevCursor.current === null) {
+          setEnableUp(true);
+          setEnableDown(false); // 최초 검색: down 버튼 비활성화
+        } else {
+          setEnableUp(true);
+          setEnableDown(true); // 후속 up 검색: 양쪽 모두 활성화
+        }
+      } else if (direction === 'down') {
+        // down 버튼 클릭: 이전으로 되돌아갔으므로 up 버튼만 활성화
         setEnableUp(true);
+        setEnableDown(false);
       }
     } else {
-      //검색 결과가 존재하지 않는 경우
-      console.log('검색 결과가 없습니다');
-      Toast.show(`검색 결과가 없습니다🥺`, {
-        duration: Toast.durations.SHORT,
-        position: Toast.positions.CENTER,
-      });
-      setEnableDown(false);
-      setEnableUp(false);
+      // 검색 결과가 없는 경우: 요구사항 4 - 둘 다 비활성화
+      if (direction === 'up') {
+        setEnableDown(true);
+        setEnableUp(false);
+        Toast.show(`더 이상 위로 검색 결과가 없습니다🥺🥺`, {
+          duration: Toast.durations.SHORT,
+          position: Toast.positions.CENTER,
+        });
+      } //위로 더 못 가는 경우
+      else {
+        setEnableUp(false);
+        setEnableDown(false);
+        Toast.show(`검색 결과가 없습니다!!!`, {
+          duration: Toast.durations.SHORT,
+          position: Toast.positions.CENTER,
+        });
+        prevCursor.current = undefined; // 초기화
+        nowCursor.current = undefined; // 초기화
+      }
     }
     return res?.nextCursor;
   };
@@ -561,6 +597,21 @@ const NewChat: React.FC = ({ navigation }) => {
         //renderSend={(sendProps: SendProps<IMessage>) => RenderSend(sendProps, sending)}
         alwaysShowSend
       />
+      {searchLoading && (
+        <View
+          style={{
+            position: 'absolute', // 절대 위치 지정
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 999, // 다른 컴포넌트보다 위에 렌더링
+          }}>
+          <ActivityIndicator />
+        </View>
+      )}
     </SafeAreaView>
   );
 };
