@@ -535,6 +535,11 @@ const NewChat: React.FC = ({ navigation }) => {
         isEvent={true}
         isRight={true}
         isLeft={true}
+        leftFunction={() => {
+          navigation.navigate(RootStackName.BottomTabNavigator, {
+            screen: TabScreenName.Home,
+          });
+        }}
         eventFunction={() => {
           console.log('이벤트 버튼 누름');
           setIsSearchMode((prev) => !prev);

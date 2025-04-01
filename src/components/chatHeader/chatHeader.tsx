@@ -75,10 +75,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = (props: ChatHeaderProps) => {
             {headerProps.leftText !== undefined && <OptionText>{headerProps.leftText}</OptionText>}
           </HeaderLeft>
         ) : (
-          <HeaderLeft
-            onPress={headerProps.leftFunction}
-            activeOpacity={1}
-            isTitle={headerProps.title !== undefined}>
+          <HeaderLeft activeOpacity={1} isTitle={headerProps.title !== undefined}>
             <Icon
               name={`chat-search-icon`}
               width={rsWidth * 20 + 'px'}

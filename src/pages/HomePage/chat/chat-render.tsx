@@ -348,38 +348,6 @@ export const RenderTime = (props: TimeProps<IMessage>) => {
   );
 };
 
-//보내기 버튼
-/*
-export const RenderSend = (props: SendProps<IMessage>, sendingStatus: boolean) => {
-  return (
-    <View
-      style={{
-        backgroundColor: 'pink',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
-        alignItems: 'stretch',
-      }}>
-      <Send
-        {...props}
-        disabled={sendingStatus}
-        containerStyle={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          paddingHorizontal: rsWidth * 15,
-          //width: rsWidth * 30,
-          //height: rsWidth * 30,
-          //borderRadius: (rsWidth * 30) / 2,
-          //backgroundColor: 'yellow',
-        }}>
-        <Icon name="airplane" />
-      </Send>
-    </View>
-  );
-};*/
-
 export const RenderDay = (props: DayProps) => {
   props.dateFormat = 'YYYY년 MM월 DD일';
   return (
@@ -391,6 +359,7 @@ export const RenderDay = (props: DayProps) => {
         paddingHorizontal: rsWidth * 10,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: 'transparent',
       }}
       textStyle={{
         fontFamily: 'Pretendard-Regular',
