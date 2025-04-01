@@ -343,6 +343,10 @@ const NewChat: React.FC = ({ navigation }) => {
     if (!scrollToMessageById || nowCursor.current === null) {
       // 스크롤 함수 없거나 더 이상 검색할 결과가 없음
       console.log('검색 결과가 없습니다');
+      Toast.show(`검색 결과가 없습니다`, {
+        duration: Toast.durations.SHORT,
+        position: Toast.positions.CENTER,
+      });
       return null;
     }
     const isFirstSearch = nowCursor.current === undefined;
@@ -363,6 +367,10 @@ const NewChat: React.FC = ({ navigation }) => {
     } else {
       //검색 결과가 존재하지 않는 경우
       console.log('검색 결과가 없습니다');
+      Toast.show(`검색 결과가 없습니다🥺`, {
+        duration: Toast.durations.SHORT,
+        position: Toast.positions.CENTER,
+      });
       setEnableDown(false);
       setEnableUp(false);
     }
