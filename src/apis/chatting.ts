@@ -1,5 +1,11 @@
 import * as Sentry from '@sentry/react-native';
-import { TChatAnswer, TFavoriteChat, TOldAnswer, TChatAnswerV3 } from './chatting.types';
+import {
+  TChatAnswer,
+  TFavoriteChat,
+  TOldAnswer,
+  TChatAnswerV3,
+  TChatSearchResult,
+} from './chatting.types';
 import { instance } from './interceptor';
 
 const errorMessage: TChatAnswerV3 = [
@@ -193,9 +199,9 @@ export const saveFavoriteChatLog = async (
   messageId: string,
   isSaved: boolean,
 ): Promise<boolean> => {
-  console.log('messageId', messageId);
-  console.log('isSaved', isSaved);
-  console.log(JSON.stringify({ messageId, isSaved }));
+  //console.log('messageId', messageId);
+  //console.log('isSaved', isSaved);
+  //console.log(JSON.stringify({ messageId, isSaved }));
   try {
     const res = await instance.post('/v3/chat/favorite', null, {
       params: { messageId, isSaved },
@@ -215,5 +221,23 @@ export const deleteChatLog = async (): Promise<boolean> => {
   } catch (error) {
     console.log('deleteChatLog error', error);
     return false;
+  }
+};
+
+//1.5.7 UPDATE 신규 - 대화 검색하기
+export const searchChatWord = async (
+  searchWord: string,
+  nowCursor: string | null,
+  direction: 'up' | 'down' | null,
+): Promise<TChatSearchResult | undefined> => {
+  try {
+    const res = await instance.get('/v3/chat/search', {
+      params: { searchWord, nowCursor, direction },
+    });
+    console.log('searchChatWord result', res.data);
+    return res.data;
+  } catch (error) {
+    console.log('searchChatWord error 발생', error);
+    return;
   }
 };

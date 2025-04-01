@@ -31,6 +31,8 @@ import { getNewIMessages } from '../../../utils/storageUtils';
 import Input from '../../../components/input/input';
 import { transparent } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 import { saveFavoriteChatLog } from '../../../apis/chatting';
+import { useRef } from 'react';
+import UpDownBtn from '../../../components/up-down-button/UpDownBtn';
 const getMessageSet = (
   currentMessage: IMessage,
   allMessages: IMessage[],
@@ -176,9 +178,20 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
       return true;
     return false;
   };
+  // 컴포넌트 최상위에서 메시지 위치를 저장할 ref 선언
+  const messagePositions = useRef<{ [key: string]: number }>({});
+
+  // 각 메시지 컴포넌트의 onLayout에 부여할 함수
+  const handleMessageLayout = (messageId: string | number) => (event: any) => {
+    const { y } = event.nativeEvent.layout;
+    // 메시지 id를 key로 하여 y 좌표 저장
+    messagePositions.current[messageId] = y;
+    console.log(`Message ${messageId} Y position: ${y}`);
+  };
 
   return (
     <Animated.View
+      onLayout={handleMessageLayout(props.currentMessage._id)}
       key={props.currentMessage._id}
       entering={FadeInDown}
       style={css`
@@ -410,41 +423,69 @@ export const RenderSystemMessage = (props: SystemMessageProps<IMessage>) => {
 
 //props: SendProps<IMessage>, sendingStatus: boolean
 //커스텀 인풋 툴 바
-export const RenderInputToolbar = (props: InputToolbarProps<IMessage>, sendingStatus: boolean) => (
-  <InputToolbar
-    {...props}
-    containerStyle={{
-      borderTopColor: 'transparent',
-      //backgroundColor: palette.neutral[50],
-      //backgroundColor: 'green',
-      display: 'flex',
-      flexDirection: 'row', // row로 두어야 Input과 Send 버튼이 나란히 배치됨
-      justifyContent: 'center',
-      alignItems: 'center',
-      paddingHorizontal: rsWidth * 20,
-      paddingVertical: rsHeight * 8,
-      gap: rsWidth * 20,
-    }}
-    renderComposer={(composerProps) => (
-      <CustomMultiTextInput value={composerProps.text} onChangeText={composerProps.onTextChanged} />
-    )}
-    renderSend={(sendProps) => (
-      <Send
-        {...props}
-        disabled={sendingStatus}
-        containerStyle={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          alignSelf: 'center',
-          marginLeft: 20 * rsWidth,
-        }}>
-        <Icon name="airplane" color={sendingStatus ? palette.neutral[300] : palette.neutral[400]} />
-      </Send>
-    )}
-  />
-);
+export const RenderInputToolbar = (
+  props: InputToolbarProps<IMessage>,
+  sendingStatus: boolean,
+  isSearchMode: boolean,
+  enableUp?: boolean,
+  enableDown?: boolean,
+  setEnableUp?: React.Dispatch<React.SetStateAction<boolean>>,
+  setEnableDown?: React.Dispatch<React.SetStateAction<boolean>>,
+  handleSearch?: (text: string, direction: null | 'up' | 'down') => Promise<string | null>,
+  searchWord?: string,
+) =>
+  !isSearchMode ? (
+    <InputToolbar
+      {...props}
+      containerStyle={{
+        borderTopColor: 'transparent',
+        //backgroundColor: palette.neutral[50],
+        //backgroundColor: 'green',
+        display: 'flex',
+        flexDirection: 'row', // row로 두어야 Input과 Send 버튼이 나란히 배치됨
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: rsWidth * 20,
+        paddingVertical: rsHeight * 8,
+        gap: rsWidth * 20,
+      }}
+      renderComposer={(composerProps) => (
+        <CustomMultiTextInput
+          value={composerProps.text}
+          onChangeText={composerProps.onTextChanged}
+        />
+      )}
+      renderSend={(sendProps) => (
+        <Send
+          {...props}
+          disabled={sendingStatus}
+          containerStyle={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            alignSelf: 'center',
+            marginLeft: 20 * rsWidth,
+          }}>
+          <Icon
+            name="airplane"
+            color={sendingStatus ? palette.neutral[300] : palette.neutral[400]}
+          />
+        </Send>
+      )}
+    />
+  ) : (
+    <>
+      <View style={{ backgroundColor: 'blue' }}>
+        {/*<Text>히히헤헤</Text>*/}
+        <UpDownBtn
+          enableUp={enableUp}
+          enableDown={enableDown}
+          handleSearch={handleSearch}
+          searchWord={searchWord}></UpDownBtn>
+      </View>
+    </>
+  );
 
 export const RenderLoading = () => (
   <View

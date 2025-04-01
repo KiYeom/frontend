@@ -55,6 +55,8 @@ import clickHeaderGiftBoxButton from '../../../utils/analytics';
 import Home from '../Home';
 import { doesV3KeyExist, getNewIMessagesV3 } from '../../../utils/storageUtils';
 import { getV3OldChatting } from '../../../apis/chatting';
+import ChatHeader from '../../../components/chatHeader/chatHeader';
+import { searchChatWord } from '../../../apis/chatting';
 
 //유저와 챗봇 오브젝트 정의
 const userObject = {
@@ -80,6 +82,12 @@ const NewChat: React.FC = ({ navigation }) => {
 
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null); //타이핑 시간을 관리하는 타이머 (초기값 null, 이후 setTimeout의 반환값인 NodeJS.Timeout 객체를 저장)
   const refreshTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const nowCursor = React.useRef<string | null | undefined>(undefined); //api 결과값이자 현재 커서 값
+  const [searchWord, setSearchWord] = useState<string>(''); //검색어
+  const [isSearchMode, setIsSearchMode] = useState<boolean>(false); //검색 비활성화
+  const [enableUp, setEnableUp] = useState<boolean>(false);
+  const [enableDown, setEnableDown] = useState<boolean>(false);
 
   const { riskStatusV2, riskScoreV2, setRiskScoreV2, setRiskStatusV2, setHandleDangerPressV2 } =
     useRiskStoreVer2();
@@ -326,6 +334,58 @@ const NewChat: React.FC = ({ navigation }) => {
     }, Math.floor(ms));
   };
 
+  //키워드를 검색하여 id값을 반환해주는 handleSearch 함수
+  const handleSearch = async (
+    text: string,
+    direction: null | 'up' | 'down',
+  ): Promise<string | null> => {
+    console.log('새 함수 검색어 : ', text);
+    if (!scrollToMessageById || nowCursor.current === null) {
+      // 스크롤 함수 없거나 더 이상 검색할 결과가 없음
+      console.log('검색 결과가 없습니다');
+      return null;
+    }
+    const isFirstSearch = nowCursor.current === undefined;
+    const apiCursor: string | null = isFirstSearch ? null : nowCursor.current;
+
+    const res = await searchChatWord(text, apiCursor, direction);
+    nowCursor.current = res?.nextCursor ?? null;
+    console.log('res', res);
+
+    if (res?.nextCursor) {
+      //검색 결과가 존재하는 경우
+      scrollToMessageById(res.nextCursor);
+      setEnableUp(true);
+    } else {
+      //검색 결과가 존재하지 않는 경우
+      console.log('검색 결과가 없습니다');
+      setEnableDown(false);
+    }
+    return res?.nextCursor;
+  };
+
+  // 메시지 id로부터 메시지 인덱스를 찾아 해당 메시지로 스크롤하는 scrollToMessageById 함수
+  const scrollToMessageById = (messageId: string | number) => {
+    const index = messages.findIndex((message) => message._id === messageId);
+    if (index === -1) {
+      console.warn('해당 메시지를 찾을 수 없습니다.');
+      return;
+    }
+    // 메시지 인덱스로 메시지 객체를 가져옵니다.
+    const targetMessage = messages[index];
+    console.log('targetMessage', targetMessage);
+    console.log(`Scrolling to index ${index} for message id: ${messageId}`);
+    //console.log('giftedChatRef.current?.props?.messageContainerRef?.current?', giftedChatRef.current?.props?.messageContainerRef?.current?);
+    setTimeout(() => {
+      messageContainerRef.current?.scrollToIndex({
+        index,
+        animated: true,
+        viewOffset: 0, // 메시지 시작 부분에 맞추려면 0 또는 원하는 값
+        viewPosition: 0, // 0: 상단 정렬, 0.5: 중앙, 1: 하단 정렬
+      });
+    }, 150);
+  };
+
   /* 
   채팅 화면이 처음 보였을 때 대화 기록을 가지고 오는 과정
   getHistory() : 서버에서 그 동안의 모든 대화 히스토리를 가지고 옴
@@ -387,6 +447,8 @@ const NewChat: React.FC = ({ navigation }) => {
     };
   }, [navigation]);
 
+  const messageContainerRef = useRef<React.ElementRef<typeof GiftedChat>>(null);
+
   /* 채팅 화면 전체 구성 */
   return (
     <SafeAreaView
@@ -417,35 +479,24 @@ const NewChat: React.FC = ({ navigation }) => {
         </View>
       )}
 
-      <Header
-        title="쿠키의 채팅방"
-        leftFunction={() => {
-          //Analytics.clickHeaderBackButton();
-          //if (getIsDemo()) requestAnalytics();
-          //navigation.navigate(TabScreenName.Home);
-          navigation.navigate(RootStackName.BottomTabNavigator, {
-            screen: TabScreenName.Home,
-          });
-        }}
-        isRight={true}
-        rightIcon={riskStatusV2 !== 'danger' ? 'side-menu-bar' : 'side-menu-bar-alert'}
-        rightFunction={() => {
-          //Analytics.clickHeaderSideMenuButton();
-          navigation.openDrawer();
-        }}
+      <ChatHeader
+        isSearchMode={isSearchMode}
+        setIsSearchMode={setIsSearchMode}
+        riskStatusV2={riskStatusV2}
         isEvent={true}
-        eventIcon="event-icon"
-        eventFunction={async () => {
-          //console.log('이벤트 누름');
-          await Linking.openURL(
-            'https://autumn-flier-d18.notion.site/reMIND-1b48e75d989680f2b4c7e7fa8dbfc1ad?pvs=4',
-          );
-          //Analytics.clickHeaderGiftBoxButton(
-          //'https://autumn-flier-d18.notion.site/reMIND-1b48e75d989680f2b4c7e7fa8dbfc1ad?pvs=4',
-          //);
+        isRight={true}
+        isLeft={true}
+        eventFunction={() => {
+          console.log('이벤트 버튼 누름');
+          setIsSearchMode((prev) => !prev);
         }}
+        scrollToMessageById={scrollToMessageById}
+        searchWord={searchWord}
+        setSearchWord={setSearchWord}
+        handleSearch={handleSearch}
       />
       <GiftedChat
+        messageContainerRef={messageContainerRef}
         messages={messages}
         onSend={(messages) => onSend(messages)}
         user={userObject}
@@ -476,7 +527,17 @@ const NewChat: React.FC = ({ navigation }) => {
         renderDay={RenderDay}
         renderSystemMessage={RenderSystemMessage}
         renderInputToolbar={(sendProps: SendProps<IMessage>) =>
-          RenderInputToolbar(sendProps, sending)
+          RenderInputToolbar(
+            sendProps,
+            sending,
+            isSearchMode,
+            enableUp,
+            enableDown,
+            setEnableUp,
+            setEnableDown,
+            handleSearch,
+            searchWord,
+          )
         }
         //renderComposer={RenderComposer}
         textInputProps={{
@@ -571,3 +632,10 @@ useEffect(() => {
 //import cookieProfile from '@assets/images/cookieprofile.png';
 
 //const HINT_MESSAGE = 'AI로 생성된 답변입니다. 상담 필요 시 전문가와 상의하세요.';
+//console.log('이벤트 누름');
+//await Linking.openURL(
+//'https://autumn-flier-d18.notion.site/reMIND-1b48e75d989680f2b4c7e7fa8dbfc1ad?pvs=4',
+//);
+//Analytics.clickHeaderGiftBoxButton(
+//'https://autumn-flier-d18.notion.site/reMIND-1b48e75d989680f2b4c7e7fa8dbfc1ad?pvs=4',
+//);

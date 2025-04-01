@@ -28,3 +28,8 @@ export type TFavoriteChatLog = {
   date: string;
   answer: string;
 };
+
+//1.5.7 UPDATE 대화 찾기 결과
+export type TChatSearchResult = {
+  nextCursor: string | null;
+};

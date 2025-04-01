@@ -38,12 +38,15 @@ import NormalEmotion from './svg/normal-emotion';
 import EditIcon from './svg/edit-icon';
 import FavoriteIcon from './svg/favorite-icon';
 import TrashIcon from './svg/trash-icon';
+import ChatSearch from './svg/chat-search-icon';
+import ArrowUp from './svg/arrow-up';
 
 export type TIconName =
   | 'airplane'
   | 'arrow-down'
   | 'arrow-left'
   | 'arrow-right'
+  | 'arrow-up'
   | 'date-icon'
   | 'home-icon'
   | 'setting-icon'
@@ -79,7 +82,8 @@ export type TIconName =
   | 'normal-emotion'
   | 'edit-icon'
   | 'favorite-icon'
-  | 'trash-icon';
+  | 'trash-icon'
+  | 'chat-search-icon';
 
 export default function Icon({
   width,
@@ -109,6 +113,8 @@ export default function Icon({
       return <ArrowLeft width={width} height={height} color={color} />;
     case 'arrow-right':
       return <ArrowRight width={width} height={height} color={color} />;
+    case 'arrow-up':
+      return <ArrowUp width={width} height={height} color={color} />;
     case 'date-icon':
       return <DateIcon width={width} height={height} color={color} />;
     case 'home-icon':
@@ -191,5 +197,7 @@ export default function Icon({
       );
     case 'trash-icon':
       return <TrashIcon width={width} height={height} color={color} />;
+    case 'chat-search-icon':
+      return <ChatSearch width={width} height={height} color={color} />;
   }
 }

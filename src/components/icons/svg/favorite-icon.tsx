@@ -18,12 +18,12 @@ export const FavoriteIcon = ({
   onFavoritePress,
 }: FavoriteIconProps) => {
   const [isFilled, setIsFilled] = useState(defaultFilled);
-  console.log('isFilled', isFilled);
+  //console.log('isFilled', isFilled);
   const handlePress = () => {
     if (toggleable) {
       setIsFilled((prev) => !prev);
       if (onFavoritePress && messageId) {
-        console.log('messageId', messageId);
+        //console.log('messageId', messageId);
         onFavoritePress(messageId);
       }
     }
