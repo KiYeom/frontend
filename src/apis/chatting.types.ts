@@ -1,3 +1,4 @@
+import { IMessage } from 'react-native-gifted-chat';
 export type TChatAnswer = {
   answer: string;
 };
@@ -14,15 +15,18 @@ export type TOldAnswer = {
 };
 
 export type TAppChat = {
+  id: string;
   status: 'user' | 'bot';
   text: string;
+  isSaved: boolean;
   utcTime: string;
 };
 
-//좋아하는 데이터 불러오기
+//여러 개의 TFavoriteChatLog들을 배열에 담은 객체
 export type TFavoriteChat = {
-  favorite: TFavoriteChatLog[];
+  favorites: TFavoriteChatLog[];
 };
+//하나의 좋아요 데이터 (id, answer, date)
 export type TFavoriteChatLog = {
   id: string;
   date: string;
@@ -33,3 +37,11 @@ export type TFavoriteChatLog = {
 export type TChatSearchResult = {
   nextCursor: string | null;
 };
+
+//1.5.7 UPDATE : IMessage 타입 확장
+/*
+export interface ExtendedIMessage extends IMessage {
+  isSaved?: boolean;
+  hightlightKeyword?: string;
+}
+*/

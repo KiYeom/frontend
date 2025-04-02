@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 type FavoriteIconProps = IconProps & {
   toggleable?: boolean;
-  defaultFilled?: boolean;
+  isSaved?: boolean;
   messageId?: string;
   onFavoritePress?: (msg: string) => void;
 };
@@ -13,12 +13,11 @@ export const FavoriteIcon = ({
   height = 16,
   color = '#6e7781',
   toggleable = false,
-  defaultFilled = true,
+  isSaved = true, // default
   messageId,
   onFavoritePress,
 }: FavoriteIconProps) => {
-  const [isFilled, setIsFilled] = useState(defaultFilled);
-  //console.log('isFilled', isFilled);
+  const [isFilled, setIsFilled] = useState(isSaved);
   const handlePress = () => {
     if (toggleable) {
       setIsFilled((prev) => !prev);

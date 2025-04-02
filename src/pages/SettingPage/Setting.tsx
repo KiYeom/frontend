@@ -51,7 +51,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
       if (deviceId) await logout(deviceId);
       else await logout('');
       clearInfoWhenLogout();
-      storage.delete(CHATLOG);
+      //storage.delete(CHATLOG);
       console.log('[Setting - Logout Button] LogOut: 1, SigninStatus: ', SigninStatus);
       setSigninStatus(false);
     } catch (error: any) {

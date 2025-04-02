@@ -99,6 +99,7 @@ export const clearInfoWhenLogout = (): void => {
   deleteNotificationSent();
   deleteReadNotice();
   deleteUserAccountProvider();
+  deleteNewIMessagesV3();
 };
 
 //Tokens
@@ -205,7 +206,7 @@ export const deleteDeviceId = (): void => {
   storage.delete(DEVICE_ID);
 };
 
-//Chatting
+//Chatting - 없어질 코드들
 export const getChatting = (): string | undefined => {
   return storage.getString(CHATTING);
 };

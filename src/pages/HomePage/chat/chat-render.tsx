@@ -33,9 +33,10 @@ import { transparent } from 'react-native-paper/lib/typescript/styles/themes/v2/
 import { saveFavoriteChatLog } from '../../../apis/chatting';
 import { useRef } from 'react';
 import UpDownBtn from '../../../components/up-down-button/UpDownBtn';
+import { ExtendedIMessage } from '../../../utils/chatting';
 const getMessageSet = (
-  currentMessage: IMessage,
-  allMessages: IMessage[],
+  currentMessage: ExtendedIMessage,
+  allMessages: ExtendedIMessage[],
 ):
   | {
       botChats: string;
@@ -94,67 +95,19 @@ const generateIdList = (clickedId: string): string[] => {
   return idList;
 };
 
-const reportMessages = async (messageId: string): string | undefined => {
+export const reportMessages = async (messageId: string, isSaved: boolean): string | undefined => {
   console.log('reportMessags 실행', messageId);
   if (messageId === null) return;
-  //대화 내역을 가져오는 함수
-  //console.log('🥵🥵🥵🥵🥵🥵message.user._id🥵🥵🥵🥵🥵', message._id);
-  //console.log('⭐️⭐️⭐️⭐️⭐️⭐️ message._id type', typeof message._id);
-  const isSaved: boolean = true;
-  //const splitedMessages = message._id.split('-');
-  //const objectMessages = splitedMessages[0];
-  //console.log('objectMessages', objectMessages);
-  //console.log('objectMessages type', typeof objectMessages);
-  //const dummy = '67e8d33082ca7639455090eb-B-0';
-  const res = await saveFavoriteChatLog(messageId, isSaved);
-  console.log('res');
-  //console.log('api 결과', res);
-  //await saveFavoriteChatLog(objectMessages, true);
-  //const chatList = generateIdList(message._id);
-  /*for (const id of chatList) {
-    console.log('for문 실행');
-    await saveFavoriteChatLog(id, true);
-  }*/
-
-  //let allMessages: IMessage[] = [];
-  //const deviceHistory = getNewIMessages();
-  /*if (deviceHistory) {
-    const deviceArray = JSON.parse(deviceHistory);
-    allMessages.push(...deviceArray);
-  }*/
-  //const chats = getMessageSet(message, allMessages);
-  /*if (chats === undefined) {
-    Alert.alert('신고 접수 실패', '쿠키와 대화를 진행한 후 다시 시도해주세요.');
-    return;
-  }*/
-
-  /*reportChat(
-    Number(message.user._id),
-    chats.userChats,
-    chats.botChats,
-    new Date(message.createdAt).toISOString(),
-  ).finally(() => {
-    Alert.alert('신고 접수', '신고가 접수되었습니다. 감사합니다!');
-  });*/
+  //const isSaved: boolean = true;
+  const res = await saveFavoriteChatLog(messageId, !isSaved);
+  console.log('res', res);
   return messageId;
 };
 
-const confirmReport = (message: IMessage) => {
-  Alert.alert(
-    '대화를 신고하시겠습니까?',
-    '대화 신고 시 해당 대화를 비식별화 처리를 통해 개인정보 제거 후 신고가 접수됩니다. ',
-    [
-      // 버튼 배열
-      {
-        text: '아니오', // 버튼 제목
-        style: 'cancel',
-      },
-      { text: '신고하기', onPress: () => reportMessages(message) },
-    ],
-  );
-};
-
-export const RenderBubble = (props: BubbleProps<IMessage>) => {
+export const RenderBubble = (
+  props: BubbleProps<ExtendedIMessage> & { onFavoritePress: (messageId: string) => void },
+) => {
+  //console.log('🧼🧼🧼🧼🧼 props', props);
   const showReport = (): boolean => {
     const nowMessageUserId = props.currentMessage.user._id;
     //check is bot message
@@ -179,19 +132,19 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
     return false;
   };
   // 컴포넌트 최상위에서 메시지 위치를 저장할 ref 선언
-  const messagePositions = useRef<{ [key: string]: number }>({});
+  //const messagePositions = useRef<{ [key: string]: number }>({});
 
   // 각 메시지 컴포넌트의 onLayout에 부여할 함수
-  const handleMessageLayout = (messageId: string | number) => (event: any) => {
+  /*const handleMessageLayout = (messageId: string | number) => (event: any) => {
     const { y } = event.nativeEvent.layout;
     // 메시지 id를 key로 하여 y 좌표 저장
     messagePositions.current[messageId] = y;
     console.log(`Message ${messageId} Y position: ${y}`);
-  };
+  };*/
 
   return (
     <Animated.View
-      onLayout={handleMessageLayout(props.currentMessage._id)}
+      //onLayout={handleMessageLayout(props.currentMessage._id)}
       key={props.currentMessage._id}
       entering={FadeInDown}
       style={css`
@@ -250,7 +203,6 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
       {showReport() && (
         <View
           style={css`
-            flex: 1;
             justify-content: flex-end;
           `}>
           <Icon
@@ -258,10 +210,13 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
             width={rsWidth * 14 + 'px'}
             height={rsHeight * 14 + 'px'}
             toggleable
-            defaultFilled={false}
+            isSaved={props.currentMessage.isSaved}
             messageId={'testMessageId'}
             onFavoritePress={(id) => {
-              reportMessages(props.currentMessage._id);
+              //console.log('메세지', props.currentMessage);
+              //reportMessages(props.currentMessage._id, props.currentMessage.isSaved);
+              console.log('icon에서의 press 함수', props.currentMessage._id);
+              props.onFavoritePress(props.currentMessage._id);
             }}
           />
         </View>
@@ -272,7 +227,7 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
   );
 };
 
-export const RenderAvatar = (props: AvatarProps<IMessage>) => {
+export const RenderAvatar = (props: AvatarProps<ExtendedIMessage>) => {
   const { position, currentMessage, previousMessage } = props;
   if (position !== 'left') return null;
 
@@ -309,7 +264,7 @@ export const RenderAvatar = (props: AvatarProps<IMessage>) => {
   );
 };
 
-export const RenderTime = (props: TimeProps<IMessage>) => {
+export const RenderTime = (props: TimeProps<ExtendedIMessage>) => {
   props.timeFormat = 'A h:mm';
   return (
     <Time
@@ -370,7 +325,7 @@ export const RenderDay = (props: DayProps) => {
   );
 };
 
-export const RenderSystemMessage = (props: SystemMessageProps<IMessage>) => {
+export const RenderSystemMessage = (props: SystemMessageProps<ExtendedIMessage>) => {
   return (
     <SystemMessage
       {...props}
@@ -393,7 +348,7 @@ export const RenderSystemMessage = (props: SystemMessageProps<IMessage>) => {
 //props: SendProps<IMessage>, sendingStatus: boolean
 //커스텀 인풋 툴 바
 export const RenderInputToolbar = (
-  props: InputToolbarProps<IMessage>,
+  props: InputToolbarProps<ExtendedIMessage>,
   sendingStatus: boolean,
   isSearchMode: boolean,
   enableUp?: boolean,
@@ -467,7 +422,7 @@ export const RenderLoading = () => (
   </View>
 );
 
-export const RenderCustomView = (props: BubbleProps<IMessage>) => <></>;
+export const RenderCustomView = (props: BubbleProps<ExtendedIMessage>) => <></>;
 
 //메세지 도착하기 전에 나오는 ... 애니메이션
 export const RenderFooter = (sending: boolean) => {

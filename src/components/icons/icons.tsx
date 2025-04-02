@@ -91,7 +91,7 @@ export default function Icon({
   color,
   name,
   toggleable,
-  defaultFilled,
+  isSaved,
   messageId,
   onFavoritePress,
 }: {
@@ -100,7 +100,7 @@ export default function Icon({
   color?: string;
   name: TIconName;
   toggleable?: boolean;
-  defaultFilled?: boolean;
+  isSaved?: boolean;
   messageId?: string;
   onFavoritePress?: (messageId: string) => void;
 }) {
@@ -190,7 +190,7 @@ export default function Icon({
           height={height}
           color={color}
           toggleable={toggleable}
-          defaultFilled={defaultFilled}
+          isSaved={isSaved}
           messageId={messageId}
           onFavoritePress={onFavoritePress}
         />

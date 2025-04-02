@@ -3,9 +3,11 @@ import { Alert, View, Linking, Platform, Text, SectionList } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Header from '../../../components/header/header';
 import { getFavoriteChat } from '../../../apis/chatting';
-
-// 위에서 사용한 groupFavoritesByDate 함수
-const groupFavoritesByDate = (data) => {
+import { TFavoriteChatLog } from '../../../apis/chatting.types';
+// 데이터를 날짜별로 그룹화하는 groupFavoritesByDate 함수
+//불러온 API 결과를 받아, 화면에 그리도록 정제함
+const groupFavoritesByDate = (data: TFavoriteChatLog) => {
+  console.log('groupFavoritesByDate', data);
   const groups = data.reduce((acc, item) => {
     const dateKey = item.date.split('T')[0];
     if (!acc[dateKey]) {
@@ -33,10 +35,12 @@ const Favorites: React.FC<any> = ({ navigation }) => {
     getFavoriteChat()
       .then((res) => {
         console.log('[Favorites] 내가 좋아했던 말들: ', res);
-        if (res && res.favorite) {
+        console.log('테스트', res?.favorites);
+        if (res && res.favorites) {
           // favorites 배열을 그룹화하여 섹션 데이터로 변환
-          console.log('리버스', res.favorite.reverse());
-          const groupedSections = groupFavoritesByDate(res.favorite);
+          //console.log('리버스', res.favorites.reverse());
+          const groupedSections = groupFavoritesByDate(res.favorites);
+          console.log('groupedSections', groupedSections);
           setSections(groupedSections);
         }
       })

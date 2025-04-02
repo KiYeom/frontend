@@ -57,7 +57,8 @@ import { doesV3KeyExist, getNewIMessagesV3 } from '../../../utils/storageUtils';
 import { getV3OldChatting } from '../../../apis/chatting';
 import ChatHeader from '../../../components/chatHeader/chatHeader';
 import { searchChatWord } from '../../../apis/chatting';
-
+import { ExtendedIMessage } from '../../../utils/chatting';
+import { reportMessages } from './chat-render';
 //유저와 챗봇 오브젝트 정의
 const userObject = {
   _id: 0,
@@ -76,7 +77,7 @@ const NewChat: React.FC = ({ navigation }) => {
   const [screenLoading, setScreenLoading] = useState<boolean>(false);
   const [refreshTimerMS, setRefreshTimerMS] = useState<number>(500);
 
-  const [messages, setMessages] = useState<IMessage[]>([]); //채팅 메시지 목록을 관리하는 상태
+  const [messages, setMessages] = useState<ExtendedIMessage[]>([]); //채팅 메시지 목록을 관리하는 상태
   const [sending, setSending] = useState<boolean>(false); //메시지를 보내고 있는 중인지 여부를 나타내는 상태
   const [buffer, setBuffer] = useState<string | null>(null); //사용자가 입력한 메시지를 저장하는 임시 버퍼
 
@@ -95,6 +96,24 @@ const NewChat: React.FC = ({ navigation }) => {
   const { riskStatusV2, riskScoreV2, setRiskScoreV2, setRiskStatusV2, setHandleDangerPressV2 } =
     useRiskStoreVer2();
 
+  //즐겨찾기 함수
+  const toggleFavorite = async (messageId: string) => {
+    console.log('toggleFavorite 함수 실행', messageId);
+    setMessages((prevMessages) => {
+      const updatedMessages = prevMessages.map((m) =>
+        m._id === messageId ? { ...m, isSaved: !m.isSaved } : m,
+      );
+      setIMessagesV3(updatedMessages, []); // 변경된 배열을 로컬 저장소에도 업데이트
+      return updatedMessages;
+    });
+
+    const targetMessage = messages.find((m) => m._id === messageId);
+    if (targetMessage) {
+      await reportMessages(messageId, targetMessage.isSaved);
+    }
+    console.log('setMessages', messages);
+  };
+
   const decideRefreshScreen = (viewHeight: number) => {
     NavigationBar.getVisibilityAsync().then((navBarStatus) => {
       if (navBarStatus === 'visible') {
@@ -112,9 +131,9 @@ const NewChat: React.FC = ({ navigation }) => {
     });
   };
 
-  const getIMessageFromServer = async (lastMessageDate: Date): Promise<IMessage[]> => {
+  const getIMessageFromServer = async (lastMessageDate: Date): Promise<ExtendedIMessage[]> => {
     //console.log('4️⃣4️⃣4️⃣4️⃣4️⃣4️⃣4️⃣getIMessageFromServer4️⃣4️⃣4️⃣4️⃣4️⃣ 실행', getIMessageFromServer);
-    const messages: IMessage[] = [];
+    const messages: ExtendedIMessage[] = [];
     const lastDateAddSecond = new Date(lastMessageDate.getTime() + 10 * 1000);
     const serverMessages = await getOldChatting(botObject._id, lastDateAddSecond.toISOString());
     console.log('⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️serverMessages⭐️⭐️⭐️⭐️⭐️', serverMessages);
@@ -146,6 +165,8 @@ const NewChat: React.FC = ({ navigation }) => {
               text: splitTexts[k],
               createdAt: new Date(new Date(chat.utcTime).getTime()),
               user: chat.status === 'user' ? userObject : botObject,
+              isSaved: serverMessages.chats[i].isSaved,
+              hightlightKeyword: 'hi',
             }); //대화 내용을 messages에 추가
           }
         }
@@ -156,8 +177,8 @@ const NewChat: React.FC = ({ navigation }) => {
   };
 
   //1.5.7v3 서버에서 대화 내용을 불러오는 함수
-  const v3getIMessageFromServer = async (lastMessageDate: Date): Promise<IMessage[]> => {
-    const messages: IMessage[] = [];
+  const v3getIMessageFromServer = async (lastMessageDate: Date): Promise<ExtendedIMessage[]> => {
+    const messages: ExtendedIMessage[] = [];
     const lastDateAddSecond = new Date(lastMessageDate.getTime() + 10 * 1000);
     const serverMessages = await getV3OldChatting(botObject._id, lastDateAddSecond.toISOString());
     //console.log('v3 데이터 확인하기', serverMessages);
@@ -168,6 +189,8 @@ const NewChat: React.FC = ({ navigation }) => {
           text: serverMessages.chats[i].text,
           createdAt: new Date(new Date(serverMessages.chats[i].utcTime).getTime()),
           user: serverMessages.chats[i].status === 'user' ? userObject : botObject,
+          isSaved: serverMessages.chats[i].isSaved,
+          hightlightKeyword: 'hi',
         }); //대화 내용을 messages에 추가
       }
     }
@@ -175,11 +198,11 @@ const NewChat: React.FC = ({ navigation }) => {
   };
 
   //대화 내용을 불러오는 getHistory 함수
-  const getHistory = async (): Promise<IMessage[]> => {
+  const getHistory = async (): Promise<ExtendedIMessage[]> => {
     // 1. 로컬에서 먼저 저장된 대화 내역들을 가지고 온다.
     // 로그아웃을 하고 다시 실행하면, 디바이스에 저장한 대화를 삭제하기 때문에 undefined이다.
     // 반대로 로그아웃 이후 한 번이라도 대화를 하게 되면 디바이스에 실시간으로 모든 대화들이 저장이 되기 때문에 모든 대화 로그가 있음
-    let messages: IMessage[] = [];
+    let messages: ExtendedIMessage[] = [];
     const isV3KeyExist = doesV3KeyExist();
 
     if (!isV3KeyExist) {
@@ -200,13 +223,15 @@ const NewChat: React.FC = ({ navigation }) => {
           text: `반가워요, ${getUserNickname()}님!💚 저는 ${getUserNickname()}님 곁에서 힘이 되어드리고 싶은 골든 리트리버 쿠키예요🐶 이 곳은 ${getUserNickname()}님과 저만의 비밀 공간이니, 어떤 이야기도 편하게 나눠주세요!\n\n 반말로 대화를 나누고 싶으시다면 위에서 오른쪽에 있는 탭 바를 열고, 반말 모드를 켜 주세요!🍀💕`,
           createdAt: new Date(),
           user: botObject,
+          isSaved: false,
+          hightlightKeyword: 'hi',
         };
         messages.push(welcomeMessage);
         setNewIMessagesV3(JSON.stringify([welcomeMessage]));
       }
     } else {
       //v3 키가 존재하는 경우
-      //console.log('👯👯👯👯👯👯👯👯v3 키가 존재함👯👯👯👯👯👯', isV3KeyExist);
+      console.log('👯👯👯👯👯👯👯👯v3 키가 존재함👯👯👯👯👯👯', isV3KeyExist);
       const v3DeviceHistory = getNewIMessagesV3();
       if (v3DeviceHistory) {
         const v3DeviceArray = JSON.parse(v3DeviceHistory);
@@ -221,13 +246,16 @@ const NewChat: React.FC = ({ navigation }) => {
     return messages;
   };
 
-  const setIMessages = (previousMessages: IMessage[], newMessages: IMessage[]) => {
+  const setIMessages = (previousMessages: ExtendedIMessage[], newMessages: ExtendedIMessage[]) => {
     const messagesString = JSON.stringify([...newMessages, ...previousMessages]);
     setNewIMessages(messagesString);
   };
 
   //v3로 저장된 메시지들을 로컬에 저장하는 함수
-  const setIMessagesV3 = (previousMessages: IMessage[], newMessages: IMessage[]) => {
+  const setIMessagesV3 = (
+    previousMessages: ExtendedIMessage[],
+    newMessages: ExtendedIMessage[],
+  ) => {
     const messagesString = JSON.stringify([...newMessages, ...previousMessages]);
     setNewIMessagesV3(messagesString);
   };
@@ -271,7 +299,7 @@ const NewChat: React.FC = ({ navigation }) => {
               }
             }
             // API 응답에서 봇의 대답들만 필터링했다고 가정 (예: apiAnswers)
-            const newBotMessages: IMessage[] = apiAnswers.map((item, idx) => ({
+            const newBotMessages: ExtendedIMessage[] = apiAnswers.map((item, idx) => ({
               _id: item.id,
               text: item.answer ?? '', // API에서 받은 봇의 대답 텍스트
               createdAt: new Date(), // 생성 시간 (API에 createdAt이 없으면 현재 시간에 idx를 더해서 대체)
@@ -289,7 +317,7 @@ const NewChat: React.FC = ({ navigation }) => {
         }
       })
       .catch((err) => {
-        const newMessages: IMessage[] = [
+        const newMessages: ExtendedIMessage[] = [
           {
             _id: uuid.v4().toString(),
             text: ERRORMESSAGE,
@@ -462,7 +490,7 @@ const NewChat: React.FC = ({ navigation }) => {
 
   //비행기를 클릭헀을 때 실행되는 onSend 함수
   //api 로 유저 - 채팅 한 쌍을 받아오기 전에는 id 값을 임의로 설정하여 화면에 보여준다.
-  const onSend = (newMessages: IMessage[] = []) => {
+  const onSend = (newMessages: ExtendedIMessage[] = []) => {
     if (!newMessages[0].text.trim()) {
       return;
     }
@@ -540,8 +568,12 @@ const NewChat: React.FC = ({ navigation }) => {
             screen: TabScreenName.Home,
           });
         }}
+        rightFunction={() => {
+          console.log('사이드바 열기');
+          navigation.openDrawer();
+        }}
         eventFunction={() => {
-          console.log('이벤트 버튼 누름');
+          //console.log('이벤트 버튼 누름');
           setIsSearchMode((prev) => !prev);
         }}
         scrollToMessageById={scrollToMessageById}
@@ -559,18 +591,16 @@ const NewChat: React.FC = ({ navigation }) => {
             resetTimer();
           }
         }}
-        //isStatusBarTranslucentAndroid
         renderAvatar={RenderAvatar}
         showAvatarForEveryMessage
         renderAvatarOnTop
         onPressAvatar={() => {
-          //Analytics.clickChatCharacterAvatar();
           navigation.navigate(HomeStackName.Profile);
         }}
         onLongPressAvatar={() => {
           if (getIsDemo()) setIsScoreDemo(true);
         }}
-        renderBubble={RenderBubble}
+        renderBubble={(props) => <RenderBubble {...props} onFavoritePress={toggleFavorite} />}
         onLongPress={(context, message: IMessage) => {
           Clipboard.setStringAsync(message.text).then(() => {
             showToast();
@@ -580,7 +610,7 @@ const NewChat: React.FC = ({ navigation }) => {
         renderTime={RenderTime}
         renderDay={RenderDay}
         renderSystemMessage={RenderSystemMessage}
-        renderInputToolbar={(sendProps: SendProps<IMessage>) =>
+        renderInputToolbar={(sendProps: SendProps<ExtendedIMessage>) =>
           RenderInputToolbar(
             sendProps,
             sending,
@@ -593,13 +623,11 @@ const NewChat: React.FC = ({ navigation }) => {
             searchWord,
           )
         }
-        //renderComposer={RenderComposer}
         textInputProps={{
           placeholder: getIsDemo() ? '메시지 입력.' : '메시지 입력',
           marginLeft: rsWidth * 15,
         }}
         keyboardShouldPersistTaps={'never'}
-        //renderSend={(sendProps: SendProps<IMessage>) => RenderSend(sendProps, sending)}
         alwaysShowSend
       />
       {searchLoading && (
