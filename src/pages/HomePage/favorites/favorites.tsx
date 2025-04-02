@@ -32,6 +32,7 @@ const groupFavoritesByDate = (data: TFavoriteChatLog) => {
 const Favorites: React.FC<any> = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const [sections, setSections] = React.useState([]);
+  const [isSelected, setIsSelected] = React.useState(true);
 
   useEffect(() => {
     //내가 좋아했던 말들
@@ -70,13 +71,15 @@ const Favorites: React.FC<any> = ({ navigation }) => {
               width={rsWidth * 14 + 'px'}
               height={rsHeight * 14 + 'px'}
               toggleable
-              isSaved={true}
+              isSaved={isSelected}
               messageId={'testMessageId'}
               onFavoritePress={async (id) => {
                 //console.log('메세지', props.currentMessage);
                 //reportMessages(props.currentMessage._id, props.currentMessage.isSaved);
-                console.log('히히', item.id);
-                const res = await saveFavoriteChatLog(`${item.id}-U-0`, false);
+                console.log('히히', item.id, !isSelected);
+                setIsSelected(!isSelected);
+                const res = await saveFavoriteChatLog(`${item.id}-U-0`, !isSelected);
+                console.log('res', res);
               }}
             />
           </View>

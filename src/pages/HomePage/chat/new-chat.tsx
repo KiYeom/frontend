@@ -181,7 +181,7 @@ const NewChat: React.FC = ({ navigation }) => {
     const messages: ExtendedIMessage[] = [];
     const lastDateAddSecond = new Date(lastMessageDate.getTime() + 10 * 1000);
     const serverMessages = await getV3OldChatting(botObject._id, lastDateAddSecond.toISOString());
-    //console.log('v3 데이터 확인하기', serverMessages);
+    console.log('v3 데이터 확인하기', serverMessages);
     if (serverMessages && serverMessages.chats && serverMessages.chats.length > 0) {
       for (let i = 0; i < serverMessages.chats.length; i++) {
         messages.push({
@@ -304,6 +304,7 @@ const NewChat: React.FC = ({ navigation }) => {
               text: item.answer ?? '', // API에서 받은 봇의 대답 텍스트
               createdAt: new Date(), // 생성 시간 (API에 createdAt이 없으면 현재 시간에 idx를 더해서 대체)
               user: botObject, // 봇을 나타내는 user 객체
+              isSaved: false,
             }));
 
             //setIMessages(updatedMessages, newMessages.reverse());
@@ -323,6 +324,7 @@ const NewChat: React.FC = ({ navigation }) => {
             text: ERRORMESSAGE,
             createdAt: new Date(),
             user: botObject,
+            isSaved: false,
           },
         ];
         setMessages((previousMessages) => {
