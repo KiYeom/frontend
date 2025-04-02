@@ -4,6 +4,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Header from '../../../components/header/header';
 import { getFavoriteChat } from '../../../apis/chatting';
 import { TFavoriteChatLog } from '../../../apis/chatting.types';
+import { rsWidth, rsHeight } from '../../../utils/responsive-size';
+import Icon from '../../../components/icons/icons';
+import { saveFavoriteChatLog } from '../../../apis/chatting';
 // 데이터를 날짜별로 그룹화하는 groupFavoritesByDate 함수
 //불러온 API 결과를 받아, 화면에 그리도록 정제함
 const groupFavoritesByDate = (data: TFavoriteChatLog) => {
@@ -62,6 +65,20 @@ const Favorites: React.FC<any> = ({ navigation }) => {
         renderItem={({ item }) => (
           <View style={{ padding: 10 }}>
             <Text>{item.answer}</Text>
+            <Icon
+              name="favorite-icon"
+              width={rsWidth * 14 + 'px'}
+              height={rsHeight * 14 + 'px'}
+              toggleable
+              isSaved={true}
+              messageId={'testMessageId'}
+              onFavoritePress={async (id) => {
+                //console.log('메세지', props.currentMessage);
+                //reportMessages(props.currentMessage._id, props.currentMessage.isSaved);
+                console.log('히히', item.id);
+                const res = await saveFavoriteChatLog(`${item.id}-U-0`, false);
+              }}
+            />
           </View>
         )}
         renderSectionHeader={({ section: { title } }) => (
