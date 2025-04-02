@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Dimensions, Platform, View, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GiftedChat, IMessage, SendProps } from 'react-native-gifted-chat';
+import { useFocusEffect } from '@react-navigation/native';
 import Header from '../../../components/header/header';
 import * as WebBrowser from 'expo-web-browser';
 import {
@@ -13,9 +14,11 @@ import {
   RootStackName,
 } from '../../../constants/Constants';
 import * as NavigationBar from 'expo-navigation-bar';
+import { setRefreshChat } from '../../../utils/storageUtils';
 import {
   addRefreshChat,
   deleteNewIMessages,
+  deleteNewIMessagesV3,
   getIsDemo,
   getNewIMessages,
   getRefreshChat,
@@ -59,6 +62,7 @@ import ChatHeader from '../../../components/chatHeader/chatHeader';
 import { searchChatWord } from '../../../apis/chatting';
 import { ExtendedIMessage } from '../../../utils/chatting';
 import { reportMessages } from './chat-render';
+import { useCallback } from 'react';
 //유저와 챗봇 오브젝트 정의
 const userObject = {
   _id: 0,
@@ -204,6 +208,8 @@ const NewChat: React.FC = ({ navigation }) => {
     // 반대로 로그아웃 이후 한 번이라도 대화를 하게 되면 디바이스에 실시간으로 모든 대화들이 저장이 되기 때문에 모든 대화 로그가 있음
     let messages: ExtendedIMessage[] = [];
     const isV3KeyExist = doesV3KeyExist();
+    console.log('getHistory 실행', isV3KeyExist);
+    deleteNewIMessagesV3(); //이거 삭제하기
 
     if (!isV3KeyExist) {
       //v3 키가 존재하지 않는 경우
@@ -477,7 +483,7 @@ const NewChat: React.FC = ({ navigation }) => {
     if (getRefreshChat() === 0) {
       //Analytics.watchNewChatScreen();
     }
-    //console.log('🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨');
+    console.log('🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨');
     getHistory()
       .then((messageHistory) => {
         //console.log('😀😀😀😀😀😀useEffect 결과😀😀😀😀', messageHistory);
@@ -486,9 +492,31 @@ const NewChat: React.FC = ({ navigation }) => {
       })
       .catch((err) => {
         alert('대화 내역을 불러오는 중 오류가 발생했어요. 다시 시도해주세요.');
+        console.log(err);
         navigation.navigate(TabScreenName.Home);
       });
   }, []);
+
+  // useFocusEffect를 사용하여 화면이 포커스될 때마다 refresh flag를 확인
+  useFocusEffect(
+    useCallback(() => {
+      if (getRefreshChat() > 0) {
+        // refresh flag가 설정되어 있다면 메시지를 새로 불러오고 flag를 초기화
+        setRefreshChat(0);
+        setInit(true);
+        getHistory()
+          .then((messageHistory) => {
+            setMessages(messageHistory);
+            setInit(false);
+          })
+          .catch((err) => {
+            console.log('대화 내역을 불러오는 중 오류가 발생했어요. 다시 시도해주세요.');
+            console.log(err);
+            navigation.navigate('Home');
+          });
+      }
+    }, []),
+  );
 
   //비행기를 클릭헀을 때 실행되는 onSend 함수
   //api 로 유저 - 채팅 한 쌍을 받아오기 전에는 id 값을 임의로 설정하여 화면에 보여준다.

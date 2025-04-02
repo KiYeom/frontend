@@ -16,6 +16,7 @@ import {
 import { searchChatWord } from '../../apis/chatting';
 import { HeaderProps } from '../header/header';
 import { TextInput, Text, View, TouchableOpacity } from 'react-native';
+import { ExtendedIMessage } from '~/src/utils/chatting';
 
 interface ChatHeaderProps extends HeaderProps {
   riskStatusV2: string;
