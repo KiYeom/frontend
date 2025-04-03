@@ -3,36 +3,6 @@ import { Text } from 'react-native';
 import palette from '../../../assets/styles/theme';
 import { rsFont } from '../../../utils/responsive-size';
 
-/*
-            textStyle={{
-              left: css`
-                //color: ${palette.neutral[500]};
-                color: red;
-                font-family: Pretendard-Regular;
-                font-size: ${rsFont * 14 + 'px'};
-                text-align: left;
-                margin-top: 0;
-                margin-bottom: 0;
-                margin-left: 0;
-                margin-right: 0;
-              `,
-              right: css`
-                color: #fff;
-                font-family: Pretendard-Regular;
-                font-size: ${rsFont * 14 + 'px'};
-                text-align: left;
-                margin-top: 0;
-                margin-bottom: 0;
-                margin-left: 0;
-                margin-right: 0;
-              `,
-            }}
-*/
-
-/**
- * 정규표현식에서 특수문자를 이스케이프하기 위한 헬퍼 함수
- */
-
 const commentTextStyle = {
   fontFamily: 'Pretendard-Regular',
   fontSize: rsFont * 14,
@@ -53,7 +23,7 @@ const escapeRegExp = (string: string): string => {
 const HighlightedMessageText: React.FC<{
   text: string;
   highlight?: string;
-  checkUserOrBot: '쿠키' | '나';
+  checkUserOrBot?: string;
 }> = ({ text, highlight, checkUserOrBot }) => {
   console.log('props', checkUserOrBot);
   const textColor = checkUserOrBot === '쿠키' ? palette.neutral[900] : 'white';
