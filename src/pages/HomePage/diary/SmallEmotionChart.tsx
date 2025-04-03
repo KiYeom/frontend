@@ -83,6 +83,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
   const fetchData = async () => {
     const diaryData = await todayEmotionCheck(dateID);
     console.log('new diaryData', diaryData.Keywords);
+    console.log('~~~~~~', selectedEmotions);
     setSelectedEmotions(diaryData.Keywords);
     setDiaryText(diaryData.todayFeeling ?? '');
   };
@@ -146,24 +147,6 @@ const SmallEmotionChart = ({ navigation, route }) => {
             mainTitle={'지금 어떤 감정이 드나요?'}
             subTitle={'나의 마음을 표현해보세요.'}
           />
-          {/*<Carousel
-            pageWidth={rsWidth * 160} //캐러셀의 너비
-            initialPage={0} //앱이 처음 실행되고 보여줄 초기 페이지
-            itemSpacings={12 * rsWidth}>
-            {emotionsByColumn.map((emotions, index) => (
-              <View key={index}>
-                {emotions.map((emotion, i) => (
-                  <EmotionChip
-                    key={i}
-                    group={emotion.group}
-                    keyword={emotion.keyword}
-                    isSelected={selectedEmotions.some((e) => e.keyword === emotion.keyword)} // 선택된 감정인지 확인
-                    onPress={() => handleEmotionListClick(emotion)}
-                  />
-                ))}
-              </View>
-            ))}
-          </Carousel>*/}
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -226,6 +209,9 @@ const SmallEmotionChart = ({ navigation, route }) => {
               title="원하는 감정이 없어요"
               primary={false}
               //disabled={selectedEmotions.length < MINIMUM_EMOTION_COUNT}
+              disabled={
+                selectedEmotions.filter((emotion) => emotion.type !== 'custom').length === 5
+              }
               onPress={async () => {
                 openBottomSheet();
                 console.log('bottom sheet 열기');

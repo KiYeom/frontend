@@ -70,6 +70,6 @@ export const EmotionDesc = styled.Text<{
   font-family: Kyobo-handwriting;
   text-align: ${(props) => (props.textAlign ? props.textAlign : 'left')};
   color: ${palette.neutral[500]};
-  margin-top: ${rsHeight * 6 + 'px'};
-  margin-bottom: ${rsHeight * 24 + 'px'};
+  margin-top: ${rsHeight * 24 + 'px'};
+  margin-bottom: ${rsHeight * 12 + 'px'};
 `;
