@@ -12,6 +12,7 @@ import {
   TextInput,
   TouchableWithoutFeedback,
   View,
+  Dimensions,
 } from 'react-native';
 import { useKeyboardHandler } from 'react-native-keyboard-controller';
 import BottomSheet, { BottomSheetTextInput, BottomSheetView } from '@gorhom/bottom-sheet';
@@ -19,7 +20,7 @@ import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanima
 import Icon from '../../../components/icons/icons';
 import Toast from 'react-native-root-toast';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Carousel } from 'react-native-ui-lib';
+import Carousel from 'react-native-reanimated-carousel';
 import { dailyAnalyze, todayEmotion, todayEmotionCheck } from '../../../apis/analyze';
 import CustomBottomSheet from '../../../components/custom-bottomsheet/custom-bottomsheet';
 import {
@@ -75,6 +76,8 @@ const SmallEmotionChart = ({ navigation, route }) => {
 
   const { dateID } = route.params;
   console.log('감정 입력 페이지에서 받은 dateID', dateID);
+
+  const width = Dimensions.get('window').width - 24;
 
   //일일 감정 데이터 가져오기
   const fetchData = async () => {
@@ -143,7 +146,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
             mainTitle={'지금 어떤 감정이 드나요?'}
             subTitle={'나의 마음을 표현해보세요.'}
           />
-          <Carousel
+          {/*<Carousel
             pageWidth={rsWidth * 160} //캐러셀의 너비
             initialPage={0} //앱이 처음 실행되고 보여줄 초기 페이지
             itemSpacings={12 * rsWidth}>
@@ -160,7 +163,25 @@ const SmallEmotionChart = ({ navigation, route }) => {
                 ))}
               </View>
             ))}
-          </Carousel>
+          </Carousel>*/}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: 12, gap: 12, flexDirection: 'row' }}>
+            {emotionsByColumn.map((column, colIndex) => (
+              <View key={colIndex} style={{ gap: 12 /*backgroundColor: 'red'*/ }}>
+                {column.map((emotion, i) => (
+                  <EmotionChip
+                    key={i}
+                    group={emotion.group}
+                    keyword={emotion.keyword}
+                    isSelected={selectedEmotions.some((e) => e.keyword === emotion.keyword)}
+                    onPress={() => handleEmotionListClick(emotion)}
+                  />
+                ))}
+              </View>
+            ))}
+          </ScrollView>
           <EmotionDesc textAlign={'center'}>
             {selectedEmotions.length > 0 &&
             emotionData[selectedEmotions[selectedEmotions.length - 1].keyword] !== undefined
