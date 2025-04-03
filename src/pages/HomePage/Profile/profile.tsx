@@ -86,21 +86,6 @@ const Profile = () => {
       <ScrollView>
         <Container>
           <View style={{ alignItems: 'center' }}>
-            {/*<Carousel
-              containerStyle={{ height: 350 * rsWidth, width: 350 * rsWidth }}
-              loop
-              initialPage={0}
-              showCounter>
-              {carousels.map((carousel, i) => (
-                <View flex centerV key={i}>
-                  <Image
-                    key={i}
-                    style={{ flex: 1, width: 350 * rsWidth, height: 350 * rsHeight }}
-                    source={{ uri: carousel.image }}
-                  />
-                </View>
-              ))}
-            </Carousel>*/}
             <Carousel
               width={width}
               height={height}
