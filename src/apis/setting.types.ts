@@ -19,6 +19,7 @@ export type TUserInfo = {
   gender: TGender | null;
   isUser: boolean;
   isInFormal: boolean;
+  wantsEmo: boolean;
 };
 
 export type TDisplayUserInfo = {

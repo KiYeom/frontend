@@ -89,6 +89,7 @@ const CustomDrawerContent = (props: any) => {
       .then((res) => {
         if (res) {
           setIsInformalMode(res.isInFormal);
+          setIsEmojiMode(res.wantsEmo);
         } else {
           return;
         }
