@@ -163,6 +163,7 @@ export const RenderBubble = (
               <HighlightedMessageText
                 text={props.currentMessage.text}
                 highlight={props.currentMessage.hightlightKeyword}
+                checkUserOrBot={props.currentMessage.user.name} //name : 쿠키, 나
               />
             )}
             textStyle={{

@@ -3,24 +3,62 @@ import { Text } from 'react-native';
 import palette from '../../../assets/styles/theme';
 import { rsFont } from '../../../utils/responsive-size';
 
+/*
+            textStyle={{
+              left: css`
+                //color: ${palette.neutral[500]};
+                color: red;
+                font-family: Pretendard-Regular;
+                font-size: ${rsFont * 14 + 'px'};
+                text-align: left;
+                margin-top: 0;
+                margin-bottom: 0;
+                margin-left: 0;
+                margin-right: 0;
+              `,
+              right: css`
+                color: #fff;
+                font-family: Pretendard-Regular;
+                font-size: ${rsFont * 14 + 'px'};
+                text-align: left;
+                margin-top: 0;
+                margin-bottom: 0;
+                margin-left: 0;
+                margin-right: 0;
+              `,
+            }}
+*/
+
 /**
  * 정규표현식에서 특수문자를 이스케이프하기 위한 헬퍼 함수
  */
+
+const commentTextStyle = {
+  fontFamily: 'Pretendard-Regular',
+  fontSize: rsFont * 14,
+  textAlign: 'left',
+  margin: 0,
+};
+
+const targetWordStyle = {
+  fontFamily: 'Pretendard-Regular',
+  backgroundColor: palette.neutral[900],
+  color: 'white',
+};
+
 const escapeRegExp = (string: string): string => {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 };
 
-/**
- * HighlightedMessageText 컴포넌트
- * - text: 전체 텍스트
- * - highlight: 하이라이트할 키워드
- */
-const HighlightedMessageText: React.FC<{ text: string; highlight?: string }> = ({
-  text,
-  highlight,
-}) => {
+const HighlightedMessageText: React.FC<{
+  text: string;
+  highlight?: string;
+  checkUserOrBot: '쿠키' | '나';
+}> = ({ text, highlight, checkUserOrBot }) => {
+  console.log('props', checkUserOrBot);
+  const textColor = checkUserOrBot === '쿠키' ? palette.neutral[900] : 'white';
   if (!highlight || highlight.trim() === '') {
-    return <Text>{text}</Text>;
+    return <Text style={[commentTextStyle, { color: textColor }]}>{text}</Text>;
   }
 
   // highlight에 포함될 수 있는 특수문자를 이스케이프 처리
@@ -31,10 +69,10 @@ const HighlightedMessageText: React.FC<{ text: string; highlight?: string }> = (
   const parts = text.split(regex);
 
   return (
-    <Text>
+    <Text style={[commentTextStyle, { color: textColor }]}>
       {parts.map((part, index) =>
         part === highlight ? (
-          <Text key={index} style={{ backgroundColor: `${palette.neutral[900]}`, color: 'white' }}>
+          <Text key={index} style={[{ color: textColor }, targetWordStyle]}>
             {part}
           </Text>
         ) : (
