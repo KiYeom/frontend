@@ -51,7 +51,6 @@ import { getKoreanServerTodayDateString } from '../../../utils/times';
 import { getRiskScore } from '../../../apis/riskscore';
 import * as Clipboard from 'expo-clipboard';
 import Toast from 'react-native-root-toast';
-import { Hint } from 'react-native-ui-lib';
 import palette from '../../../assets/styles/theme';
 import { useRiskStoreVer2 } from '../../../store/useRiskStoreVer2';
 import clickHeaderGiftBoxButton from '../../../utils/analytics';
@@ -594,6 +593,7 @@ const NewChat: React.FC = ({ navigation }) => {
         isRight={true}
         isLeft={true}
         leftFunction={() => {
+          navigation.popToTop(); // 스택 최상단으로 이동
           navigation.navigate(RootStackName.BottomTabNavigator, {
             screen: TabScreenName.Home,
           });

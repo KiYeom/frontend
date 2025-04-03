@@ -2,9 +2,10 @@ import { css } from '@emotion/native';
 import { Image } from 'expo-image';
 import * as WebBrowser from 'expo-web-browser';
 import React, { useEffect } from 'react';
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, Text, TouchableOpacity, View, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Button, Carousel } from 'react-native-ui-lib';
+//import { Button, Carousel } from 'react-native-ui-lib';
+import Carousel, { ICarouselInstance, Pagination } from 'react-native-reanimated-carousel';
 import { getCarousel } from '../../apis/carousel';
 import { TCarousel } from '../../apis/carousel.types';
 import { getRiskScore } from '../../apis/riskscore';
@@ -51,6 +52,10 @@ const Home: React.FC<any> = ({ navigation }) => {
   const { riskScoreV2, riskStatusV2, setRiskScoreV2, setRiskStatusV2, setHandleDangerPressV2 } =
     useRiskStoreVer2();
 
+  const width = Dimensions.get('window').width - 40;
+  const rsHeight = 1; // 비율 계산 예시
+  const ratio = 1; // 비율 계산 예시
+
   //위험 상태에 따른 클릭 이벤트 처리 (쿠키 편지로 이동)
   const navigateToDangerAlert = () => {
     setHandleDangerPressV2();
@@ -60,7 +65,7 @@ const Home: React.FC<any> = ({ navigation }) => {
     });
   };
 
-  /*useEffect(() => {
+  useEffect(() => {
     Analytics.watchTabHomeScreen();
     requestNotificationPermission();
     getCarousel('home')
@@ -74,7 +79,7 @@ const Home: React.FC<any> = ({ navigation }) => {
     navigation.navigate(RootStackName.HomeStackNavigator, {
       screen: HomeStackName.NewChat,
     });
-  }, []);*/
+  }, []);
 
   //홈 화면으로 포커스 될 때마다 위험 점수를 갱신한다.
   /*useEffect(() => {
@@ -119,23 +124,23 @@ const Home: React.FC<any> = ({ navigation }) => {
             }}
           />
           <Carousel
-            key={carousels.length}
-            containerStyle={css`
-              height: ${rsHeight * 112 + 'px'};
-              border-radius: ${ratio * 20 + 'px'};
-              overflow: hidden;
-            `}
+            width={width}
+            height={rsHeight * 112}
+            data={carousels}
+            defaultIndex={0}
+            autoPlay
+            autoPlayInterval={5000}
             loop
-            initialPage={0}
-            autoplay
-            autoplayInterval={5 * 1000}>
-            {carousels.map((carousel, i) => (
+            style={{
+              borderRadius: ratio * 20,
+              overflow: 'hidden',
+            }}
+            renderItem={({ item }) => (
               <TouchableOpacity
-                key={i}
                 activeOpacity={1}
                 onPress={() => {
-                  //Analytics.clickTabHomeCarousel(carousel.image);
-                  WebBrowser.openBrowserAsync(carousel.url);
+                  // Analytics.clickTabHomeCarousel(item.image); // 필요시 복구
+                  WebBrowser.openBrowserAsync(item.url);
                 }}>
                 <Image
                   style={{
@@ -143,11 +148,11 @@ const Home: React.FC<any> = ({ navigation }) => {
                     height: '100%',
                   }}
                   contentFit="cover"
-                  source={{ uri: carousel.image }}
+                  source={{ uri: item.image }}
                 />
               </TouchableOpacity>
-            ))}
-          </Carousel>
+            )}
+          />
 
           <CustomCalendar navigation={navigation} />
         </View>
