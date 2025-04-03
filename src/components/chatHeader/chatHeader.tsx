@@ -26,6 +26,7 @@ interface ChatHeaderProps extends HeaderProps {
   handleSearch?: (text: string, direction: null | 'up' | 'down') => Promise<string | null>;
   searchWord?: string;
   setSearchWord?: React.Dispatch<React.SetStateAction<string>>;
+  updateMessageHighlights?: React.Dispatch<React.SetStateAction<ExtendedIMessage>>;
 }
 
 const ChatHeader: React.FC<ChatHeaderProps> = (props: ChatHeaderProps) => {
@@ -38,6 +39,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = (props: ChatHeaderProps) => {
     handleSearch,
     searchWord,
     setSearchWord,
+    updateMessageHighlights,
     ...headerProps
   } = props;
   console.log('searchWord', searchWord);
@@ -99,6 +101,8 @@ const ChatHeader: React.FC<ChatHeaderProps> = (props: ChatHeaderProps) => {
               onPress={() => {
                 console.log('취소 버튼을 클릭함');
                 setIsSearchMode((prev) => !prev);
+                setSearchWord('');
+                updateMessageHighlights('');
               }}>
               <OptionText>취소</OptionText>
             </TouchableOpacity>

@@ -34,6 +34,7 @@ import { saveFavoriteChatLog } from '../../../apis/chatting';
 import { useRef } from 'react';
 import UpDownBtn from '../../../components/up-down-button/UpDownBtn';
 import { ExtendedIMessage } from '../../../utils/chatting';
+import HighlightedMessageText from './HighlightMessageText';
 const getMessageSet = (
   currentMessage: ExtendedIMessage,
   allMessages: ExtendedIMessage[],
@@ -158,9 +159,16 @@ export const RenderBubble = (
           <Bubble
             {...props}
             renderTime={() => null}
+            renderMessageText={() => (
+              <HighlightedMessageText
+                text={props.currentMessage.text}
+                highlight={props.currentMessage.hightlightKeyword}
+              />
+            )}
             textStyle={{
               left: css`
-                color: ${palette.neutral[500]};
+                //color: ${palette.neutral[500]};
+                color: red;
                 font-family: Pretendard-Regular;
                 font-size: ${rsFont * 14 + 'px'};
                 text-align: left;

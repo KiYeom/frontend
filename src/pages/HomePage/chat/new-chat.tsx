@@ -169,7 +169,7 @@ const NewChat: React.FC = ({ navigation }) => {
               createdAt: new Date(new Date(chat.utcTime).getTime()),
               user: chat.status === 'user' ? userObject : botObject,
               isSaved: serverMessages.chats[i].isSaved,
-              hightlightKeyword: 'hi',
+              hightlightKeyword: '',
             }); //대화 내용을 messages에 추가
           }
         }
@@ -193,7 +193,7 @@ const NewChat: React.FC = ({ navigation }) => {
           createdAt: new Date(new Date(serverMessages.chats[i].utcTime).getTime()),
           user: serverMessages.chats[i].status === 'user' ? userObject : botObject,
           isSaved: serverMessages.chats[i].isSaved,
-          hightlightKeyword: 'hi',
+          hightlightKeyword: '',
         }); //대화 내용을 messages에 추가
       }
     }
@@ -229,7 +229,7 @@ const NewChat: React.FC = ({ navigation }) => {
           createdAt: new Date(),
           user: botObject,
           isSaved: false,
-          hightlightKeyword: 'hi',
+          hightlightKeyword: '',
         };
         messages.push(welcomeMessage);
         setNewIMessagesV3(JSON.stringify([welcomeMessage]));
@@ -372,6 +372,18 @@ const NewChat: React.FC = ({ navigation }) => {
     }, Math.floor(ms));
   };
 
+  // 검색어에 해당하는 메시지의 highlight 키워드를 업데이트하는 함수
+  const updateMessageHighlights = (keyword: string) => {
+    setMessages((prevMessages) =>
+      prevMessages.map((msg) =>
+        // 검색어가 포함되어 있으면 highlight 키워드로 업데이트, 없으면 빈 문자열로 초기화
+        msg.text.includes(keyword)
+          ? { ...msg, hightlightKeyword: keyword }
+          : { ...msg, hightlightKeyword: '' },
+      ),
+    );
+  };
+
   //키워드를 검색하여 id값을 반환해주는 handleSearch 함수
   const handleSearch = async (
     text: string,
@@ -410,6 +422,7 @@ const NewChat: React.FC = ({ navigation }) => {
 
     if (res?.nextCursor) {
       scrollToMessageById(res.nextCursor);
+      updateMessageHighlights(text); //messages의 hightlight 변경
       if (direction === 'up' || direction === null) {
         // 최초 검색인 경우(prevCursor.current가 null 또는 undefined)
         if (prevCursor.current === undefined || prevCursor.current === null) {
@@ -426,6 +439,7 @@ const NewChat: React.FC = ({ navigation }) => {
       }
     } else {
       // 검색 결과가 없는 경우: 요구사항 4 - 둘 다 비활성화
+      updateMessageHighlights('');
       if (direction === 'up') {
         setEnableDown(true);
         setEnableUp(false);
@@ -610,6 +624,7 @@ const NewChat: React.FC = ({ navigation }) => {
         searchWord={searchWord}
         setSearchWord={setSearchWord}
         handleSearch={handleSearch}
+        updateMessageHighlights={updateMessageHighlights}
       />
       <GiftedChat
         messageContainerRef={messageContainerRef}
