@@ -6,7 +6,6 @@ import BlurredButton from '../BlurredButton';
 import { SectionTitle } from '../StatisticMain.style';
 import { Container, KeywordContainer, KeywordIcon, KeywordText } from './Keyword.style';
 import { Text, TouchableOpacity, View } from 'react-native';
-import { Hint } from 'react-native-ui-lib';
 import { css } from '@emotion/native';
 
 const HINT_NAME = 'keyword';
@@ -20,30 +19,7 @@ const KeywordArea: React.FC<any> = (props: any) => {
     <Container>
       <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
         <SectionTitle>쿠키와 이런 이야기를 했어요</SectionTitle>
-        <View style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}>
-          <Hint
-            visible={hintStatus && hintStatus === HINT_NAME}
-            position={Hint.positions.TOP}
-            message={HINT_MESSAGE}
-            color={'white'}
-            enableShadow
-            messageStyle={css`
-              font-family: Kyobo-handwriting;
-              font-size: ${16 * rsFont + 'px'};
-              color: ${palette.neutral[900]};
-            `}
-            onPress={() => setHintStatus(undefined)}
-            onBackgroundPress={() => setHintStatus(undefined)}>
-            <View>
-              <TouchableOpacity
-                activeOpacity={1}
-                style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}
-                onPress={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}>
-                <Icon name="information" width={16} height={16} />
-              </TouchableOpacity>
-            </View>
-          </Hint>
-        </View>
+        <View style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}></View>
       </View>
       {summaryList.length === 0 ? (
         <BlurredButton

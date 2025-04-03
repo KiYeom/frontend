@@ -4,7 +4,6 @@ import * as WebBrowser from 'expo-web-browser';
 import React, { useEffect } from 'react';
 import { ScrollView, Text, TouchableOpacity, View, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-//import { Button, Carousel } from 'react-native-ui-lib';
 import Carousel, { ICarouselInstance, Pagination } from 'react-native-reanimated-carousel';
 import { getCarousel } from '../../apis/carousel';
 import { TCarousel } from '../../apis/carousel.types';

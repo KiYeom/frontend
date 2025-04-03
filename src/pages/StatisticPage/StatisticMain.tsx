@@ -25,8 +25,6 @@ import {
   PageHintText,
   StatisticTitle,
 } from './StatisticMain.style';
-//import { Hint } from 'react-native-ui-lib';
-import HintComponent from './HintComponent';
 import Icon from '../../components/icons/icons';
 import {
   getKoreanRealDateString,

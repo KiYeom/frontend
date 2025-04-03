@@ -6,9 +6,7 @@ import PeriodKeyword from '../../../components/periodKeyword/PeriodKeyword';
 import Empty from '../Empty';
 import { SectionTitle } from '../StatisticMain.style';
 import Icon from '../../../components/icons/icons';
-import { Hint } from 'react-native-ui-lib';
 import palette from '../../../assets/styles/theme';
-import HintComponent from '../HintComponent';
 
 const HINT_NAME = 'period-keyword';
 const HINT_MESSAGE = '그 동안 쿠키와 나눴던 이야기를 키워드로 정리해봤어요!';
@@ -47,19 +45,7 @@ const PeriodKeywordArea: React.FC<any> = (props: any) => {
               </TouchableOpacity>
             </View>
           </Hint>*/}
-          <HintComponent
-            visible={hintStatus && hintStatus === HINT_NAME}
-            onClose={() => setHintStatus(undefined)}
-            onToggle={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}
-            message={HINT_MESSAGE}
-          />
         </View>
-        {/*<HintComponent
-          visible={hintStatus && hintStatus === HINT_NAME}
-          onClose={() => setHintStatus(undefined)}
-          onToggle={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}
-          message={HINT_MESSAGE}
-        />*/}
       </View>
       <View
         style={css`

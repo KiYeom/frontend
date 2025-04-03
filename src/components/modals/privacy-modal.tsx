@@ -2,7 +2,6 @@ import styled, { css } from '@emotion/native';
 import * as WebBrowser from 'expo-web-browser';
 import React from 'react';
 import { Modal, Text, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
-//import { Checkbox } from 'react-native-ui-lib';
 import { Checkbox } from 'react-native-paper';
 import palette from '../../assets/styles/theme';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';

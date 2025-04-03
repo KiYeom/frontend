@@ -14,4 +14,5 @@ export const TextAreaField = styled.TextInput`
 
 export const TextAreaContainer = styled.View`
   flex: 1;
+  padding-top: ${rsHeight * 16 + 'px'};
 `;

@@ -14,7 +14,6 @@ import {
   Title,
   TitleContainer,
 } from './organization-connect.style';
-import { Checkbox } from 'react-native-ui-lib';
 import NewCheckBox from '../../../../components/v3-checkbox/NewCheckBox';
 import palette from '../../../../assets/styles/theme';
 import { rsHeight, rsWidth } from '../../../../utils/responsive-size';

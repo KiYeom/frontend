@@ -14,10 +14,8 @@ import {
 import { TouchableOpacity, View } from 'react-native';
 import Icon from '../../../components/icons/icons';
 import palette from '../../../assets/styles/theme';
-import { Hint } from 'react-native-ui-lib';
 import { rsFont } from '../../../utils/responsive-size';
 import { css } from '@emotion/native';
-import HintComponent from '../HintComponent';
 
 const HINT_NAME = 'period-record';
 const HINT_MESSAGE = '자신이 기록한 날들을 한 눈에 볼 수 있어요!';
@@ -89,19 +87,7 @@ const PeriodRecord = (props: any) => {
               </TouchableOpacity>
             </View>
           </Hint>*/}
-          {/*<HintComponent
-            visible={hintStatus && hintStatus === HINT_NAME}
-            onClose={() => setHintStatus(undefined)}
-            onToggle={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}
-            message={HINT_MESSAGE}
-          />*/}
         </View>
-        {/*<HintComponent
-          visible={hintStatus && hintStatus === HINT_NAME}
-          onClose={() => setHintStatus(undefined)}
-          onToggle={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}
-          message={HINT_MESSAGE}
-        />*/}
       </View>
       {records.length === 0 ? (
         <Empty type="채팅기록"></Empty>
