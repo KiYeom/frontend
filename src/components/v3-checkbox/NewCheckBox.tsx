@@ -4,7 +4,8 @@ import { TouchableOpacity } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import styled from '@emotion/native';
 import palette from '../../assets/styles/theme';
-
+import { Container, MessageText, CustomCheckbox, boxSize } from './NewCheckBox.style';
+/*
 const boxSize = 25;
 
 const Container = styled.View`
@@ -18,6 +19,7 @@ const MessageText = styled.Text`
   font-size: 14px;
   margin-left: 8px;
   font-family: 'Pretendard-Regular';
+  color: ${palette.neutral[900]};
 `;
 
 // Custom checkbox that mimics Paper's Checkbox.Android
@@ -29,7 +31,7 @@ const CustomCheckbox = styled.TouchableOpacity`
   padding: 0;
   margin: 0;
   //background-color: red;
-`;
+`;*/
 
 interface CustomCheckBoxProps {
   checked: boolean;
@@ -70,15 +72,3 @@ const NewCheckBox: React.FC<CustomCheckBoxProps> = ({
 };
 
 export default NewCheckBox;
-
-{
-  /*<Checkbox
-                  value={allowGuestMode}
-                  onValueChange={() => {
-                    setAllowGuestMode(!allowGuestMode);
-                  }}
-                  label={'비회원 사용자는 앱 삭제 시 모든 데이터가 소멸됩니다'}
-                  color={allowGuestMode ? palette.primary[400] : palette.neutral[200]}
-                  labelStyle={{ fontSize: 14 }} //라벨 스타일링
-                />*/
-}

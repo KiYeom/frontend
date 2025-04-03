@@ -10,7 +10,6 @@ import {
   View,
 } from 'react-native';
 import { AuthProvider } from '../../../constants/Constants';
-//import { Checkbox } from 'react-native-ui-lib';
 import { updateUserProfile } from '../../../apis/auth';
 import palette from '../../../assets/styles/theme';
 import Analytics from '../../../utils/analytics';
