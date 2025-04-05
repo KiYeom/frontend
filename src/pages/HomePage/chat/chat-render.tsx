@@ -112,6 +112,9 @@ export const RenderBubble = (
   const showReport = (): boolean => {
     const nowMessageUserId = props.currentMessage.user._id;
     //check is bot message
+    console.log('nowMessageUserId', nowMessageUserId);
+    console.log('dfasdfa', props.currentMessage._id);
+    if (props.currentMessage._id === 'welcomeMessage') return false;
     if (nowMessageUserId === null || isNaN(nowMessageUserId) || Number(nowMessageUserId) <= 0)
       return false;
 

@@ -52,19 +52,27 @@ const ChatHeader: React.FC<ChatHeaderProps> = (props: ChatHeaderProps) => {
             {'쿠키의 채팅방'}
           </HeaderTitle>
         ) : (
-          <TextInput
-            numberOfLines={4}
-            maxLength={40}
-            onChangeText={(searchWord) => setSearchWord(searchWord)}
-            value={searchWord}
-            placeholder="검색어를 입력하세요."
-            style={{ backgroundColor: 'red', marginHorizontal: 20, width: rsWidth * 300 }}
-            returnKeyType="search"
-            onSubmitEditing={async () => {
-              await handleSearch(searchWord, null);
-              //setSearchWord('');
-            }}
-          />
+          <View style={{ flexDirection: 'row', flex: 1 }}>
+            <TextInput
+              numberOfLines={4}
+              maxLength={40}
+              onChangeText={(searchWord) => setSearchWord(searchWord)}
+              value={searchWord}
+              placeholder="검색어를 입력하세요."
+              style={{
+                backgroundColor: 'red',
+                marginHorizontal: 20,
+                width: rsWidth * 250,
+                paddingVertical: 10,
+                marginVertical: 5,
+              }}
+              returnKeyType="search"
+              onSubmitEditing={async () => {
+                await handleSearch(searchWord, null);
+                //setSearchWord('');
+              }}
+            />
+          </View>
         )}
       </HeaderCenter>
 
@@ -92,12 +100,13 @@ const ChatHeader: React.FC<ChatHeaderProps> = (props: ChatHeaderProps) => {
         <HeaderRight
           onPress={headerProps.rightFunction}
           activeOpacity={1}
-          isTitle={headerProps.title !== undefined}>
+          isTitle={headerProps.title !== undefined}
+          style={{ backgroundColor: 'blue' }}>
           {!isSearchMode ? (
             <Icon name="side-menu-bar" />
           ) : (
             <TouchableOpacity
-              style={{ marginLeft: 20 }}
+              style={{ marginLeft: 20, backgroundColor: 'yellow', padding: 10 }}
               onPress={() => {
                 console.log('취소 버튼을 클릭함');
                 setIsSearchMode((prev) => !prev);

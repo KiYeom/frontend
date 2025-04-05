@@ -184,7 +184,6 @@ const DailyDairy = ({ navigation, route }) => {
               navigation.navigate(RootStackName.BottomTabNavigator, {
                 screen: TabScreenName.Home,
               });
-              //navigation.navigate(TabScreenName.Home);
 
               console.log('~~~~', selectedEmotions);
               const targetEmotion =

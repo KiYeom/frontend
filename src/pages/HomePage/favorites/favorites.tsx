@@ -10,6 +10,7 @@ import { saveFavoriteChatLog } from '../../../apis/chatting';
 import { getV3OldChatting } from '../../../apis/chatting';
 import { setNewIMessagesV3 } from '../../../utils/storageUtils';
 import { addRefreshChat } from '../../../utils/storageUtils';
+import { convertUtcToKst } from '../../../utils/times';
 // 데이터를 날짜별로 그룹화하는 groupFavoritesByDate 함수
 //불러온 API 결과를 받아, 화면에 그리도록 정제함
 const groupFavoritesByDate = (data: TFavoriteChatLog) => {
@@ -33,7 +34,6 @@ const groupFavoritesByDate = (data: TFavoriteChatLog) => {
 };
 
 const Favorites: React.FC<any> = ({ navigation }) => {
-  const insets = useSafeAreaInsets();
   const [sections, setSections] = React.useState([]);
   const [isSelected, setIsSelected] = React.useState(true);
 
@@ -60,18 +60,13 @@ const Favorites: React.FC<any> = ({ navigation }) => {
     <View
       style={{
         flex: 1,
+        //backgroundColor: 'orange',
+        width: '100%',
       }}>
       <Header
         title={'따스한 대화 모아보기'}
         leftFunction={async () => {
-          //const v3lastMessageDate = new Date(0);
-          //const v3ServerMessages = await getV3OldChatting(1, v3lastMessageDate.toISOString()); //전체 데이터 가져오기
-          //console.log('🥺🥺🥺🥺🥺');
-          //if (v3ServerMessages && v3ServerMessages.length > 0) {
-          //console.log('로컬 새로고침하기', v3ServerMessages);
-          //setNewIMessagesV3(JSON.stringify(v3ServerMessages)); //로컬 마이그레이션
-          //}
-          addRefreshChat(1);
+          await addRefreshChat(1);
           navigation.goBack();
         }}
       />
@@ -80,29 +75,40 @@ const Favorites: React.FC<any> = ({ navigation }) => {
         sections={sections}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={{ padding: 10 }}>
-            <Text>{item.answer}</Text>
-            <Icon
-              name="favorite-icon"
-              width={rsWidth * 14 + 'px'}
-              height={rsHeight * 14 + 'px'}
-              toggleable
-              isSaved={isSelected}
-              messageId={'testMessageId'}
-              onFavoritePress={async (id) => {
-                //console.log('메세지', props.currentMessage);
-                //reportMessages(props.currentMessage._id, props.currentMessage.isSaved);
-                console.log('히히', item.id, !isSelected);
-                setIsSelected(!isSelected);
-                const res = await saveFavoriteChatLog(`${item.id}-B-0`, !isSelected);
-                console.log('res', res);
-              }}
-            />
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingHorizontal: 20,
+              paddingVertical: 10,
+              //backgroundColor: 'blue',
+              justifyContent: 'space-between', // 좌우로 공간을 벌려줍니다
+            }}>
+            {/* Text 영역 */}
+            <Text style={{ flex: 1 }}>{item.answer}</Text>
+
+            {/* 아이콘 영역 */}
+            <View style={{ marginLeft: 20 }}>
+              <Icon
+                name="favorite-icon"
+                width={rsWidth * 14 + 'px'}
+                height={rsHeight * 14 + 'px'}
+                toggleable
+                isSaved={isSelected}
+                messageId={'testMessageId'}
+                onFavoritePress={async (id) => {
+                  console.log('히히', item.id, !isSelected);
+                  setIsSelected(!isSelected);
+                  const res = await saveFavoriteChatLog(`${item.id}-B-0`, !isSelected);
+                  console.log('res', res);
+                }}
+              />
+            </View>
           </View>
         )}
         renderSectionHeader={({ section: { title } }) => (
-          <View style={{ padding: 10, backgroundColor: 'red' }}>
-            <Text style={{ fontWeight: 'bold' }}>{title}</Text>
+          <View style={{ padding: 10 }}>
+            <Text style={{ fontWeight: 'bold' }}>{convertUtcToKst(title)}</Text>
           </View>
         )}
       />

@@ -208,7 +208,7 @@ const NewChat: React.FC = ({ navigation }) => {
     let messages: ExtendedIMessage[] = [];
     const isV3KeyExist = doesV3KeyExist();
     console.log('getHistory 실행', isV3KeyExist);
-    deleteNewIMessagesV3(); //이거 삭제하기
+    //deleteNewIMessagesV3(); //이거 삭제하기
 
     if (!isV3KeyExist) {
       //v3 키가 존재하지 않는 경우
@@ -224,8 +224,8 @@ const NewChat: React.FC = ({ navigation }) => {
         //새로 온 사람
         console.log('🤖🤖🤖🤖🤖🤖🤖🤖새로 온 사람🤖🤖🤖🤖🤖🤖🤖🤖');
         const welcomeMessage = {
-          _id: new Date().getTime(),
-          text: `반가워요, ${getUserNickname()}님!💚 저는 ${getUserNickname()}님 곁에서 힘이 되어드리고 싶은 골든 리트리버 쿠키예요🐶 이 곳은 ${getUserNickname()}님과 저만의 비밀 공간이니, 어떤 이야기도 편하게 나눠주세요!\n\n 반말로 대화를 나누고 싶으시다면 위에서 오른쪽에 있는 탭 바를 열고, 반말 모드를 켜 주세요!🍀💕`,
+          _id: 'welcomeMessage',
+          text: `반가워요, ${getUserNickname()}님!💚 저는 ${getUserNickname()}님 곁에서 힘이 되어드리고 싶은 골든 리트리버 쿠키예요🐶 이 곳은 ${getUserNickname()}님과 저만의 비밀 공간이니, 어떤 이야기도 편하게 나눠주세요!\n\n반말로 대화를 나누고 싶으시다면 위에서 오른쪽에 있는 탭 바를 열고, 반말 모드를 켜 주세요!🍀💕`,
           createdAt: new Date(),
           user: botObject,
           isSaved: false,
@@ -443,7 +443,7 @@ const NewChat: React.FC = ({ navigation }) => {
       if (direction === 'up') {
         setEnableDown(true);
         setEnableUp(false);
-        Toast.show(`더 이상 위로 검색 결과가 없습니다🥺🥺`, {
+        Toast.show(`더 이상 검색 결과가 존재하지 않습니다`, {
           duration: Toast.durations.SHORT,
           position: Toast.positions.CENTER,
         });
@@ -451,7 +451,7 @@ const NewChat: React.FC = ({ navigation }) => {
       else {
         setEnableUp(false);
         setEnableDown(false);
-        Toast.show(`검색 결과가 없습니다!!!`, {
+        Toast.show(`검색 결과가 없습니다`, {
           duration: Toast.durations.SHORT,
           position: Toast.positions.CENTER,
         });
@@ -466,7 +466,7 @@ const NewChat: React.FC = ({ navigation }) => {
   const scrollToMessageById = (messageId: string | number) => {
     const index = messages.findIndex((message) => message._id === messageId);
     if (index === -1) {
-      console.warn('해당 메시지를 찾을 수 없습니다.');
+      console.log('해당 메시지를 찾을 수 없습니다.');
       return;
     }
     // 메시지 인덱스로 메시지 객체를 가져옵니다.
@@ -613,8 +613,10 @@ const NewChat: React.FC = ({ navigation }) => {
           });
         }}
         rightFunction={() => {
-          console.log('사이드바 열기');
-          navigation.openDrawer();
+          if (!isSearchMode) {
+            console.log('사이드바 열기');
+            navigation.openDrawer();
+          }
         }}
         eventFunction={() => {
           //console.log('이벤트 버튼 누름');
