@@ -112,8 +112,8 @@ export const RenderBubble = (
   const showReport = (): boolean => {
     const nowMessageUserId = props.currentMessage.user._id;
     //check is bot message
-    console.log('nowMessageUserId', nowMessageUserId);
-    console.log('dfasdfa', props.currentMessage._id);
+    //console.log('nowMessageUserId', nowMessageUserId);
+    //console.log('dfasdfa', props.currentMessage._id);
     if (props.currentMessage._id === 'welcomeMessage') return false;
     if (nowMessageUserId === null || isNaN(nowMessageUserId) || Number(nowMessageUserId) <= 0)
       return false;
@@ -151,12 +151,13 @@ export const RenderBubble = (
       //onLayout={handleMessageLayout(props.currentMessage._id)}
       key={props.currentMessage._id}
       entering={FadeInDown}
-      style={css`
-        flex-direction: ${props.position === 'left' ? 'row' : 'row-reverse'};
-        align-items: end;
-        justify-content: start;
-        gap: ${rsWidth * 6 + 'px'};
-      `}>
+      style={{
+        flexDirection: props.position === 'left' ? 'row' : 'row-reverse',
+        alignItems: 'flex-end',
+        justifyContent: 'flex-start',
+        gap: rsHeight * 8,
+        // gap 대신 자식에 margin 적용
+      }}>
       <TouchableOpacity activeOpacity={1} onLongPress={props.onLongPress}>
         <View>
           <Bubble
@@ -412,7 +413,7 @@ export const RenderInputToolbar = (
     />
   ) : (
     <>
-      <View style={{ backgroundColor: 'blue' }}>
+      <View>
         {/*<Text>히히헤헤</Text>*/}
         <UpDownBtn
           enableUp={enableUp}

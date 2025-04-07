@@ -25,7 +25,7 @@ const HighlightedMessageText: React.FC<{
   highlight?: string;
   checkUserOrBot?: string;
 }> = ({ text, highlight, checkUserOrBot }) => {
-  console.log('props', checkUserOrBot);
+  //console.log('props', checkUserOrBot);
   const textColor = checkUserOrBot === '쿠키' ? palette.neutral[900] : 'white';
   if (!highlight || highlight.trim() === '') {
     return <Text style={[commentTextStyle, { color: textColor }]}>{text}</Text>;

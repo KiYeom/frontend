@@ -130,8 +130,8 @@ const CustomCalendar = ({ navigation }) => {
 
       //날짜가 바뀌었을 때
       onMonthChange={(month) => {
-        console.log('month changed', month);
-        console.log('year', month.year);
+        //console.log('month changed', month);
+        //console.log('year', month.year);
         if (month.year !== year) {
           setYear(month.year);
         }
@@ -242,7 +242,7 @@ const CustomCalendar = ({ navigation }) => {
       }}
       //해더
       renderHeader={(dateString: string) => {
-        console.log('헤더', dateString); //현재 날짜를 가져와 렌더
+        //console.log('헤더', dateString); //현재 날짜를 가져와 렌더
         const date = new Date(dateString);
         const month = date.getMonth() + 1;
         const year = date.getFullYear();

@@ -102,7 +102,7 @@ export const getV3OldChatting = async (
     const res = await instance.get('/v3/chat/history', {
       params: { characterId, from },
     });
-    console.log('🥵🥵🥵🥵🥵🥵 getV3OldChatting', res.data);
+    //console.log('🥵🥵🥵🥵🥵🥵 getV3OldChatting', res.data);
     return res.data;
   } catch (error) {
     console.log(error);

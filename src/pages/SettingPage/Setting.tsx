@@ -99,8 +99,8 @@ const Setting: React.FC<any> = ({ navigation }) => {
         //console.log('deviceVersion 🥹🥹🥹🥹🥹🥹🥹🥹🥹', typeof deviceVersion);
         //console.log('➡️➡️➡️➡️➡️➡️', deviceVersion < res.latestVersion);
         //사용자가 사용중인 앱 버전 (deviceVersion) 1.2.6 < 서버에서 받아온 앱 버전 (res.latestVersion) 1.2.7
-        console.log('deviceVersion', deviceVersion);
-        console.log('deviceVersion', res.latestVersion);
+        //console.log('deviceVersion', deviceVersion);
+        //console.log('deviceVersion', res.latestVersion);
         if (res && deviceVersion && deviceVersion !== res.latestVersion) {
           //console.log('🙇‍♀️🙇‍♀️🙇‍♀️🙇‍♀️🙇‍♀️🙇‍♀️🙇‍♀️🙇‍♀️🙇‍♀️🙇‍♀️');
           setIsLatest(false);

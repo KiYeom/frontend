@@ -88,7 +88,7 @@ const Favorites: React.FC<any> = ({ navigation }) => {
             <Text style={{ flex: 1 }}>{item.answer}</Text>
 
             {/* 아이콘 영역 */}
-            <View style={{ marginLeft: 20 }}>
+            {/*<View style={{ marginLeft: 20 }}>
               <Icon
                 name="favorite-icon"
                 width={rsWidth * 14 + 'px'}
@@ -103,7 +103,7 @@ const Favorites: React.FC<any> = ({ navigation }) => {
                   console.log('res', res);
                 }}
               />
-            </View>
+            </View>*/}
           </View>
         )}
         renderSectionHeader={({ section: { title } }) => (

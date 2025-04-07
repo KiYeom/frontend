@@ -75,9 +75,9 @@ const Home: React.FC<any> = ({ navigation }) => {
       .catch((error: any) => {
         console.error('[ERROR] homeCarousel: ', error);
       });
-    navigation.navigate(RootStackName.HomeStackNavigator, {
+    /*navigation.navigate(RootStackName.HomeStackNavigator, {
       screen: HomeStackName.NewChat,
-    });
+    });*/
   }, []);
 
   //홈 화면으로 포커스 될 때마다 위험 점수를 갱신한다.

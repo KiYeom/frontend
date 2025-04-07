@@ -6,7 +6,7 @@ import palette from '../../assets/styles/theme';
 import ArrowBtn from './ArrowBtn';
 const UpDownBtn = (props) => {
   const { enableUp, enableDown, setEnableUp, setEnableDown, handleSearch, searchWord } = props;
-  console.log('enableUp, enableDown, searchWord', enableUp, enableDown, searchWord);
+  //console.log('enableUp, enableDown, searchWord', enableUp, enableDown, searchWord);
   return (
     <UpDownContainer>
       <ArrowBtn

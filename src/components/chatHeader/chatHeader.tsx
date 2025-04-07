@@ -42,7 +42,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = (props: ChatHeaderProps) => {
     updateMessageHighlights,
     ...headerProps
   } = props;
-  console.log('searchWord', searchWord);
+  //console.log('searchWord', searchWord);
 
   return (
     <HeaderContainer isTitle={headerProps.title !== undefined} insets={insets} bgcolor="white">
@@ -60,7 +60,6 @@ const ChatHeader: React.FC<ChatHeaderProps> = (props: ChatHeaderProps) => {
               value={searchWord}
               placeholder="검색어를 입력하세요."
               style={{
-                backgroundColor: 'red',
                 marginHorizontal: 20,
                 width: rsWidth * 250,
                 paddingVertical: 10,
@@ -100,13 +99,12 @@ const ChatHeader: React.FC<ChatHeaderProps> = (props: ChatHeaderProps) => {
         <HeaderRight
           onPress={headerProps.rightFunction}
           activeOpacity={1}
-          isTitle={headerProps.title !== undefined}
-          style={{ backgroundColor: 'blue' }}>
+          isTitle={headerProps.title !== undefined}>
           {!isSearchMode ? (
             <Icon name="side-menu-bar" />
           ) : (
             <TouchableOpacity
-              style={{ marginLeft: 20, backgroundColor: 'yellow', padding: 10 }}
+              style={{ marginLeft: 20, padding: 10 }}
               onPress={() => {
                 console.log('취소 버튼을 클릭함');
                 setIsSearchMode((prev) => !prev);

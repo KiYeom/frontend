@@ -4,7 +4,7 @@ import Icon from '../icons/icons';
 import palette from '../../assets/styles/theme';
 const ArrowBtn = (props) => {
   const { enable, iconName, handleSearch, searchWord } = props;
-  console.log('searchWord', searchWord);
+  //console.log('searchWord', searchWord);
   return (
     <ScrollBtnContainer
       enable={enable}

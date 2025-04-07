@@ -184,7 +184,7 @@ const NewChat: React.FC = ({ navigation }) => {
     const messages: ExtendedIMessage[] = [];
     const lastDateAddSecond = new Date(lastMessageDate.getTime() + 10 * 1000);
     const serverMessages = await getV3OldChatting(botObject._id, lastDateAddSecond.toISOString());
-    console.log('v3 데이터 확인하기', serverMessages);
+    //console.log('v3 데이터 확인하기', serverMessages);
     if (serverMessages && serverMessages.chats && serverMessages.chats.length > 0) {
       for (let i = 0; i < serverMessages.chats.length; i++) {
         messages.push({
@@ -207,7 +207,7 @@ const NewChat: React.FC = ({ navigation }) => {
     // 반대로 로그아웃 이후 한 번이라도 대화를 하게 되면 디바이스에 실시간으로 모든 대화들이 저장이 되기 때문에 모든 대화 로그가 있음
     let messages: ExtendedIMessage[] = [];
     const isV3KeyExist = doesV3KeyExist();
-    console.log('getHistory 실행', isV3KeyExist);
+    //console.log('getHistory 실행', isV3KeyExist);
     //deleteNewIMessagesV3(); //이거 삭제하기
 
     if (!isV3KeyExist) {
@@ -236,7 +236,7 @@ const NewChat: React.FC = ({ navigation }) => {
       }
     } else {
       //v3 키가 존재하는 경우
-      console.log('👯👯👯👯👯👯👯👯v3 키가 존재함👯👯👯👯👯👯', isV3KeyExist);
+      //console.log('👯👯👯👯👯👯👯👯v3 키가 존재함👯👯👯👯👯👯', isV3KeyExist);
       const v3DeviceHistory = getNewIMessagesV3();
       if (v3DeviceHistory) {
         const v3DeviceArray = JSON.parse(v3DeviceHistory);
@@ -496,7 +496,7 @@ const NewChat: React.FC = ({ navigation }) => {
     if (getRefreshChat() === 0) {
       //Analytics.watchNewChatScreen();
     }
-    console.log('🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨');
+    //console.log('🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨');
     getHistory()
       .then((messageHistory) => {
         //console.log('😀😀😀😀😀😀useEffect 결과😀😀😀😀', messageHistory);
@@ -528,7 +528,7 @@ const NewChat: React.FC = ({ navigation }) => {
             navigation.navigate('Home');
           });
       }
-    }, []),
+    }, [navigation]),
   );
 
   //비행기를 클릭헀을 때 실행되는 onSend 함수
@@ -560,7 +560,9 @@ const NewChat: React.FC = ({ navigation }) => {
   };
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', setRiskScoreV2);
+    const unsubscribe = navigation.addListener('focus', () => {
+      setRiskScoreV2;
+    });
     // 컴포넌트 unmount 시 리스너를 해제
     return () => {
       unsubscribe();
