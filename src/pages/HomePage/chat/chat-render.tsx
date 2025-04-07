@@ -386,6 +386,21 @@ export const RenderInputToolbar = (
         paddingVertical: rsHeight * 8,
         gap: rsWidth * 20,
       }}
+      renderActions={(actionProps) => (
+        <TouchableOpacity
+          style={{
+            //backgroundColor: 'red',
+            width: 35 * rsWidth,
+            height: rsFont * 16 * 1.5 + 15 * 2,
+            justifyContent: 'center',
+          }}
+          onPress={() => {
+            console.log('액션 버튼 클릭됨');
+            //console.log('actionProps', actionProps);
+          }}>
+          <Icon name="picture-icon" width={rsWidth * 20} height={rsHeight * 20} />
+        </TouchableOpacity>
+      )}
       renderComposer={(composerProps) => (
         <CustomMultiTextInput
           value={composerProps.text}
