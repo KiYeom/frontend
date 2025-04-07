@@ -756,10 +756,13 @@ const NewChat: React.FC = ({ navigation }) => {
             right: 0,
             bottom: 0,
             position: 'absolute',
-            backgroundColor: 'red',
+            //backgroundColor: 'red',
             height: 80,
+            paddingBottom: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
           }}>
-          <ImageShow />
+          <ImageShow image={image} setImage={setImage} />
         </View>
       )}
     </SafeAreaView>
