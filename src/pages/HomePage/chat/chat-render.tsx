@@ -375,6 +375,7 @@ export const RenderInputToolbar = (
   handleSearch?: (text: string, direction: null | 'up' | 'down') => Promise<string | null>,
   searchWord?: string,
   pickImage?: () => void,
+  setInputHeight: (value: number) => void,
 ) =>
   !isSearchMode ? (
     <InputToolbar
@@ -412,6 +413,7 @@ export const RenderInputToolbar = (
         <CustomMultiTextInput
           value={composerProps.text}
           onChangeText={composerProps.onTextChanged}
+          setInputHeight={setInputHeight}
         />
       )}
       renderSend={(sendProps) => (

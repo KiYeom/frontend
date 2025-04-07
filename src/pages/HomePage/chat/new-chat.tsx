@@ -724,6 +724,7 @@ const NewChat: React.FC = ({ navigation }) => {
             handleSearch,
             searchWord,
             pickImage,
+            setInputHeight,
           )
         }
         textInputProps={{
@@ -751,13 +752,13 @@ const NewChat: React.FC = ({ navigation }) => {
       {image && (
         <View
           style={{
-            top: height - inputHeight - keyboardHeight - insets.bottom - 85,
+            top: height - inputHeight - keyboardHeight - insets.bottom - 210,
             left: 0,
             right: 0,
             bottom: 0,
             position: 'absolute',
             //backgroundColor: 'red',
-            height: 80,
+            height: 200,
             paddingBottom: 10,
             justifyContent: 'center',
             alignItems: 'center',

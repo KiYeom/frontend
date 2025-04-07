@@ -5,8 +5,8 @@ import { Image } from 'react-native';
 
 export const ImageShowContainer = styled.View`
   background-color: rgba(0, 0, 0, 0.4);
-  width: ${rsWidth * 250 + 'px'};
-  height: ${rsHeight * 250 + 'px'};
+  width: ${rsWidth * 200 + 'px'};
+  height: ${rsHeight * 200 + 'px'};
   position: relative;
   padding-horizontal: ${rsWidth * 10 + 'px'};
   padding-vertical: ${rsHeight * 10 + 'px'};

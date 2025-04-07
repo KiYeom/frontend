@@ -23,7 +23,7 @@ const ImageShow = ({ image, setImage }: ImageShowProps) => {
         }}
       />
       {/*<Text style={{ color: 'white' }}>이미지</Text>*/}
-      {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+      {image && <Image source={{ uri: image }} style={{ width: 140, height: 140 }} />}
     </ImageShowContainer>
   );
 };
