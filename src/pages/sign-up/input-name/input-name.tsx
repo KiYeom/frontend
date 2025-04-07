@@ -10,7 +10,6 @@ import {
   View,
 } from 'react-native';
 import { AuthProvider } from '../../../constants/Constants';
-import { Checkbox } from 'react-native-ui-lib';
 import { updateUserProfile } from '../../../apis/auth';
 import palette from '../../../assets/styles/theme';
 import Analytics from '../../../utils/analytics';
@@ -18,6 +17,7 @@ import { UseSigninStatus } from '../../../utils/signin-status';
 import { setInfoWhenLogin, setUserNickname } from '../../../utils/storageUtils';
 import Button from '../../../components/button/button';
 import Input from '../../../components/input/input';
+import { Checkbox } from 'react-native-paper';
 import {
   Annotation,
   ContentContainer,
@@ -27,6 +27,7 @@ import {
 } from './input-name.styles';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { rsWidth } from '../../../utils/responsive-size';
+import NewCheckBox from '../../../components/v3-checkbox/NewCheckBox';
 
 const validateName = (name: string): 'error' | 'default' | 'correct' => {
   if (name.length !== 0 && (name.length < 2 || name.length > 15)) return 'error';
@@ -134,7 +135,7 @@ const InputName = ({ route, navigation }) => {
                 onPress={() => {
                   setLegalAllowed(!legalAllowed);
                 }}>
-                <Checkbox
+                {/*<Checkbox
                   value={allowGuestMode}
                   onValueChange={() => {
                     setAllowGuestMode(!allowGuestMode);
@@ -142,6 +143,11 @@ const InputName = ({ route, navigation }) => {
                   label={'비회원 사용자는 앱 삭제 시 모든 데이터가 소멸됩니다'}
                   color={allowGuestMode ? palette.primary[400] : palette.neutral[200]}
                   labelStyle={{ fontSize: 14 }} //라벨 스타일링
+                />*/}
+                <NewCheckBox
+                  checked={allowGuestMode}
+                  onToggle={() => setAllowGuestMode(!allowGuestMode)}
+                  message="비회원 사용자는 앱 삭제 시 모든 데이터가 소멸됩니다"
                 />
               </TouchableOpacity>
             )}
@@ -154,7 +160,7 @@ const InputName = ({ route, navigation }) => {
               onPress={() => {
                 setLegalAllowed(!legalAllowed);
               }}>
-              <Checkbox
+              {/*<Checkbox
                 value={legalAllowed}
                 onValueChange={() => {
                   setLegalAllowed(!legalAllowed);
@@ -162,6 +168,11 @@ const InputName = ({ route, navigation }) => {
                 label={'서비스 이용약관에 동의합니다.'}
                 color={legalAllowed ? palette.primary[400] : palette.neutral[200]}
                 labelStyle={{ fontSize: 14 }} //라벨 스타일링
+              />*/}
+              <NewCheckBox
+                checked={legalAllowed}
+                onToggle={() => setLegalAllowed(!legalAllowed)}
+                message="서비스 이용약관에 동의합니다"
               />
             </TouchableOpacity>
 
@@ -170,7 +181,7 @@ const InputName = ({ route, navigation }) => {
               onPress={() => {
                 setPrivacyAllowed(!privacyAllowed);
               }}>
-              <Checkbox
+              {/*<Checkbox
                 value={privacyAllowed}
                 onValueChange={() => {
                   setPrivacyAllowed(!privacyAllowed);
@@ -178,6 +189,11 @@ const InputName = ({ route, navigation }) => {
                 label={'개인정보 처리방침에 동의합니다.'}
                 color={privacyAllowed ? palette.primary[400] : palette.neutral[200]}
                 labelStyle={{ fontSize: 14 }} //라벨 스타일링
+              />*/}
+              <NewCheckBox
+                checked={privacyAllowed}
+                onToggle={() => setPrivacyAllowed(!privacyAllowed)}
+                message="개인정보 처리방침에 동의합니다"
               />
             </TouchableOpacity>
             <TouchableOpacity
@@ -185,7 +201,7 @@ const InputName = ({ route, navigation }) => {
               onPress={() => {
                 setFourth(!fourth);
               }}>
-              <Checkbox
+              {/*<Checkbox
                 value={fourth}
                 onValueChange={() => {
                   setFourth(!fourth);
@@ -193,6 +209,11 @@ const InputName = ({ route, navigation }) => {
                 label={'만 14세 이상입니다'}
                 color={fourth ? palette.primary[400] : palette.neutral[200]}
                 labelStyle={{ fontSize: 14 }} //라벨 스타일링
+              />*/}
+              <NewCheckBox
+                checked={fourth}
+                onToggle={() => setFourth(!fourth)}
+                message="만 14세 이상입니다"
               />
             </TouchableOpacity>
             <TouchableOpacity

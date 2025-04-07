@@ -4,7 +4,8 @@ import * as WebBrowser from 'expo-web-browser';
 import React, { useEffect } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Carousel, View } from 'react-native-ui-lib';
+import Carousel from 'react-native-reanimated-carousel';
+import { View } from 'react-native';
 import { getCarousel } from '../../../apis/carousel';
 import { TCarousel } from '../../../apis/carousel.types';
 import palette from '../../../assets/styles/theme';
@@ -77,6 +78,8 @@ const Profile = () => {
         console.error('[ERROR] homeCarousel: ', error);
       });
   }, []);
+  const width = 350 * rsWidth;
+  const height = 350 * rsHeight;
 
   return (
     <View style={{ flex: 1, paddingBottom: insets.bottom }}>
@@ -84,20 +87,35 @@ const Profile = () => {
         <Container>
           <View style={{ alignItems: 'center' }}>
             <Carousel
-              containerStyle={{ height: 350 * rsWidth, width: 350 * rsWidth }}
+              width={width}
+              height={height}
+              data={carousels}
+              defaultIndex={0}
               loop
-              initialPage={0}
-              showCounter>
-              {carousels.map((carousel, i) => (
-                <View flex centerV key={i}>
+              autoPlay
+              autoPlayInterval={5000}
+              style={{
+                borderRadius: 20,
+                overflow: 'hidden',
+              }}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  activeOpacity={1}
+                  onPress={() => {
+                    // Analytics.clickTabHomeCarousel(item.image);
+                    WebBrowser.openBrowserAsync(item.url);
+                  }}>
                   <Image
-                    key={i}
-                    style={{ flex: 1, width: 350 * rsWidth, height: 350 * rsHeight }}
-                    source={{ uri: carousel.image }}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                    }}
+                    contentFit="cover"
+                    source={{ uri: item.image }}
                   />
-                </View>
-              ))}
-            </Carousel>
+                </TouchableOpacity>
+              )}
+            />
           </View>
           <View
             style={css`

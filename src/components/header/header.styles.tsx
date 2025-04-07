@@ -48,7 +48,7 @@ export const HeaderRight = styled.TouchableOpacity<{ isTitle: boolean }>`
 
 export const HeaderEvent = styled.TouchableOpacity<{ isTitle: boolean }>`
   position: absolute;
-  right: 50px;
+  right: 35px;
   margin-right: ${rsWidth * 13 + 'px'};
   padding-left: ${rsWidth * 10 + 'px'};
   padding-right: ${rsWidth * 10 + 'px'};

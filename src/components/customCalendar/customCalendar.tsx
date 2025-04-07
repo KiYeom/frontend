@@ -87,6 +87,7 @@ const CustomCalendar = ({ navigation }) => {
     useCalendarStore();
   const [today, setToday] = useState<string>(getDate());
   const [year, setYear] = useState<number>(new Date().getFullYear());
+  const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth() + 1);
 
   useEffect(() => {
     setToday(getDate());
@@ -129,11 +130,12 @@ const CustomCalendar = ({ navigation }) => {
 
       //날짜가 바뀌었을 때
       onMonthChange={(month) => {
-        console.log('month changed', month);
-        console.log('year', month.year);
+        //console.log('month changed', month);
+        //console.log('year', month.year);
         if (month.year !== year) {
           setYear(month.year);
         }
+        setCurrentMonth(month.month);
       }}
       //화살표를 눌렀을 때
       onPressArrowLeft={(subtractMonth) => {
@@ -151,9 +153,12 @@ const CustomCalendar = ({ navigation }) => {
       }}
       //dayComponent를 override
       dayComponent={({ date, state }) => {
-        //console.log('datyCOmponent', date, calendarData[date.dateString]);
+        //console.log('datyCOmponent', date, calendarData[date.dateString], state);
+        //console.log('🥺', date.month);
+
         return (
-          state !== 'disabled' && (
+          state !== 'disabled' &&
+          date.month === currentMonth && (
             <View>
               <Text
                 style={{
@@ -237,6 +242,7 @@ const CustomCalendar = ({ navigation }) => {
       }}
       //해더
       renderHeader={(dateString: string) => {
+        //console.log('헤더', dateString); //현재 날짜를 가져와 렌더
         const date = new Date(dateString);
         const month = date.getMonth() + 1;
         const year = date.getFullYear();
@@ -262,7 +268,7 @@ const CustomCalendar = ({ navigation }) => {
                 color: `${palette.neutral[900]}`,
                 textAlign: `center`,
               }}>
-              {month}월
+              {currentMonth}월
             </Text>
           </View>
         );

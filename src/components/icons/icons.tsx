@@ -36,12 +36,17 @@ import Pencil from './svg/pencil';
 import GreenChatIcon from './svg/chat';
 import NormalEmotion from './svg/normal-emotion';
 import EditIcon from './svg/edit-icon';
+import FavoriteIcon from './svg/favorite-icon';
+import TrashIcon from './svg/trash-icon';
+import ChatSearch from './svg/chat-search-icon';
+import ArrowUp from './svg/arrow-up';
 
 export type TIconName =
   | 'airplane'
   | 'arrow-down'
   | 'arrow-left'
   | 'arrow-right'
+  | 'arrow-up'
   | 'date-icon'
   | 'home-icon'
   | 'setting-icon'
@@ -75,18 +80,29 @@ export type TIconName =
   | 'pencil'
   | 'green-chat-icon'
   | 'normal-emotion'
-  | 'edit-icon';
+  | 'edit-icon'
+  | 'favorite-icon'
+  | 'trash-icon'
+  | 'chat-search-icon';
 
 export default function Icon({
   width,
   height,
   color,
   name,
+  toggleable,
+  isSaved,
+  messageId,
+  onFavoritePress,
 }: {
   width?: number | string;
   height?: number | string;
   color?: string;
   name: TIconName;
+  toggleable?: boolean;
+  isSaved?: boolean;
+  messageId?: string;
+  onFavoritePress?: (messageId: string) => void;
 }) {
   switch (name) {
     case 'airplane':
@@ -97,6 +113,8 @@ export default function Icon({
       return <ArrowLeft width={width} height={height} color={color} />;
     case 'arrow-right':
       return <ArrowRight width={width} height={height} color={color} />;
+    case 'arrow-up':
+      return <ArrowUp width={width} height={height} color={color} />;
     case 'date-icon':
       return <DateIcon width={width} height={height} color={color} />;
     case 'home-icon':
@@ -165,5 +183,21 @@ export default function Icon({
       return <NormalEmotion width={width} height={height} color={color} />;
     case 'edit-icon':
       return <EditIcon width={width} height={height} color={color} />;
+    case 'favorite-icon':
+      return (
+        <FavoriteIcon
+          width={width}
+          height={height}
+          color={color}
+          toggleable={toggleable}
+          isSaved={isSaved}
+          messageId={messageId}
+          onFavoritePress={onFavoritePress}
+        />
+      );
+    case 'trash-icon':
+      return <TrashIcon width={width} height={height} color={color} />;
+    case 'chat-search-icon':
+      return <ChatSearch width={width} height={height} color={color} />;
   }
 }

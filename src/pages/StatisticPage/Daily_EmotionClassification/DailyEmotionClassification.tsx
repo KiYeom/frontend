@@ -2,7 +2,7 @@ import { css } from '@emotion/native';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { PieChart } from 'react-native-gifted-charts';
-import { Hint, Text, View } from 'react-native-ui-lib';
+import { Text, View } from 'react-native';
 import { TLabel } from '../../../apis/analyze.type';
 import palette from '../../../assets/styles/theme';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
@@ -93,30 +93,7 @@ const DailyEmotionClassification: React.FC<any> = (props: any) => {
     <Container>
       <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
         <SectionTitle>쿠키가 생각했을 때의 모습이에요</SectionTitle>
-        <View style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}>
-          <Hint
-            visible={hintStatus && hintStatus === HINT_NAME}
-            position={Hint.positions.TOP}
-            message={HINT_MESSAGE}
-            color={'white'}
-            enableShadow
-            messageStyle={css`
-              font-family: Kyobo-handwriting;
-              font-size: ${16 * rsFont + 'px'};
-              color: ${palette.neutral[900]};
-            `}
-            onPress={() => setHintStatus(undefined)}
-            onBackgroundPress={() => setHintStatus(undefined)}>
-            <View>
-              <TouchableOpacity
-                activeOpacity={1}
-                style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}
-                onPress={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}>
-                <Icon name="information" width={16} height={16} />
-              </TouchableOpacity>
-            </View>
-          </Hint>
-        </View>
+        <View style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}></View>
       </View>
 
       {pieData.length !== 0 ? (

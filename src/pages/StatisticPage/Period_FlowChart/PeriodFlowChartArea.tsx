@@ -9,9 +9,7 @@ import { SectionTitle } from '../StatisticMain.style';
 import { getDemoActivePush } from '../../../apis/demo';
 import { getIsDemo, setIsScoreDemo } from '../../../utils/storageUtils';
 import Icon from '../../../components/icons/icons';
-import { Hint } from 'react-native-ui-lib';
 import palette from '../../../assets/styles/theme';
-import HintComponent from '../HintComponent';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 
@@ -104,12 +102,6 @@ const PeriodFlowChart = ({ emotionsData, startDate, endDate, hintStatus, setHint
                 </TouchableOpacity>
               </View>
             </Hint>*/}
-            <HintComponent
-              visible={hintStatus && hintStatus === HINT_NAME}
-              onClose={() => setHintStatus(undefined)}
-              onToggle={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}
-              message={HINT_MESSAGE}
-            />
           </View>
         </View>
         <View

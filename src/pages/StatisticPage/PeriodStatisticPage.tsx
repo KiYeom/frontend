@@ -21,14 +21,13 @@ import PeriodFlowChart from './Period_FlowChart/PeriodFlowChartArea';
 import PeriodKeywordArea from './Period_keyword/PeriodKeywordArea';
 import ReportType from './ReportType';
 import { DateLineContainer, DateLineText, StatisticTitle } from './StatisticMain.style';
-import { Hint } from 'react-native-ui-lib';
 import Icon from '../../components/icons/icons';
 import PeriodEmotionArea from './Period_Emotion/PeriodEmotionArea';
-import HintComponent from './HintComponent';
 import Header from '../../components/header/header';
 import EmptyBox from '../../components/emptybox/emptyBox';
 import { RecordedEmotion } from '../HomePage/diary/EmotionChart.style';
 import { RootStackName, HomeStackName } from '../../constants/Constants';
+import { getDate } from '../../utils/times';
 
 const HINT_NAME = 'main';
 const HINT_MESSAGE =
@@ -147,7 +146,7 @@ const PeriodStatisticPage: React.FC<any> = () => {
               <DateLineContainer onPress={() => setOpenModal(true)}>
                 <DateLineText>
                   {range.startDate && range.endDate
-                    ? `${dayjs(range.startDate).locale(locale).format('YYYY년 M월 D일')}  ~ ${dayjs(range.endDate).locale(locale).format('YYYY년 M월 D일')}`
+                    ? `${dayjs(range.startDate).locale(locale).format('YYYY년 M월 D일')} ~ ${dayjs(range.endDate).locale(locale).format('YYYY년 M월 D일')}`
                     : '날짜를 선택해주세요'}
                 </DateLineText>
                 <Icon name="arrow-down" color={'white'} />
@@ -194,23 +193,23 @@ const PeriodStatisticPage: React.FC<any> = () => {
             />
           ) : (
             <EmptyBox
-              mainTitle="나에게 어떤 하루였나요?"
-              subTitle="감정 일기를 작성하고, 마음 보고서를 완성해보세요"
+              mainTitle="이 기간에 작성한 일기가 없어요"
+              subTitle="오늘의 감정 일기를 작성하고, 마음 보고서를 채워봐요"
               isLeftIcon={true}
               iconName="pencil"
               iconSize={40}
               onPress={() =>
                 navigation.navigate(RootStackName.HomeStackNavigator, {
                   screen: HomeStackName.SmallEmotionChart,
-                  params: { dateID: dateID },
+                  params: { dateID: getDate(new Date()) },
                 })
               }
             />
           )}
           {periodKeywordList.length === 0 && (
             <EmptyBox
-              mainTitle="쿠키에게 고민을 말해보세요"
-              subTitle="쿠키와의 대화가 부족해 마음을 들여다 볼 수 없었어요"
+              mainTitle="이 기간에는 쿠키를 만나지 않았어요"
+              subTitle="오늘 쿠키를 만나보러 가는건 어떠세요?"
               isLeftIcon={true}
               iconName="green-chat-icon"
               iconSize={40}

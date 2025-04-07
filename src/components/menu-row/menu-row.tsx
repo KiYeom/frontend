@@ -25,6 +25,7 @@ export type MenuRowProps = {
   onPress?: () => void;
   latestVersion?: string;
   showIcon?: boolean;
+  iconName?: TIconName;
   showToggle?: boolean;
   isEnabled?: boolean;
   disabled?: boolean;
@@ -67,6 +68,7 @@ const MenuRow = (props: MenuRowProps) => {
     showEventIcon = false,
     eventName = '',
     shouldBlockTouch = false,
+    iconName = 'arrow-right',
   } = props;
   //console.log(
   //'showVersionshowVersionshowVersionshowVersion',
@@ -117,8 +119,10 @@ const MenuRow = (props: MenuRowProps) => {
         )
       ) : showIcon ? (
         <Icon
-          name="arrow-right"
-          width={rsWidth * 9}
+          name={iconName}
+          //width={rsWidth * 9}
+          //height={rsHeight * 18}
+          //width={rsWidth * 9}
           height={rsHeight * 18}
           color={palette.neutral[300]}
         />

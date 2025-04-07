@@ -14,7 +14,7 @@ import {
   Title,
   TitleContainer,
 } from './organization-connect.style';
-import { Checkbox } from 'react-native-ui-lib';
+import NewCheckBox from '../../../../components/v3-checkbox/NewCheckBox';
 import palette from '../../../../assets/styles/theme';
 import { rsHeight, rsWidth } from '../../../../utils/responsive-size';
 import * as WebBrowser from 'expo-web-browser';
@@ -93,14 +93,10 @@ const OrganizationConnect: React.FC = ({ navigation }) => {
             onPress={() => {
               setPrivacyAllowed(!privacyAllowed);
             }}>
-            <Checkbox
-              value={privacyAllowed}
-              onValueChange={() => {
-                setPrivacyAllowed(!privacyAllowed);
-              }}
-              label={'개인정보 제 3자 제공에 대해 동의합니다.'}
-              color={privacyAllowed ? palette.primary[400] : palette.neutral[200]}
-              labelStyle={{ fontSize: 14 }} //라벨 스타일링
+            <NewCheckBox
+              checked={privacyAllowed}
+              onToggle={() => setPrivacyAllowed(!privacyAllowed)}
+              message="개인정보 제 3자 제공에 대해 동의합니다"
             />
           </TouchableOpacity>
           <TouchableOpacity
@@ -108,7 +104,7 @@ const OrganizationConnect: React.FC = ({ navigation }) => {
             onPress={() => {
               setFourth(!fourth);
             }}>
-            <Checkbox
+            {/*<Checkbox
               value={fourth}
               onValueChange={() => {
                 setFourth(!fourth);
@@ -116,6 +112,11 @@ const OrganizationConnect: React.FC = ({ navigation }) => {
               label={'만 14세 이상입니다'}
               color={fourth ? palette.primary[400] : palette.neutral[200]}
               labelStyle={{ fontSize: 14 }} //라벨 스타일링
+            />*/}
+            <NewCheckBox
+              checked={fourth}
+              onToggle={() => setFourth(!fourth)}
+              message="만 14세 이상입니다"
             />
           </TouchableOpacity>
           <TouchableOpacity

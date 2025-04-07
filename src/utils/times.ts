@@ -100,3 +100,9 @@ export const formatDateKorean = (dateStr: string): string => {
   const dayNumber = parseInt(day, 10);
   return `${year}년 ${monthNumber}월 ${dayNumber}일`;
 };
+
+export const convertUtcToKst = (dateStr: string): string => {
+  const date = new Date(dateStr);
+  date.setUTCHours(date.getUTCHours() + 9); // UTC 시간에 9시간 추가 (KST 변환)
+  return `${date.getUTCFullYear()}년 ${date.getUTCMonth() + 1}월 ${date.getUTCDate()}일`;
+};

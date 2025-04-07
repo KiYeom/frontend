@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native-ui-lib';
+import { View } from 'react-native';
 import SwitchComponent from '../switch/switch';
 import './switch-row.styles';
 import {

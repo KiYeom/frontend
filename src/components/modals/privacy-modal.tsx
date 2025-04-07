@@ -2,7 +2,7 @@ import styled, { css } from '@emotion/native';
 import * as WebBrowser from 'expo-web-browser';
 import React from 'react';
 import { Modal, Text, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
-import { Checkbox } from 'react-native-ui-lib';
+import { Checkbox } from 'react-native-paper';
 import palette from '../../assets/styles/theme';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import Button from '../button/button';
@@ -31,13 +31,11 @@ const PrivacyModal = ({
                   setLegelAllowed(!legelAllowed);
                 }}>
                 <Checkbox
-                  value={legelAllowed}
-                  onValueChange={() => {
-                    setLegelAllowed(!legelAllowed);
-                  }}
-                  label={'서비스 이용약관에 동의합니다.'}
-                  color={legelAllowed ? palette.primary[400] : palette.neutral[200]}
-                  labelStyle={{ fontSize: 14 }} //라벨 스타일링
+                  status={legelAllowed ? 'checked' : 'unchecked'}
+                  onPress={() => setLegelAllowed(!legelAllowed)}
+                  //label={'서비스 이용약관에 동의합니다.'}
+                  //color={legelAllowed ? palette.primary[400] : palette.neutral[200]}
+                  //labelStyle={{ fontSize: 14 }} //라벨 스타일링
                 />
               </TouchableOpacity>
               <TouchableOpacity

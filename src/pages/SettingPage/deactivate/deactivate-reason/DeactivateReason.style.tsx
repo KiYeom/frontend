@@ -1,5 +1,4 @@
 import styled from '@emotion/native';
-import { Checkbox } from 'react-native-ui-lib';
 import { rsHeight } from '../../../../utils/responsive-size';
 
 //체크박스와 버튼을 감싸는 form container
@@ -23,8 +22,9 @@ type checkboxProps = {
 };
 
 //기타를 클릭하면 textarea가 나와야 함
+/*
 const Check = (props: checkboxProps) => {
   const { label, value } = props;
   return <Checkbox label={label} value={value} />;
 };
-export default Check;
+export default Check;*/

@@ -4,7 +4,6 @@ import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { SectionTitle } from '../StatisticMain.style';
 import PeriodKeyword from '../../../components/periodKeyword/PeriodKeyword';
 import Empty from '../Empty';
-import { Hint } from 'react-native-ui-lib';
 import palette from '../../../assets/styles/theme';
 import Icon from '../../../components/icons/icons';
 
@@ -22,30 +21,7 @@ const PeriodEmotionArea: React.FC<any> = (props: any) => {
       `}>
       <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
         <SectionTitle>그 동안 이러한 감정들을 느꼈어요</SectionTitle>
-        <View style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}>
-          <Hint
-            visible={hintStatus && hintStatus === HINT_NAME}
-            position={Hint.positions.TOP}
-            message={HINT_MESSAGE}
-            color={'white'}
-            enableShadow
-            messageStyle={css`
-              font-family: Kyobo-handwriting;
-              font-size: ${16 * rsFont + 'px'};
-              color: ${palette.neutral[900]};
-            `}
-            onPress={() => setHintStatus(undefined)}
-            onBackgroundPress={() => setHintStatus(undefined)}>
-            <View>
-              <TouchableOpacity
-                activeOpacity={1}
-                style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}
-                onPress={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}>
-                <Icon name="information" width={16} height={16} />
-              </TouchableOpacity>
-            </View>
-          </Hint>
-        </View>
+        <View style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}></View>
       </View>
       <View
         style={css`

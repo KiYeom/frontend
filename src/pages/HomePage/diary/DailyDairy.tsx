@@ -17,7 +17,6 @@ import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanima
 import Icon from '../../../components/icons/icons';
 import Toast from 'react-native-root-toast';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Carousel } from 'react-native-ui-lib';
 import { dailyAnalyze, todayEmotion, todayEmotionCheck } from '../../../apis/analyze';
 import {
   emotionData,
@@ -185,6 +184,7 @@ const DailyDairy = ({ navigation, route }) => {
               navigation.navigate(RootStackName.BottomTabNavigator, {
                 screen: TabScreenName.Home,
               });
+
               console.log('~~~~', selectedEmotions);
               const targetEmotion =
                 selectedEmotions.find((emotion) => emotion.type === 'custom') ||

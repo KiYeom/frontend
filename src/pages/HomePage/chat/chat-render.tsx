@@ -30,10 +30,14 @@ import { reportChat } from '../../../apis/chatting';
 import { getNewIMessages } from '../../../utils/storageUtils';
 import Input from '../../../components/input/input';
 import { transparent } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
-
+import { saveFavoriteChatLog } from '../../../apis/chatting';
+import { useRef } from 'react';
+import UpDownBtn from '../../../components/up-down-button/UpDownBtn';
+import { ExtendedIMessage } from '../../../utils/chatting';
+import HighlightedMessageText from './HighlightMessageText';
 const getMessageSet = (
-  currentMessage: IMessage,
-  allMessages: IMessage[],
+  currentMessage: ExtendedIMessage,
+  allMessages: ExtendedIMessage[],
 ):
   | {
       botChats: string;
@@ -77,50 +81,40 @@ const getMessageSet = (
   };
 };
 
-const reportMessages = (message: IMessage) => {
-  if (message.user._id === null || isNaN(message.user._id)) return;
-  //대화 내역을 가져오는 함수
-  let allMessages: IMessage[] = [];
-  const deviceHistory = getNewIMessages();
-  if (deviceHistory) {
-    const deviceArray = JSON.parse(deviceHistory);
-    allMessages.push(...deviceArray);
-  }
-  const chats = getMessageSet(message, allMessages);
-  if (chats === undefined) {
-    Alert.alert('신고 접수 실패', '쿠키와 대화를 진행한 후 다시 시도해주세요.');
-    return;
-  }
+// 클릭한 말풍선의 모든 대화를 만드는 함수 (ex. 67e8218282ca763945508719-B-5)
+const generateIdList = (clickedId: string): string[] => {
+  console.log('clickedId', clickedId);
+  const parts = clickedId.split('-');
+  const maxIndex = parseInt(parts.pop() || '0', 10); // 마지막 숫자 추출
+  const baseId = parts.join('-') + '-'; // 나머지 부분을 재조합하여 기본 id를 만듭니다.
 
-  reportChat(
-    Number(message.user._id),
-    chats.userChats,
-    chats.botChats,
-    new Date(message.createdAt).toISOString(),
-  ).finally(() => {
-    Alert.alert('신고 접수', '신고가 접수되었습니다. 감사합니다!');
-  });
+  const idList: string[] = [];
+  for (let i = 0; i <= maxIndex; i++) {
+    idList.push(baseId + i);
+  }
+  console.log('idList', idList);
+  return idList;
 };
 
-const confirmReport = (message: IMessage) => {
-  Alert.alert(
-    '대화를 신고하시겠습니까?',
-    '대화 신고 시 해당 대화를 비식별화 처리를 통해 개인정보 제거 후 신고가 접수됩니다. ',
-    [
-      // 버튼 배열
-      {
-        text: '아니오', // 버튼 제목
-        style: 'cancel',
-      },
-      { text: '신고하기', onPress: () => reportMessages(message) },
-    ],
-  );
+export const reportMessages = async (messageId: string, isSaved: boolean): string | undefined => {
+  console.log('reportMessags 실행', messageId);
+  if (messageId === null) return;
+  //const isSaved: boolean = true;
+  const res = await saveFavoriteChatLog(messageId, !isSaved);
+  console.log('res', res);
+  return messageId;
 };
 
-export const RenderBubble = (props: BubbleProps<IMessage>) => {
+export const RenderBubble = (
+  props: BubbleProps<ExtendedIMessage> & { onFavoritePress: (messageId: string) => void },
+) => {
+  //console.log('🧼🧼🧼🧼🧼 props', props);
   const showReport = (): boolean => {
     const nowMessageUserId = props.currentMessage.user._id;
     //check is bot message
+    //console.log('nowMessageUserId', nowMessageUserId);
+    //console.log('dfasdfa', props.currentMessage._id);
+    if (props.currentMessage._id === 'welcomeMessage') return false;
     if (nowMessageUserId === null || isNaN(nowMessageUserId) || Number(nowMessageUserId) <= 0)
       return false;
 
@@ -141,25 +135,45 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
       return true;
     return false;
   };
+  // 컴포넌트 최상위에서 메시지 위치를 저장할 ref 선언
+  //const messagePositions = useRef<{ [key: string]: number }>({});
+
+  // 각 메시지 컴포넌트의 onLayout에 부여할 함수
+  /*const handleMessageLayout = (messageId: string | number) => (event: any) => {
+    const { y } = event.nativeEvent.layout;
+    // 메시지 id를 key로 하여 y 좌표 저장
+    messagePositions.current[messageId] = y;
+    console.log(`Message ${messageId} Y position: ${y}`);
+  };*/
 
   return (
     <Animated.View
+      //onLayout={handleMessageLayout(props.currentMessage._id)}
       key={props.currentMessage._id}
       entering={FadeInDown}
-      style={css`
-        flex-direction: ${props.position === 'left' ? 'row' : 'row-reverse'};
-        align-items: end;
-        justify-content: start;
-        gap: ${rsWidth * 6 + 'px'};
-      `}>
+      style={{
+        flexDirection: props.position === 'left' ? 'row' : 'row-reverse',
+        alignItems: 'flex-end',
+        justifyContent: 'flex-start',
+        gap: rsHeight * 8,
+        // gap 대신 자식에 margin 적용
+      }}>
       <TouchableOpacity activeOpacity={1} onLongPress={props.onLongPress}>
         <View>
           <Bubble
             {...props}
             renderTime={() => null}
+            renderMessageText={() => (
+              <HighlightedMessageText
+                text={props.currentMessage.text}
+                highlight={props.currentMessage.hightlightKeyword}
+                checkUserOrBot={props.currentMessage.user.name} //name : 쿠키, 나
+              />
+            )}
             textStyle={{
               left: css`
-                color: ${palette.neutral[500]};
+                //color: ${palette.neutral[500]};
+                color: red;
                 font-family: Pretendard-Regular;
                 font-size: ${rsFont * 14 + 'px'};
                 text-align: left;
@@ -200,20 +214,25 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
       </TouchableOpacity>
 
       {showReport() && (
-        <TouchableOpacity activeOpacity={1} onPress={() => confirmReport(props.currentMessage)}>
-          <View
-            style={css`
-              flex: 1;
-              justify-content: flex-end;
-            `}>
-            <Icon
-              name="warning"
-              width={rsWidth * 14 + 'px'}
-              height={rsHeight * 14 + 'px'}
-              color={palette.neutral[400]}
-            />
-          </View>
-        </TouchableOpacity>
+        <View
+          style={css`
+            justify-content: flex-end;
+          `}>
+          <Icon
+            name="favorite-icon"
+            width={rsWidth * 14 + 'px'}
+            height={rsHeight * 14 + 'px'}
+            toggleable
+            isSaved={props.currentMessage.isSaved}
+            messageId={'testMessageId'}
+            onFavoritePress={(id) => {
+              //console.log('메세지', props.currentMessage);
+              //reportMessages(props.currentMessage._id, props.currentMessage.isSaved);
+              console.log('icon에서의 press 함수', props.currentMessage._id);
+              props.onFavoritePress(props.currentMessage._id);
+            }}
+          />
+        </View>
       )}
 
       {props.renderTime && props.renderTime({ ...props })}
@@ -221,7 +240,7 @@ export const RenderBubble = (props: BubbleProps<IMessage>) => {
   );
 };
 
-export const RenderAvatar = (props: AvatarProps<IMessage>) => {
+export const RenderAvatar = (props: AvatarProps<ExtendedIMessage>) => {
   const { position, currentMessage, previousMessage } = props;
   if (position !== 'left') return null;
 
@@ -258,7 +277,7 @@ export const RenderAvatar = (props: AvatarProps<IMessage>) => {
   );
 };
 
-export const RenderTime = (props: TimeProps<IMessage>) => {
+export const RenderTime = (props: TimeProps<ExtendedIMessage>) => {
   props.timeFormat = 'A h:mm';
   return (
     <Time
@@ -297,38 +316,6 @@ export const RenderTime = (props: TimeProps<IMessage>) => {
   );
 };
 
-//보내기 버튼
-/*
-export const RenderSend = (props: SendProps<IMessage>, sendingStatus: boolean) => {
-  return (
-    <View
-      style={{
-        backgroundColor: 'pink',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
-        alignItems: 'stretch',
-      }}>
-      <Send
-        {...props}
-        disabled={sendingStatus}
-        containerStyle={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          paddingHorizontal: rsWidth * 15,
-          //width: rsWidth * 30,
-          //height: rsWidth * 30,
-          //borderRadius: (rsWidth * 30) / 2,
-          //backgroundColor: 'yellow',
-        }}>
-        <Icon name="airplane" />
-      </Send>
-    </View>
-  );
-};*/
-
 export const RenderDay = (props: DayProps) => {
   props.dateFormat = 'YYYY년 MM월 DD일';
   return (
@@ -340,6 +327,7 @@ export const RenderDay = (props: DayProps) => {
         paddingHorizontal: rsWidth * 10,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: 'transparent',
       }}
       textStyle={{
         fontFamily: 'Pretendard-Regular',
@@ -350,7 +338,7 @@ export const RenderDay = (props: DayProps) => {
   );
 };
 
-export const RenderSystemMessage = (props: SystemMessageProps<IMessage>) => {
+export const RenderSystemMessage = (props: SystemMessageProps<ExtendedIMessage>) => {
   return (
     <SystemMessage
       {...props}
@@ -372,41 +360,69 @@ export const RenderSystemMessage = (props: SystemMessageProps<IMessage>) => {
 
 //props: SendProps<IMessage>, sendingStatus: boolean
 //커스텀 인풋 툴 바
-export const RenderInputToolbar = (props: InputToolbarProps<IMessage>, sendingStatus: boolean) => (
-  <InputToolbar
-    {...props}
-    containerStyle={{
-      borderTopColor: 'transparent',
-      //backgroundColor: palette.neutral[50],
-      //backgroundColor: 'green',
-      display: 'flex',
-      flexDirection: 'row', // row로 두어야 Input과 Send 버튼이 나란히 배치됨
-      justifyContent: 'center',
-      alignItems: 'center',
-      paddingHorizontal: rsWidth * 20,
-      paddingVertical: rsHeight * 8,
-      gap: rsWidth * 20,
-    }}
-    renderComposer={(composerProps) => (
-      <CustomMultiTextInput value={composerProps.text} onChangeText={composerProps.onTextChanged} />
-    )}
-    renderSend={(sendProps) => (
-      <Send
-        {...props}
-        disabled={sendingStatus}
-        containerStyle={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          alignSelf: 'center',
-          marginLeft: 20 * rsWidth,
-        }}>
-        <Icon name="airplane" color={sendingStatus ? palette.neutral[300] : palette.neutral[400]} />
-      </Send>
-    )}
-  />
-);
+export const RenderInputToolbar = (
+  props: InputToolbarProps<ExtendedIMessage>,
+  sendingStatus: boolean,
+  isSearchMode: boolean,
+  enableUp?: boolean,
+  enableDown?: boolean,
+  setEnableUp?: React.Dispatch<React.SetStateAction<boolean>>,
+  setEnableDown?: React.Dispatch<React.SetStateAction<boolean>>,
+  handleSearch?: (text: string, direction: null | 'up' | 'down') => Promise<string | null>,
+  searchWord?: string,
+) =>
+  !isSearchMode ? (
+    <InputToolbar
+      {...props}
+      containerStyle={{
+        borderTopColor: 'transparent',
+        //backgroundColor: palette.neutral[50],
+        //backgroundColor: 'green',
+        display: 'flex',
+        flexDirection: 'row', // row로 두어야 Input과 Send 버튼이 나란히 배치됨
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: rsWidth * 20,
+        paddingVertical: rsHeight * 8,
+        gap: rsWidth * 20,
+      }}
+      renderComposer={(composerProps) => (
+        <CustomMultiTextInput
+          value={composerProps.text}
+          onChangeText={composerProps.onTextChanged}
+        />
+      )}
+      renderSend={(sendProps) => (
+        <Send
+          {...props}
+          disabled={sendingStatus}
+          containerStyle={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            alignSelf: 'center',
+            marginLeft: 20 * rsWidth,
+          }}>
+          <Icon
+            name="airplane"
+            color={sendingStatus ? palette.neutral[300] : palette.neutral[400]}
+          />
+        </Send>
+      )}
+    />
+  ) : (
+    <>
+      <View>
+        {/*<Text>히히헤헤</Text>*/}
+        <UpDownBtn
+          enableUp={enableUp}
+          enableDown={enableDown}
+          handleSearch={handleSearch}
+          searchWord={searchWord}></UpDownBtn>
+      </View>
+    </>
+  );
 
 export const RenderLoading = () => (
   <View
@@ -419,7 +435,7 @@ export const RenderLoading = () => (
   </View>
 );
 
-export const RenderCustomView = (props: BubbleProps<IMessage>) => <></>;
+export const RenderCustomView = (props: BubbleProps<ExtendedIMessage>) => <></>;
 
 //메세지 도착하기 전에 나오는 ... 애니메이션
 export const RenderFooter = (sending: boolean) => {

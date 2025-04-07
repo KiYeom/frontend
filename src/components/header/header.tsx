@@ -14,7 +14,7 @@ import {
   OptionText,
 } from './header.styles';
 
-type HeaderProps = {
+export type HeaderProps = {
   title?: string;
 
   isLeft?: boolean;

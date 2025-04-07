@@ -40,6 +40,7 @@ import { RootSiblingParent } from 'react-native-root-siblings';
 import { Appearance, useColorScheme } from 'react-native';
 import * as SystemUI from 'expo-system-ui';
 import 'react-native-gesture-handler';
+import Favorites from './src/pages/HomePage/favorites/favorites';
 
 Sentry.init({
   dsn: 'https://038362834934b1090d94fe368fdbcbf7@o4507944128020480.ingest.us.sentry.io/4507944132870145',
@@ -114,7 +115,7 @@ const App: React.FC = () => {
   };
   //업데이트 알림
   //1.5.7 UPDATE : 앱 배포 시 updateAlert 주석처리한 거 다시 해제할 것
-  /*
+
   const updateAlert = () => {
     Alert.alert(
       '⚠️업데이트 필요⚠️',
@@ -136,10 +137,10 @@ const App: React.FC = () => {
       ],
       { cancelable: false }, // 닫을 수 없는 알림
     );
-  };*/
+  };
 
   //앱 버전 체크
-  /*const checkAppVersion = () => {
+  const checkAppVersion = () => {
     getLatestVersion()
       .then((res) => {
         const deviceVersion = getAppVersion() ?? undefined;
@@ -150,7 +151,7 @@ const App: React.FC = () => {
         }
       })
       .catch((error) => console.error(error));
-  };*/
+  };
 
   //앱 처음 실행 시 폰트 로드 진행. 완료되면 로그인 여부를 판단한 뒤에 로딩 화면을 숨김
   useEffect(() => {
@@ -160,7 +161,7 @@ const App: React.FC = () => {
     if (loaded) {
       bootstrap().then(() => {
         setLoading(false);
-        //checkAppVersion();
+        checkAppVersion();
       });
     }
   }, [loaded, error]);
@@ -286,10 +287,12 @@ const App: React.FC = () => {
                     />
                   </>
                 ) : (
-                  <RootStack.Screen
-                    name={RootStackName.AuthStackNavigator}
-                    component={AuthStackNavigator}
-                  />
+                  <>
+                    <RootStack.Screen
+                      name={RootStackName.AuthStackNavigator}
+                      component={AuthStackNavigator}
+                    />
+                  </>
                 )}
               </RootStack.Navigator>
             </NavigationContainer>

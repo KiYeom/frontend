@@ -58,6 +58,7 @@ export const changeNickname = async (nickname: string): Promise<TCommonResult | 
 export const getUserInfo = async (): Promise<TUserInfo | undefined> => {
   try {
     const res = await instance.get('/v1/users/me');
+    console.log('res', res.data);
     return res.data;
   } catch (error) {
     console.error('[ERROR] gerUserInfo function error', error);
@@ -140,6 +141,18 @@ export const switchChatTone = async (isInFormal: boolean): Promise<boolean> => {
   try {
     const res = await instance.patch('/v1/users/update-format', { isInFormal });
     //console.log('updateChattingFormat success', res);
+    return true;
+  } catch (error) {
+    //console.log('error');
+  }
+  return false;
+};
+
+//1.5.7 UPDATE : 사용자 정보 (이모지 선호) 변경
+export const switchEmojiTone = async (wantsEmo: boolean): Promise<boolean> => {
+  try {
+    const res = await instance.patch('/v1/users/update-emoji', { wantsEmo });
+    console.log('updateEmoji success', res);
     return true;
   } catch (error) {
     //console.log('error');

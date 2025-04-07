@@ -44,9 +44,10 @@ export const AppSettingContainer = styled.View`
 export const UserSettingContainer = styled.View`
   width: 100%;
   height: auto;
-  padding-vertical: ${rsHeight * 20 + 'px'};
+  padding-vertical: ${rsHeight * 10 + 'px'};
   border-top-color: ${palette.neutral[50]};
   border-top-width: ${rsHeight * 1 + 'px'};
+  //background-color: red;
 `;
 
 export const SubjectTextContainer = styled.View`
