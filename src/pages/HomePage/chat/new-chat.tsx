@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Dimensions, Platform, View, ActivityIndicator } from 'react-native';
+import { Dimensions, Platform, View, ActivityIndicator, Text, Keyboard } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GiftedChat, IMessage, SendProps } from 'react-native-gifted-chat';
 import { useFocusEffect } from '@react-navigation/native';
@@ -62,6 +62,9 @@ import { searchChatWord } from '../../../apis/chatting';
 import { ExtendedIMessage } from '../../../utils/chatting';
 import { reportMessages } from './chat-render';
 import { useCallback } from 'react';
+import * as ImagePicker from 'expo-image-picker';
+import ImageShow from '../../../components/image-show/ImageShow';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 //유저와 챗봇 오브젝트 정의
 const userObject = {
   _id: 0,
@@ -95,6 +98,55 @@ const NewChat: React.FC = ({ navigation }) => {
   const [enableUp, setEnableUp] = useState<boolean>(false);
   const [enableDown, setEnableDown] = useState<boolean>(false);
   const [searchLoading, setSearchLoading] = useState<boolean>(false);
+
+  //1.5.8 사진 추가
+  const [image, setImage] = useState<string | null>(null);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    console.log(result);
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+    return;
+  };
+
+  //입력 필드 높이
+  const [inputHeight, setInputHeight] = useState(rsFont * 16 * 1.5 + 15 * 2);
+
+  //이모지를 보여줄 지 파악하는 상태
+  const [isShownEmoji, setIsShownEmoji] = useState<boolean>(false);
+  //화면 높이
+  const { width, height } = Dimensions.get('window');
+  console.log('화면 너비:', width, '화면 높이:', height);
+  const [keyboardHeight, setKeyboardHeight] = useState<number>(0);
+  const insets = useSafeAreaInsets();
+  //위치하는 y좌표 자리는... 화면 높이 - 입력 필드 높이-키보드 높이
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', onKeyboardDidShow);
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', onKeyboardDidHide);
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+  const onKeyboardDidShow = (event) => {
+    // event.endCoordinates.height를 통해 키보드 높이 정보를 얻습니다.
+    const keyboardHeight = event.endCoordinates.height;
+    setKeyboardHeight(keyboardHeight);
+    console.log('키보드 높이:', keyboardHeight);
+  };
+
+  const onKeyboardDidHide = () => {
+    setKeyboardHeight(0);
+    console.log('키보드가 숨겨졌습니다.');
+  };
 
   const { riskStatusV2, riskScoreV2, setRiskScoreV2, setRiskStatusV2, setHandleDangerPressV2 } =
     useRiskStoreVer2();
@@ -630,6 +682,7 @@ const NewChat: React.FC = ({ navigation }) => {
         handleSearch={handleSearch}
         updateMessageHighlights={updateMessageHighlights}
       />
+
       <GiftedChat
         messageContainerRef={messageContainerRef}
         messages={messages}
@@ -670,6 +723,7 @@ const NewChat: React.FC = ({ navigation }) => {
             setEnableDown,
             handleSearch,
             searchWord,
+            pickImage,
           )
         }
         textInputProps={{
@@ -692,6 +746,20 @@ const NewChat: React.FC = ({ navigation }) => {
             zIndex: 999, // 다른 컴포넌트보다 위에 렌더링
           }}>
           <ActivityIndicator />
+        </View>
+      )}
+      {image && (
+        <View
+          style={{
+            top: height - inputHeight - keyboardHeight - insets.bottom - 85,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            position: 'absolute',
+            backgroundColor: 'red',
+            height: 80,
+          }}>
+          <ImageShow />
         </View>
       )}
     </SafeAreaView>

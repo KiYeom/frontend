@@ -35,6 +35,10 @@ import { useRef } from 'react';
 import UpDownBtn from '../../../components/up-down-button/UpDownBtn';
 import { ExtendedIMessage } from '../../../utils/chatting';
 import HighlightedMessageText from './HighlightMessageText';
+import * as ImagePicker from 'expo-image-picker';
+import { useState } from 'react';
+import ImageShow from '../../../components/image-show/ImageShow';
+
 const getMessageSet = (
   currentMessage: ExtendedIMessage,
   allMessages: ExtendedIMessage[],
@@ -370,6 +374,7 @@ export const RenderInputToolbar = (
   setEnableDown?: React.Dispatch<React.SetStateAction<boolean>>,
   handleSearch?: (text: string, direction: null | 'up' | 'down') => Promise<string | null>,
   searchWord?: string,
+  pickImage?: () => void,
 ) =>
   !isSearchMode ? (
     <InputToolbar
@@ -385,6 +390,7 @@ export const RenderInputToolbar = (
         paddingHorizontal: rsWidth * 20,
         paddingVertical: rsHeight * 8,
         gap: rsWidth * 20,
+        position: 'relative',
       }}
       renderActions={(actionProps) => (
         <TouchableOpacity
@@ -397,6 +403,7 @@ export const RenderInputToolbar = (
           onPress={() => {
             console.log('액션 버튼 클릭됨');
             //console.log('actionProps', actionProps);
+            pickImage();
           }}>
           <Icon name="picture-icon" width={rsWidth * 20} height={rsHeight * 20} />
         </TouchableOpacity>
