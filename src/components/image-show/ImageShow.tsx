@@ -1,4 +1,4 @@
-import { StyleProp, TextStyle, Text } from 'react-native';
+import { StyleProp, TextStyle, Text, Image } from 'react-native';
 import palette from '../../assets/styles/theme';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import Icon, { TIconName } from '../icons/icons';
@@ -19,12 +19,11 @@ const ImageShow = ({ image, setImage }: ImageShowProps) => {
           console.log('취소 버튼 클릭');
           if (setImage) {
             setImage(null);
-          } else {
-            console.log('setImage 안옴');
           }
         }}
       />
-      <Text style={{ color: 'white' }}>이미지</Text>
+      {/*<Text style={{ color: 'white' }}>이미지</Text>*/}
+      {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
     </ImageShowContainer>
   );
 };
