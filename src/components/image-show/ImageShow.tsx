@@ -20,8 +20,9 @@ const ImageShow = ({ image, setImage }: ImageShowProps) => {
           if (setImage) {
             setImage(null);
           }
-        }}
-      />
+        }}>
+        <Icon name="cancel-icon" size={rsWidth * 14} color={'white'} />
+      </CancelButton>
       {/*<Text style={{ color: 'white' }}>이미지</Text>*/}
       {image && <Image source={{ uri: image }} style={{ width: 140, height: 140 }} />}
     </ImageShowContainer>

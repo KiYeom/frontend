@@ -15,10 +15,13 @@ export const ImageShowContainer = styled.View`
 `;
 
 export const CancelButton = styled.TouchableOpacity`
-  background-color: red;
+  //background-color: red;
   width: ${rsWidth * 14 + 'px'};
   height: ${rsHeight * 14 + 'px'};
   position: absolute;
+  padding: ${rsWidth * 10 + 'px'};
   top: 10;
   right: 10;
+  justify-content: center;
+  align-items: center;
 `;

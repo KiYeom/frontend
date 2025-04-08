@@ -378,63 +378,65 @@ export const RenderInputToolbar = (
   setInputHeight: (value: number) => void,
 ) =>
   !isSearchMode ? (
-    <InputToolbar
-      {...props}
-      containerStyle={{
-        borderTopColor: 'transparent',
-        //backgroundColor: palette.neutral[50],
-        //backgroundColor: 'green',
-        display: 'flex',
-        flexDirection: 'row', // row로 두어야 Input과 Send 버튼이 나란히 배치됨
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingHorizontal: rsWidth * 20,
-        paddingVertical: rsHeight * 8,
-        gap: rsWidth * 20,
-        position: 'relative',
-      }}
-      renderActions={(actionProps) => (
-        <TouchableOpacity
-          style={{
-            //backgroundColor: 'red',
-            width: 35 * rsWidth,
-            height: rsFont * 16 * 1.5 + 15 * 2,
-            justifyContent: 'center',
-          }}
-          onPress={() => {
-            console.log('액션 버튼 클릭됨');
-            //console.log('actionProps', actionProps);
-            pickImage();
-          }}>
-          <Icon name="picture-icon" width={rsWidth * 20} height={rsHeight * 20} />
-        </TouchableOpacity>
-      )}
-      renderComposer={(composerProps) => (
-        <CustomMultiTextInput
-          value={composerProps.text}
-          onChangeText={composerProps.onTextChanged}
-          setInputHeight={setInputHeight}
-        />
-      )}
-      renderSend={(sendProps) => (
-        <Send
-          {...props}
-          disabled={sendingStatus}
-          containerStyle={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            alignSelf: 'center',
-            marginLeft: 20 * rsWidth,
-          }}>
-          <Icon
-            name="airplane"
-            color={sendingStatus ? palette.neutral[300] : palette.neutral[400]}
+    <>
+      <InputToolbar
+        {...props}
+        containerStyle={{
+          borderTopColor: 'transparent',
+          //backgroundColor: palette.neutral[50],
+          //backgroundColor: 'green',
+          display: 'flex',
+          flexDirection: 'row', // row로 두어야 Input과 Send 버튼이 나란히 배치됨
+          justifyContent: 'center',
+          alignItems: 'center',
+          paddingHorizontal: rsWidth * 20,
+          paddingVertical: rsHeight * 8,
+          gap: rsWidth * 20,
+          position: 'relative',
+        }}
+        renderActions={(actionProps) => (
+          <TouchableOpacity
+            style={{
+              //backgroundColor: 'red',
+              width: 35 * rsWidth,
+              height: rsFont * 16 * 1.5 + 15 * 2,
+              justifyContent: 'center',
+            }}
+            onPress={() => {
+              console.log('액션 버튼 클릭됨');
+              //console.log('actionProps', actionProps);
+              pickImage();
+            }}>
+            <Icon name="picture-icon" width={rsWidth * 20} height={rsHeight * 20} />
+          </TouchableOpacity>
+        )}
+        renderComposer={(composerProps) => (
+          <CustomMultiTextInput
+            value={composerProps.text}
+            onChangeText={composerProps.onTextChanged}
+            setInputHeight={setInputHeight}
           />
-        </Send>
-      )}
-    />
+        )}
+        renderSend={(sendProps) => (
+          <Send
+            {...props}
+            disabled={sendingStatus}
+            containerStyle={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              alignSelf: 'center',
+              marginLeft: 20 * rsWidth,
+            }}>
+            <Icon
+              name="airplane"
+              color={sendingStatus ? palette.neutral[300] : palette.neutral[400]}
+            />
+          </Send>
+        )}
+      />
+    </>
   ) : (
     <>
       <View>
