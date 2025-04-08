@@ -376,9 +376,11 @@ export const RenderInputToolbar = (
   searchWord?: string,
   pickImage?: () => void,
   setInputHeight: (value: number) => void,
+  image?: string | null,
+  setImage?: (value: string | null) => void,
 ) =>
   !isSearchMode ? (
-    <>
+    <View>
       <InputToolbar
         {...props}
         containerStyle={{
@@ -436,7 +438,7 @@ export const RenderInputToolbar = (
           </Send>
         )}
       />
-    </>
+    </View>
   ) : (
     <>
       <View>

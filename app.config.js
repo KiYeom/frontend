@@ -10,7 +10,7 @@ module.exports = {
     orientation: 'portrait',
     icon: './src/assets/images/appicon.png',
     userInterfaceStyle: 'automatic',
-    newArchEnabled: 'true',
+    newArchEnabled: true,
     splash: {
       image: './src/assets/images/splash.png',
       resizeMode: 'contain',

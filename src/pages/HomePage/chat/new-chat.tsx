@@ -1,5 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Dimensions, Platform, View, ActivityIndicator, Text, Keyboard } from 'react-native';
+import {
+  Dimensions,
+  Platform,
+  View,
+  ActivityIndicator,
+  Text,
+  Keyboard,
+  Animated,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GiftedChat, IMessage, SendProps } from 'react-native-gifted-chat';
 import { useFocusEffect } from '@react-navigation/native';
@@ -708,6 +716,11 @@ const NewChat: React.FC = ({ navigation }) => {
             showToast();
           });
         }}
+        renderChatFooter={() => (
+          <View style={{ backgroundColor: 'red', width: 100, zIndex: 100 }}>
+            <Text>renderChtaFooter</Text>
+          </View>
+        )}
         renderFooter={() => RenderFooter(sending)}
         renderTime={RenderTime}
         renderDay={RenderDay}
@@ -725,6 +738,8 @@ const NewChat: React.FC = ({ navigation }) => {
             searchWord,
             pickImage,
             setInputHeight,
+            image,
+            setImage,
           )
         }
         textInputProps={{
@@ -749,23 +764,20 @@ const NewChat: React.FC = ({ navigation }) => {
           <ActivityIndicator />
         </View>
       )}
-      {image && (
-        <View
-          style={{
-            top: height - inputHeight - keyboardHeight - insets.bottom - 210,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            position: 'absolute',
-            //backgroundColor: 'red',
-            height: 200,
-            paddingBottom: 10,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <ImageShow image={image} setImage={setImage} />
-        </View>
-      )}
+      <Animated.View
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 100,
+          pointerEvents: 'box-none',
+        }}
+        pointerEvents="box-none">
+        {image && <ImageShow image={image} setImage={setImage} />}
+      </Animated.View>
     </SafeAreaView>
   );
 };
