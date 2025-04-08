@@ -10,7 +10,7 @@ export const boxSize = 25;
 export const Container = styled.View`
   flex-direction: row;
   align-items: center;
-  background-color: yellow;
+  //background-color: yellow;
   width: 100%;
   justify-content: flex-start;
 `;

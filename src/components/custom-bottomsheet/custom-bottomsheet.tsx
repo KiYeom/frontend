@@ -58,10 +58,10 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
 
   //감정 적은 적 있는지 확인
   useEffect(() => {
-    console.log('selectedEmotionsssss', selectedEmotions);
+    //console.log('selectedEmotionsssss', selectedEmotions);
     const customEmotion = selectedEmotions.find((emotion) => emotion.type === 'custom');
-    console.log('customEmotion', customEmotion);
-    console.log('selectedEmotions', selectedEmotions);
+    //console.log('customEmotion', customEmotion);
+    //console.log('selectedEmotions', selectedEmotions);
     if (customEmotion) {
       setText(customEmotion.keyword);
       setSelectedStatus(emotions.indexOf(customEmotion.group));

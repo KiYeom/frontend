@@ -50,7 +50,7 @@ export const getOldChatting = async (
     const res = await instance.get('/v1/chat/history', {
       params: { 'character-id': characterId, from },
     });
-    console.log('💚💚💚💚💚💚', res.data);
+    //console.log('💚💚💚💚💚💚', res.data);
     return res.data;
   } catch (error) {
     Sentry.captureException(error, {
@@ -84,12 +84,12 @@ export const reportChat = async (
 export const getFavoriteChat = async (): Promise<TFavoriteChat | undefined> => {
   try {
     const res = await instance.get('/v3/chat/favorite');
-    console.log('💚💚💚💚💚💚', res.data);
+    //console.log('💚💚💚💚💚💚', res.data);
     return res.data;
     //return res.data;
     ///return dummyData;
   } catch (error) {
-    console.log('getFavoriteChat error', error);
+    //console.log('getFavoriteChat error', error);
     return;
   }
 };
@@ -105,7 +105,7 @@ export const getV3OldChatting = async (
     //console.log('🥵🥵🥵🥵🥵🥵 getV3OldChatting', res.data);
     return res.data;
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     return;
   }
 };
@@ -126,7 +126,7 @@ export const saveFavoriteChatLog = async (
     //console.log('대화 저장 결과', res.data);
     return res.data;
   } catch (error) {
-    console.log('saveFavoriteChat error', error);
+    //console.log('saveFavoriteChat error', error);
     return false;
   }
 };
@@ -137,7 +137,7 @@ export const deleteChatLog = async (): Promise<boolean> => {
     const res = await instance.delete('/v3/chat/init');
     return res.data;
   } catch (error) {
-    console.log('deleteChatLog error', error);
+    //console.log('deleteChatLog error', error);
     return false;
   }
 };
@@ -152,10 +152,11 @@ export const searchChatWord = async (
     const res = await instance.get('/v3/chat/search', {
       params: { searchWord, nowCursor, direction },
     });
-    console.log('searchChatWord result', res.data);
+    //console.log('searchChatWord params', searchWord);
+    //console.log('searchChatWord result', res.data);
     return res.data;
   } catch (error) {
-    console.log('searchChatWord error 발생', error);
+    //console.log('searchChatWord error 발생', error);
     return;
   }
 };

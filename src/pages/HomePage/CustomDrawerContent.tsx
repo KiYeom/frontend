@@ -67,7 +67,7 @@ const CustomDrawerContent = (props: any) => {
 
   //삭제 버튼 클릭 시 닫기, 로컬 데이터 초기화, messagess 배열 초기화, 서버 대화 초기화 (api 호출)
   const handleDeleteAllMessages = async () => {
-    console.log('Drawer 닫기');
+    //console.log('Drawer 닫기');
     props.navigation.closeDrawer();
     await deleteChatLog(); //백엔드 삭제
     deleteNewIMessagesV3(); //로컬 삭제
@@ -180,7 +180,7 @@ const CustomDrawerContent = (props: any) => {
         <MenuRow
           text="따스한 대화 보관함"
           onPress={() => {
-            console.log('따스한 대화 보관함');
+            //console.log('따스한 대화 보관함');
             navigation.navigate(RootStackName.HomeStackNavigator, {
               screen: HomeStackName.Favorites,
             });
@@ -191,7 +191,7 @@ const CustomDrawerContent = (props: any) => {
         <MenuRow
           text="모든 대화 삭제하기"
           onPress={() => {
-            console.log('모든 대화 삭제하기');
+            //console.log('모든 대화 삭제하기');
             deleteAllMessages(handleDeleteAllMessages);
             Analytics.clickSideMenuDeleteAllButton();
           }}

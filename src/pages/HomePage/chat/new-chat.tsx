@@ -62,6 +62,7 @@ import { searchChatWord } from '../../../apis/chatting';
 import { ExtendedIMessage } from '../../../utils/chatting';
 import { reportMessages } from './chat-render';
 import { useCallback } from 'react';
+import { MAX_RETRIES } from '../../../constants/Constants';
 //유저와 챗봇 오브젝트 정의
 const userObject = {
   _id: 0,
@@ -101,7 +102,7 @@ const NewChat: React.FC = ({ navigation }) => {
 
   //즐겨찾기 함수
   const toggleFavorite = async (messageId: string) => {
-    console.log('toggleFavorite 함수 실행', messageId);
+    //console.log('toggleFavorite 함수 실행', messageId);
     setMessages((prevMessages) => {
       const updatedMessages = prevMessages.map((m) =>
         m._id === messageId ? { ...m, isSaved: !m.isSaved } : m,
@@ -212,17 +213,17 @@ const NewChat: React.FC = ({ navigation }) => {
 
     if (!isV3KeyExist) {
       //v3 키가 존재하지 않는 경우
-      console.log('🔑🔑🔑🔑🔑🔑🔑🔑🔑v3 키가 존재하지 않음🔑🔑🔑🔑🔑🔑🔑🔑', isV3KeyExist);
+      //console.log('🔑🔑🔑🔑🔑🔑🔑🔑🔑v3 키가 존재하지 않음🔑🔑🔑🔑🔑🔑🔑🔑', isV3KeyExist);
       const v3lastMessageDate = new Date(0);
       const v3ServerMessages = await v3getIMessageFromServer(v3lastMessageDate); //전체 데이터 가져오기
       if (v3ServerMessages && v3ServerMessages.length > 0) {
-        console.log('💚💚💚💚💚💚💚💚💚💚💚이전에 썼던 사람 마이그레이션 하기💚💚💚💚💚💚💚💚');
+        //console.log('💚💚💚💚💚💚💚💚💚💚💚이전에 썼던 사람 마이그레이션 하기💚💚💚💚💚💚💚💚');
         setNewIMessagesV3(JSON.stringify(v3ServerMessages)); //로컬 마이그레이션
         deleteNewIMessages(); //v3 이전 로컬 데이터 삭제
         messages = [...v3ServerMessages, ...messages]; //데이터 화면에 보여주기
       } else {
         //새로 온 사람
-        console.log('🤖🤖🤖🤖🤖🤖🤖🤖새로 온 사람🤖🤖🤖🤖🤖🤖🤖🤖');
+        //console.log('🤖🤖🤖🤖🤖🤖🤖🤖새로 온 사람🤖🤖🤖🤖🤖🤖🤖🤖');
         const welcomeMessage = {
           _id: 'welcomeMessage',
           text: `반가워요, ${getUserNickname()}님!💚 저는 ${getUserNickname()}님 곁에서 힘이 되어드리고 싶은 골든 리트리버 쿠키예요🐶 이 곳은 ${getUserNickname()}님과 저만의 비밀 공간이니, 어떤 이야기도 편하게 나눠주세요!\n\n반말로 대화를 나누고 싶으시다면 위에서 오른쪽에 있는 탭 바를 열고, 반말 모드를 켜 주세요!🍀💕`,
@@ -389,12 +390,12 @@ const NewChat: React.FC = ({ navigation }) => {
     text: string,
     direction: null | 'up' | 'down',
   ): Promise<string | null> => {
-    console.log('새 함수 검색어 : ', text, direction, nowCursor.current);
+    //console.log('새 함수 검색어 : ', text, direction, nowCursor.current);
     setSearchLoading(true);
 
     // 스크롤 함수가 없거나 더 이상 검색 결과가 없을 경우
     if (!scrollToMessageById || (nowCursor.current === null && prevCursor.current === null)) {
-      console.log('검색 결과가 없습니다');
+      //console.log('검색 결과가 없습니다');
       Toast.show(`검색 결과가 없습니다`, {
         duration: Toast.durations.SHORT,
         position: Toast.positions.CENTER,
@@ -465,23 +466,53 @@ const NewChat: React.FC = ({ navigation }) => {
   // 메시지 id로부터 메시지 인덱스를 찾아 해당 메시지로 스크롤하는 scrollToMessageById 함수
   const scrollToMessageById = (messageId: string | number) => {
     const index = messages.findIndex((message) => message._id === messageId);
+    //console.log('index', index);
+
     if (index === -1) {
-      console.log('해당 메시지를 찾을 수 없습니다.');
+      //console.log('❌ 해당 메시지를 찾을 수 없습니다.');
       return;
     }
-    // 메시지 인덱스로 메시지 객체를 가져옵니다.
+
     const targetMessage = messages[index];
-    console.log('targetMessage', targetMessage);
-    console.log(`Scrolling to index ${index} for message id: ${messageId}`);
-    //console.log('giftedChatRef.current?.props?.messageContainerRef?.current?', giftedChatRef.current?.props?.messageContainerRef?.current?);
-    setTimeout(() => {
-      messageContainerRef.current?.scrollToIndex({
-        index,
-        animated: true,
-        viewOffset: 0, // 메시지 시작 부분에 맞추려면 0 또는 원하는 값
-        viewPosition: 0, // 0: 상단 정렬, 0.5: 중앙, 1: 하단 정렬
-      });
-    }, 150);
+    //console.log('🎯 targetMessage:', targetMessage);
+    //console.log(`🔍 Scrolling to index ${index} for message id: ${messageId}`);
+
+    // 스크롤 시도 함수 (재시도 방식)
+    let attempts = 0;
+    const maxAttempts = 100;
+    const retryDelay = 200;
+
+    const tryScroll = () => {
+      const list = messageContainerRef.current;
+
+      if (!list?.scrollToIndex) {
+        //console.warn('⚠️ scrollToIndex 사용 불가');
+        return;
+      }
+
+      try {
+        //console.log(`🔁 시도 ${attempts + 1}: scrollToIndex(${index})`);
+        list.scrollToIndex({
+          index,
+          animated: true,
+          viewOffset: 0,
+          viewPosition: 0,
+        });
+        //console.log('✅ 스크롤 성공!');
+      } catch (error) {
+        //console.warn(`❌ scrollToIndex 실패 (attempt ${attempts + 1})`, error);
+
+        attempts += 1;
+        if (attempts < maxAttempts) {
+          setTimeout(tryScroll, retryDelay);
+        } else {
+          //console.warn('🚨 scrollToIndex 계속 실패, 포기합니다.');
+        }
+      }
+    };
+
+    // 바로 첫 시도 시작
+    setTimeout(tryScroll, 0);
   };
 
   /* 
@@ -523,7 +554,7 @@ const NewChat: React.FC = ({ navigation }) => {
             setInit(false);
           })
           .catch((err) => {
-            console.log('대화 내역을 불러오는 중 오류가 발생했어요. 다시 시도해주세요.');
+            //console.log('대화 내역을 불러오는 중 오류가 발생했어요. 다시 시도해주세요.');
             console.log(err);
             navigation.navigate('Home');
           });

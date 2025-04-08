@@ -76,7 +76,7 @@ const DailyDairy = ({ navigation, route }) => {
   //console.log('Updated params:', route.params);
   //}, [route.params]);
   const { dateID } = route.params;
-  console.log('일기 입력 페이지에서 받은 dateID', dateID);
+  //console.log('일기 입력 페이지에서 받은 dateID', dateID);
 
   const fetchData = async () => {
     const dailyStatistics = await dailyAnalyze(dateID);
@@ -185,11 +185,11 @@ const DailyDairy = ({ navigation, route }) => {
                 screen: TabScreenName.Home,
               });
 
-              console.log('~~~~', selectedEmotions);
+              //console.log('~~~~', selectedEmotions);
               const targetEmotion =
                 selectedEmotions.find((emotion) => emotion.type === 'custom') ||
                 selectedEmotions[0];
-              console.log('targetEmtoin', targetEmotion);
+              //console.log('targetEmtoin', targetEmotion);
               updateEntryStatus(dateID, `${targetEmotion.group}-emotion`);
             }}
           />
