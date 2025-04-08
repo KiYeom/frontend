@@ -122,8 +122,8 @@ export const saveFavoriteChatLog = async (
     const res = await instance.post('/v3/chat/favorite', null, {
       params: { messageId, isSaved },
     });
-    console.log('대화 저장 형식 : ', isSaved);
-    console.log('대화 저장 결과', res.data);
+    //console.log('대화 저장 형식 : ', isSaved);
+    //console.log('대화 저장 결과', res.data);
     return res.data;
   } catch (error) {
     console.log('saveFavoriteChat error', error);

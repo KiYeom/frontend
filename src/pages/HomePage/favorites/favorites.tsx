@@ -11,6 +11,7 @@ import { getV3OldChatting } from '../../../apis/chatting';
 import { setNewIMessagesV3 } from '../../../utils/storageUtils';
 import { addRefreshChat } from '../../../utils/storageUtils';
 import { convertUtcToKst } from '../../../utils/times';
+import Analytics from '../../../utils/analytics';
 // 데이터를 날짜별로 그룹화하는 groupFavoritesByDate 함수
 //불러온 API 결과를 받아, 화면에 그리도록 정제함
 const groupFavoritesByDate = (data: TFavoriteChatLog) => {
@@ -38,6 +39,7 @@ const Favorites: React.FC<any> = ({ navigation }) => {
   const [isSelected, setIsSelected] = React.useState(true);
 
   useEffect(() => {
+    Analytics.watchWarmChatScreen();
     //내가 좋아했던 말들
     getFavoriteChat()
       .then((res) => {
@@ -68,6 +70,7 @@ const Favorites: React.FC<any> = ({ navigation }) => {
         leftFunction={async () => {
           await addRefreshChat(1);
           navigation.goBack();
+          Analytics.clickWarmChatButtonBack();
         }}
       />
       <SectionList

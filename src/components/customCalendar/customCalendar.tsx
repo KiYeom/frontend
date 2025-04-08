@@ -10,6 +10,7 @@ import { HomeStackName, RootStackName } from '../../constants/Constants';
 import Toast from 'react-native-root-toast';
 import { useCalendarStore } from '../../store/calendarStore';
 import { getDate, getMonthRange } from '../../utils/times';
+import Analytics from '../../utils/analytics';
 /*
 DateData 
 {
@@ -140,10 +141,12 @@ const CustomCalendar = ({ navigation }) => {
       //화살표를 눌렀을 때
       onPressArrowLeft={(subtractMonth) => {
         //fetchCalendarData();
+        Analytics.clickTabHomeEmotionCalendarArrow('left');
         subtractMonth();
       }}
       onPressArrowRight={(addMonth) => {
         //fetchCalendarData();
+        Analytics.clickTabHomeEmotionCalendarArrow('right');
         addMonth();
       }}
       //날짜를 눌렀을 때 처리하는 콜백 함수
@@ -183,6 +186,7 @@ const CustomCalendar = ({ navigation }) => {
                   alignItems: 'center',
                 }}
                 onPress={() => {
+                  Analytics.clickTabHomeEmotionCalendar(date.dateString);
                   //console.log('state', state);
                   console.log('date', date);
                   if (date.dateString > today) {
@@ -220,7 +224,7 @@ const CustomCalendar = ({ navigation }) => {
                     });
                   }
 
-                  console.log('홈 화면 달력을 누름', date.dateString);
+                  //console.log('홈 화면 달력을 누름', date.dateString);
                 }}>
                 {calendarData[date.dateString]?.status === 'today-no-entry' ? (
                   <Icon

@@ -123,7 +123,11 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
             screen: HomeStackName.SmallEmotionChart,
             params: { dateID: dateID },
           });
-          console.log('누름');
+          Analytics.clickEditDiaryButton();
+        }}
+        leftFunction={() => {
+          navigation.goBack();
+          Analytics.clickDiaryBackButton();
         }}
         bgcolor={`${palette.neutral[50]}`}
       />

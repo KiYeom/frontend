@@ -38,13 +38,15 @@ const deleteAllMessages = (onConfirm?: () => void): void => {
         text: '아니오', // 버튼 제목
         style: 'cancel',
         onPress: () => {
-          console.log('아니요 클릭');
+          //console.log('아니요 클릭');
+          Analytics.clickSideMenuDeleteAllCancelButton();
         },
       },
       {
         text: '네',
         onPress: () => {
-          console.log('확인 클릭');
+          //console.log('확인 클릭');
+          Analytics.clickSideMenuDeleteAllConfirmButton();
           if (onConfirm) onConfirm();
         },
       },
@@ -164,6 +166,10 @@ const CustomDrawerContent = (props: any) => {
           onPress={async () => {
             switchEmojiTone(!isEmojiMode); //변경 사항을 서버에 patch로 업데이트
             setIsEmojiMode(!isEmojiMode); //화면의 토글이 변경
+            Analytics.clickChattingRoomSettingEmojiSwitch(
+              '쿠키 답변에 이모티콘 추가하기 (on/off)',
+              !isEmojiMode,
+            );
           }}
         />
       </UserSettingContainer>
@@ -178,6 +184,7 @@ const CustomDrawerContent = (props: any) => {
             navigation.navigate(RootStackName.HomeStackNavigator, {
               screen: HomeStackName.Favorites,
             });
+            Analytics.clickSideMenuWarmChatButton();
           }}
           iconName="favorite-icon"
         />
@@ -186,6 +193,7 @@ const CustomDrawerContent = (props: any) => {
           onPress={() => {
             console.log('모든 대화 삭제하기');
             deleteAllMessages(handleDeleteAllMessages);
+            Analytics.clickSideMenuDeleteAllButton();
           }}
           iconName="trash-icon"
         />
