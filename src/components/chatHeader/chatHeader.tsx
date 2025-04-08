@@ -17,6 +17,7 @@ import { searchChatWord } from '../../apis/chatting';
 import { HeaderProps } from '../header/header';
 import { TextInput, Text, View, TouchableOpacity } from 'react-native';
 import { ExtendedIMessage } from '~/src/utils/chatting';
+import Analytics from '../../utils/analytics';
 
 interface ChatHeaderProps extends HeaderProps {
   riskStatusV2: string;
@@ -69,6 +70,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = (props: ChatHeaderProps) => {
               onSubmitEditing={async () => {
                 await handleSearch(searchWord, null);
                 //setSearchWord('');
+                Analytics.clickHeaderSearchKeywordButton(searchWord);
               }}
             />
           </View>
@@ -106,10 +108,11 @@ const ChatHeader: React.FC<ChatHeaderProps> = (props: ChatHeaderProps) => {
             <TouchableOpacity
               style={{ marginLeft: 20, padding: 10 }}
               onPress={() => {
-                console.log('취소 버튼을 클릭함');
+                //console.log('취소 버튼을 클릭함');
                 setIsSearchMode((prev) => !prev);
                 setSearchWord('');
                 updateMessageHighlights('');
+                Analytics.clickHeaderSearchCancelButton();
               }}>
               <OptionText>취소</OptionText>
             </TouchableOpacity>

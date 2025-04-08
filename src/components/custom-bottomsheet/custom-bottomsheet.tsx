@@ -19,6 +19,7 @@ import {
   TextLengthAlert,
 } from './custom-bottomsheet.styles';
 import useEmotionStore from '../../store/emotion-status';
+import Analytics from '../../utils/analytics';
 
 interface BottomSheetProps {
   indexNumber?: number;
@@ -78,6 +79,7 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
   }, []);
 
   useEffect(() => {
+    Analytics.watchCustomEmotionSheet();
     const showSub = Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
     const hideSub = Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide);
 
@@ -195,7 +197,8 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
             primary={true}
             disabled={validateButton(text)}
             onPress={() => {
-              console.log('😀😀😀😀😀😀');
+              Analytics.clickAddCustomEmotionButton(text);
+              //console.log('😀😀😀😀😀😀');
               const customEmotion: Emotion = {
                 keyword: text,
                 group: emotions[selectedStatus],
@@ -203,7 +206,7 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
               };
               // 동일한 keyword를 가진 custom 타입의 감정이 있는지 확인
               const exists = selectedEmotions.find((e) => e.type === 'custom');
-              console.log('exists', exists);
+              //console.log('exists', exists);
 
               if (exists) {
                 updateEmotion(text, customEmotion);

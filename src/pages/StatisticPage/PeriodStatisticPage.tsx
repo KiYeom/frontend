@@ -143,7 +143,11 @@ const PeriodStatisticPage: React.FC<any> = () => {
             }}>
             <Icon name="calendar" width={70} height={70} />
             <View style={{ marginVertical: 10 * rsHeight }}>
-              <DateLineContainer onPress={() => setOpenModal(true)}>
+              <DateLineContainer
+                onPress={() => {
+                  Analytics.clickPeriodCalendarButton();
+                  setOpenModal(true);
+                }}>
                 <DateLineText>
                   {range.startDate && range.endDate
                     ? `${dayjs(range.startDate).locale(locale).format('YYYY년 M월 D일')} ~ ${dayjs(range.endDate).locale(locale).format('YYYY년 M월 D일')}`
@@ -198,12 +202,13 @@ const PeriodStatisticPage: React.FC<any> = () => {
               isLeftIcon={true}
               iconName="pencil"
               iconSize={40}
-              onPress={() =>
+              onPress={() => {
+                Analytics.clickCTADiaryButtonInPeriod();
                 navigation.navigate(RootStackName.HomeStackNavigator, {
                   screen: HomeStackName.SmallEmotionChart,
                   params: { dateID: getDate(new Date()) },
-                })
-              }
+                });
+              }}
             />
           )}
           {periodKeywordList.length === 0 && (
@@ -213,11 +218,12 @@ const PeriodStatisticPage: React.FC<any> = () => {
               isLeftIcon={true}
               iconName="green-chat-icon"
               iconSize={40}
-              onPress={() =>
+              onPress={() => {
+                Analytics.clickCTADiaryButtonInPeriod();
                 navigation.navigate(RootStackName.HomeStackNavigator, {
                   screen: HomeStackName.NewChat,
-                })
-              }
+                });
+              }}
             />
           )}
         </View>

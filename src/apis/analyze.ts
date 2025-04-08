@@ -127,7 +127,7 @@ export const todayEmotion = async (
 export const todayEmotionCheck = async (date: string) => {
   try {
     const res = await instance.get('/v1/analyze/today-record', { params: { date } });
-    console.log('todayEmotionCheck', res.data);
+    //console.log('todayEmotionCheck', res.data);
     return res.data;
   } catch (error) {
     return;

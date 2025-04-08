@@ -114,7 +114,7 @@ const NewChat: React.FC = ({ navigation }) => {
     if (targetMessage) {
       await reportMessages(messageId, targetMessage.isSaved);
     }
-    console.log('setMessages', messages);
+    //console.log('setMessages', messages);
   };
 
   const decideRefreshScreen = (viewHeight: number) => {
@@ -494,7 +494,7 @@ const NewChat: React.FC = ({ navigation }) => {
     //console.log('===========useEffect 실행===========');
     setInit(true);
     if (getRefreshChat() === 0) {
-      //Analytics.watchNewChatScreen();
+      Analytics.watchNewChatScreen();
     }
     //console.log('🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨');
     getHistory()
@@ -613,15 +613,18 @@ const NewChat: React.FC = ({ navigation }) => {
           navigation.navigate(RootStackName.BottomTabNavigator, {
             screen: TabScreenName.Home,
           });
+          Analytics.clickHeaderBackButton();
         }}
         rightFunction={() => {
           if (!isSearchMode) {
-            console.log('사이드바 열기');
+            //console.log('사이드바 열기');
             navigation.openDrawer();
+            Analytics.clickHeaderSideMenuButton();
           }
         }}
         eventFunction={() => {
-          //console.log('이벤트 버튼 누름');
+          //console.log('돋보기 버튼을 누름');
+          Analytics.clickHeaderSearchButton();
           setIsSearchMode((prev) => !prev);
         }}
         scrollToMessageById={scrollToMessageById}

@@ -75,15 +75,15 @@ const SmallEmotionChart = ({ navigation, route }) => {
   const closeBottomSheet = () => setBottomSheetIndex(-1);
 
   const { dateID } = route.params;
-  console.log('감정 입력 페이지에서 받은 dateID', dateID);
+  //console.log('감정 입력 페이지에서 받은 dateID', dateID);
 
   const width = Dimensions.get('window').width - 24;
 
   //일일 감정 데이터 가져오기
   const fetchData = async () => {
     const diaryData = await todayEmotionCheck(dateID);
-    console.log('new diaryData', diaryData.Keywords);
-    console.log('~~~~~~', selectedEmotions);
+    //console.log('new diaryData', diaryData.Keywords);
+    //console.log('~~~~~~', selectedEmotions);
     setSelectedEmotions(diaryData.Keywords);
     setDiaryText(diaryData.todayFeeling ?? '');
   };
@@ -214,8 +214,8 @@ const SmallEmotionChart = ({ navigation, route }) => {
               }
               onPress={async () => {
                 openBottomSheet();
-                console.log('bottom sheet 열기');
-                //Analytics.clickEmotionRecordButton();
+                //console.log('bottom sheet 열기');
+                Analytics.clickNoEmotionButton();
                 //setRecordedEmotions(selectedEmotions); // 상태 업데이트
                 //await todayEmotion(dateID, selectedEmotions, text);
                 //navigation.navigate(TabScreenName.Home);
@@ -228,7 +228,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
               title="마음일기 쓰러가기"
               primary={true}
               onPress={() => {
-                //Analytics.clickGotoDiaryWriteButton();
+                Analytics.clickGotoDiaryWriteButton();
                 navigation.navigate(HomeStackName.DailyDairy, { dateID: dateID });
                 //새로운 화면이 push
               }}

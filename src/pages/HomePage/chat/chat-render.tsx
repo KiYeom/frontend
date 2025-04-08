@@ -35,6 +35,7 @@ import { useRef } from 'react';
 import UpDownBtn from '../../../components/up-down-button/UpDownBtn';
 import { ExtendedIMessage } from '../../../utils/chatting';
 import HighlightedMessageText from './HighlightMessageText';
+import Analytics from '../../../utils/analytics';
 const getMessageSet = (
   currentMessage: ExtendedIMessage,
   allMessages: ExtendedIMessage[],
@@ -228,8 +229,9 @@ export const RenderBubble = (
             onFavoritePress={(id) => {
               //console.log('메세지', props.currentMessage);
               //reportMessages(props.currentMessage._id, props.currentMessage.isSaved);
-              console.log('icon에서의 press 함수', props.currentMessage._id);
+              //console.log('icon에서의 press 함수', props.currentMessage._id);
               props.onFavoritePress(props.currentMessage._id);
+              Analytics.clickChatLikeButton(props.currentMessage._id);
             }}
           />
         </View>
