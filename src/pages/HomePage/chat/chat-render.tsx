@@ -98,7 +98,7 @@ const generateIdList = (clickedId: string): string[] => {
 };
 
 export const reportMessages = async (messageId: string, isSaved: boolean): string | undefined => {
-  //console.log('reportMessags 실행', messageId);
+  console.log('reportMessags 실행', messageId);
   if (messageId === null) return;
   //const isSaved: boolean = true;
   const res = await saveFavoriteChatLog(messageId, !isSaved);
@@ -109,8 +109,12 @@ export const reportMessages = async (messageId: string, isSaved: boolean): strin
 export const RenderBubble = (
   props: BubbleProps<ExtendedIMessage> & { onFavoritePress: (messageId: string) => void },
 ) => {
+  //console.log('🧼🧼🧼🧼🧼 props', props);
   const showReport = (): boolean => {
     const nowMessageUserId = props.currentMessage.user._id;
+    //check is bot message
+    //console.log('nowMessageUserId', nowMessageUserId);
+    //console.log('dfasdfa', props.currentMessage._id);
     if (props.currentMessage._id === 'welcomeMessage') return false;
     if (nowMessageUserId === null || isNaN(nowMessageUserId) || Number(nowMessageUserId) <= 0)
       return false;
@@ -132,6 +136,16 @@ export const RenderBubble = (
       return true;
     return false;
   };
+  // 컴포넌트 최상위에서 메시지 위치를 저장할 ref 선언
+  //const messagePositions = useRef<{ [key: string]: number }>({});
+
+  // 각 메시지 컴포넌트의 onLayout에 부여할 함수
+  /*const handleMessageLayout = (messageId: string | number) => (event: any) => {
+    const { y } = event.nativeEvent.layout;
+    // 메시지 id를 key로 하여 y 좌표 저장
+    messagePositions.current[messageId] = y;
+    console.log(`Message ${messageId} Y position: ${y}`);
+  };*/
 
   return (
     <Animated.View
@@ -186,14 +200,14 @@ export const RenderBubble = (
                 background-color: ${palette.neutral[100]};
                 padding-horizontal: ${rsWidth * 12 + 'px'};
                 padding-vertical: ${rsHeight * 8 + 'px'};
-                margin: 3px;
+                margin: 0px;
               `,
               right: css`
                 max-width: ${rsWidth * 200 + 'px'};
                 background-color: ${palette.primary[500]};
                 padding-horizontal: ${rsWidth * 12 + 'px'};
                 padding-vertical: ${rsHeight * 8 + 'px'};
-                margin: 3px;
+                margin: 0px;
               `,
             }}
           />

@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Dimensions, Platform, View, ActivityIndicator, LayoutChangeEvent } from 'react-native';
+import { Dimensions, Platform, View, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GiftedChat, IMessage, SendProps } from 'react-native-gifted-chat';
 import { useFocusEffect } from '@react-navigation/native';
-import { rsHeight } from '../../../utils/responsive-size';
 import Header from '../../../components/header/header';
 import * as WebBrowser from 'expo-web-browser';
 import {
@@ -63,7 +62,6 @@ import { searchChatWord } from '../../../apis/chatting';
 import { ExtendedIMessage } from '../../../utils/chatting';
 import { reportMessages } from './chat-render';
 import { useCallback } from 'react';
-import { MAX_RETRIES } from '../../../constants/Constants';
 //유저와 챗봇 오브젝트 정의
 const userObject = {
   _id: 0,
@@ -103,7 +101,7 @@ const NewChat: React.FC = ({ navigation }) => {
 
   //즐겨찾기 함수
   const toggleFavorite = async (messageId: string) => {
-    //console.log('toggleFavorite 함수 실행', messageId);
+    console.log('toggleFavorite 함수 실행', messageId);
     setMessages((prevMessages) => {
       const updatedMessages = prevMessages.map((m) =>
         m._id === messageId ? { ...m, isSaved: !m.isSaved } : m,
@@ -214,17 +212,17 @@ const NewChat: React.FC = ({ navigation }) => {
 
     if (!isV3KeyExist) {
       //v3 키가 존재하지 않는 경우
-      //console.log('🔑🔑🔑🔑🔑🔑🔑🔑🔑v3 키가 존재하지 않음🔑🔑🔑🔑🔑🔑🔑🔑', isV3KeyExist);
+      console.log('🔑🔑🔑🔑🔑🔑🔑🔑🔑v3 키가 존재하지 않음🔑🔑🔑🔑🔑🔑🔑🔑', isV3KeyExist);
       const v3lastMessageDate = new Date(0);
       const v3ServerMessages = await v3getIMessageFromServer(v3lastMessageDate); //전체 데이터 가져오기
       if (v3ServerMessages && v3ServerMessages.length > 0) {
-        //console.log('💚💚💚💚💚💚💚💚💚💚💚이전에 썼던 사람 마이그레이션 하기💚💚💚💚💚💚💚💚');
+        console.log('💚💚💚💚💚💚💚💚💚💚💚이전에 썼던 사람 마이그레이션 하기💚💚💚💚💚💚💚💚');
         setNewIMessagesV3(JSON.stringify(v3ServerMessages)); //로컬 마이그레이션
         deleteNewIMessages(); //v3 이전 로컬 데이터 삭제
         messages = [...v3ServerMessages, ...messages]; //데이터 화면에 보여주기
       } else {
         //새로 온 사람
-        //console.log('🤖🤖🤖🤖🤖🤖🤖🤖새로 온 사람🤖🤖🤖🤖🤖🤖🤖🤖');
+        console.log('🤖🤖🤖🤖🤖🤖🤖🤖새로 온 사람🤖🤖🤖🤖🤖🤖🤖🤖');
         const welcomeMessage = {
           _id: 'welcomeMessage',
           text: `반가워요, ${getUserNickname()}님!💚 저는 ${getUserNickname()}님 곁에서 힘이 되어드리고 싶은 골든 리트리버 쿠키예요🐶 이 곳은 ${getUserNickname()}님과 저만의 비밀 공간이니, 어떤 이야기도 편하게 나눠주세요!\n\n반말로 대화를 나누고 싶으시다면 위에서 오른쪽에 있는 탭 바를 열고, 반말 모드를 켜 주세요!🍀💕`,
@@ -391,12 +389,12 @@ const NewChat: React.FC = ({ navigation }) => {
     text: string,
     direction: null | 'up' | 'down',
   ): Promise<string | null> => {
-    //console.log('새 함수 검색어 : ', text, direction, nowCursor.current);
+    console.log('새 함수 검색어 : ', text, direction, nowCursor.current);
     setSearchLoading(true);
 
     // 스크롤 함수가 없거나 더 이상 검색 결과가 없을 경우
     if (!scrollToMessageById || (nowCursor.current === null && prevCursor.current === null)) {
-      //console.log('검색 결과가 없습니다');
+      console.log('검색 결과가 없습니다');
       Toast.show(`검색 결과가 없습니다`, {
         duration: Toast.durations.SHORT,
         position: Toast.positions.CENTER,
@@ -465,55 +463,43 @@ const NewChat: React.FC = ({ navigation }) => {
   };
 
   // 메시지 id로부터 메시지 인덱스를 찾아 해당 메시지로 스크롤하는 scrollToMessageById 함수
+  // 메시지 id로부터 메시지 인덱스를 찾아 해당 메시지로 스크롤하는 scrollToMessageById 함수
+  // 예시: 메시지 id로부터 인덱스를 찾고 스크롤하는 함수
   const scrollToMessageById = (messageId: string | number) => {
     const index = messages.findIndex((message) => message._id === messageId);
-    //console.log('index', index);
-
     if (index === -1) {
-      //console.log('❌ 해당 메시지를 찾을 수 없습니다.');
+      console.log('해당 메시지를 찾을 수 없습니다.');
       return;
     }
+    console.log(`Scrolling to index ${index} for message id: ${messageId}`);
+    attemptScroll(index);
+  };
 
-    const targetMessage = messages[index];
-    //console.log('🎯 targetMessage:', targetMessage);
-    //console.log(`🔍 Scrolling to index ${index} for message id: ${messageId}`);
+  // 재귀적으로 스크롤을 시도하는 함수
+  const attemptScroll = (targetIndex: number) => {
+    // 더 이상 내려갈 인덱스가 없으면 종료
+    if (targetIndex < 0) return;
 
-    // 스크롤 시도 함수 (재시도 방식)
-    let attempts = 0;
-    const maxAttempts = 100;
-    const retryDelay = 200;
-
-    const tryScroll = () => {
-      const list = messageContainerRef.current;
-
-      if (!list?.scrollToIndex) {
-        //console.warn('⚠️ scrollToIndex 사용 불가');
-        return;
-      }
-
+    // 약간의 딜레이 후 스크롤 시도 (lazy loading으로 렌더링 시간 확보)
+    setTimeout(() => {
       try {
-        //console.log(`🔁 시도 ${attempts + 1}: scrollToIndex(${index})`);
-        list.scrollToIndex({
-          index,
+        // FlatList 혹은 GiftedChat의 메시지 컨테이너 ref를 사용하여 scrollToIndex 호출
+        messageContainerRef.current?.scrollToIndex({
+          index: targetIndex,
           animated: true,
-          viewOffset: 0,
-          viewPosition: 0,
+          viewOffset: 0, // 메시지 시작 부분에 맞춤 (필요시 조절)
+          viewPosition: 0, // 0: 상단 정렬, 0.5: 중앙, 1: 하단 정렬
         });
-        //console.log('✅ 스크롤 성공!');
+        console.log(`Index ${targetIndex}으로 스크롤 성공.`);
       } catch (error) {
-        //console.warn(`❌ scrollToIndex 실패 (attempt ${attempts + 1})`, error);
-
-        attempts += 1;
-        if (attempts < maxAttempts) {
-          setTimeout(tryScroll, retryDelay);
-        } else {
-          //console.warn('🚨 scrollToIndex 계속 실패, 포기합니다.');
-        }
+        console.warn(
+          `Index ${targetIndex}로 스크롤 실패. fallback으로 ${targetIndex - 1} 시도합니다.`,
+          error,
+        );
+        // 실패 시 index를 하나 낮춰 재귀적으로 호출
+        attemptScroll(targetIndex - 1);
       }
-    };
-
-    // 바로 첫 시도 시작
-    setTimeout(tryScroll, 0);
+    }, 150);
   };
 
   /* 
@@ -555,7 +541,7 @@ const NewChat: React.FC = ({ navigation }) => {
             setInit(false);
           })
           .catch((err) => {
-            //console.log('대화 내역을 불러오는 중 오류가 발생했어요. 다시 시도해주세요.');
+            console.log('대화 내역을 불러오는 중 오류가 발생했어요. 다시 시도해주세요.');
             console.log(err);
             navigation.navigate('Home');
           });
@@ -602,54 +588,6 @@ const NewChat: React.FC = ({ navigation }) => {
   }, [navigation]);
 
   const messageContainerRef = useRef<React.ElementRef<typeof GiftedChat>>(null);
-  const messagePositions = useRef<{ [key: string]: number }>({}).current;
-  // GiftedChat의 내부 InvertibleScrollView에 접근하기 위한 ref
-  const chatListViewRef = useRef<any>(null);
-
-  // 각 메시지 View에서 onLayout 이벤트로 해당 메시지의 y 좌표 저장
-  const handleMessageLayout = (messageId: string, event: LayoutChangeEvent) => {
-    const { y } = event.nativeEvent.layout;
-    messagePositions[messageId] = y;
-  };
-
-  const renderMessageWithLayout = (props: any) => {
-    const { currentMessage, position } = props;
-    return (
-      <View
-        style={{
-          flexDirection: position === 'left' ? 'row' : 'row-reverse',
-          alignItems: 'flex-end',
-          justifyContent: 'flex-start',
-          gap: rsHeight * 8,
-          paddingHorizontal: rsWidth * 10,
-        }}
-        onLayout={(event) => handleMessageLayout(currentMessage._id, event)}>
-        <RenderAvatar {...props} />
-        <RenderBubble
-          {...props}
-          onFavoritePress={(id: string) => {
-            // 즐겨찾기 아이콘 클릭 시 처리 (필요에 따라 기능 구현)
-            //console.log('Favorite pressed for message:', id);
-            toggleFavorite(id);
-          }}
-        />
-      </View>
-    );
-  };
-  const scrollToMessage = (messageId: string) => {
-    if (chatListViewRef.current && typeof messagePositions[messageId] !== 'undefined') {
-      const messageViewY = messagePositions[messageId];
-      // 스크롤뷰에 보이는 영역의 길이(높이)
-      const visibleLength =
-        (chatListViewRef.current.scrollProperties &&
-          chatListViewRef.current.scrollProperties.visibleLength) ||
-        0;
-      const scrollY = messageViewY - visibleLength;
-      chatListViewRef.current.scrollTo({ x: 0, y: scrollY, animated: true });
-    } else {
-      console.warn('메시지 위치를 찾지 못했거나, chatListView ref가 설정되지 않았습니다.');
-    }
-  };
 
   /* 채팅 화면 전체 구성 */
   return (
@@ -707,14 +645,13 @@ const NewChat: React.FC = ({ navigation }) => {
           Analytics.clickHeaderSearchButton();
           setIsSearchMode((prev) => !prev);
         }}
-        scrollToMessage={scrollToMessage}
+        scrollToMessageById={scrollToMessageById}
         searchWord={searchWord}
         setSearchWord={setSearchWord}
         handleSearch={handleSearch}
         updateMessageHighlights={updateMessageHighlights}
       />
       <GiftedChat
-        renderMessage={renderMessageWithLayout}
         messageContainerRef={messageContainerRef}
         messages={messages}
         onSend={(messages) => onSend(messages)}
