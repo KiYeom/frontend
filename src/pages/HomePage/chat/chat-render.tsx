@@ -102,7 +102,7 @@ export const reportMessages = async (messageId: string, isSaved: boolean): strin
   if (messageId === null) return;
   //const isSaved: boolean = true;
   const res = await saveFavoriteChatLog(messageId, !isSaved);
-  //console.log('res', res);
+  console.log('res', res);
   return messageId;
 };
 
@@ -186,14 +186,14 @@ export const RenderBubble = (
                 background-color: ${palette.neutral[100]};
                 padding-horizontal: ${rsWidth * 12 + 'px'};
                 padding-vertical: ${rsHeight * 8 + 'px'};
-                margin: 0px;
+                margin: 3px;
               `,
               right: css`
                 max-width: ${rsWidth * 200 + 'px'};
                 background-color: ${palette.primary[500]};
                 padding-horizontal: ${rsWidth * 12 + 'px'};
                 padding-vertical: ${rsHeight * 8 + 'px'};
-                margin: 0px;
+                margin: 3px;
               `,
             }}
           />

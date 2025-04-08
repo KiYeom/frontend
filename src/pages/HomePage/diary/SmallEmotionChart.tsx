@@ -95,7 +95,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
   }, []);
 
   const handleEmotionListClick = async (emotion) => {
-    console.log('emotion', emotion);
+    //console.log('emotion', emotion);
     // 이미 선택된 감정인지 확인
     if (selectedEmotions.some((e) => e.keyword === emotion.keyword)) {
       removeEmotion(emotion.keyword);

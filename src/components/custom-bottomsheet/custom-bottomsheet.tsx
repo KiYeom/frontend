@@ -107,7 +107,7 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
 
   // 감정 아이콘 클릭 이벤트
   const handleEmotionPress = (emotion: string) => {
-    console.log(`${emotion} icon click`);
+    //console.log(`${emotion} icon click`);
     switch (emotion) {
       case 'happy':
         setSelectedStatus(0);

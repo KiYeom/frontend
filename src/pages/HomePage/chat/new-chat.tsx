@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Dimensions, Platform, View, ActivityIndicator } from 'react-native';
+import { Dimensions, Platform, View, ActivityIndicator, LayoutChangeEvent } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GiftedChat, IMessage, SendProps } from 'react-native-gifted-chat';
 import { useFocusEffect } from '@react-navigation/native';
+import { rsHeight } from '../../../utils/responsive-size';
 import Header from '../../../components/header/header';
 import * as WebBrowser from 'expo-web-browser';
 import {
@@ -601,6 +602,54 @@ const NewChat: React.FC = ({ navigation }) => {
   }, [navigation]);
 
   const messageContainerRef = useRef<React.ElementRef<typeof GiftedChat>>(null);
+  const messagePositions = useRef<{ [key: string]: number }>({}).current;
+  // GiftedChat의 내부 InvertibleScrollView에 접근하기 위한 ref
+  const chatListViewRef = useRef<any>(null);
+
+  // 각 메시지 View에서 onLayout 이벤트로 해당 메시지의 y 좌표 저장
+  const handleMessageLayout = (messageId: string, event: LayoutChangeEvent) => {
+    const { y } = event.nativeEvent.layout;
+    messagePositions[messageId] = y;
+  };
+
+  const renderMessageWithLayout = (props: any) => {
+    const { currentMessage, position } = props;
+    return (
+      <View
+        style={{
+          flexDirection: position === 'left' ? 'row' : 'row-reverse',
+          alignItems: 'flex-end',
+          justifyContent: 'flex-start',
+          gap: rsHeight * 8,
+          paddingHorizontal: rsWidth * 10,
+        }}
+        onLayout={(event) => handleMessageLayout(currentMessage._id, event)}>
+        <RenderAvatar {...props} />
+        <RenderBubble
+          {...props}
+          onFavoritePress={(id: string) => {
+            // 즐겨찾기 아이콘 클릭 시 처리 (필요에 따라 기능 구현)
+            //console.log('Favorite pressed for message:', id);
+            toggleFavorite(id);
+          }}
+        />
+      </View>
+    );
+  };
+  const scrollToMessage = (messageId: string) => {
+    if (chatListViewRef.current && typeof messagePositions[messageId] !== 'undefined') {
+      const messageViewY = messagePositions[messageId];
+      // 스크롤뷰에 보이는 영역의 길이(높이)
+      const visibleLength =
+        (chatListViewRef.current.scrollProperties &&
+          chatListViewRef.current.scrollProperties.visibleLength) ||
+        0;
+      const scrollY = messageViewY - visibleLength;
+      chatListViewRef.current.scrollTo({ x: 0, y: scrollY, animated: true });
+    } else {
+      console.warn('메시지 위치를 찾지 못했거나, chatListView ref가 설정되지 않았습니다.');
+    }
+  };
 
   /* 채팅 화면 전체 구성 */
   return (
@@ -658,13 +707,14 @@ const NewChat: React.FC = ({ navigation }) => {
           Analytics.clickHeaderSearchButton();
           setIsSearchMode((prev) => !prev);
         }}
-        scrollToMessageById={scrollToMessageById}
+        scrollToMessage={scrollToMessage}
         searchWord={searchWord}
         setSearchWord={setSearchWord}
         handleSearch={handleSearch}
         updateMessageHighlights={updateMessageHighlights}
       />
       <GiftedChat
+        renderMessage={renderMessageWithLayout}
         messageContainerRef={messageContainerRef}
         messages={messages}
         onSend={(messages) => onSend(messages)}
