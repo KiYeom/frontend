@@ -465,14 +465,15 @@ const NewChat: React.FC = ({ navigation }) => {
   // 메시지 id로부터 메시지 인덱스를 찾아 해당 메시지로 스크롤하는 scrollToMessageById 함수
   // 메시지 id로부터 메시지 인덱스를 찾아 해당 메시지로 스크롤하는 scrollToMessageById 함수
   // 예시: 메시지 id로부터 인덱스를 찾고 스크롤하는 함수
-  const scrollToMessageById = (messageId: string | number) => {
+  const scrollToMessageById = async (messageId: string | number) => {
     const index = messages.findIndex((message) => message._id === messageId);
     if (index === -1) {
       console.log('해당 메시지를 찾을 수 없습니다.');
       return;
     }
     console.log(`Scrolling to index ${index} for message id: ${messageId}`);
-    attemptScroll(index);
+    //attemptScroll(index);
+    await smoothLazyScrollToIndex(index);
   };
 
   // 재귀적으로 스크롤을 시도하는 함수
@@ -500,6 +501,46 @@ const NewChat: React.FC = ({ navigation }) => {
         attemptScroll(targetIndex - 1);
       }
     }, 150);
+  };
+  //추가
+  const smoothLazyScrollToIndex = async (
+    targetIndex: number,
+    step = 5,
+    delay = 150,
+    maxAttempts = 10,
+  ) => {
+    let currentOffset = targetIndex * 20; //20 : ITEM_HEIGHT
+    let attempt = 0;
+
+    for (; attempt < maxAttempts; attempt++) {
+      try {
+        messageContainerRef.current?.scrollToIndex({
+          index: targetIndex,
+          animated: true,
+          viewOffset: 0,
+          viewPosition: 0,
+        });
+        console.log(`✅ Index ${targetIndex}으로 스크롤 성공.`);
+        return;
+      } catch (error) {
+        console.warn(
+          `⚠️ Attempt ${attempt + 1}: Index ${targetIndex} 스크롤 실패. 위로 preload 시도 중...`,
+        );
+
+        currentOffset -= step * 20;
+        if (currentOffset < 0) currentOffset = 0;
+
+        messageContainerRef.current?.scrollToOffset({
+          offset: currentOffset,
+          animated: false,
+        });
+
+        await new Promise((res) => setTimeout(res, delay));
+      }
+    }
+
+    console.warn('❌ 최대 시도 횟수 초과. 리스트 최상단으로 이동합니다.');
+    messageContainerRef.current?.scrollToOffset({ offset: 0, animated: true });
   };
 
   /* 
