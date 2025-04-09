@@ -501,7 +501,7 @@ const NewChat: React.FC = ({ navigation }) => {
   const scrollToIndexFailed = (info) => {
     //console.log('scrollToIndexFailed');
     setSearchLoading(true);
-    const offset = info.averageItemLength * info.index;
+    const offset = info.averageItemLength * info.index * 2;
     const flatList = messageContainerRef.current;
     // 임시 오프셋으로 스크롤
     console.log('정보1', info.index);
@@ -510,7 +510,7 @@ const NewChat: React.FC = ({ navigation }) => {
     // 잠시 후 정확한 인덱스로 다시 스크롤 시도
     setTimeout(() => {
       flatList.scrollToIndex({ index: info.index, animated: true });
-    }, 100);
+    }, 50);
   };
 
   //버퍼가 변경됨에 따라 타이머를 재설정함
