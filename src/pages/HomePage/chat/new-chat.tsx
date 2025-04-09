@@ -134,51 +134,6 @@ const NewChat: React.FC = ({ navigation }) => {
     });
   };
 
-  const getIMessageFromServer = async (lastMessageDate: Date): Promise<ExtendedIMessage[]> => {
-    //console.log('4️⃣4️⃣4️⃣4️⃣4️⃣4️⃣4️⃣getIMessageFromServer4️⃣4️⃣4️⃣4️⃣4️⃣ 실행', getIMessageFromServer);
-    const messages: ExtendedIMessage[] = [];
-    const lastDateAddSecond = new Date(lastMessageDate.getTime() + 10 * 1000);
-    const serverMessages = await getOldChatting(botObject._id, lastDateAddSecond.toISOString());
-    console.log('⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️serverMessages⭐️⭐️⭐️⭐️⭐️', serverMessages);
-
-    /*console.log(
-      'true / false',
-      serverMessages && serverMessages.chats && serverMessages.chats.length > 0,
-    );*/
-
-    if (serverMessages && serverMessages.chats && serverMessages.chats.length > 0) {
-      for (let i = 0; i < serverMessages.chats.length; i++) {
-        const chat = serverMessages.chats[i];
-        const text = chat.text;
-        const texts = text.split('\n');
-        for (let j = 0; j < texts.length; j++) {
-          const text = texts[j];
-          let splitTexts: string[] = [text];
-          if (chat.status !== 'user') {
-            splitTexts =
-              text.match(
-                /\s*([^.!?;:…。？！~…」»]+[.!?;:…。？！~…」»](?:\s*[\u{1F300}-\u{1F5FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}\u{1F004}\u{1F0CF}\u{1F170}-\u{1F251}]*)?)\s*/gu,
-              ) || [];
-          }
-
-          for (let k = 0; k < splitTexts.length; k++) {
-            if (splitTexts[k] === '') continue;
-            messages.push({
-              _id: uuid.v4().toString(),
-              text: splitTexts[k],
-              createdAt: new Date(new Date(chat.utcTime).getTime()),
-              user: chat.status === 'user' ? userObject : botObject,
-              isSaved: serverMessages.chats[i].isSaved,
-              hightlightKeyword: '',
-            }); //대화 내용을 messages에 추가
-          }
-        }
-      }
-    }
-    //console.log('😀😀😀😀😀😀😀reverse 이전', messages);
-    return messages.reverse();
-  };
-
   //1.5.7v3 서버에서 대화 내용을 불러오는 함수
   const v3getIMessageFromServer = async (lastMessageDate: Date): Promise<ExtendedIMessage[]> => {
     const messages: ExtendedIMessage[] = [];
@@ -249,11 +204,6 @@ const NewChat: React.FC = ({ navigation }) => {
       messages = [...v3ServerMessages, ...messages];
     }
     return messages;
-  };
-
-  const setIMessages = (previousMessages: ExtendedIMessage[], newMessages: ExtendedIMessage[]) => {
-    const messagesString = JSON.stringify([...newMessages, ...previousMessages]);
-    setNewIMessages(messagesString);
   };
 
   //v3로 저장된 메시지들을 로컬에 저장하는 함수
@@ -463,84 +413,25 @@ const NewChat: React.FC = ({ navigation }) => {
   };
 
   // 메시지 id로부터 메시지 인덱스를 찾아 해당 메시지로 스크롤하는 scrollToMessageById 함수
-  // 메시지 id로부터 메시지 인덱스를 찾아 해당 메시지로 스크롤하는 scrollToMessageById 함수
-  // 예시: 메시지 id로부터 인덱스를 찾고 스크롤하는 함수
-  const scrollToMessageById = async (messageId: string | number) => {
+  const scrollToMessageById = (messageId: string | number) => {
     const index = messages.findIndex((message) => message._id === messageId);
     if (index === -1) {
       console.log('해당 메시지를 찾을 수 없습니다.');
       return;
     }
+    // 메시지 인덱스로 메시지 객체를 가져옵니다.
+    const targetMessage = messages[index];
+    console.log('targetMessage', targetMessage);
     console.log(`Scrolling to index ${index} for message id: ${messageId}`);
-    //attemptScroll(index);
-    await smoothLazyScrollToIndex(index);
-  };
-
-  // 재귀적으로 스크롤을 시도하는 함수
-  const attemptScroll = (targetIndex: number) => {
-    // 더 이상 내려갈 인덱스가 없으면 종료
-    if (targetIndex < 0) return;
-
-    // 약간의 딜레이 후 스크롤 시도 (lazy loading으로 렌더링 시간 확보)
+    //console.log('giftedChatRef.current?.props?.messageContainerRef?.current?', giftedChatRef.current?.props?.messageContainerRef?.current?);
     setTimeout(() => {
-      try {
-        // FlatList 혹은 GiftedChat의 메시지 컨테이너 ref를 사용하여 scrollToIndex 호출
-        messageContainerRef.current?.scrollToIndex({
-          index: targetIndex,
-          animated: true,
-          viewOffset: 0, // 메시지 시작 부분에 맞춤 (필요시 조절)
-          viewPosition: 0, // 0: 상단 정렬, 0.5: 중앙, 1: 하단 정렬
-        });
-        console.log(`Index ${targetIndex}으로 스크롤 성공.`);
-      } catch (error) {
-        console.warn(
-          `Index ${targetIndex}로 스크롤 실패. fallback으로 ${targetIndex - 1} 시도합니다.`,
-          error,
-        );
-        // 실패 시 index를 하나 낮춰 재귀적으로 호출
-        attemptScroll(targetIndex - 1);
-      }
+      messageContainerRef.current?.scrollToIndex({
+        index,
+        animated: true,
+        viewOffset: 0, // 메시지 시작 부분에 맞추려면 0 또는 원하는 값
+        viewPosition: 0, // 0: 상단 정렬, 0.5: 중앙, 1: 하단 정렬
+      });
     }, 150);
-  };
-  //추가
-  const smoothLazyScrollToIndex = async (
-    targetIndex: number,
-    step = 5,
-    delay = 150,
-    maxAttempts = 10,
-  ) => {
-    let currentOffset = targetIndex * 20; //20 : ITEM_HEIGHT
-    let attempt = 0;
-
-    for (; attempt < maxAttempts; attempt++) {
-      try {
-        messageContainerRef.current?.scrollToIndex({
-          index: targetIndex,
-          animated: true,
-          viewOffset: 0,
-          viewPosition: 0,
-        });
-        console.log(`✅ Index ${targetIndex}으로 스크롤 성공.`);
-        return;
-      } catch (error) {
-        console.warn(
-          `⚠️ Attempt ${attempt + 1}: Index ${targetIndex} 스크롤 실패. 위로 preload 시도 중...`,
-        );
-
-        currentOffset -= step * 20;
-        if (currentOffset < 0) currentOffset = 0;
-
-        messageContainerRef.current?.scrollToOffset({
-          offset: currentOffset,
-          animated: false,
-        });
-
-        await new Promise((res) => setTimeout(res, delay));
-      }
-    }
-
-    console.warn('❌ 최대 시도 횟수 초과. 리스트 최상단으로 이동합니다.');
-    messageContainerRef.current?.scrollToOffset({ offset: 0, animated: true });
   };
 
   /* 
@@ -761,89 +652,3 @@ const NewChat: React.FC = ({ navigation }) => {
 };
 
 export default NewChat;
-
-// 위험 감지 이전 코드
-/*
-const refreshRiskStatus = () => {
-  const riskData = getRiskData();
-  if (!riskData) setRiskStatus('safe');
-  else if (riskData.isRead) setRiskStatus('danger-opened');
-  else setRiskStatus('danger');
-  //setRiskStatus('danger');
-};*/
-
-/*
-채팅 스크린에 처음 진입 시, 위험 지수를 받아와서 화면에 업데이트를 해 주어야 함
-따라서 스크린 포커스 시 위험 점수를 받아올 수 있도록 리스너를 추가.
-스크린 밖을 나갈 때 (= 컴포넌트 언마운트) 리스너를 해제하여 메모리 누수를 방지
-*/
-/*
-useEffect(() => {
-  const unsubscribe = navigation.addListener('focus', refreshRiskScore);
-  // 컴포넌트 unmount 시 리스너를 해제
-  return () => {
-    unsubscribe();
-  };
-}, [navigation]);*/
-//헤더 아이콘 클릭했을 때 이동 페이지
-/*
-  const handleDangerPress = () => {
-    if (riskStatus === 'danger') {
-      Analytics.clickDangerLetterButton(riskScore);
-      const letterIndex = Math.floor(Math.random() * DANGER_LETTER.length);
-      setRiskData({
-        timestamp: new Date().getTime(),
-        isRead: true,
-        letterIndex,
-      });
-      navigation.navigate(RootStackName.DangerStackNavigator, {
-        screen: DangerStackName.DangerAlert,
-        params: { letterIndex },
-      }); //쿠키 편지 화면으로 이동한다
-      return;
-    }
-    if (riskStatus === 'danger-opened') {
-      //위험한 상태일 때 확인을 했으면
-      Analytics.clickOpenedDangerLetterButton(riskScore);
-      const letterIndex = getRiskData()?.letterIndex;
-      navigation.navigate(RootStackName.DangerStackNavigator, {
-        screen: DangerStackName.DangerAlert,
-        params: { letterIndex: letterIndex ?? 0 },
-      }); //쿠키 편지 화면으로 이동한다
-      return;
-    }
-    if (riskStatus === 'safe') {
-      //setHintStatus(true);
-      return;
-    }
-  };*/
-/*
-  const refreshRiskScore = () => {
-    console.log('🥬🥬🥬🥬🥬 refreshRiskScore 🥬🥬🥬🥬');
-    const date = getKoreanServerTodayDateString(new Date());
-    getRiskScore(date).then((res) => {
-      setRiskScore(res);
-      if (res >= RISK_SCORE_THRESHOLD && !getRiskData()) {
-        setRiskData({
-          timestamp: new Date().getTime(),
-          isRead: false,
-          letterIndex: null,
-        });
-      }
-      refreshRiskStatus();
-    });
-  };*/
-//const [riskScore, setRiskScore] = React.useState<number>(0);
-//const [riskStatus, setRiskStatus] = React.useState<'safe' | 'danger' | 'danger-opened'>('safe');
-
-//import cookieprofile from '@assets/images/cookieprofile.png';
-//import cookieProfile from '@assets/images/cookieprofile.png';
-
-//const HINT_MESSAGE = 'AI로 생성된 답변입니다. 상담 필요 시 전문가와 상의하세요.';
-//console.log('이벤트 누름');
-//await Linking.openURL(
-//'https://autumn-flier-d18.notion.site/reMIND-1b48e75d989680f2b4c7e7fa8dbfc1ad?pvs=4',
-//);
-//Analytics.clickHeaderGiftBoxButton(
-//'https://autumn-flier-d18.notion.site/reMIND-1b48e75d989680f2b4c7e7fa8dbfc1ad?pvs=4',
-//);
