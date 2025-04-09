@@ -35,67 +35,6 @@ import { useRef } from 'react';
 import UpDownBtn from '../../../components/up-down-button/UpDownBtn';
 import { ExtendedIMessage } from '../../../utils/chatting';
 import HighlightedMessageText from './HighlightMessageText';
-import Analytics from '../../../utils/analytics';
-const getMessageSet = (
-  currentMessage: ExtendedIMessage,
-  allMessages: ExtendedIMessage[],
-):
-  | {
-      botChats: string;
-      userChats: string;
-    }
-  | undefined => {
-  // Find the index of the current message
-  const currentMessageIndex = allMessages.findIndex((msg) => msg._id === currentMessage._id);
-
-  if (currentMessageIndex === -1) {
-    console.warn('Message not found in the list');
-    return undefined;
-  }
-
-  let nowIndex = currentMessageIndex;
-  const botChats: string[] = [];
-  const userChats: string[] = [];
-
-  for (let i = nowIndex; i < allMessages.length; i++) {
-    const msg = allMessages[i];
-    if (msg.user._id === null || isNaN(msg.user._id) || Number(msg.user._id) <= 0) {
-      break;
-    }
-    botChats.push(msg.text);
-    nowIndex++;
-  }
-  for (let i = nowIndex; i < allMessages.length; i++) {
-    const msg = allMessages[i];
-    if (msg.user._id === null || isNaN(msg.user._id) || Number(msg.user._id) > 0) {
-      break;
-    }
-    userChats.push(msg.text);
-    nowIndex++;
-  }
-  botChats.reverse();
-  userChats.reverse();
-
-  return {
-    botChats: botChats.join('\n'),
-    userChats: userChats.join('\n'),
-  };
-};
-
-// 클릭한 말풍선의 모든 대화를 만드는 함수 (ex. 67e8218282ca763945508719-B-5)
-const generateIdList = (clickedId: string): string[] => {
-  console.log('clickedId', clickedId);
-  const parts = clickedId.split('-');
-  const maxIndex = parseInt(parts.pop() || '0', 10); // 마지막 숫자 추출
-  const baseId = parts.join('-') + '-'; // 나머지 부분을 재조합하여 기본 id를 만듭니다.
-
-  const idList: string[] = [];
-  for (let i = 0; i <= maxIndex; i++) {
-    idList.push(baseId + i);
-  }
-  console.log('idList', idList);
-  return idList;
-};
 
 export const reportMessages = async (messageId: string, isSaved: boolean): string | undefined => {
   console.log('reportMessags 실행', messageId);

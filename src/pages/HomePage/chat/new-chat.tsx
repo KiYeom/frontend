@@ -339,12 +339,12 @@ const NewChat: React.FC = ({ navigation }) => {
     text: string,
     direction: null | 'up' | 'down',
   ): Promise<string | null> => {
-    console.log('새 함수 검색어 : ', text, direction, nowCursor.current);
+    //console.log('새 함수 검색어 : ', text, direction, nowCursor.current);
     setSearchLoading(true);
 
     // 스크롤 함수가 없거나 더 이상 검색 결과가 없을 경우
     if (!scrollToMessageById || (nowCursor.current === null && prevCursor.current === null)) {
-      console.log('검색 결과가 없습니다');
+      //console.log('검색 결과가 없습니다');
       Toast.show(`검색 결과가 없습니다`, {
         duration: Toast.durations.SHORT,
         position: Toast.positions.CENTER,
@@ -424,14 +424,18 @@ const NewChat: React.FC = ({ navigation }) => {
     console.log('targetMessage', targetMessage);
     console.log(`Scrolling to index ${index} for message id: ${messageId}`);
     //console.log('giftedChatRef.current?.props?.messageContainerRef?.current?', giftedChatRef.current?.props?.messageContainerRef?.current?);
-    setTimeout(() => {
-      messageContainerRef.current?.scrollToIndex({
-        index,
-        animated: true,
-        viewOffset: 0, // 메시지 시작 부분에 맞추려면 0 또는 원하는 값
-        viewPosition: 0, // 0: 상단 정렬, 0.5: 중앙, 1: 하단 정렬
-      });
-    }, 150);
+    try {
+      setTimeout(() => {
+        messageContainerRef.current?.scrollToIndex({
+          index,
+          animated: true,
+          viewOffset: 0, // 메시지 시작 부분에 맞추려면 0 또는 원하는 값
+          viewPosition: 0, // 0: 상단 정렬, 0.5: 중앙, 1: 하단 정렬
+        });
+      }, 150);
+    } catch (error) {
+      console.log('렌더링이 되지 않아 스크롤 실패', error);
+    }
   };
 
   /* 
@@ -492,6 +496,18 @@ const NewChat: React.FC = ({ navigation }) => {
       //setIMessagesV3(previousMessages, newMessages.reverse());
       return GiftedChat.append(previousMessages, newMessages);
     });
+  };
+
+  const scrollToIndexFailed = (info) => {
+    //console.log('scrollToIndexFailed');
+    const offset = info.averageItemLength * info.index;
+    const flatList = messageContainerRef.current;
+    // 임시 오프셋으로 스크롤
+    flatList.scrollToOffset({ offset: offset });
+    // 잠시 후 정확한 인덱스로 다시 스크롤 시도
+    setTimeout(() => {
+      flatList.scrollToIndex({ index: info.index, animated: true });
+    }, 100);
   };
 
   //버퍼가 변경됨에 따라 타이머를 재설정함
@@ -584,6 +600,11 @@ const NewChat: React.FC = ({ navigation }) => {
         updateMessageHighlights={updateMessageHighlights}
       />
       <GiftedChat
+        listViewProps={{
+          onScrollToIndexFailed: scrollToIndexFailed,
+        }}
+        as
+        any
         messageContainerRef={messageContainerRef}
         messages={messages}
         onSend={(messages) => onSend(messages)}
