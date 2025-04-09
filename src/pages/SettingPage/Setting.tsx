@@ -52,7 +52,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
       else await logout('');
       clearInfoWhenLogout();
       //storage.delete(CHATLOG);
-      console.log('[Setting - Logout Button] LogOut: 1, SigninStatus: ', SigninStatus);
+      //console.log('[Setting - Logout Button] LogOut: 1, SigninStatus: ', SigninStatus);
       setSigninStatus(false);
     } catch (error: any) {
       console.error('[ERROR] logoutRequest: ', error);

@@ -174,7 +174,7 @@ const NewChat: React.FC = ({ navigation }) => {
     if (targetMessage) {
       await reportMessages(messageId, targetMessage.isSaved);
     }
-    console.log('setMessages', messages);
+    //console.log('setMessages', messages);
   };
 
   const decideRefreshScreen = (viewHeight: number) => {
@@ -192,51 +192,6 @@ const NewChat: React.FC = ({ navigation }) => {
       }
       setScreenLoading(false);
     });
-  };
-
-  const getIMessageFromServer = async (lastMessageDate: Date): Promise<ExtendedIMessage[]> => {
-    //console.log('4️⃣4️⃣4️⃣4️⃣4️⃣4️⃣4️⃣getIMessageFromServer4️⃣4️⃣4️⃣4️⃣4️⃣ 실행', getIMessageFromServer);
-    const messages: ExtendedIMessage[] = [];
-    const lastDateAddSecond = new Date(lastMessageDate.getTime() + 10 * 1000);
-    const serverMessages = await getOldChatting(botObject._id, lastDateAddSecond.toISOString());
-    console.log('⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️serverMessages⭐️⭐️⭐️⭐️⭐️', serverMessages);
-
-    /*console.log(
-      'true / false',
-      serverMessages && serverMessages.chats && serverMessages.chats.length > 0,
-    );*/
-
-    if (serverMessages && serverMessages.chats && serverMessages.chats.length > 0) {
-      for (let i = 0; i < serverMessages.chats.length; i++) {
-        const chat = serverMessages.chats[i];
-        const text = chat.text;
-        const texts = text.split('\n');
-        for (let j = 0; j < texts.length; j++) {
-          const text = texts[j];
-          let splitTexts: string[] = [text];
-          if (chat.status !== 'user') {
-            splitTexts =
-              text.match(
-                /\s*([^.!?;:…。？！~…」»]+[.!?;:…。？！~…」»](?:\s*[\u{1F300}-\u{1F5FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}\u{1F004}\u{1F0CF}\u{1F170}-\u{1F251}]*)?)\s*/gu,
-              ) || [];
-          }
-
-          for (let k = 0; k < splitTexts.length; k++) {
-            if (splitTexts[k] === '') continue;
-            messages.push({
-              _id: uuid.v4().toString(),
-              text: splitTexts[k],
-              createdAt: new Date(new Date(chat.utcTime).getTime()),
-              user: chat.status === 'user' ? userObject : botObject,
-              isSaved: serverMessages.chats[i].isSaved,
-              hightlightKeyword: '',
-            }); //대화 내용을 messages에 추가
-          }
-        }
-      }
-    }
-    //console.log('😀😀😀😀😀😀😀reverse 이전', messages);
-    return messages.reverse();
   };
 
   //1.5.7v3 서버에서 대화 내용을 불러오는 함수
@@ -309,11 +264,6 @@ const NewChat: React.FC = ({ navigation }) => {
       messages = [...v3ServerMessages, ...messages];
     }
     return messages;
-  };
-
-  const setIMessages = (previousMessages: ExtendedIMessage[], newMessages: ExtendedIMessage[]) => {
-    const messagesString = JSON.stringify([...newMessages, ...previousMessages]);
-    setNewIMessages(messagesString);
   };
 
   //v3로 저장된 메시지들을 로컬에 저장하는 함수
@@ -449,12 +399,12 @@ const NewChat: React.FC = ({ navigation }) => {
     text: string,
     direction: null | 'up' | 'down',
   ): Promise<string | null> => {
-    console.log('새 함수 검색어 : ', text, direction, nowCursor.current);
+    //console.log('새 함수 검색어 : ', text, direction, nowCursor.current);
     setSearchLoading(true);
 
     // 스크롤 함수가 없거나 더 이상 검색 결과가 없을 경우
     if (!scrollToMessageById || (nowCursor.current === null && prevCursor.current === null)) {
-      console.log('검색 결과가 없습니다');
+      //console.log('검색 결과가 없습니다');
       Toast.show(`검색 결과가 없습니다`, {
         duration: Toast.durations.SHORT,
         position: Toast.positions.CENTER,
@@ -534,14 +484,18 @@ const NewChat: React.FC = ({ navigation }) => {
     console.log('targetMessage', targetMessage);
     console.log(`Scrolling to index ${index} for message id: ${messageId}`);
     //console.log('giftedChatRef.current?.props?.messageContainerRef?.current?', giftedChatRef.current?.props?.messageContainerRef?.current?);
-    setTimeout(() => {
-      messageContainerRef.current?.scrollToIndex({
-        index,
-        animated: true,
-        viewOffset: 0, // 메시지 시작 부분에 맞추려면 0 또는 원하는 값
-        viewPosition: 0, // 0: 상단 정렬, 0.5: 중앙, 1: 하단 정렬
-      });
-    }, 150);
+    try {
+      setTimeout(() => {
+        messageContainerRef.current?.scrollToIndex({
+          index,
+          animated: true,
+          viewOffset: 0, // 메시지 시작 부분에 맞추려면 0 또는 원하는 값
+          viewPosition: 0, // 0: 상단 정렬, 0.5: 중앙, 1: 하단 정렬
+        });
+      }, 150);
+    } catch (error) {
+      console.log('렌더링이 되지 않아 스크롤 실패', error);
+    }
   };
 
   /* 
@@ -554,7 +508,7 @@ const NewChat: React.FC = ({ navigation }) => {
     //console.log('===========useEffect 실행===========');
     setInit(true);
     if (getRefreshChat() === 0) {
-      //Analytics.watchNewChatScreen();
+      Analytics.watchNewChatScreen();
     }
     //console.log('🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨');
     getHistory()
@@ -602,6 +556,21 @@ const NewChat: React.FC = ({ navigation }) => {
       //setIMessagesV3(previousMessages, newMessages.reverse());
       return GiftedChat.append(previousMessages, newMessages);
     });
+  };
+
+  const scrollToIndexFailed = (info) => {
+    //console.log('scrollToIndexFailed');
+    setSearchLoading(true);
+    const offset = info.averageItemLength * info.index * 2;
+    const flatList = messageContainerRef.current;
+    // 임시 오프셋으로 스크롤
+    console.log('정보1', info.index);
+    console.log('정보2', info.averageItemLength);
+    flatList.scrollToOffset({ offset: offset });
+    // 잠시 후 정확한 인덱스로 다시 스크롤 시도
+    setTimeout(() => {
+      flatList.scrollToIndex({ index: info.index, animated: true });
+    }, 50);
   };
 
   //버퍼가 변경됨에 따라 타이머를 재설정함
@@ -673,15 +642,18 @@ const NewChat: React.FC = ({ navigation }) => {
           navigation.navigate(RootStackName.BottomTabNavigator, {
             screen: TabScreenName.Home,
           });
+          Analytics.clickHeaderBackButton();
         }}
         rightFunction={() => {
           if (!isSearchMode) {
-            console.log('사이드바 열기');
+            //console.log('사이드바 열기');
             navigation.openDrawer();
+            Analytics.clickHeaderSideMenuButton();
           }
         }}
         eventFunction={() => {
-          //console.log('이벤트 버튼 누름');
+          //console.log('돋보기 버튼을 누름');
+          Analytics.clickHeaderSearchButton();
           setIsSearchMode((prev) => !prev);
         }}
         scrollToMessageById={scrollToMessageById}
@@ -692,6 +664,15 @@ const NewChat: React.FC = ({ navigation }) => {
       />
 
       <GiftedChat
+        listViewProps={{
+          onScrollToIndexFailed: scrollToIndexFailed,
+          onMomentumScrollEnd: () => {
+            // 스크롤 애니메이션이 종료되면 재귀 호출이 더 이상 발생하지 않는다고 가정하고 로딩 스피너를 숨김
+            setSearchLoading(false);
+          },
+        }}
+        as
+        any
         messageContainerRef={messageContainerRef}
         messages={messages}
         onSend={(messages) => onSend(messages)}
@@ -716,11 +697,6 @@ const NewChat: React.FC = ({ navigation }) => {
             showToast();
           });
         }}
-        renderChatFooter={() => (
-          <View style={{ backgroundColor: 'red', width: 100, zIndex: 100 }}>
-            <Text>renderChtaFooter</Text>
-          </View>
-        )}
         renderFooter={() => RenderFooter(sending)}
         renderTime={RenderTime}
         renderDay={RenderDay}
@@ -783,89 +759,3 @@ const NewChat: React.FC = ({ navigation }) => {
 };
 
 export default NewChat;
-
-// 위험 감지 이전 코드
-/*
-const refreshRiskStatus = () => {
-  const riskData = getRiskData();
-  if (!riskData) setRiskStatus('safe');
-  else if (riskData.isRead) setRiskStatus('danger-opened');
-  else setRiskStatus('danger');
-  //setRiskStatus('danger');
-};*/
-
-/*
-채팅 스크린에 처음 진입 시, 위험 지수를 받아와서 화면에 업데이트를 해 주어야 함
-따라서 스크린 포커스 시 위험 점수를 받아올 수 있도록 리스너를 추가.
-스크린 밖을 나갈 때 (= 컴포넌트 언마운트) 리스너를 해제하여 메모리 누수를 방지
-*/
-/*
-useEffect(() => {
-  const unsubscribe = navigation.addListener('focus', refreshRiskScore);
-  // 컴포넌트 unmount 시 리스너를 해제
-  return () => {
-    unsubscribe();
-  };
-}, [navigation]);*/
-//헤더 아이콘 클릭했을 때 이동 페이지
-/*
-  const handleDangerPress = () => {
-    if (riskStatus === 'danger') {
-      Analytics.clickDangerLetterButton(riskScore);
-      const letterIndex = Math.floor(Math.random() * DANGER_LETTER.length);
-      setRiskData({
-        timestamp: new Date().getTime(),
-        isRead: true,
-        letterIndex,
-      });
-      navigation.navigate(RootStackName.DangerStackNavigator, {
-        screen: DangerStackName.DangerAlert,
-        params: { letterIndex },
-      }); //쿠키 편지 화면으로 이동한다
-      return;
-    }
-    if (riskStatus === 'danger-opened') {
-      //위험한 상태일 때 확인을 했으면
-      Analytics.clickOpenedDangerLetterButton(riskScore);
-      const letterIndex = getRiskData()?.letterIndex;
-      navigation.navigate(RootStackName.DangerStackNavigator, {
-        screen: DangerStackName.DangerAlert,
-        params: { letterIndex: letterIndex ?? 0 },
-      }); //쿠키 편지 화면으로 이동한다
-      return;
-    }
-    if (riskStatus === 'safe') {
-      //setHintStatus(true);
-      return;
-    }
-  };*/
-/*
-  const refreshRiskScore = () => {
-    console.log('🥬🥬🥬🥬🥬 refreshRiskScore 🥬🥬🥬🥬');
-    const date = getKoreanServerTodayDateString(new Date());
-    getRiskScore(date).then((res) => {
-      setRiskScore(res);
-      if (res >= RISK_SCORE_THRESHOLD && !getRiskData()) {
-        setRiskData({
-          timestamp: new Date().getTime(),
-          isRead: false,
-          letterIndex: null,
-        });
-      }
-      refreshRiskStatus();
-    });
-  };*/
-//const [riskScore, setRiskScore] = React.useState<number>(0);
-//const [riskStatus, setRiskStatus] = React.useState<'safe' | 'danger' | 'danger-opened'>('safe');
-
-//import cookieprofile from '@assets/images/cookieprofile.png';
-//import cookieProfile from '@assets/images/cookieprofile.png';
-
-//const HINT_MESSAGE = 'AI로 생성된 답변입니다. 상담 필요 시 전문가와 상의하세요.';
-//console.log('이벤트 누름');
-//await Linking.openURL(
-//'https://autumn-flier-d18.notion.site/reMIND-1b48e75d989680f2b4c7e7fa8dbfc1ad?pvs=4',
-//);
-//Analytics.clickHeaderGiftBoxButton(
-//'https://autumn-flier-d18.notion.site/reMIND-1b48e75d989680f2b4c7e7fa8dbfc1ad?pvs=4',
-//);

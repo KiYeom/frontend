@@ -107,16 +107,16 @@ const Home: React.FC<any> = ({ navigation }) => {
             onIconPress={() => {
               switch (riskStatusV2) {
                 case 'safe':
-                  //Analytics.clickClinicInfoButton(riskScoreV2);
+                  Analytics.clickClinicInfoButton(riskScoreV2);
                   WebBrowser.openBrowserAsync(
                     'https://autumn-flier-d18.notion.site/1268e75d989680f7b4f2d63d66f4a08a?pvs=4',
                   );
                   return;
                 case 'danger':
-                  //Analytics.clickDangerLetterButton(riskScoreV2);
+                  Analytics.clickDangerLetterButton(riskScoreV2);
                   break;
                 case 'danger-opened':
-                  //Analytics.clickOpenedDangerLetterButton(riskScoreV2);
+                  Analytics.clickOpenedDangerLetterButton(riskScoreV2);
                   break;
               }
               navigateToDangerAlert();
@@ -138,7 +138,7 @@ const Home: React.FC<any> = ({ navigation }) => {
               <TouchableOpacity
                 activeOpacity={1}
                 onPress={() => {
-                  // Analytics.clickTabHomeCarousel(item.image); // 필요시 복구
+                  Analytics.clickTabHomeCarousel(item.image);
                   WebBrowser.openBrowserAsync(item.url);
                 }}>
                 <Image

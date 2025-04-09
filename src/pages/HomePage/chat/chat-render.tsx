@@ -16,6 +16,7 @@ import {
   TimeProps,
   ComposerProps,
   Composer,
+  Actions,
 } from 'react-native-gifted-chat';
 import CustomMultiTextInput from './CustomMultiTextInput';
 import { TextInput } from 'react-native';
@@ -112,12 +113,8 @@ export const reportMessages = async (messageId: string, isSaved: boolean): strin
 export const RenderBubble = (
   props: BubbleProps<ExtendedIMessage> & { onFavoritePress: (messageId: string) => void },
 ) => {
-  //console.log('🧼🧼🧼🧼🧼 props', props);
   const showReport = (): boolean => {
     const nowMessageUserId = props.currentMessage.user._id;
-    //check is bot message
-    //console.log('nowMessageUserId', nowMessageUserId);
-    //console.log('dfasdfa', props.currentMessage._id);
     if (props.currentMessage._id === 'welcomeMessage') return false;
     if (nowMessageUserId === null || isNaN(nowMessageUserId) || Number(nowMessageUserId) <= 0)
       return false;
@@ -139,31 +136,22 @@ export const RenderBubble = (
       return true;
     return false;
   };
-  // 컴포넌트 최상위에서 메시지 위치를 저장할 ref 선언
-  //const messagePositions = useRef<{ [key: string]: number }>({});
-
-  // 각 메시지 컴포넌트의 onLayout에 부여할 함수
-  /*const handleMessageLayout = (messageId: string | number) => (event: any) => {
-    const { y } = event.nativeEvent.layout;
-    // 메시지 id를 key로 하여 y 좌표 저장
-    messagePositions.current[messageId] = y;
-    console.log(`Message ${messageId} Y position: ${y}`);
-  };*/
-
   return (
     <Animated.View
       //onLayout={handleMessageLayout(props.currentMessage._id)}
       key={props.currentMessage._id}
       entering={FadeInDown}
-      style={{
-        flexDirection: props.position === 'left' ? 'row' : 'row-reverse',
-        alignItems: 'flex-end',
-        justifyContent: 'flex-start',
-        gap: rsHeight * 8,
-        // gap 대신 자식에 margin 적용
-      }}>
+      style={css`
+        flex-direction: ${props.position === 'left' ? 'row' : 'row-reverse'};
+        align-items: end;
+        justify-content: start;
+        gap: ${rsWidth * 6 + 'px'}; //말풍선과 시간 사이의 간격
+      `}>
       <TouchableOpacity activeOpacity={1} onLongPress={props.onLongPress}>
-        <View>
+        <View
+          style={css`
+            margin-bottom: ${rsHeight * 5 + 'px'};
+          `}>
           <Bubble
             {...props}
             renderTime={() => null}
@@ -232,8 +220,9 @@ export const RenderBubble = (
             onFavoritePress={(id) => {
               //console.log('메세지', props.currentMessage);
               //reportMessages(props.currentMessage._id, props.currentMessage.isSaved);
-              console.log('icon에서의 press 함수', props.currentMessage._id);
+              //console.log('icon에서의 press 함수', props.currentMessage._id);
               props.onFavoritePress(props.currentMessage._id);
+              Analytics.clickChatLikeButton(props.currentMessage._id);
             }}
           />
         </View>
@@ -388,29 +377,39 @@ export const RenderInputToolbar = (
           //backgroundColor: palette.neutral[50],
           //backgroundColor: 'green',
           display: 'flex',
-          flexDirection: 'row', // row로 두어야 Input과 Send 버튼이 나란히 배치됨
+          flexDirection: 'row', // row로 두어야 Input과 Send , 사진 버튼이 나란히 배치됨
           justifyContent: 'center',
           alignItems: 'center',
-          paddingHorizontal: rsWidth * 20,
+          paddingHorizontal: rsWidth * 15,
           paddingVertical: rsHeight * 8,
           gap: rsWidth * 20,
           position: 'relative',
         }}
         renderActions={(actionProps) => (
-          <TouchableOpacity
-            style={{
+          <Actions
+            {...actionProps}
+            containerStyle={{
               //backgroundColor: 'red',
-              width: 35 * rsWidth,
-              height: rsFont * 16 * 1.5 + 15 * 2,
+              //width: 35 * rsWidth,
+              flexDirection: 'column',
               justifyContent: 'center',
+              alignItems: 'flex-start',
+              alignSelf: 'center',
+              marginRight: 15 * rsWidth,
             }}
-            onPress={() => {
+            icon={() => (
+              <Icon
+                name="picture-icon"
+                width={rsWidth * 20}
+                height={rsHeight * 20}
+                color={palette.neutral[400]}
+              />
+            )}
+            onPressActionButton={() => {
               console.log('액션 버튼 클릭됨');
-              //console.log('actionProps', actionProps);
               pickImage();
-            }}>
-            <Icon name="picture-icon" width={rsWidth * 20} height={rsHeight * 20} />
-          </TouchableOpacity>
+            }}
+          />
         )}
         renderComposer={(composerProps) => (
           <CustomMultiTextInput
@@ -424,12 +423,14 @@ export const RenderInputToolbar = (
             {...props}
             disabled={sendingStatus}
             containerStyle={{
+              //backgroundColor: 'yellow',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
               alignItems: 'center',
               alignSelf: 'center',
-              marginLeft: 20 * rsWidth,
+              marginLeft: 15 * rsWidth,
+              //backgroundColor: 'yellow',
             }}>
             <Icon
               name="airplane"
@@ -441,14 +442,12 @@ export const RenderInputToolbar = (
     </View>
   ) : (
     <>
-      <View>
-        {/*<Text>히히헤헤</Text>*/}
-        <UpDownBtn
-          enableUp={enableUp}
-          enableDown={enableDown}
-          handleSearch={handleSearch}
-          searchWord={searchWord}></UpDownBtn>
-      </View>
+      {/*<Text>히히헤헤</Text>*/}
+      <UpDownBtn
+        enableUp={enableUp}
+        enableDown={enableDown}
+        handleSearch={handleSearch}
+        searchWord={searchWord}></UpDownBtn>
     </>
   );
 

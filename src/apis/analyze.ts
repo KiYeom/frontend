@@ -110,7 +110,7 @@ export const todayEmotion = async (
 ): Promise<string[] | undefined> => {
   try {
     const myEmotions = data.map(({ keyword, group, type }) => ({ keyword, group, type }));
-    console.log('😀😀😀😀😀😀keywords😀😀😀😀😀', myEmotions);
+    //console.log('😀😀😀😀😀😀keywords😀😀😀😀😀', myEmotions);
     const res = await instance.post('/v1/analyze/today-record', {
       date: date,
       todayFeeling: text,
@@ -127,7 +127,7 @@ export const todayEmotion = async (
 export const todayEmotionCheck = async (date: string) => {
   try {
     const res = await instance.get('/v1/analyze/today-record', { params: { date } });
-    console.log('todayEmotionCheck', res.data);
+    //console.log('todayEmotionCheck', res.data);
     return res.data;
   } catch (error) {
     return;

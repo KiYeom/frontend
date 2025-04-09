@@ -19,6 +19,7 @@ import {
   TextLengthAlert,
 } from './custom-bottomsheet.styles';
 import useEmotionStore from '../../store/emotion-status';
+import Analytics from '../../utils/analytics';
 
 interface BottomSheetProps {
   indexNumber?: number;
@@ -57,10 +58,10 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
 
   //감정 적은 적 있는지 확인
   useEffect(() => {
-    console.log('selectedEmotionsssss', selectedEmotions);
+    //console.log('selectedEmotionsssss', selectedEmotions);
     const customEmotion = selectedEmotions.find((emotion) => emotion.type === 'custom');
-    console.log('customEmotion', customEmotion);
-    console.log('selectedEmotions', selectedEmotions);
+    //console.log('customEmotion', customEmotion);
+    //console.log('selectedEmotions', selectedEmotions);
     if (customEmotion) {
       setText(customEmotion.keyword);
       setSelectedStatus(emotions.indexOf(customEmotion.group));
@@ -78,6 +79,7 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
   }, []);
 
   useEffect(() => {
+    Analytics.watchCustomEmotionSheet();
     const showSub = Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
     const hideSub = Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide);
 
@@ -105,7 +107,7 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
 
   // 감정 아이콘 클릭 이벤트
   const handleEmotionPress = (emotion: string) => {
-    console.log(`${emotion} icon click`);
+    //console.log(`${emotion} icon click`);
     switch (emotion) {
       case 'happy':
         setSelectedStatus(0);
@@ -195,7 +197,8 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
             primary={true}
             disabled={validateButton(text)}
             onPress={() => {
-              console.log('😀😀😀😀😀😀');
+              Analytics.clickAddCustomEmotionButton(text);
+              //console.log('😀😀😀😀😀😀');
               const customEmotion: Emotion = {
                 keyword: text,
                 group: emotions[selectedStatus],
@@ -203,7 +206,7 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
               };
               // 동일한 keyword를 가진 custom 타입의 감정이 있는지 확인
               const exists = selectedEmotions.find((e) => e.type === 'custom');
-              console.log('exists', exists);
+              //console.log('exists', exists);
 
               if (exists) {
                 updateEmotion(text, customEmotion);

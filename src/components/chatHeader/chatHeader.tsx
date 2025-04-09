@@ -17,12 +17,13 @@ import { searchChatWord } from '../../apis/chatting';
 import { HeaderProps } from '../header/header';
 import { TextInput, Text, View, TouchableOpacity } from 'react-native';
 import { ExtendedIMessage } from '~/src/utils/chatting';
+import Analytics from '../../utils/analytics';
 
 interface ChatHeaderProps extends HeaderProps {
   riskStatusV2: string;
   isSearchMode: boolean;
   setIsSearchMode: React.Dispatch<React.SetStateAction<boolean>>;
-  scrollToMessageById?: (messageId: string | number) => void;
+  scrollToMessage?: (messageId: string | number) => void;
   handleSearch?: (text: string, direction: null | 'up' | 'down') => Promise<string | null>;
   searchWord?: string;
   setSearchWord?: React.Dispatch<React.SetStateAction<string>>;
@@ -35,7 +36,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = (props: ChatHeaderProps) => {
     riskStatusV2,
     isSearchMode,
     setIsSearchMode,
-    scrollToMessageById,
+    scrollToMessage,
     handleSearch,
     searchWord,
     setSearchWord,
@@ -69,6 +70,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = (props: ChatHeaderProps) => {
               onSubmitEditing={async () => {
                 await handleSearch(searchWord, null);
                 //setSearchWord('');
+                Analytics.clickHeaderSearchKeywordButton(searchWord);
               }}
             />
           </View>
@@ -110,6 +112,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = (props: ChatHeaderProps) => {
                 setIsSearchMode((prev) => !prev);
                 setSearchWord('');
                 updateMessageHighlights('');
+                Analytics.clickHeaderSearchCancelButton();
               }}>
               <OptionText>취소</OptionText>
             </TouchableOpacity>

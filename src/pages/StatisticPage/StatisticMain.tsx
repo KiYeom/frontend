@@ -61,7 +61,7 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
 
   //const { dateID } = route.params;
   const [dateID, setDateID] = useState(route.params.dateID);
-  console.log('홈에서 받은 dateID', dateID);
+  //console.log('홈에서 받은 dateID', dateID);
 
   const onChange = useCallback((newDate) => {
     //setDate(new Date(newDate));
@@ -123,7 +123,11 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
             screen: HomeStackName.SmallEmotionChart,
             params: { dateID: dateID },
           });
-          console.log('누름');
+          Analytics.clickEditDiaryButton();
+        }}
+        leftFunction={() => {
+          navigation.goBack();
+          Analytics.clickDiaryBackButton();
         }}
         bgcolor={`${palette.neutral[50]}`}
       />
@@ -228,7 +232,7 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
                 iconName="pencil"
                 iconSize={40}
                 onPress={() => {
-                  console.log('누름');
+                  //console.log('누름');
                   navigation.navigate(RootStackName.HomeStackNavigator, {
                     screen: HomeStackName.SmallEmotionChart,
                     params: { dateID: dateID },

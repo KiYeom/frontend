@@ -11,10 +11,11 @@ import { getV3OldChatting } from '../../../apis/chatting';
 import { setNewIMessagesV3 } from '../../../utils/storageUtils';
 import { addRefreshChat } from '../../../utils/storageUtils';
 import { convertUtcToKst } from '../../../utils/times';
+import Analytics from '../../../utils/analytics';
 // 데이터를 날짜별로 그룹화하는 groupFavoritesByDate 함수
 //불러온 API 결과를 받아, 화면에 그리도록 정제함
 const groupFavoritesByDate = (data: TFavoriteChatLog) => {
-  console.log('groupFavoritesByDate', data);
+  //console.log('groupFavoritesByDate', data);
   const groups = data.reduce((acc, item) => {
     const dateKey = item.date.split('T')[0];
     if (!acc[dateKey]) {
@@ -38,21 +39,22 @@ const Favorites: React.FC<any> = ({ navigation }) => {
   const [isSelected, setIsSelected] = React.useState(true);
 
   useEffect(() => {
+    Analytics.watchWarmChatScreen();
     //내가 좋아했던 말들
     getFavoriteChat()
       .then((res) => {
-        console.log('[Favorites] 내가 좋아했던 말들: ', res);
-        console.log('테스트', res?.favorites);
+        //console.log('[Favorites] 내가 좋아했던 말들: ', res);
+        //console.log('테스트', res?.favorites);
         if (res && res.favorites) {
           // favorites 배열을 그룹화하여 섹션 데이터로 변환
           //console.log('리버스', res.favorites.reverse());
           const groupedSections = groupFavoritesByDate(res.favorites);
-          console.log('groupedSections', groupedSections);
+          //console.log('groupedSections', groupedSections);
           setSections(groupedSections);
         }
       })
       .catch((err) => {
-        console.log('[Favorites] 내가 좋아했던 말들 에러: ', err);
+        //console.log('[Favorites] 내가 좋아했던 말들 에러: ', err);
       });
   }, []);
 
@@ -68,6 +70,7 @@ const Favorites: React.FC<any> = ({ navigation }) => {
         leftFunction={async () => {
           await addRefreshChat(1);
           navigation.goBack();
+          Analytics.clickWarmChatButtonBack();
         }}
       />
       <SectionList
