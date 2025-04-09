@@ -39,7 +39,7 @@ import HighlightedMessageText from './HighlightMessageText';
 import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
 import ImageShow from '../../../components/image-show/ImageShow';
-
+import Analytics from '../../../utils/analytics';
 const getMessageSet = (
   currentMessage: ExtendedIMessage,
   allMessages: ExtendedIMessage[],
@@ -221,6 +221,7 @@ export const RenderBubble = (
               //console.log('메세지', props.currentMessage);
               //reportMessages(props.currentMessage._id, props.currentMessage.isSaved);
               //console.log('icon에서의 press 함수', props.currentMessage._id);
+              console.log('클릭');
               props.onFavoritePress(props.currentMessage._id);
               Analytics.clickChatLikeButton(props.currentMessage._id);
             }}
@@ -370,6 +371,11 @@ export const RenderInputToolbar = (
 ) =>
   !isSearchMode ? (
     <View>
+      {image && (
+        <View>
+          <ImageShow image={image} setImage={setImage} />
+        </View>
+      )}
       <InputToolbar
         {...props}
         containerStyle={{

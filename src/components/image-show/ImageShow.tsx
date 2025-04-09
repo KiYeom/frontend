@@ -4,6 +4,7 @@ import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import Icon, { TIconName } from '../icons/icons';
 import { IconContainer, InputContainer, InputField, WithMessage } from './input.styles';
 import { ImageShowContainer, CancelButton } from './ImageShow.styles';
+import { useEffect } from 'react';
 
 type ImageShowProps = {
   image?: string | null;
@@ -11,6 +12,21 @@ type ImageShowProps = {
 };
 
 const ImageShow = ({ image, setImage }: ImageShowProps) => {
+  const [scaledSize, setScaledSize] = useState({ width: 0, height: 0 });
+  useEffect(() => {
+    if (image) {
+      Image.getSize(
+        image,
+        (width, height) => {
+          setScaledSize({ width: width * 0.1, height: height * 0.1 });
+        },
+        (error) => {
+          console.error('이미지 크기를 가져오는데 실패함:', error);
+        },
+      );
+    }
+  }, [image]);
+
   return (
     <ImageShowContainer>
       <CancelButton

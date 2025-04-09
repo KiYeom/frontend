@@ -131,7 +131,7 @@ const NewChat: React.FC = ({ navigation }) => {
   const [isShownEmoji, setIsShownEmoji] = useState<boolean>(false);
   //화면 높이
   const { width, height } = Dimensions.get('window');
-  console.log('화면 너비:', width, '화면 높이:', height);
+  //console.log('화면 너비:', width, '화면 높이:', height);
   const [keyboardHeight, setKeyboardHeight] = useState<number>(0);
   const insets = useSafeAreaInsets();
   //위치하는 y좌표 자리는... 화면 높이 - 입력 필드 높이-키보드 높이
@@ -751,9 +751,7 @@ const NewChat: React.FC = ({ navigation }) => {
           zIndex: 100,
           pointerEvents: 'box-none',
         }}
-        pointerEvents="box-none">
-        {image && <ImageShow image={image} setImage={setImage} />}
-      </Animated.View>
+        pointerEvents="box-none"></Animated.View>
     </SafeAreaView>
   );
 };
