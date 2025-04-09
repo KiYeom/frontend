@@ -30,7 +30,7 @@ export const Desc = styled.Text`
   font-size: ${rsFont * 24 + 'px'};
   color: ${palette.neutral[500]};
   text-align: center;
-  background-color: yellow;
+  //background-color: yellow;
 `;
 
 //감정 선택란

@@ -23,7 +23,7 @@ interface ChatHeaderProps extends HeaderProps {
   riskStatusV2: string;
   isSearchMode: boolean;
   setIsSearchMode: React.Dispatch<React.SetStateAction<boolean>>;
-  scrollToMessageById?: (messageId: string | number) => void;
+  scrollToMessage?: (messageId: string | number) => void;
   handleSearch?: (text: string, direction: null | 'up' | 'down') => Promise<string | null>;
   searchWord?: string;
   setSearchWord?: React.Dispatch<React.SetStateAction<string>>;
@@ -36,7 +36,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = (props: ChatHeaderProps) => {
     riskStatusV2,
     isSearchMode,
     setIsSearchMode,
-    scrollToMessageById,
+    scrollToMessage,
     handleSearch,
     searchWord,
     setSearchWord,
@@ -108,7 +108,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = (props: ChatHeaderProps) => {
             <TouchableOpacity
               style={{ marginLeft: 20, padding: 10 }}
               onPress={() => {
-                //console.log('취소 버튼을 클릭함');
+                console.log('취소 버튼을 클릭함');
                 setIsSearchMode((prev) => !prev);
                 setSearchWord('');
                 updateMessageHighlights('');

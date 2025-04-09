@@ -126,7 +126,7 @@ const PeriodFlowChart = ({ emotionsData, startDate, endDate, hintStatus, setHint
       </View>
       <View
         style={css`
-          background-color: 'yellow';
+          //background-color: 'yellow';
           margin-bottom: ${rsHeight * 16 + 'px'};
         `}>
         <LineChart

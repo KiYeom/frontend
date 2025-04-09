@@ -110,7 +110,7 @@ export const todayEmotion = async (
 ): Promise<string[] | undefined> => {
   try {
     const myEmotions = data.map(({ keyword, group, type }) => ({ keyword, group, type }));
-    console.log('😀😀😀😀😀😀keywords😀😀😀😀😀', myEmotions);
+    //console.log('😀😀😀😀😀😀keywords😀😀😀😀😀', myEmotions);
     const res = await instance.post('/v1/analyze/today-record', {
       date: date,
       todayFeeling: text,

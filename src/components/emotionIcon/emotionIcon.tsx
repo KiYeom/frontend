@@ -13,7 +13,7 @@ type EmotionProps = {
 
 export const EmotionIcon = (props: EmotionProps) => {
   const { status = 'nomal', size = 30, onPress = () => {}, selected = false } = props;
-  console.log('selected', selected);
+  //console.log('selected', selected);
   return (
     <View style={{ opacity: selected ? 1 : 0.4 }}>
       <TouchableOpacity onPress={onPress}>

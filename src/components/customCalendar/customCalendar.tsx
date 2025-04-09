@@ -188,7 +188,7 @@ const CustomCalendar = ({ navigation }) => {
                 onPress={() => {
                   Analytics.clickTabHomeEmotionCalendar(date.dateString);
                   //console.log('state', state);
-                  console.log('date', date);
+                  //console.log('date', date);
                   if (date.dateString > today) {
                     //1.5.7 UPDATE 미래 날짜 클릭 불가 하드 코딩
                     //미래를 클릭한 경우, 작성 불가
