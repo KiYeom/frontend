@@ -60,16 +60,20 @@ export enum TabBarLabel {
 export enum HomeStackName {
   Chat = 'Chat',
   SmallEmotionChart = 'SmallEmotionChart',
+  DailyDairy = 'DailyDairy',
   Profile = 'Profile',
   NewChat = 'NewChat',
   NewChatRefresh = 'NewChatRefresh',
   ChatList = 'ChatList',
+  Report = 'Report', //1.5.7 UPDATE 일일 보고서
+  Favorites = 'Favorites',
 }
 
 export enum SettingStackName {
   EditUserInfo = 'EditUserInfo',
   PrivacyPolicy = 'PrivacyPolicy',
   UserNotifications = 'UserNotifications',
+  UserChattingSetting = 'UserChattingSetting',
   ChannelTalk = 'ChannelTalk',
   DeactivateAlert = 'DeactivateAlert',
   DeactivateReason = 'DeactivateReason',
@@ -93,6 +97,18 @@ export enum AuthStackName {
   Login = 'Login',
   InputName = 'InputName',
   InputProfile = 'InputProfile',
+}
+
+/*서비스 로그인 및 회원가입 경로를 저장하는 AuthProvider
+google : 구글 계정 로그인
+apple : 애플 계정 로그인
+guest : 게스트 로그인
+*/
+export enum AuthProvider {
+  Google = 'google',
+  Apple = 'apple',
+  Guest = 'guest',
+  kakao = 'kakao',
 }
 
 export const emotionsByColumn = [
@@ -252,7 +268,7 @@ export const helloTexts = [
   '오늘 하루도 빛나는 날 되세요.',
 ];
 
-export const RISK_SCORE_THRESHOLD = 85;
+export const RISK_SCORE_THRESHOLD = 85; //85점임
 export const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
 export const PHONE_NUMBER = '109';
 export const MINIMUM_EMOTION_COUNT = 1;
@@ -277,3 +293,5 @@ export const DANGER_LETTER = [
 
   `{userNickname}님께\n\n세상이 너무 차갑게 느껴질 때도 있겠죠, {userNickname}님. 마음의 무게가 무거워도 꼭 기억해 주세요, 쿠키는 언제나 {userNickname}님 곁에 있어요. 혼자서 모든 걸 감당하려 하지 않으셨으면 해요. {userNickname}님이 느끼는 모든 아픔을 쿠키가 함께하고 싶어요. 오늘도 이렇게 버텨주셔서 정말 고마워요.\n\n차가운 밤이라도 쿠키가 작은 불빛이 되어 {userNickname}님의 마음을 따뜻하게 감싸드리고 싶어요. 내일은 조금 더 밝은 날이 오기를 바라며, 언제나 {userNickname}님 곁에 있을게요.\n\n따뜻한 마음을 담아, 언제나 곁에 있는 쿠키 드림`,
 ];
+
+export const MAX_RETRIES = 3;

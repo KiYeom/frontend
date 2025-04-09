@@ -1,6 +1,6 @@
 import { MMKV } from 'react-native-mmkv';
 import { ONE_DAY_IN_MS } from '../constants/Constants';
-import { TGender, TNotice } from '../constants/types';
+import { TGender, TNotice, TVender } from '../constants/types';
 import { getKoreanServerTodayDateString } from './times';
 import { showAppNotice } from './app-notice';
 
@@ -15,6 +15,7 @@ const USER_NICKNAME = 'user_nickname';
 const USER_BIRTHDATE = 'user_birthdate';
 const USER_GENDER = 'user_gender';
 const NOTIFICATION_SENT = 'notification_sent';
+const USER_ACCOUNT_PROVIDER = 'user_account_provider';
 
 //DeviceInfo
 const DEVICE_ID = 'device_id';
@@ -24,6 +25,8 @@ const CHATTING = 'chatting';
 
 //NewIMessages
 const NEW_I_MESSAGES = 'new_i_messages';
+//v3
+const V3_MESSAGES = 'v3_message';
 
 //RiskWithLetterId
 const RISK_WITH_LETTER_ID = 'RISK_WITH_LETTER_ID';
@@ -78,9 +81,11 @@ export const setInfoWhenLogin = (
   accessToken: string,
   refreshToken: string,
   notice: TNotice | null,
+  provider?: string,
 ): void => {
   setUserInfo(nickname, birthdate, gender);
   setTokenInfo(accessToken, refreshToken);
+  provider && setUserAccountProvider(provider);
   if (notice) {
     showAppNotice(notice);
   }
@@ -93,6 +98,8 @@ export const clearInfoWhenLogout = (): void => {
   deleteNewIMessages();
   deleteNotificationSent();
   deleteReadNotice();
+  deleteUserAccountProvider();
+  deleteNewIMessagesV3();
 };
 
 //Tokens
@@ -123,6 +130,17 @@ export const deleteRefreshToken = (): void => {
 };
 
 //User
+//UserAccountProvider
+export const setUserAccountProvider = (provider: TVender): void => {
+  storage.set(USER_ACCOUNT_PROVIDER, provider);
+};
+export const getUserAccountProvider = (): string | undefined => {
+  return storage.getString(USER_ACCOUNT_PROVIDER);
+};
+export const deleteUserAccountProvider = (): void => {
+  storage.delete(USER_ACCOUNT_PROVIDER);
+};
+
 //UserNickname
 export const getUserNickname = (): string | undefined => {
   return storage.getString(USER_NICKNAME);
@@ -188,7 +206,7 @@ export const deleteDeviceId = (): void => {
   storage.delete(DEVICE_ID);
 };
 
-//Chatting
+//Chatting - 없어질 코드들
 export const getChatting = (): string | undefined => {
   return storage.getString(CHATTING);
 };
@@ -212,6 +230,21 @@ export const setNewIMessages = (newIMessages: string): void => {
 
 export const deleteNewIMessages = (): void => {
   storage.delete(NEW_I_MESSAGES);
+};
+
+//1.5.7 UPDATE : v3
+export const getNewIMessagesV3 = (): string | undefined => {
+  return storage.getString(V3_MESSAGES);
+};
+export const setNewIMessagesV3 = (newIMessages: string): void => {
+  storage.set(V3_MESSAGES, newIMessages);
+};
+export const deleteNewIMessagesV3 = (): void => {
+  storage.delete(V3_MESSAGES);
+};
+//v3 key가 있는지 확인하는 함수 (있으면 true 없으면 false)
+export const doesV3KeyExist = () => {
+  return storage.contains(V3_MESSAGES);
 };
 
 //refreshChattingPageTimes
@@ -310,12 +343,16 @@ export type TRiskData = {
   letterIndex: number | null;
 };
 
+// 사용자의 위험 데이터 상황을 로컬에서 가지고 오는 함수
+// {"timestamp":1741267035726,"isRead":true,"letterIndex":3}
 export const getRiskData = (): TRiskData | undefined => {
   const data = storage.getString(RISK_WITH_LETTER_ID);
+  //console.log('getRiskData data : ', data);
   if (!data) return undefined;
   const riskData = JSON.parse(data);
   const nowApiDateString = getKoreanServerTodayDateString(new Date());
   const riskDateApiDateString = getKoreanServerTodayDateString(new Date(riskData.timestamp));
+  //위험 편지를 처음 받고, 하루가 지나가면 삭제
   if (riskDateApiDateString === nowApiDateString) {
     return riskData;
   } else {

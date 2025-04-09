@@ -23,6 +23,12 @@ export const ssoLogin = async (code: string, vender: TVender): Promise<TAuth | u
 
 //INFO: 회원가입
 export const updateUserProfile = async (profile: TNewUser): Promise<TAuth | undefined> => {
+  /*console.log('===============', {
+    ...profile,
+    deviceId: getDeviceIdFromMMKV(),
+    appVersion: getAppVersion(),
+    deviceOs: getDeviceOS(),
+  });*/
   try {
     const res = await instance.patch('/v1/auth/update-new-user', {
       ...profile,

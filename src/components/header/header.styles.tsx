@@ -3,7 +3,11 @@ import { EdgeInsets } from 'react-native-safe-area-context';
 import palette from '../../assets/styles/theme';
 import { rsFont, rsHeight, rsWidth } from '../../utils/responsive-size';
 
-export const HeaderContainer = styled.View<{ isTitle: boolean; insets: EdgeInsets }>`
+export const HeaderContainer = styled.View<{
+  isTitle: boolean;
+  insets: EdgeInsets;
+  bgcolor: string;
+}>`
   margin-top: ${(props) => props.insets.top + 'px'};
   height: ${rsHeight * 56 + 'px'};
   display: flex;
@@ -14,7 +18,7 @@ export const HeaderContainer = styled.View<{ isTitle: boolean; insets: EdgeInset
 
   border-color: ${palette.neutral[100]};
   border-bottom-width: ${(props) => (props.isTitle ? `${rsHeight * 1 + 'px'} ` : `0px`)};
-  background-color: #ffffff;
+  background-color: ${(props) => props.bgcolor};
 `;
 
 export const HeaderLeft = styled.TouchableOpacity<{ isTitle: boolean }>`
@@ -40,6 +44,20 @@ export const HeaderRight = styled.TouchableOpacity<{ isTitle: boolean }>`
   justify-content: right;
   flex-direction: row;
   gap: ${rsWidth * 4 + 'px'};
+`;
+
+export const HeaderEvent = styled.TouchableOpacity<{ isTitle: boolean }>`
+  position: absolute;
+  right: 35px;
+  margin-right: ${rsWidth * 13 + 'px'};
+  padding-left: ${rsWidth * 10 + 'px'};
+  padding-right: ${rsWidth * 10 + 'px'};
+  height: 75%;
+  align-items: center;
+  justify-content: left;
+  flex-direction: row;
+  gap: ${rsWidth * 4 + 'px'};
+  //background-color: black;
 `;
 
 export const HeaderCenter = styled.View`

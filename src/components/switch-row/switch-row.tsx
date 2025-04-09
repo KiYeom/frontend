@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native-ui-lib';
+import { View } from 'react-native';
 import SwitchComponent from '../switch/switch';
 import './switch-row.styles';
 import {
@@ -11,7 +11,7 @@ import {
 
 export type SwitchRowProps = {
   title: string;
-  desc: string;
+  desc?: string;
   disabled?: boolean;
   isEnabled: boolean;
   onPress?: () => void;

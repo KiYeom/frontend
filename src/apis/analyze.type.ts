@@ -83,4 +83,5 @@ export type TEmotionCheck = {
   //group: 'angry' | 'sad' | 'happy' | 'calm';
   group: string;
   keyword: string;
+  type?: 'default' | 'custom'; //default, custom
 };

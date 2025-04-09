@@ -6,12 +6,13 @@ module.exports = {
   expo: {
     name: 'reMIND',
     slug: 'reMIND',
-    version: '1.2.5',
+    version: '1.5.7',
     orientation: 'portrait',
-    icon: './src/assets/images/christmasappicon.png',
+    icon: './src/assets/images/appicon.png',
     userInterfaceStyle: 'automatic',
+    newArchEnabled: true,
     splash: {
-      image: './src/assets/images/christmassplash.png',
+      image: './src/assets/images/splash.png',
       resizeMode: 'contain',
       backgroundColor: '#4DA584',
     },
@@ -38,6 +39,7 @@ module.exports = {
     scheme: 'remind',
     web: {
       favicon: './assets/favicon.png',
+      bundler: 'metro',
     },
     extra: {
       eas: {
@@ -119,6 +121,7 @@ module.exports = {
           autoLogAppEventsEnabled: false,
         },
       ],
+      ['expo-router'],
     ],
     runtimeVersion: '1.0.0',
     updates: {

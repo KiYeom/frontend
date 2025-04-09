@@ -2,10 +2,10 @@ import styled, { css } from '@emotion/native';
 import * as WebBrowser from 'expo-web-browser';
 import React from 'react';
 import { Modal, Text, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
-import { Checkbox } from 'react-native-ui-lib';
 import palette from '../../assets/styles/theme';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import Button from '../button/button';
+import NewCheckBox from '../v3-checkbox/NewCheckBox';
 
 const GuestModal = ({
   modalVisible,
@@ -34,7 +34,7 @@ const GuestModal = ({
                 onPress={() => {
                   setLegelAllowed(!legelAllowed);
                 }}>
-                <Checkbox
+                {/*<Checkbox
                   value={legelAllowed}
                   onValueChange={() => {
                     setLegelAllowed(!legelAllowed);
@@ -42,6 +42,11 @@ const GuestModal = ({
                   label={'서비스 이용약관에 동의합니다.'}
                   color={legelAllowed ? palette.primary[400] : palette.neutral[200]}
                   labelStyle={{ fontSize: 14 }} //라벨 스타일링
+                />*/}
+                <NewCheckBox
+                  checked={legelAllowed}
+                  onToggle={() => setLegelAllowed(!legelAllowed)}
+                  message="서비스 이용약관에 동의합니다"
                 />
               </TouchableOpacity>
               <TouchableOpacity

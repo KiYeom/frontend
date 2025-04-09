@@ -12,8 +12,6 @@ export const HeartIcon = ({ width = 100, height = 75, color = 'black' }: IconPro
 </defs>
 </svg>
 
-
-
 `;
   return <SvgXml xml={svg} width={width} height={height} color={color} />;
 };

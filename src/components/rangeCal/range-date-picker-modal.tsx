@@ -5,7 +5,7 @@ import DateTimePicker, { DateType } from 'react-native-ui-datepicker';
 import palette from '../../assets/styles/theme';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import Button from '../button/button';
-import { DescText } from '../pages/StatisticPage/StatisticMain.style';
+import { DescText } from '../../pages/StatisticPage/StatisticMain.style';
 
 const RangeDatePickerModal = ({
   modalVisible,
@@ -54,7 +54,7 @@ const RangeDatePickerModal = ({
                   startDate={localRange.startDate}
                   endDate={localRange.endDate}
                   minDate={new Date('2024-07-01T00:00:00.000Z')}
-                  maxDate={new Date('2024-12-31T00:00:00.000Z')}
+                  maxDate={new Date('2125-12-31T00:00:00.000Z')}
                   date={date}
                   displayFullDays
                   selectedItemColor={palette.primary[400]}

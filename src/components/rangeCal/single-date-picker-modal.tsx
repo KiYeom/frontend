@@ -63,7 +63,7 @@ const SingleDatePickerModal = (props: SingleDatePickerModalProps) => {
                   }}
                   date={date}
                   minDate={new Date('2024-07-01T00:00:00.000Z')}
-                  maxDate={new Date('2024-12-31T00:00:00.000Z')}
+                  maxDate={new Date('2125-12-31T00:00:00.000Z')}
                   displayFullDays
                   selectedItemColor={palette.primary[400]}
                   disabledDates={(date): boolean => {

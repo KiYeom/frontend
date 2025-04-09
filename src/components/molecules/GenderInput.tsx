@@ -5,7 +5,7 @@ import {
   FormContainer,
   GenderButton,
   Label,
-} from '../pages/sign-up/input-profile/input-profile.styles';
+} from '../../pages/sign-up/input-profile/input-profile.styles';
 
 const GenderInput: React.FC<any> = ({ gender, setGender }): any => {
   return (

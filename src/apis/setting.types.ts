@@ -15,9 +15,11 @@ export type TUserInfo = {
   id: number;
   nickname: string | null;
   birthdate: string | null;
+  organization: string | null;
   gender: TGender | null;
   isUser: boolean;
-  organization: string | null;
+  isInFormal: boolean;
+  wantsEmo: boolean;
 };
 
 export type TDisplayUserInfo = {

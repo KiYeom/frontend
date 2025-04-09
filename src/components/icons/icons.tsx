@@ -26,12 +26,27 @@ import ChatIcon from './svg/chat';
 import InformationIcon from './svg/information';
 import DefaultHeart from './svg/default-heart';
 import Warning from './svg/warning';
+import DairyCookie from './svg/DairyCookie';
+import EmotionThinkingCookie from './svg/emotion-thinking-cookie';
+import SideMenuBar from './svg/side-menu-bar';
+import SideMenuBarAlert from './svg/side-menu-bar-alart';
+import EventIcon from './svg/event-icon';
+import TodayNoEntry from './svg/today-no-entry';
+import Pencil from './svg/pencil';
+import GreenChatIcon from './svg/chat';
+import NormalEmotion from './svg/normal-emotion';
+import EditIcon from './svg/edit-icon';
+import FavoriteIcon from './svg/favorite-icon';
+import TrashIcon from './svg/trash-icon';
+import ChatSearch from './svg/chat-search-icon';
+import ArrowUp from './svg/arrow-up';
 
 export type TIconName =
   | 'airplane'
   | 'arrow-down'
   | 'arrow-left'
   | 'arrow-right'
+  | 'arrow-up'
   | 'date-icon'
   | 'home-icon'
   | 'setting-icon'
@@ -55,18 +70,39 @@ export type TIconName =
   | 'chat-icon'
   | 'information'
   | 'default-heart'
-  | 'warning';
+  | 'warning'
+  | 'dairy-cookie'
+  | 'emotion-thinking-cookie'
+  | 'side-menu-bar'
+  | 'side-menu-bar-alert'
+  | 'event-icon'
+  | 'today-no-entry'
+  | 'pencil'
+  | 'green-chat-icon'
+  | 'normal-emotion'
+  | 'edit-icon'
+  | 'favorite-icon'
+  | 'trash-icon'
+  | 'chat-search-icon';
 
 export default function Icon({
   width,
   height,
   color,
   name,
+  toggleable,
+  isSaved,
+  messageId,
+  onFavoritePress,
 }: {
   width?: number | string;
   height?: number | string;
   color?: string;
   name: TIconName;
+  toggleable?: boolean;
+  isSaved?: boolean;
+  messageId?: string;
+  onFavoritePress?: (messageId: string) => void;
 }) {
   switch (name) {
     case 'airplane':
@@ -77,6 +113,8 @@ export default function Icon({
       return <ArrowLeft width={width} height={height} color={color} />;
     case 'arrow-right':
       return <ArrowRight width={width} height={height} color={color} />;
+    case 'arrow-up':
+      return <ArrowUp width={width} height={height} color={color} />;
     case 'date-icon':
       return <DateIcon width={width} height={height} color={color} />;
     case 'home-icon':
@@ -125,5 +163,41 @@ export default function Icon({
       return <DefaultHeart width={width} height={height} color={color} />;
     case 'warning':
       return <Warning width={width} height={height} color={color} />;
+    case 'dairy-cookie':
+      return <DairyCookie width={width} height={height} color={color} />;
+    case 'emotion-thinking-cookie':
+      return <EmotionThinkingCookie width={width} height={height} color={color} />;
+    case 'side-menu-bar':
+      return <SideMenuBar width={width} height={height} color={color} />;
+    case 'side-menu-bar-alert':
+      return <SideMenuBarAlert width={width} height={height} color={color} />;
+    case 'event-icon':
+      return <EventIcon width={width} height={height} color={color} />;
+    case 'today-no-entry':
+      return <TodayNoEntry width={width} height={height} color={color} />;
+    case 'pencil':
+      return <Pencil width={width} height={height} color={color} />;
+    case 'green-chat-icon':
+      return <GreenChatIcon width={width} height={height} color={color} />;
+    case 'normal-emotion':
+      return <NormalEmotion width={width} height={height} color={color} />;
+    case 'edit-icon':
+      return <EditIcon width={width} height={height} color={color} />;
+    case 'favorite-icon':
+      return (
+        <FavoriteIcon
+          width={width}
+          height={height}
+          color={color}
+          toggleable={toggleable}
+          isSaved={isSaved}
+          messageId={messageId}
+          onFavoritePress={onFavoritePress}
+        />
+      );
+    case 'trash-icon':
+      return <TrashIcon width={width} height={height} color={color} />;
+    case 'chat-search-icon':
+      return <ChatSearch width={width} height={height} color={color} />;
   }
 }
