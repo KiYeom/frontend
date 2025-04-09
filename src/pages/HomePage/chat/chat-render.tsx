@@ -380,7 +380,7 @@ export const RenderInputToolbar = (
           flexDirection: 'row', // row로 두어야 Input과 Send , 사진 버튼이 나란히 배치됨
           justifyContent: 'center',
           alignItems: 'center',
-          paddingHorizontal: rsWidth * 15,
+          //paddingHorizontal: rsWidth * 15,
           paddingVertical: rsHeight * 8,
           gap: rsWidth * 20,
           position: 'relative',
@@ -429,6 +429,7 @@ export const RenderInputToolbar = (
               justifyContent: 'center',
               alignItems: 'center',
               alignSelf: 'center',
+              marginRight: 10 * rsWidth,
               marginLeft: 15 * rsWidth,
               //backgroundColor: 'yellow',
             }}>
