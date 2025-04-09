@@ -35,6 +35,7 @@ import { useRef } from 'react';
 import UpDownBtn from '../../../components/up-down-button/UpDownBtn';
 import { ExtendedIMessage } from '../../../utils/chatting';
 import HighlightedMessageText from './HighlightMessageText';
+import Analytics from '../../../utils/analytics';
 
 export const reportMessages = async (messageId: string, isSaved: boolean): string | undefined => {
   console.log('reportMessags 실행', messageId);
