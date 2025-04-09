@@ -38,11 +38,11 @@ import HighlightedMessageText from './HighlightMessageText';
 import Analytics from '../../../utils/analytics';
 
 export const reportMessages = async (messageId: string, isSaved: boolean): string | undefined => {
-  console.log('reportMessags 실행', messageId);
+  //console.log('reportMessags 실행', messageId);
   if (messageId === null) return;
   //const isSaved: boolean = true;
   const res = await saveFavoriteChatLog(messageId, !isSaved);
-  console.log('res', res);
+  //console.log('res', res);
   return messageId;
 };
 
@@ -72,6 +72,13 @@ export const RenderBubble = (
       return true;
     return false;
   };
+  const isSameSender =
+    props.previousMessage &&
+    props.previousMessage.user &&
+    props.previousMessage.user._id === props.currentMessage.user._id;
+
+  // 간격 설정: 동일 그룹이면 5px, 다르면 10px (반응형 값 사용)
+  const bubbleSpacing = isSameSender ? rsHeight * 5 : rsHeight * 10;
   return (
     <Animated.View
       //onLayout={handleMessageLayout(props.currentMessage._id)}
@@ -79,14 +86,20 @@ export const RenderBubble = (
       entering={FadeInDown}
       style={css`
         flex-direction: ${props.position === 'left' ? 'row' : 'row-reverse'};
-        align-items: end;
-        justify-content: start;
+        align-items: flex-end;
+        justify-content: flex-start;
         gap: ${rsWidth * 6 + 'px'}; //말풍선과 시간 사이의 간격
+        /* 아래쪽 margin으로 메세지 간 간격 적용 */
+        margin-bottom: ${rsHeight * 5 + 'px'};
       `}>
       <TouchableOpacity activeOpacity={1} onLongPress={props.onLongPress}>
         <View
           style={css`
-            margin-bottom: ${rsHeight * 5 + 'px'};
+            //margin-bottom: ${rsHeight * 5 + 'px'};
+            //background-color: black;
+            margin-bottom: 0;
+            flex-direction: column;
+            flex: 1;
           `}>
           <Bubble
             {...props}
@@ -128,6 +141,7 @@ export const RenderBubble = (
                 padding-horizontal: ${rsWidth * 12 + 'px'};
                 padding-vertical: ${rsHeight * 8 + 'px'};
                 margin: 0px;
+                flex: 1;
               `,
               right: css`
                 max-width: ${rsWidth * 200 + 'px'};
@@ -135,6 +149,7 @@ export const RenderBubble = (
                 padding-horizontal: ${rsWidth * 12 + 'px'};
                 padding-vertical: ${rsHeight * 8 + 'px'};
                 margin: 0px;
+                flex: 1;
               `,
             }}
           />
@@ -142,10 +157,13 @@ export const RenderBubble = (
       </TouchableOpacity>
 
       {showReport() && (
-        <View
+        <TouchableOpacity
           style={css`
             justify-content: flex-end;
-          `}>
+            //background-color: yellow;
+            //padding: 10px;
+          `}
+          hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}>
           <Icon
             name="favorite-icon"
             width={rsWidth * 14 + 'px'}
@@ -161,7 +179,7 @@ export const RenderBubble = (
               Analytics.clickChatLikeButton(props.currentMessage._id);
             }}
           />
-        </View>
+        </TouchableOpacity>
       )}
 
       {props.renderTime && props.renderTime({ ...props })}
@@ -217,12 +235,14 @@ export const RenderTime = (props: TimeProps<ExtendedIMessage>) => {
           marginRight: 0,
           marginBottom: 0,
           justifyContent: 'flex-end',
+          //backgroundColor: 'blue',
         },
         right: {
           marginLeft: 0,
           marginRight: 0,
           marginBottom: 0,
           justifyContent: 'flex-end',
+          //backgroundColor: 'pink',
         },
       }}
       timeTextStyle={{
