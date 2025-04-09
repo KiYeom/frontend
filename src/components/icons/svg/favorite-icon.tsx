@@ -36,7 +36,9 @@ export const FavoriteIcon = ({
 `;
   if (toggleable) {
     return (
-      <TouchableOpacity onPress={handlePress}>
+      <TouchableOpacity
+        onPress={handlePress}
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
         <SvgXml xml={svg} width={width} height={height} color={color} key={isFilled.toString()} />
       </TouchableOpacity>
     );
