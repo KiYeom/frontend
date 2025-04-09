@@ -500,9 +500,12 @@ const NewChat: React.FC = ({ navigation }) => {
 
   const scrollToIndexFailed = (info) => {
     //console.log('scrollToIndexFailed');
+    setSearchLoading(true);
     const offset = info.averageItemLength * info.index;
     const flatList = messageContainerRef.current;
     // 임시 오프셋으로 스크롤
+    console.log('정보1', info.index);
+    console.log('정보2', info.averageItemLength);
     flatList.scrollToOffset({ offset: offset });
     // 잠시 후 정확한 인덱스로 다시 스크롤 시도
     setTimeout(() => {
@@ -602,6 +605,10 @@ const NewChat: React.FC = ({ navigation }) => {
       <GiftedChat
         listViewProps={{
           onScrollToIndexFailed: scrollToIndexFailed,
+          onMomentumScrollEnd: () => {
+            // 스크롤 애니메이션이 종료되면 재귀 호출이 더 이상 발생하지 않는다고 가정하고 로딩 스피너를 숨김
+            setSearchLoading(false);
+          },
         }}
         as
         any
