@@ -538,7 +538,7 @@ const NewChat: React.FC = ({ navigation }) => {
   //api 로 유저 - 채팅 한 쌍을 받아오기 전에는 id 값을 임의로 설정하여 화면에 보여준다.
   const onSend = (newMessages: ExtendedIMessage[] = []) => {
     console.log('onSend 실행', newMessages[0].text);
-    if (!newMessages[0].text.trim()) {
+    if (!newMessages[0].text.trim() && !newMessages[0].image) {
       return;
     }
     console.log('onsend ');
@@ -713,7 +713,7 @@ const NewChat: React.FC = ({ navigation }) => {
           placeholder: getIsDemo() ? '메시지 입력.' : '메시지 입력',
           marginLeft: rsWidth * 15,
         }}
-        renderMessageImage={RenderMessageImage}
+        //renderMessageImage={RenderMessageImage}
         keyboardShouldPersistTaps={'never'}
         alwaysShowSend
       />

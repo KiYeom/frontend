@@ -78,7 +78,7 @@ export const RenderBubble = (
     return false;
   };
   const isImage = !!props?.currentMessage?.image;
-  const [scaledSize, setScaledSize] = useState({ width: 0, height: 0 });
+  const [scaledSize, setScaledSize] = useState({ width: 148, height: 300 });
 
   useEffect(() => {
     if (isImage && props?.currentMessage?.image) {
@@ -101,6 +101,7 @@ export const RenderBubble = (
   }, [props?.currentMessage?.image]);
 
   if (isImage) {
+    console.log('이미지 렌더링 진행');
     return (
       <View
         style={css`
@@ -389,7 +390,7 @@ export const RenderInputToolbar = (
         containerStyle={{
           borderTopColor: 'transparent',
           //backgroundColor: palette.neutral[50],
-          backgroundColor: 'green',
+          //backgroundColor: 'green',
           display: 'flex',
           flexDirection: 'row', // row로 두어야 Input과 Send , 사진 버튼이 나란히 배치됨
           justifyContent: 'center',
@@ -447,55 +448,68 @@ export const RenderInputToolbar = (
               marginLeft: 15 * rsWidth,
               //backgroundColor: 'yellow',
             }}>
-            {sendProps.text && image && image.length > 0 ? (
-              <TouchableOpacity
-                onPress={async () => {
-                  if (sendingStatus) return;
-                  // 빈 텍스트 대신 ' ' (공백) 문자열을 넣어 onSend를 강제로 호출 (텍스트 없이 사진만 보낸 경우)
+            <TouchableOpacity
+              onPress={async () => {
+                if (sendingStatus) return;
+
+                // 텍스트와 이미지 모두 있을 때: 두 개의 메시지 전송
+                if (sendProps.text && image && image.length > 0) {
+                  sendProps.onSend(
+                    [
+                      {
+                        ...sendProps.currentMessage,
+                        text: sendProps.text,
+                        // 필요한 경우 고유 ID와 생성 시각 추가
+                        // _id: uuid(),
+                        // createdAt: new Date(),
+                      },
+                      {
+                        ...sendProps.currentMessage,
+                        image: image,
+                        text: ' ', // 텍스트 말풍선에 영향이 없도록 공백 문자 사용
+                      },
+                    ],
+                    true,
+                  );
+                  return;
+                }
+
+                // 이미지만 있는 경우: 이미지 메시지 하나 전송
+                if (image && image.length > 0) {
+                  sendProps.onSend(
+                    [
+                      {
+                        ...sendProps.currentMessage,
+                        image: image,
+                        text: ' ', // 텍스트 말풍선이 생성되지 않도록 처리
+                      },
+                    ],
+                    true,
+                  );
+                  return;
+                }
+
+                // 텍스트만 있는 경우: 텍스트 메시지 하나 전송
+                if (sendProps.text && sendProps.text.length > 0) {
                   sendProps.onSend(
                     [
                       {
                         ...sendProps.currentMessage,
                         text: sendProps.text,
                       },
-                      {
-                        ...sendProps.currentMessage,
-                        image: image,
-                        text: '', // 텍스트 말풍선에 영향을 주지 않도록 공백 or 없음
-                      },
                     ],
                     true,
                   );
-                }}>
-                <Icon
-                  name="airplane"
-                  color={sendingStatus ? palette.neutral[300] : palette.neutral[400]}
-                />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                onPress={() => {
-                  if (sendingStatus) return;
-                  if (!sendProps.text && !(image && image.length > 0)) {
-                    return;
-                  }
-                  // currentMessage에 text가 없다면 기본값을 넣어줍니다.
-                  sendProps.onSend?.(
-                    [
-                      {
-                        ...sendProps.currentMessage,
-                        text: sendProps.text ?? '', // 혹은 ' ' 로 공백을 넣어도 좋습니다.
-                      },
-                    ],
-                    true,
-                  );
-                }}>
-                <Icon
-                  name="airplane"
-                  color={sendingStatus ? palette.neutral[300] : palette.neutral[400]}
-                />
-              </TouchableOpacity>
-            )}
+                  return;
+                }
+
+                // 텍스트도 이미지도 없는 경우는 아무 작업도 하지 않습니다.
+              }}>
+              <Icon
+                name="airplane"
+                color={sendingStatus ? palette.neutral[300] : palette.neutral[400]}
+              />
+            </TouchableOpacity>
           </Send>
         )}
       />
