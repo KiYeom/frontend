@@ -34,15 +34,26 @@ export const chatting = async (
         formData.append('question', question);
         formData.append('isDemo', isDemo ? 'true' : 'false');
 
-        const blob = await uriToBlob(image);
         const filename = image.split('/').pop() || 'image.jpg';
-        formData.append('image', blob, filename);
+        // 파일 확장자를 기반으로 MIME 타입 결정 (예: image/jpeg)
+        const match = /\.(\w+)$/.exec(filename);
+        const mimeType = match ? `image/${match[1]}` : 'image';
 
-        const res = await instance.post('/v3/chat/memory', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
+        const fileObj = {
+          uri: image, // 예: "file:///Users/eunseo/Library/Developer/CoreSimulator/..."
+          name: filename, // 예: "세잎클로버 쿠키.jpg"
+          type: mimeType, // 예: "image/jpeg" 또는 "image/png"
+        };
+        console.log('🌷fileObj', fileObj);
+        console.log('fileObject.uri', fileObj.uri);
+        console.log('fileObject.name', fileObj.name);
+        console.log('fileObject.type', fileObj.type);
+
+        formData.append('image', fileObj);
+
+        const res = await instance.post('/v3/chat/memory', formData);
+        console.log('🌷form-data', formData);
+        console.log('🌈 반환 결과', res);
         return res.data;
       } else {
         const res = await instance.post('/v3/chat/memory', {
