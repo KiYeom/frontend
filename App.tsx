@@ -205,7 +205,7 @@ const App: React.FC = () => {
                     [RootStackName.HomeStackNavigator]: {
                       screens: {
                         [HomeStackName.NewChat]: 'chat', //{"url": "remind://chat" }
-                        [HomeStackName.Report]: 'statistic/daily',
+                        [HomeStackName.Report]: 'statistic/daily/:dateID',
                       },
                     },
                   },
