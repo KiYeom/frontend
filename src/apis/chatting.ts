@@ -54,7 +54,7 @@ export const chatting = async (
           type: mimeType,
         };
 
-        console.log('Processing image:', fileObj);
+        //console.log('Processing image:', fileObj);
         formData.append('image', fileObj as any);
 
         // Let Axios handle content-type and boundary automatically

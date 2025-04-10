@@ -447,17 +447,30 @@ export const RenderInputToolbar = (
               marginLeft: 15 * rsWidth,
               //backgroundColor: 'yellow',
             }}>
-            {!sendProps.text && image && image.length > 0 ? (
+            {sendProps.text && image && image.length > 0 ? (
               <TouchableOpacity
                 onPress={async () => {
                   if (sendingStatus) return;
                   // 빈 텍스트 대신 ' ' (공백) 문자열을 넣어 onSend를 강제로 호출 (텍스트 없이 사진만 보낸 경우)
                   sendProps.onSend(
-                    [{ ...sendProps.currentMessage, text: ':)', image: image }],
+                    [
+                      {
+                        ...sendProps.currentMessage,
+                        text: sendProps.text,
+                      },
+                      {
+                        ...sendProps.currentMessage,
+                        image: image,
+                        text: '', // 텍스트 말풍선에 영향을 주지 않도록 공백 or 없음
+                      },
+                    ],
                     true,
                   );
                 }}>
-                <Image source={image.send} style={{ height: 32, width: 32 }} />
+                <Icon
+                  name="airplane"
+                  color={sendingStatus ? palette.neutral[300] : palette.neutral[400]}
+                />
               </TouchableOpacity>
             ) : (
               <TouchableOpacity

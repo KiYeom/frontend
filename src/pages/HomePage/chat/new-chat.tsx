@@ -286,9 +286,6 @@ const NewChat: React.FC = ({ navigation }) => {
     console.log('iamge ', image);
     chatting(1, question, isDemo, image) //버퍼에 저장된 메세지를 서버로 전송하여 질문 & 대화 전체 쌍을 받아옴
       .then((res) => {
-        //console.log('v3로 받은 유저와 쿠키의 답변', res);
-        //console.log('getOldChatting 결과', getNewIMessagesV3());
-        //console.log('화면에 나오는 메세지들', messages); //최신순으로 저장되어있음. messages[0]이 내가 보낸 가장 마지막 메세지
         if (res) {
           //const newMessages: IMessage[] = [];
           //console.log('현재 저장된 메세지들', messages);
@@ -303,12 +300,6 @@ const NewChat: React.FC = ({ navigation }) => {
           setMessages((previousMessages) => {
             const updatedMessages = [...previousMessages];
             for (let i = 0; i < apiQuestions.length; i++) {
-              /*console.log('apiQuestions[i]', apiQuestions[i]);
-              console.log('updatedMessages[i]', updatedMessages[i]);
-              console.log('apiQuestions[i].question', apiQuestions[i].question);
-              console.log('updatedMessages[i].text', updatedMessages[i].text);
-              console.log('updatedMessages[i]._id', updatedMessages[i]._id);
-              console.log('apiQuestions[i].id', apiQuestions[i].id);*/
               if (updatedMessages[i] && updatedMessages[i].text === apiQuestions[i].question) {
                 updatedMessages[i] = {
                   ...updatedMessages[i],
@@ -325,12 +316,7 @@ const NewChat: React.FC = ({ navigation }) => {
               isSaved: false,
             }));
 
-            //setIMessages(updatedMessages, newMessages.reverse());
             setIMessagesV3(updatedMessages, newBotMessages);
-            /*console.log(
-              '🥵🥵🥵🥵🥵🥵🥵확인하기 : 로컬에 저장된 값🥵🥵🥵🥵🥵🥵🥵',
-              getNewIMessagesV3(),
-            );*/
             return GiftedChat.append(updatedMessages, newBotMessages);
           });
         }
