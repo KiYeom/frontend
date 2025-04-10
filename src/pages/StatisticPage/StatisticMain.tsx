@@ -1,5 +1,5 @@
 import { css } from '@emotion/native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
@@ -126,11 +126,16 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
           Analytics.clickEditDiaryButton();
         }}
         leftFunction={() => {
-          //navigation.goBack();
+          const parentNavigation = navigation.getParent();
+          parentNavigation?.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [
+                { name: RootStackName.BottomTabNavigator, params: { screen: TabScreenName.Home } },
+              ],
+            }),
+          );
           Analytics.clickDiaryBackButton();
-          navigation.navigate(RootStackName.BottomTabNavigator, {
-            screen: TabScreenName.Home,
-          });
         }}
         bgcolor={`${palette.neutral[50]}`}
       />
