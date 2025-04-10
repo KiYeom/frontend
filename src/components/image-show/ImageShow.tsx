@@ -18,7 +18,13 @@ const ImageShow = ({ image, setImage }: ImageShowProps) => {
       Image.getSize(
         image,
         (width, height) => {
-          setScaledSize({ width: 50, height: 50 });
+          const maxWidth = 80; // 기준 너비
+          const scaleFactor = maxWidth / width;
+
+          const scaledWidth = maxWidth;
+          const scaledHeight = height * scaleFactor;
+
+          setScaledSize({ width: scaledWidth, height: scaledHeight });
         },
         (error) => {
           console.error('이미지 크기를 가져오는데 실패함:', error);

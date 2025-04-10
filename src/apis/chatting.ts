@@ -68,6 +68,7 @@ export const chatting = async (
       if (attempts >= maxAttempts) {
         //Sentry.captureMessage(`최종 실패 : ${attempts}번째 실패`);
         //Sentry.captureException(error); // Sentry에 에러 전송
+        console.log('errorMeessage', error);
         return errorMessage;
       }
     }

@@ -17,6 +17,7 @@ import {
   ComposerProps,
   Composer,
   Actions,
+  MessageImage,
 } from 'react-native-gifted-chat';
 import CustomMultiTextInput from './CustomMultiTextInput';
 import { TextInput } from 'react-native';
@@ -31,7 +32,7 @@ import { getNewIMessages } from '../../../utils/storageUtils';
 import Input from '../../../components/input/input';
 import { transparent } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 import { saveFavoriteChatLog } from '../../../apis/chatting';
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import UpDownBtn from '../../../components/up-down-button/UpDownBtn';
 import { ExtendedIMessage } from '../../../utils/chatting';
 import HighlightedMessageText from './HighlightMessageText';
@@ -39,6 +40,8 @@ import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
 import ImageShow from '../../../components/image-show/ImageShow';
 import Analytics from '../../../utils/analytics';
+import { MAX_CHAT_IMAGE_WIDTH } from '../../../constants/Constants';
+
 export const reportMessages = async (messageId: string, isSaved: boolean): string | undefined => {
   console.log('reportMessags 실행', messageId);
   if (messageId === null) return;
@@ -74,6 +77,46 @@ export const RenderBubble = (
       return true;
     return false;
   };
+  const isImage = !!props?.currentMessage?.image;
+  const [scaledSize, setScaledSize] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    if (isImage && props?.currentMessage?.image) {
+      Image.getSize(
+        props?.currentMessage?.image,
+        (width, height) => {
+          const maxWidth = rsWidth * MAX_CHAT_IMAGE_WIDTH; // 원하는 최대 너비
+          const scaleFactor = maxWidth / width;
+
+          setScaledSize({
+            width: maxWidth,
+            height: height * scaleFactor,
+          });
+        },
+        (error) => {
+          console.error('이미지 크기를 가져오는데 실패함:', error);
+        },
+      );
+    }
+  }, [props?.currentMessage?.image]);
+
+  if (isImage) {
+    return (
+      <View
+        style={css`
+          flex-direction: ${props.position === 'left' ? 'row' : 'row-reverse'};
+          align-items: flex-end;
+          gap: ${rsWidth * 6 + 'px'};
+          margin-bottom: ${rsHeight * 5 + 'px'};
+          //background-color: blue;
+        `}>
+        <RenderMessageImage {...props} scaledSize={scaledSize} />
+
+        {/* 시간 표시 */}
+        {props.renderTime && props.renderTime({ ...props })}
+      </View>
+    );
+  }
   return (
     <Animated.View
       //onLayout={handleMessageLayout(props.currentMessage._id)}
@@ -102,8 +145,8 @@ export const RenderBubble = (
             )}
             textStyle={{
               left: css`
-                //color: ${palette.neutral[500]};
-                color: red;
+                color: ${palette.neutral[500]};
+                //color: red;
                 font-family: Pretendard-Regular;
                 font-size: ${rsFont * 14 + 'px'};
                 text-align: left;
@@ -134,8 +177,13 @@ export const RenderBubble = (
               right: css`
                 max-width: ${rsWidth * 200 + 'px'};
                 background-color: ${palette.primary[500]};
+                //background-color: ${props.currentMessage.image ? 'red' : palette.primary[500]};
                 padding-horizontal: ${rsWidth * 12 + 'px'};
+                /*padding-horizontal: ${props.currentMessage.image
+                  ? 0 + 'px'
+                  : rsWidth * 12 + 'px'};*/
                 padding-vertical: ${rsHeight * 8 + 'px'};
+                //padding-vertical: ${props.currentMessage.image ? 0 + 'px' : rsHeight * 8 + 'px'};
                 margin: 0px;
               `,
             }}
@@ -169,6 +217,28 @@ export const RenderBubble = (
 
       {props.renderTime && props.renderTime({ ...props })}
     </Animated.View>
+  );
+};
+
+//1.5.8 이미지 추가
+export const RenderMessageImage = (
+  props: BubbleProps<ExtendedIMessage> & { scaledSize?: { width: number; height: number } },
+) => {
+  const { scaledSize = { width: 148, height: 300 } } = props;
+  return (
+    <MessageImage
+      {...props}
+      imageStyle={{
+        width: scaledSize.width,
+        height: scaledSize.height,
+        resizeMode: 'contain',
+      }}
+      containerStyle={{
+        margin: 0,
+        padding: 0,
+        backgroundColor: 'transparent',
+      }} // ✅ 올바른 ViewStyle 형태
+    />
   );
 };
 
@@ -383,7 +453,7 @@ export const RenderInputToolbar = (
                   if (sendingStatus) return;
                   // 빈 텍스트 대신 ' ' (공백) 문자열을 넣어 onSend를 강제로 호출 (텍스트 없이 사진만 보낸 경우)
                   sendProps.onSend(
-                    [{ ...sendProps.currentMessage, text: ' ', image: image }],
+                    [{ ...sendProps.currentMessage, text: ':)', image: image }],
                     true,
                   );
                 }}>

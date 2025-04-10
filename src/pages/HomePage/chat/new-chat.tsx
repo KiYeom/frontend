@@ -9,7 +9,7 @@ import {
   Animated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { GiftedChat, IMessage, SendProps } from 'react-native-gifted-chat';
+import { GiftedChat, IMessage, SendProps, MessageImage } from 'react-native-gifted-chat';
 import { useFocusEffect } from '@react-navigation/native';
 import Header from '../../../components/header/header';
 import * as WebBrowser from 'expo-web-browser';
@@ -51,6 +51,7 @@ import {
   RenderLoading,
   RenderSystemMessage,
   RenderTime,
+  RenderMessageImage,
 } from './chat-render';
 import { css } from '@emotion/native';
 import uuid from 'react-native-uuid';
@@ -113,8 +114,8 @@ const NewChat: React.FC = ({ navigation }) => {
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
-      allowsEditing: true,
-      aspect: [4, 3],
+      allowsEditing: false,
+      //aspect: [4, 3],
       quality: 1,
     });
     console.log(result);
@@ -727,6 +728,7 @@ const NewChat: React.FC = ({ navigation }) => {
           placeholder: getIsDemo() ? '메시지 입력.' : '메시지 입력',
           marginLeft: rsWidth * 15,
         }}
+        renderMessageImage={RenderMessageImage}
         keyboardShouldPersistTaps={'never'}
         alwaysShowSend
       />
