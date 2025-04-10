@@ -33,6 +33,7 @@ import {
 } from '../../utils/times';
 import EmptyBox from '../../components/emptybox/emptyBox';
 import Header from '../../components/header/header';
+import BottomTabNavigator from '~/src/navigators/BottomTabNavigator';
 
 const START_HOUR_OF_DAY = 6;
 
@@ -126,16 +127,22 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
           Analytics.clickEditDiaryButton();
         }}
         leftFunction={() => {
-          const parentNavigation = navigation.getParent();
-          parentNavigation?.dispatch(
-            CommonActions.reset({
+          if (!navigation.canGoBack()) {
+            navigation.reset({
               index: 0,
               routes: [
-                { name: RootStackName.BottomTabNavigator, params: { screen: TabScreenName.Home } },
+                {
+                  name: RootStackName.BottomTabNavigator,
+                  params: {
+                    screen: TabScreenName.Home,
+                  },
+                },
               ],
-            }),
-          );
-          Analytics.clickDiaryBackButton();
+            });
+          } else {
+            // 뒤로 갈 화면이 있을 때는 일반적인 뒤로가기 호출
+            navigation.goBack();
+          }
         }}
         bgcolor={`${palette.neutral[50]}`}
       />
