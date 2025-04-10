@@ -466,7 +466,16 @@ export const RenderInputToolbar = (
                   if (!sendProps.text && !(image && image.length > 0)) {
                     return;
                   }
-                  sendProps.onSend?.([{ ...sendProps.currentMessage }], true);
+                  // currentMessage에 text가 없다면 기본값을 넣어줍니다.
+                  sendProps.onSend?.(
+                    [
+                      {
+                        ...sendProps.currentMessage,
+                        text: sendProps.text ?? '', // 혹은 ' ' 로 공백을 넣어도 좋습니다.
+                      },
+                    ],
+                    true,
+                  );
                 }}>
                 <Icon
                   name="airplane"

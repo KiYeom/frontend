@@ -551,9 +551,8 @@ const NewChat: React.FC = ({ navigation }) => {
   //비행기를 클릭헀을 때 실행되는 onSend 함수
   //api 로 유저 - 채팅 한 쌍을 받아오기 전에는 id 값을 임의로 설정하여 화면에 보여준다.
   const onSend = (newMessages: ExtendedIMessage[] = []) => {
-    console.log('onsend 누름', newMessages);
-    if (!newMessages[0].text.trim() && !newMessages[0].image) {
-      console.log('onsend 빈 메세지');
+    console.log('onSend 실행', newMessages[0].text);
+    if (!newMessages[0].text.trim()) {
       return;
     }
     console.log('onsend ');

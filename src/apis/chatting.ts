@@ -6,6 +6,7 @@ import {
   TChatAnswerV3,
   TChatSearchResult,
 } from './chatting.types';
+import { Platform } from 'react-native';
 import { uriToBlob } from '../utils/chatting';
 import { instance } from './interceptor';
 
@@ -25,9 +26,11 @@ export const chatting = async (
 ): Promise<TChatAnswerV3 | undefined> => {
   const maxAttempts = 3;
   let attempts = 0;
+
   while (attempts < maxAttempts) {
     try {
       attempts++;
+
       if (image) {
         const formData = new FormData();
         formData.append('characterId', characterId.toString());
@@ -35,41 +38,43 @@ export const chatting = async (
         formData.append('isDemo', isDemo ? 'true' : 'false');
 
         const filename = image.split('/').pop() || 'image.jpg';
-        // 파일 확장자를 기반으로 MIME 타입 결정 (예: image/jpeg)
         const match = /\.(\w+)$/.exec(filename);
-        const mimeType = match ? `image/${match[1]}` : 'image';
+        const fileExtension = match ? match[1].toLowerCase() : 'jpg';
+        const mimeType = `image/${fileExtension === 'jpg' ? 'jpeg' : fileExtension}`;
+
+        // Correct URI handling for Android
+        let correctedUri = image;
+        if (Platform.OS === 'android' && !image.startsWith('file://')) {
+          correctedUri = `file://${image}`;
+        }
 
         const fileObj = {
-          uri: image, // 예: "file:///Users/eunseo/Library/Developer/CoreSimulator/..."
-          name: filename, // 예: "세잎클로버 쿠키.jpg"
-          type: mimeType, // 예: "image/jpeg" 또는 "image/png"
+          uri: correctedUri,
+          name: filename,
+          type: mimeType,
         };
-        console.log('🌷fileObj', fileObj);
-        console.log('fileObject.uri', fileObj.uri);
-        console.log('fileObject.name', fileObj.name);
-        console.log('fileObject.type', fileObj.type);
 
-        formData.append('image', fileObj);
+        console.log('Processing image:', fileObj);
+        formData.append('image', fileObj as any);
 
-        const res = await instance.post('/v3/chat/memory', formData);
-        //console.log('🌷form-data', formData);
-        //console.log('🌈 반환 결과', res);
+        // Let Axios handle content-type and boundary automatically
+        const res = await instance.post('/v3/chat/memory', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
         return res.data;
       } else {
         const res = await instance.post('/v3/chat/memory', {
           characterId,
-          question: ' '.repeat(attempts - 1) + question,
+          question,
           isDemo,
         });
-        return res.data; //나의 질문쌍과 ai의 대답쌍을 한 번에 리턴
+        return res.data;
       }
     } catch (error) {
-      //Sentry.captureMessage(`실패 : ${attempts}번째 실패`);
+      console.log(`Attempt ${attempts} failed:`, error);
+
       if (attempts >= maxAttempts) {
-        //Sentry.captureMessage(`최종 실패 : ${attempts}번째 실패`);
-        //Sentry.captureException(error); // Sentry에 에러 전송
-        console.log('errorMeessage', error);
-        return errorMessage;
+        throw error;
       }
     }
   }
