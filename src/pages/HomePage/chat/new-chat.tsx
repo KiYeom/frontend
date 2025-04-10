@@ -92,7 +92,7 @@ const NewChat: React.FC = ({ navigation }) => {
   const [refreshTimerMS, setRefreshTimerMS] = useState<number>(500);
 
   const [messages, setMessages] = useState<ExtendedIMessage[]>([]); //채팅 메시지 목록을 관리하는 상태
-  const [sending, setSending] = useState<boolean>(false); //메시지를 보내고 있는 중인지 여부를 나타내는 상태
+  const [sending, setSending] = useState<boolean>(false); //메시지를 보내고 있는 중인지 여부를 나타내는 상태 (보내고 있으면 true, 아니면 false)
   const [buffer, setBuffer] = useState<string | null>(null); //사용자가 입력한 메시지를 저장하는 임시 버퍼
 
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null); //타이핑 시간을 관리하는 타이머 (초기값 null, 이후 setTimeout의 반환값인 NodeJS.Timeout 객체를 저장)
@@ -199,7 +199,7 @@ const NewChat: React.FC = ({ navigation }) => {
     const messages: ExtendedIMessage[] = [];
     const lastDateAddSecond = new Date(lastMessageDate.getTime() + 10 * 1000);
     const serverMessages = await getV3OldChatting(botObject._id, lastDateAddSecond.toISOString());
-    //console.log('v3 데이터 확인하기', serverMessages);
+    console.log('v3 데이터 확인하기', serverMessages);
     if (serverMessages && serverMessages.chats && serverMessages.chats.length > 0) {
       for (let i = 0; i < serverMessages.chats.length; i++) {
         messages.push({
@@ -277,7 +277,8 @@ const NewChat: React.FC = ({ navigation }) => {
 
   //버퍼에 저장된 메시지를 서버로 전송하는 sendMessageToServer 함수
   const sendMessageToServer = () => {
-    if (!buffer || sending) return;
+    console.log('sendMessageToServer 실행', buffer, image);
+    if ((!buffer && !image) || sending) return;
     setSending(true);
     const question = buffer ?? '';
     const isDemo = getIsDemo();
@@ -549,9 +550,12 @@ const NewChat: React.FC = ({ navigation }) => {
   //비행기를 클릭헀을 때 실행되는 onSend 함수
   //api 로 유저 - 채팅 한 쌍을 받아오기 전에는 id 값을 임의로 설정하여 화면에 보여준다.
   const onSend = (newMessages: ExtendedIMessage[] = []) => {
-    if (!newMessages[0].text.trim()) {
+    console.log('onsend 누름', newMessages);
+    if (!newMessages[0].text.trim() && !newMessages[0].image) {
+      console.log('onsend 빈 메세지');
       return;
     }
+    console.log('onsend ');
     setBuffer(buffer ? buffer + newMessages[0].text + '\t' : newMessages[0].text + '\t');
     setMessages((previousMessages) => {
       //setIMessagesV3(previousMessages, newMessages.reverse());

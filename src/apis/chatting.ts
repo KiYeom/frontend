@@ -52,8 +52,8 @@ export const chatting = async (
         formData.append('image', fileObj);
 
         const res = await instance.post('/v3/chat/memory', formData);
-        console.log('🌷form-data', formData);
-        console.log('🌈 반환 결과', res);
+        //console.log('🌷form-data', formData);
+        //console.log('🌈 반환 결과', res);
         return res.data;
       } else {
         const res = await instance.post('/v3/chat/memory', {
