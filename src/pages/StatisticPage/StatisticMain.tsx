@@ -1,5 +1,5 @@
 import { css } from '@emotion/native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { dailyAnalyze, dailyAnalyzeStatus } from '../../apis/analyze';
 import { TEmotionCheck, TLabel } from '../../apis/analyze.type';
 import palette from '../../assets/styles/theme';
-import { HomeStackName, RootStackName } from '../../constants/Constants';
+import { HomeStackName, RootStackName, TabScreenName } from '../../constants/Constants';
 import Analytics from '../../utils/analytics';
 import { rsFont, rsHeight, rsWidth } from '../../utils/responsive-size';
 import SingleDatePickerModal from '../../components/rangeCal/single-date-picker-modal';
@@ -33,6 +33,7 @@ import {
 } from '../../utils/times';
 import EmptyBox from '../../components/emptybox/emptyBox';
 import Header from '../../components/header/header';
+import BottomTabNavigator from '~/src/navigators/BottomTabNavigator';
 
 const START_HOUR_OF_DAY = 6;
 
@@ -126,8 +127,22 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
           Analytics.clickEditDiaryButton();
         }}
         leftFunction={() => {
-          navigation.goBack();
-          Analytics.clickDiaryBackButton();
+          if (!navigation.canGoBack()) {
+            navigation.reset({
+              index: 0,
+              routes: [
+                {
+                  name: RootStackName.BottomTabNavigator,
+                  params: {
+                    screen: TabScreenName.Home,
+                  },
+                },
+              ],
+            });
+          } else {
+            // 뒤로 갈 화면이 있을 때는 일반적인 뒤로가기 호출
+            navigation.goBack();
+          }
         }}
         bgcolor={`${palette.neutral[50]}`}
       />
