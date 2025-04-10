@@ -281,7 +281,7 @@ const NewChat: React.FC = ({ navigation }) => {
     setSending(true);
     const question = buffer ?? '';
     const isDemo = getIsDemo();
-    chatting(1, question, isDemo) //버퍼에 저장된 메세지를 서버로 전송하여 질문 & 대화 전체 쌍을 받아옴
+    chatting(1, question, isDemo, image) //버퍼에 저장된 메세지를 서버로 전송하여 질문 & 대화 전체 쌍을 받아옴
       .then((res) => {
         //console.log('v3로 받은 유저와 쿠키의 답변', res);
         //console.log('getOldChatting 결과', getNewIMessagesV3());

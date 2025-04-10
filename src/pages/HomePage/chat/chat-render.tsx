@@ -27,7 +27,6 @@ import { ActivityIndicator, Alert, Image, TouchableOpacity, View, Text } from 'r
 import Icon from '../../../components/icons/icons';
 import TypingIndicator from 'react-native-gifted-chat/src/TypingIndicator';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import { reportChat } from '../../../apis/chatting';
 import { getNewIMessages } from '../../../utils/storageUtils';
 import Input from '../../../components/input/input';
 import { transparent } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
@@ -381,7 +380,7 @@ export const RenderInputToolbar = (
         containerStyle={{
           borderTopColor: 'transparent',
           //backgroundColor: palette.neutral[50],
-          //backgroundColor: 'green',
+          backgroundColor: 'green',
           display: 'flex',
           flexDirection: 'row', // row로 두어야 Input과 Send , 사진 버튼이 나란히 배치됨
           justifyContent: 'center',

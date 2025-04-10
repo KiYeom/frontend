@@ -4,3 +4,9 @@ export interface ExtendedIMessage extends IMessage {
   isSaved?: boolean;
   hightlightKeyword?: string;
 }
+
+// 파일 URI를 Blob으로 변환하는 함수
+export const uriToBlob = async (uri: string): Promise<Blob> => {
+  const response = await fetch(uri);
+  return await response.blob();
+};

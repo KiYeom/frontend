@@ -6,6 +6,7 @@ import {
   TChatAnswerV3,
   TChatSearchResult,
 } from './chatting.types';
+import { uriToBlob } from '../utils/chatting';
 import { instance } from './interceptor';
 
 const errorMessage: TChatAnswerV3 = [
@@ -20,20 +21,40 @@ export const chatting = async (
   characterId: number,
   question: string,
   isDemo: boolean = false,
+  image?: string,
 ): Promise<TChatAnswerV3 | undefined> => {
+  const maxAttempts = 3;
   let attempts = 0;
-  while (attempts < 3) {
+  while (attempts < maxAttempts) {
     try {
       attempts++;
-      const res = await instance.post('/v3/chat/memory', {
-        characterId,
-        question: ' '.repeat(attempts - 1) + question,
-        isDemo,
-      });
-      return res.data; //나의 질문쌍과 ai의 대답쌍을 한 번에 리턴
+      if (image) {
+        const formData = new FormData();
+        formData.append('characterId', characterId.toString());
+        formData.append('question', question);
+        formData.append('isDemo', isDemo ? 'true' : 'false');
+
+        const blob = await uriToBlob(image);
+        const filename = image.split('/').pop() || 'image.jpg';
+        formData.append('image', blob, filename);
+
+        const res = await instance.post('/v3/chat/memory', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        return res.data;
+      } else {
+        const res = await instance.post('/v3/chat/memory', {
+          characterId,
+          question: ' '.repeat(attempts - 1) + question,
+          isDemo,
+        });
+        return res.data; //나의 질문쌍과 ai의 대답쌍을 한 번에 리턴
+      }
     } catch (error) {
       //Sentry.captureMessage(`실패 : ${attempts}번째 실패`);
-      if (attempts >= 3) {
+      if (attempts >= maxAttempts) {
         //Sentry.captureMessage(`최종 실패 : ${attempts}번째 실패`);
         //Sentry.captureException(error); // Sentry에 에러 전송
         return errorMessage;
