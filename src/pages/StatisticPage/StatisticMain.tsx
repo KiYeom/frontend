@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { dailyAnalyze, dailyAnalyzeStatus } from '../../apis/analyze';
 import { TEmotionCheck, TLabel } from '../../apis/analyze.type';
 import palette from '../../assets/styles/theme';
-import { HomeStackName, RootStackName } from '../../constants/Constants';
+import { HomeStackName, RootStackName, TabScreenName } from '../../constants/Constants';
 import Analytics from '../../utils/analytics';
 import { rsFont, rsHeight, rsWidth } from '../../utils/responsive-size';
 import SingleDatePickerModal from '../../components/rangeCal/single-date-picker-modal';
@@ -126,8 +126,11 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
           Analytics.clickEditDiaryButton();
         }}
         leftFunction={() => {
-          navigation.goBack();
+          //navigation.goBack();
           Analytics.clickDiaryBackButton();
+          navigation.navigate(RootStackName.BottomTabNavigator, {
+            screen: TabScreenName.Home,
+          });
         }}
         bgcolor={`${palette.neutral[50]}`}
       />
