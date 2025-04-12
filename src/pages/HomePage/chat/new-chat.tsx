@@ -258,6 +258,7 @@ const NewChat: React.FC = ({ navigation }) => {
         const v3DeviceArray = JSON.parse(v3DeviceHistory);
         messages.push(...v3DeviceArray);
       }
+      console.log('🦈🦈🦈🦈🦈🦈v3DeviceHistory', messages);
       //console.log('🦈🦈🦈🦈🦈🦈v3DeviceHistory', v3DeviceHistory);
       const v3lastMessageDate: Date =
         messages.length > 0 ? new Date(messages[0].createdAt) : new Date(0);
