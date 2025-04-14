@@ -104,7 +104,7 @@ const Favorites: React.FC<any> = ({ navigation }) => {
                 height={rsHeight * 14 + 'px'}
                 toggleable
                 isSaved={isSelected}
-                messageId={'testMessageId'}
+                messageId={item.id}
                 onFavoritePress={async (id) => {
                   console.log('히히', item.id, !isSelected);
                   setIsSelected(!isSelected);

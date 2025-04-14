@@ -171,7 +171,7 @@ export const RenderBubble = (
             height={rsHeight * 14 + 'px'}
             toggleable
             isSaved={props.currentMessage.isSaved}
-            messageId={'testMessageId'}
+            messageId={props.currentMessage._id}
             onFavoritePress={(id) => {
               //console.log('메세지', props.currentMessage);
               //reportMessages(props.currentMessage._id, props.currentMessage.isSaved);
