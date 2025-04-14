@@ -9,6 +9,7 @@ export const Container = styled.View`
   flex: 1;
   flex-direction: column;
   background-color: ${palette.neutral[50]};
+  padding-horizontal: ${rsWidth * 20 + 'px'};
 `;
 
 export const TitleContainer = styled.View`
@@ -31,4 +32,15 @@ export const Title = styled.Text`
 export const TitleImage = styled.Image`
   width: 100px;
   height: 100px;
+`;
+
+export const SectionComponent = styled.View`
+  flex-direction: row;
+  align-items: center;
+  padding: 10px;
+  background-color: pink;
+  border-radius: 10px;
+  padding-horizontal: 20px;
+  padding-vertical: 10px;
+  justify-content: space-between;
 `;

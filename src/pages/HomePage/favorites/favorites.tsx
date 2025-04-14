@@ -17,7 +17,7 @@ import { addRefreshChat } from '../../../utils/storageUtils';
 import { convertUtcToKst } from '../../../utils/times';
 import Analytics from '../../../utils/analytics';
 import v3getIMessageFromServer from '../../../apis/v3chatting';
-import { Container, TitleContainer, Title, TitleImage } from './favorites.style';
+import { Container, TitleContainer, Title, TitleImage, SectionComponent } from './favorites.style';
 // 데이터를 날짜별로 그룹화하는 groupFavoritesByDate 함수
 //불러온 API 결과를 받아, 화면에 그리도록 정제함
 const groupFavoritesByDate = (data: TFavoriteChatLog) => {
@@ -75,25 +75,19 @@ const Favorites: React.FC<any> = ({ navigation }) => {
           deleteNewIMessagesV3();
         }}
       />
-      <TitleContainer>
-        <TitleImage source={require('../../../assets/images/bubble-cookie.png')} />
-        <Title>하루 끝에 꺼내보는{'\n'}따뜻한 대화</Title>
-      </TitleContainer>
 
       <SectionList
         stickySectionHeadersEnabled={false}
         sections={sections}
         keyExtractor={(item) => item.id}
+        ListHeaderComponent={() => (
+          <TitleContainer>
+            <TitleImage source={require('../../../assets/images/bubble-cookie.png')} />
+            <Title>하루 끝에 꺼내보는{'\n'}따뜻한 대화</Title>
+          </TitleContainer>
+        )}
         renderItem={({ item }) => (
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              paddingHorizontal: 20,
-              paddingVertical: 10,
-              //backgroundColor: 'blue',
-              justifyContent: 'space-between', // 좌우로 공간을 벌려줍니다
-            }}>
+          <SectionComponent>
             {/* Text 영역 */}
             <Text style={{ flex: 1 }}>{item.answer}</Text>
 
@@ -114,7 +108,7 @@ const Favorites: React.FC<any> = ({ navigation }) => {
                 }}
               />
             </View>
-          </View>
+          </SectionComponent>
         )}
         renderSectionHeader={({ section: { title } }) => (
           <View style={{ padding: 10 }}>
