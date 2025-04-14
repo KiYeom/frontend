@@ -49,7 +49,7 @@ export const reportMessages = async (messageId: string, isSaved: boolean): strin
 export const RenderBubble = (
   props: BubbleProps<ExtendedIMessage> & { onFavoritePress: (messageId: string) => void },
 ) => {
-  console.log('renderBubble', props.currentMessage);
+  //console.log('renderBubble', props.currentMessage);
   const showReport = (): boolean => {
     const nowMessageUserId = props.currentMessage.user._id;
     if (props.currentMessage._id === 'welcomeMessage') return false;

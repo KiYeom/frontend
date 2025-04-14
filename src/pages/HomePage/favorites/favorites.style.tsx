@@ -16,7 +16,7 @@ export const TitleContainer = styled.View`
   align-items: center;
   justify-content: space-between;
   padding: 16px;
-  background-color: red;
+  //background-color: red;
   gap: ${rsHeight * 10 + 'px'};
 `;
 

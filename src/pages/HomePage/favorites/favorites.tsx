@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, View, Linking, Platform, Text, SectionList } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Header from '../../../components/header/header';
@@ -7,16 +7,10 @@ import { TFavoriteChatLog } from '../../../apis/chatting.types';
 import { rsWidth, rsHeight } from '../../../utils/responsive-size';
 import Icon from '../../../components/icons/icons';
 import { saveFavoriteChatLog } from '../../../apis/chatting';
-import { getV3OldChatting } from '../../../apis/chatting';
-import {
-  setNewIMessagesV3,
-  getNewIMessagesV3,
-  deleteNewIMessagesV3,
-} from '../../../utils/storageUtils';
+import { deleteNewIMessagesV3 } from '../../../utils/storageUtils';
 import { addRefreshChat } from '../../../utils/storageUtils';
 import { convertUtcToKst } from '../../../utils/times';
 import Analytics from '../../../utils/analytics';
-import v3getIMessageFromServer from '../../../apis/v3chatting';
 import {
   Container,
   TitleContainer,
@@ -28,8 +22,13 @@ import {
   SectionDateContainer,
   SectionDateText,
 } from './favorites.style';
+import palette from '../../../assets/styles/theme';
 // 데이터를 날짜별로 그룹화하는 groupFavoritesByDate 함수
 //불러온 API 결과를 받아, 화면에 그리도록 정제함
+
+type FavoriteStates = {
+  [key: string]: boolean;
+};
 const groupFavoritesByDate = (data: TFavoriteChatLog) => {
   //console.log('groupFavoritesByDate', data);
   const groups = data.reduce((acc, item) => {
@@ -49,24 +48,30 @@ const groupFavoritesByDate = (data: TFavoriteChatLog) => {
   sections.sort((a, b) => new Date(b.title) - new Date(a.title));
   return sections;
 };
+const TitleHeader = React.memo(() => (
+  <TitleContainer>
+    <TitleImage source={require('../../../assets/images/bubble-cookie.png')} />
+    <Title>하루 끝에 꺼내보는{'\n'}따뜻한 대화</Title>
+  </TitleContainer>
+));
 
 const Favorites: React.FC<any> = ({ navigation }) => {
   const [sections, setSections] = React.useState([]);
-  const [isSelected, setIsSelected] = React.useState(true);
+  const [favoriteStates, setFavoriteStates] = useState<boolean>({});
 
   useEffect(() => {
     Analytics.watchWarmChatScreen();
     //내가 좋아했던 말들
     getFavoriteChat()
       .then((res) => {
-        //console.log('[Favorites] 내가 좋아했던 말들: ', res);
-        //console.log('테스트', res?.favorites);
         if (res && res.favorites) {
-          // favorites 배열을 그룹화하여 섹션 데이터로 변환
-          //console.log('리버스', res.favorites.reverse());
           const groupedSections = groupFavoritesByDate(res.favorites);
-          //console.log('groupedSections', groupedSections);
           setSections(groupedSections);
+          const initialFavoriteStates: FavoriteStates = {};
+          res.favorites.forEach((item) => {
+            initialFavoriteStates[item.id] = true;
+          });
+          setFavoriteStates(initialFavoriteStates);
         }
       })
       .catch((err) => {
@@ -86,6 +91,36 @@ const Favorites: React.FC<any> = ({ navigation }) => {
     require('../../../assets/images/pink-bubble.png'),
     // 추가 이미지...
   ];
+  const toggleFavorite = async (id: string): Promise<void> => {
+    const newState = !favoriteStates[id];
+
+    // 상태 업데이트
+    setFavoriteStates((prev) => ({
+      ...prev,
+      [id]: newState,
+    }));
+
+    // API 호출
+    try {
+      const res = await saveFavoriteChatLog(`${id}-B-0`, newState);
+      //console.log('Favorite toggle result:', res);
+
+      // API 호출이 실패하면 상태를 원래대로 되돌릴 수 있음
+      if (!res || res.error) {
+        setFavoriteStates((prev) => ({
+          ...prev,
+          [id]: !newState,
+        }));
+      }
+    } catch (error) {
+      //console.log('Error toggling favorite:', error);
+      // 에러 발생시 상태 복원
+      setFavoriteStates((prev) => ({
+        ...prev,
+        [id]: !newState,
+      }));
+    }
+  };
 
   return (
     <Container>
@@ -97,24 +132,20 @@ const Favorites: React.FC<any> = ({ navigation }) => {
           Analytics.clickWarmChatButtonBack();
           deleteNewIMessagesV3();
         }}
+        bgcolor={`${palette.neutral[50]}`}
       />
       <SectionList
         style={{ paddingHorizontal: 20 }}
         stickySectionHeadersEnabled={false}
         sections={sections}
         keyExtractor={(item) => item.id}
-        ListHeaderComponent={() => (
-          <TitleContainer>
-            <TitleImage source={require('../../../assets/images/bubble-cookie.png')} />
-            <Title>하루 끝에 꺼내보는{'\n'}따뜻한 대화</Title>
-          </TitleContainer>
-        )}
+        ListHeaderComponent={TitleHeader}
         renderItem={({ item, index }) => {
-          console.log(index % imageSources.length);
+          //console.log(index % imageSources.length);
           const imageSource = imageSources[index % imageSources.length];
-          console.log('index', index);
-          console.log('item', item);
-          console.log('imageSource', imageSource);
+          //console.log('index', index);
+          //console.log('item', item);
+          //console.log('imageSource', imageSource);
           return (
             <SectionComponent>
               {/* 버블 사진 영역 */}
@@ -129,14 +160,9 @@ const Favorites: React.FC<any> = ({ navigation }) => {
                   width={rsWidth * 14 + 'px'}
                   height={rsHeight * 14 + 'px'}
                   toggleable
-                  isSaved={isSelected}
+                  isSaved={favoriteStates[item.id] !== undefined ? favoriteStates[item.id] : true}
                   messageId={item.id}
-                  onFavoritePress={async (id) => {
-                    console.log('히히', item.id, !isSelected);
-                    setIsSelected(!isSelected);
-                    const res = await saveFavoriteChatLog(`${item.id}-B-0`, !isSelected);
-                    console.log('res', res);
-                  }}
+                  onFavoritePress={() => toggleFavorite(item.id)}
                   iconType="favorite-bookmark-icon"
                 />
               </View>
