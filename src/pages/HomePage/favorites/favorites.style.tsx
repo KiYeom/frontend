@@ -9,7 +9,6 @@ export const Container = styled.View`
   flex: 1;
   flex-direction: column;
   background-color: ${palette.neutral[50]};
-  padding-horizontal: ${rsWidth * 20 + 'px'};
 `;
 
 export const TitleContainer = styled.View`
@@ -37,10 +36,40 @@ export const TitleImage = styled.Image`
 export const SectionComponent = styled.View`
   flex-direction: row;
   align-items: center;
-  padding: 10px;
-  background-color: pink;
+  //background-color: pink;
+  background-color: white;
   border-radius: 10px;
   padding-horizontal: 20px;
-  padding-vertical: 10px;
+  padding-vertical: 20px;
   justify-content: space-between;
+  position: relative;
+  gap: ${rsWidth * 20 + 'px'};
+`;
+
+export const SectionComponentText = styled.Text`
+  font-size: ${rsFont * 16 + 'px'};
+  font-family: Pretendard-Regular;
+  color: ${palette.neutral[900]};
+  line-height: ${rsFont * 24 + 'px'};
+  margin-left: 8px;
+  flex: 1;
+  padding-right: 20px;
+  //background-color: yellow;
+  text-align: left;
+  text-align-vertical: center;
+`;
+export const SectionComponentImage = styled.Image`
+  width: 28px;
+  height: 28px;
+`;
+
+export const SectionDateContainer = styled.View`
+  padding: 10px;
+  //background-color: blue;
+`;
+
+export const SectionDateText = styled.Text`
+  font-size: ${rsFont * 18 + 'px'};
+  font-family: Kyobo-handwriting;
+  color: ${palette.neutral[900]};
 `;

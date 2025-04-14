@@ -17,7 +17,17 @@ import { addRefreshChat } from '../../../utils/storageUtils';
 import { convertUtcToKst } from '../../../utils/times';
 import Analytics from '../../../utils/analytics';
 import v3getIMessageFromServer from '../../../apis/v3chatting';
-import { Container, TitleContainer, Title, TitleImage, SectionComponent } from './favorites.style';
+import {
+  Container,
+  TitleContainer,
+  Title,
+  TitleImage,
+  SectionComponent,
+  SectionComponentText,
+  SectionComponentImage,
+  SectionDateContainer,
+  SectionDateText,
+} from './favorites.style';
 // 데이터를 날짜별로 그룹화하는 groupFavoritesByDate 함수
 //불러온 API 결과를 받아, 화면에 그리도록 정제함
 const groupFavoritesByDate = (data: TFavoriteChatLog) => {
@@ -63,6 +73,19 @@ const Favorites: React.FC<any> = ({ navigation }) => {
         //console.log('[Favorites] 내가 좋아했던 말들 에러: ', err);
       });
   }, []);
+  const imageSources = [
+    require('../../../assets/images/red-bubble.png'),
+    require('../../../assets/images/orange-bubble.png'),
+    require('../../../assets/images/yellow-bubble.png'),
+    require('../../../assets/images/green-bubble.png'),
+    require('../../../assets/images/pastel-green-bubble.png'),
+    require('../../../assets/images/sky-blue-bubble.png'),
+    require('../../../assets/images/blue-bubble.png'),
+    require('../../../assets/images/navy-bubble.png'),
+    require('../../../assets/images/purple-bubble.png'),
+    require('../../../assets/images/pink-bubble.png'),
+    // 추가 이미지...
+  ];
 
   return (
     <Container>
@@ -75,8 +98,8 @@ const Favorites: React.FC<any> = ({ navigation }) => {
           deleteNewIMessagesV3();
         }}
       />
-
       <SectionList
+        style={{ paddingHorizontal: 20 }}
         stickySectionHeadersEnabled={false}
         sections={sections}
         keyExtractor={(item) => item.id}
@@ -86,34 +109,44 @@ const Favorites: React.FC<any> = ({ navigation }) => {
             <Title>하루 끝에 꺼내보는{'\n'}따뜻한 대화</Title>
           </TitleContainer>
         )}
-        renderItem={({ item }) => (
-          <SectionComponent>
-            {/* Text 영역 */}
-            <Text style={{ flex: 1 }}>{item.answer}</Text>
+        renderItem={({ item, index }) => {
+          console.log(index % imageSources.length);
+          const imageSource = imageSources[index % imageSources.length];
+          console.log('index', index);
+          console.log('item', item);
+          console.log('imageSource', imageSource);
+          return (
+            <SectionComponent>
+              {/* 버블 사진 영역 */}
+              <SectionComponentImage source={imageSource} />
+              {/* Text 영역 */}
+              <SectionComponentText>{item.answer}</SectionComponentText>
 
-            {/* 아이콘 영역 */}
-            <View style={{ marginLeft: 20 }}>
-              <Icon
-                name="favorite-icon"
-                width={rsWidth * 14 + 'px'}
-                height={rsHeight * 14 + 'px'}
-                toggleable
-                isSaved={isSelected}
-                messageId={item.id}
-                onFavoritePress={async (id) => {
-                  console.log('히히', item.id, !isSelected);
-                  setIsSelected(!isSelected);
-                  const res = await saveFavoriteChatLog(`${item.id}-B-0`, !isSelected);
-                  console.log('res', res);
-                }}
-              />
-            </View>
-          </SectionComponent>
-        )}
+              {/* 아이콘 영역 */}
+              <View style={{ position: 'absolute', right: 20, top: 0 }}>
+                <Icon
+                  name="favorite-icon"
+                  width={rsWidth * 14 + 'px'}
+                  height={rsHeight * 14 + 'px'}
+                  toggleable
+                  isSaved={isSelected}
+                  messageId={item.id}
+                  onFavoritePress={async (id) => {
+                    console.log('히히', item.id, !isSelected);
+                    setIsSelected(!isSelected);
+                    const res = await saveFavoriteChatLog(`${item.id}-B-0`, !isSelected);
+                    console.log('res', res);
+                  }}
+                  iconType="favorite-bookmark-icon"
+                />
+              </View>
+            </SectionComponent>
+          );
+        }}
         renderSectionHeader={({ section: { title } }) => (
-          <View style={{ padding: 10 }}>
-            <Text style={{ fontWeight: 'bold' }}>{convertUtcToKst(title)}</Text>
-          </View>
+          <SectionDateContainer>
+            <SectionDateText>{convertUtcToKst(title)}</SectionDateText>
+          </SectionDateContainer>
         )}
       />
     </Container>
