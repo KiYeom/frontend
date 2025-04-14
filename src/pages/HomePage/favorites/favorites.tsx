@@ -17,6 +17,7 @@ import { addRefreshChat } from '../../../utils/storageUtils';
 import { convertUtcToKst } from '../../../utils/times';
 import Analytics from '../../../utils/analytics';
 import v3getIMessageFromServer from '../../../apis/v3chatting';
+import { Container, TitleContainer, Title, TitleImage } from './favorites.style';
 // 데이터를 날짜별로 그룹화하는 groupFavoritesByDate 함수
 //불러온 API 결과를 받아, 화면에 그리도록 정제함
 const groupFavoritesByDate = (data: TFavoriteChatLog) => {
@@ -64,12 +65,7 @@ const Favorites: React.FC<any> = ({ navigation }) => {
   }, []);
 
   return (
-    <View
-      style={{
-        flex: 1,
-        //backgroundColor: 'orange',
-        width: '100%',
-      }}>
+    <Container>
       <Header
         title={'따스한 대화 모아보기'}
         leftFunction={async () => {
@@ -79,6 +75,11 @@ const Favorites: React.FC<any> = ({ navigation }) => {
           deleteNewIMessagesV3();
         }}
       />
+      <TitleContainer>
+        <TitleImage source={require('../../../assets/images/bubble-cookie.png')} />
+        <Title>하루 끝에 꺼내보는{'\n'}따뜻한 대화</Title>
+      </TitleContainer>
+
       <SectionList
         stickySectionHeadersEnabled={false}
         sections={sections}
@@ -121,7 +122,7 @@ const Favorites: React.FC<any> = ({ navigation }) => {
           </View>
         )}
       />
-    </View>
+    </Container>
   );
 };
 
