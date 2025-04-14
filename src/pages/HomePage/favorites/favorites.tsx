@@ -8,10 +8,15 @@ import { rsWidth, rsHeight } from '../../../utils/responsive-size';
 import Icon from '../../../components/icons/icons';
 import { saveFavoriteChatLog } from '../../../apis/chatting';
 import { getV3OldChatting } from '../../../apis/chatting';
-import { setNewIMessagesV3 } from '../../../utils/storageUtils';
+import {
+  setNewIMessagesV3,
+  getNewIMessagesV3,
+  deleteNewIMessagesV3,
+} from '../../../utils/storageUtils';
 import { addRefreshChat } from '../../../utils/storageUtils';
 import { convertUtcToKst } from '../../../utils/times';
 import Analytics from '../../../utils/analytics';
+import v3getIMessageFromServer from '../../../apis/v3chatting';
 // 데이터를 날짜별로 그룹화하는 groupFavoritesByDate 함수
 //불러온 API 결과를 받아, 화면에 그리도록 정제함
 const groupFavoritesByDate = (data: TFavoriteChatLog) => {
@@ -68,9 +73,10 @@ const Favorites: React.FC<any> = ({ navigation }) => {
       <Header
         title={'따스한 대화 모아보기'}
         leftFunction={async () => {
-          await addRefreshChat(1);
+          await addRefreshChat(100);
           navigation.goBack();
           Analytics.clickWarmChatButtonBack();
+          deleteNewIMessagesV3();
         }}
       />
       <SectionList
@@ -91,7 +97,7 @@ const Favorites: React.FC<any> = ({ navigation }) => {
             <Text style={{ flex: 1 }}>{item.answer}</Text>
 
             {/* 아이콘 영역 */}
-            {/*<View style={{ marginLeft: 20 }}>
+            <View style={{ marginLeft: 20 }}>
               <Icon
                 name="favorite-icon"
                 width={rsWidth * 14 + 'px'}
@@ -106,7 +112,7 @@ const Favorites: React.FC<any> = ({ navigation }) => {
                   console.log('res', res);
                 }}
               />
-            </View>*/}
+            </View>
           </View>
         )}
         renderSectionHeader={({ section: { title } }) => (

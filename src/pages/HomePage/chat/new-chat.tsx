@@ -170,11 +170,13 @@ const NewChat: React.FC = ({ navigation }) => {
       console.log('🔑🔑🔑🔑🔑🔑🔑🔑🔑v3 키가 존재하지 않음🔑🔑🔑🔑🔑🔑🔑🔑', isV3KeyExist);
       const v3lastMessageDate = new Date(0);
       const v3ServerMessages = await v3getIMessageFromServer(v3lastMessageDate); //전체 데이터 가져오기
+      console.log('v3ServerMessages', v3ServerMessages);
       if (v3ServerMessages && v3ServerMessages.length > 0) {
         console.log('💚💚💚💚💚💚💚💚💚💚💚이전에 썼던 사람 마이그레이션 하기💚💚💚💚💚💚💚💚');
         setNewIMessagesV3(JSON.stringify(v3ServerMessages)); //로컬 마이그레이션
         deleteNewIMessages(); //v3 이전 로컬 데이터 삭제
         messages = [...v3ServerMessages, ...messages]; //데이터 화면에 보여주기
+        console.log('messages', messages);
       } else {
         //새로 온 사람
         console.log('🤖🤖🤖🤖🤖🤖🤖🤖새로 온 사람🤖🤖🤖🤖🤖🤖🤖🤖');
@@ -194,6 +196,7 @@ const NewChat: React.FC = ({ navigation }) => {
       //console.log('👯👯👯👯👯👯👯👯v3 키가 존재함👯👯👯👯👯👯', isV3KeyExist);
       const v3DeviceHistory = getNewIMessagesV3();
       if (v3DeviceHistory) {
+        console.log('v3DeviceHistory', v3DeviceHistory);
         const v3DeviceArray = JSON.parse(v3DeviceHistory);
         messages.push(...v3DeviceArray);
       }
@@ -467,6 +470,9 @@ const NewChat: React.FC = ({ navigation }) => {
   // useFocusEffect를 사용하여 화면이 포커스될 때마다 refresh flag를 확인
   useFocusEffect(
     useCallback(() => {
+      /*if (getRefreshChat() > 99) {
+        console.log('getRefreshChat() > 99');
+      }*/
       if (getRefreshChat() > 0) {
         // refresh flag가 설정되어 있다면 메시지를 새로 불러오고 flag를 초기화
         setRefreshChat(0);

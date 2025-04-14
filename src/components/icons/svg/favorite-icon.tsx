@@ -1,5 +1,5 @@
 import { SvgXml } from 'react-native-svg';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TouchableOpacity } from 'react-native';
 type FavoriteIconProps = IconProps & {
   toggleable?: boolean;
@@ -18,6 +18,9 @@ export const FavoriteIcon = ({
   onFavoritePress,
 }: FavoriteIconProps) => {
   const [isFilled, setIsFilled] = useState(isSaved);
+  useEffect(() => {
+    setIsFilled(isSaved);
+  }, [isSaved]);
   const handlePress = () => {
     if (toggleable) {
       setIsFilled((prev) => !prev);
