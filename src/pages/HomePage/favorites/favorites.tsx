@@ -86,13 +86,13 @@ const Favorites: React.FC<any> = ({ navigation }) => {
 
   // Function to handle all tasks when exiting the screen
   const handleScreenExit = async () => {
-    console.log('Screen exit cleanup');
+    //console.log('Screen exit cleanup');
     try {
       await addRefreshChat(100);
       Analytics.clickWarmChatButtonBack();
       deleteNewIMessagesV3();
     } catch (error) {
-      console.error('Error during screen exit:', error);
+      //console.error('Error during screen exit:', error);
     }
   };
 

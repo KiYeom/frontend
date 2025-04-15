@@ -12,7 +12,7 @@ module.exports = {
     userInterfaceStyle: 'automatic',
     newArchEnabled: true,
     splash: {
-      image: './src/assets/images/splash.png',
+      image: './src/assets/images/new_splash.png',
       resizeMode: 'cover',
       backgroundColor: '#4DA584',
     },
