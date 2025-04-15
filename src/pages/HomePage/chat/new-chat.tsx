@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Dimensions, Platform, View, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { GiftedChat, IMessage, SendProps } from 'react-native-gifted-chat';
+import { GiftedChat, IMessage, SendProps, SystemMessage } from 'react-native-gifted-chat';
 import { useFocusEffect } from '@react-navigation/native';
 import Header from '../../../components/header/header';
 import * as WebBrowser from 'expo-web-browser';
@@ -73,6 +73,11 @@ const botObject = {
   name: '쿠키',
   avatar: require('../../../assets/images/cookieprofile.png'),
   //avatar: require(cookieprofile),
+};
+const systemObject = {
+  _id: -1,
+  name: 'system',
+  avatar: null,
 };
 
 const NewChat: React.FC = ({ navigation }) => {
@@ -180,16 +185,33 @@ const NewChat: React.FC = ({ navigation }) => {
       } else {
         //새로 온 사람
         //console.log('🤖🤖🤖🤖🤖🤖🤖🤖새로 온 사람🤖🤖🤖🤖🤖🤖🤖🤖');
+        const systemMessage = {
+          _id: 'systemMessage',
+          text: `이 곳은 ${getUserNickname()}님과 저만의 비밀 공간이니, 어떤 이야기도 편하게 나눠주세요!\n\n반말로 대화를 나누고 싶으시다면 위에서 오른쪽에 있는 탭 바를 열고, 반말 모드를 켜 주세요!🍀💕`,
+          createdAt: new Date(),
+          user: systemObject,
+          isSaved: false,
+          hightlightKeyword: '',
+          system: true,
+        };
         const welcomeMessage = {
           _id: 'welcomeMessage',
-          text: `반가워요, ${getUserNickname()}님!💚 저는 ${getUserNickname()}님 곁에서 힘이 되어드리고 싶은 골든 리트리버 쿠키예요🐶 이 곳은 ${getUserNickname()}님과 저만의 비밀 공간이니, 어떤 이야기도 편하게 나눠주세요!\n\n반말로 대화를 나누고 싶으시다면 위에서 오른쪽에 있는 탭 바를 열고, 반말 모드를 켜 주세요!🍀💕`,
+          text: `반가워요, ${getUserNickname()}님!💚 저는 ${getUserNickname()}님 곁에서 힘이 되어드리고 싶은 골든 리트리버 쿠키예요🐶 오늘은 어떤 기분이세요?`,
           createdAt: new Date(),
           user: botObject,
           isSaved: false,
           hightlightKeyword: '',
+          showAvatar: true,
+          system: false,
         };
+
+        // systemMessage는 내부 데이터로 저장해두거나, 필요한 경우 별도로 처리
         messages.push(welcomeMessage);
-        setNewIMessagesV3(JSON.stringify([welcomeMessage]));
+        messages.push(systemMessage);
+
+        const messagesArray = [welcomeMessage, systemMessage];
+        const messagesString = JSON.stringify(messagesArray);
+        setNewIMessagesV3(messagesString);
       }
     } else {
       //v3 키가 존재하는 경우

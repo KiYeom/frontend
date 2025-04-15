@@ -248,7 +248,7 @@ export const RenderTime = (props: TimeProps<ExtendedIMessage>) => {
       }}
       timeTextStyle={{
         left: {
-          color: palette.neutral[400],
+          color: palette.neutral[500],
           fontSize: rsFont * 10,
           fontFamily: 'Pretendard-Regular',
           textAlign: 'center',
@@ -288,21 +288,28 @@ export const RenderDay = (props: DayProps) => {
   );
 };
 
-export const RenderSystemMessage = (props: SystemMessageProps<ExtendedIMessage>) => {
+export const RenderSystemMessage = (props: Props<ExtendedIMessage>) => {
   return (
     <SystemMessage
       {...props}
       wrapperStyle={{
-        paddingTop: rsHeight * 20,
-        paddingBottom: rsHeight * 8,
+        //paddingTop: rsHeight * 20,
+        //paddingHorizontal: rsHeight * 8,
         paddingHorizontal: rsWidth * 10,
+        paddingVertical: rsHeight * 10,
         justifyContent: 'center',
         alignItems: 'center',
+        alignContent: 'center',
+        //backgroundColor: 'pink',
+        backgroundColor: palette.neutral[900],
+        width: rsWidth * 200,
+        borderRadius: 10,
       }}
       textStyle={{
         fontFamily: 'Pretendard-Regular',
         fontSize: 12 * rsFont,
-        color: palette.neutral[400],
+        color: palette.neutral[50],
+        //color: 'red',
       }}
     />
   );
