@@ -122,6 +122,18 @@ module.exports = {
         },
       ],
       ['expo-router'],
+      [
+        'expo-splash-screen',
+        {
+          backgroundColor: '#31B28E',
+          image: './src/assets/images/logo_1024.png',
+          dark: {
+            image: './src/assets/images/logo_1024.png',
+            backgroundColor: '#31B28E',
+          },
+          imageWidth: 200,
+        },
+      ],
     ],
     runtimeVersion: '1.0.0',
     updates: {
