@@ -6,14 +6,14 @@ module.exports = {
   expo: {
     name: 'reMIND',
     slug: 'reMIND',
-    version: '1.5.7',
+    version: '1.5.8',
     orientation: 'portrait',
     icon: './src/assets/images/appicon.png',
     userInterfaceStyle: 'automatic',
     newArchEnabled: true,
     splash: {
       image: './src/assets/images/splash.png',
-      resizeMode: 'contain',
+      resizeMode: 'cover',
       backgroundColor: '#4DA584',
     },
     ios: {

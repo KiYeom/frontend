@@ -64,7 +64,7 @@ const assignGlobalIndices = (sections) => {
 };
 const TitleHeader = React.memo(() => (
   <TitleContainer>
-    <TitleImage source={require('../../../assets/images/bubble-cookie.png')} />
+    <TitleImage source={require('../../../assets/images/bubble_cookie.png')} />
     <Title>하루 끝에 꺼내보는{'\n'}따뜻한 대화</Title>
   </TitleContainer>
 ));
@@ -106,16 +106,16 @@ const Favorites: React.FC<any> = ({ navigation }) => {
     fetchFavorites();
   }, []);
   const imageSources = [
-    require('../../../assets/images/red-bubble.png'),
-    require('../../../assets/images/orange-bubble.png'),
-    require('../../../assets/images/yellow-bubble.png'),
-    require('../../../assets/images/green-bubble.png'),
-    require('../../../assets/images/pastel-green-bubble.png'),
-    require('../../../assets/images/sky-blue-bubble.png'),
-    require('../../../assets/images/blue-bubble.png'),
-    require('../../../assets/images/navy-bubble.png'),
-    require('../../../assets/images/purple-bubble.png'),
-    require('../../../assets/images/pink-bubble.png'),
+    require('../../../assets/images/red_bubble.png'),
+    require('../../../assets/images/orange_bubble.png'),
+    require('../../../assets/images/yellow_bubble.png'),
+    require('../../../assets/images/green_bubble.png'),
+    require('../../../assets/images/pastel_green_bubble.png'),
+    require('../../../assets/images/sky_blue_bubble.png'),
+    require('../../../assets/images/blue_bubble.png'),
+    require('../../../assets/images/navy_bubble.png'),
+    require('../../../assets/images/purple_bubble.png'),
+    require('../../../assets/images/pink_bubble.png'),
     // 추가 이미지...
   ];
   const toggleFavorite = async (id: string): Promise<void> => {
