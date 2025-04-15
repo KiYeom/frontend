@@ -196,7 +196,7 @@ const NewChat: React.FC = ({ navigation }) => {
       //console.log('👯👯👯👯👯👯👯👯v3 키가 존재함👯👯👯👯👯👯', isV3KeyExist);
       const v3DeviceHistory = getNewIMessagesV3();
       if (v3DeviceHistory) {
-        console.log('v3DeviceHistory', v3DeviceHistory);
+        //console.log('v3DeviceHistory', v3DeviceHistory);
         const v3DeviceArray = JSON.parse(v3DeviceHistory);
         messages.push(...v3DeviceArray);
       }
