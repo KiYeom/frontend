@@ -6,7 +6,7 @@ module.exports = {
   expo: {
     name: 'reMIND',
     slug: 'reMIND',
-    version: '1.5.8',
+    version: '1.5.9',
     orientation: 'portrait',
     icon: './src/assets/images/appicon.png',
     userInterfaceStyle: 'automatic',
