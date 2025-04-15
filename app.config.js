@@ -12,8 +12,8 @@ module.exports = {
     userInterfaceStyle: 'automatic',
     newArchEnabled: true,
     splash: {
-      image: './src/assets/images/new_splash.png',
-      resizeMode: 'cover',
+      image: './src/assets/images/splash.png',
+      resizeMode: 'contain',
       backgroundColor: '#4DA584',
     },
     ios: {
