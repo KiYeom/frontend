@@ -167,19 +167,19 @@ const NewChat: React.FC = ({ navigation }) => {
 
     if (!isV3KeyExist) {
       //v3 키가 존재하지 않는 경우
-      console.log('🔑🔑🔑🔑🔑🔑🔑🔑🔑v3 키가 존재하지 않음🔑🔑🔑🔑🔑🔑🔑🔑', isV3KeyExist);
+      //console.log('🔑🔑🔑🔑🔑🔑🔑🔑🔑v3 키가 존재하지 않음🔑🔑🔑🔑🔑🔑🔑🔑', isV3KeyExist);
       const v3lastMessageDate = new Date(0);
       const v3ServerMessages = await v3getIMessageFromServer(v3lastMessageDate); //전체 데이터 가져오기
-      console.log('v3ServerMessages', v3ServerMessages);
+      //console.log('v3ServerMessages', v3ServerMessages);
       if (v3ServerMessages && v3ServerMessages.length > 0) {
-        console.log('💚💚💚💚💚💚💚💚💚💚💚이전에 썼던 사람 마이그레이션 하기💚💚💚💚💚💚💚💚');
+        //console.log('💚💚💚💚💚💚💚💚💚💚💚이전에 썼던 사람 마이그레이션 하기💚💚💚💚💚💚💚💚');
         setNewIMessagesV3(JSON.stringify(v3ServerMessages)); //로컬 마이그레이션
         deleteNewIMessages(); //v3 이전 로컬 데이터 삭제
         messages = [...v3ServerMessages, ...messages]; //데이터 화면에 보여주기
-        console.log('messages', messages);
+        //console.log('messages', messages);
       } else {
         //새로 온 사람
-        console.log('🤖🤖🤖🤖🤖🤖🤖🤖새로 온 사람🤖🤖🤖🤖🤖🤖🤖🤖');
+        //console.log('🤖🤖🤖🤖🤖🤖🤖🤖새로 온 사람🤖🤖🤖🤖🤖🤖🤖🤖');
         const welcomeMessage = {
           _id: 'welcomeMessage',
           text: `반가워요, ${getUserNickname()}님!💚 저는 ${getUserNickname()}님 곁에서 힘이 되어드리고 싶은 골든 리트리버 쿠키예요🐶 이 곳은 ${getUserNickname()}님과 저만의 비밀 공간이니, 어떤 이야기도 편하게 나눠주세요!\n\n반말로 대화를 나누고 싶으시다면 위에서 오른쪽에 있는 탭 바를 열고, 반말 모드를 켜 주세요!🍀💕`,

@@ -44,6 +44,7 @@ export const SectionComponent = styled.View`
   justify-content: space-between;
   position: relative;
   gap: ${rsWidth * 20 + 'px'};
+  margin-bottom: 10px;
 `;
 
 export const SectionComponentText = styled.Text`

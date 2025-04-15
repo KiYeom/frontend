@@ -11,6 +11,9 @@ import { deleteNewIMessagesV3 } from '../../../utils/storageUtils';
 import { addRefreshChat } from '../../../utils/storageUtils';
 import { convertUtcToKst } from '../../../utils/times';
 import Analytics from '../../../utils/analytics';
+import { css } from '@emotion/native';
+import { ActivityIndicator } from 'react-native';
+import { TabScreenName, RootStackName, HomeStackName } from '../../../constants/Constants';
 import {
   Container,
   TitleContainer,
@@ -48,6 +51,17 @@ const groupFavoritesByDate = (data: TFavoriteChatLog) => {
   sections.sort((a, b) => new Date(b.title) - new Date(a.title));
   return sections;
 };
+// 각 항목에 전체 목록에서의 인덱스를 지정하는 함수
+const assignGlobalIndices = (sections) => {
+  let globalIndex = 0;
+  const result = sections.map((section) => {
+    const newData = section.data.map((item) => {
+      return { ...item, globalIndex: globalIndex++ };
+    });
+    return { ...section, data: newData };
+  });
+  return result;
+};
 const TitleHeader = React.memo(() => (
   <TitleContainer>
     <TitleImage source={require('../../../assets/images/bubble-cookie.png')} />
@@ -58,25 +72,38 @@ const TitleHeader = React.memo(() => (
 const Favorites: React.FC<any> = ({ navigation }) => {
   const [sections, setSections] = React.useState([]);
   const [favoriteStates, setFavoriteStates] = useState<boolean>({});
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const fetchFavorites = async () => {
+    setIsLoading(true);
+    try {
+      const res = await getFavoriteChat();
+      if (res && res.favorites) {
+        const groupedSections = groupFavoritesByDate(res.favorites);
+        const sectionWidthIndexes = assignGlobalIndices(groupedSections);
+        setSections(sectionWidthIndexes);
+        const initialFavoriteStates: FavoriteStates = {};
+        res.favorites.forEach((item) => {
+          initialFavoriteStates[item.id] = true;
+        });
+        setFavoriteStates(initialFavoriteStates);
+      } else {
+        setSections([]);
+      }
+    } catch (error) {
+      alert('대화 내역을 불러오는 중 오류가 발생했어요. 다시 시도해주세요.');
+      navigation.navigate(RootStackName.BottomTabNavigator, {
+        screen: TabScreenName.Home,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     Analytics.watchWarmChatScreen();
     //내가 좋아했던 말들
-    getFavoriteChat()
-      .then((res) => {
-        if (res && res.favorites) {
-          const groupedSections = groupFavoritesByDate(res.favorites);
-          setSections(groupedSections);
-          const initialFavoriteStates: FavoriteStates = {};
-          res.favorites.forEach((item) => {
-            initialFavoriteStates[item.id] = true;
-          });
-          setFavoriteStates(initialFavoriteStates);
-        }
-      })
-      .catch((err) => {
-        //console.log('[Favorites] 내가 좋아했던 말들 에러: ', err);
-      });
+    fetchFavorites();
   }, []);
   const imageSources = [
     require('../../../assets/images/red-bubble.png'),
@@ -92,6 +119,7 @@ const Favorites: React.FC<any> = ({ navigation }) => {
     // 추가 이미지...
   ];
   const toggleFavorite = async (id: string): Promise<void> => {
+    Analytics.clickFavoriteHeartButton(id);
     const newState = !favoriteStates[id];
 
     // 상태 업데이트
@@ -122,6 +150,19 @@ const Favorites: React.FC<any> = ({ navigation }) => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <View
+        style={css`
+          flex: 1;
+          justify-content: center;
+          align-items: center;
+        `}>
+        <ActivityIndicator size="large" color={palette.primary[500]} />
+      </View>
+    );
+  }
+
   return (
     <Container>
       <Header
@@ -129,6 +170,7 @@ const Favorites: React.FC<any> = ({ navigation }) => {
         leftFunction={async () => {
           await addRefreshChat(100);
           navigation.goBack();
+
           Analytics.clickWarmChatButtonBack();
           deleteNewIMessagesV3();
         }}
@@ -142,7 +184,7 @@ const Favorites: React.FC<any> = ({ navigation }) => {
         ListHeaderComponent={TitleHeader}
         renderItem={({ item, index }) => {
           //console.log(index % imageSources.length);
-          const imageSource = imageSources[index % imageSources.length];
+          const imageSource = imageSources[item.globalIndex % imageSources.length];
           //console.log('index', index);
           //console.log('item', item);
           //console.log('imageSource', imageSource);
