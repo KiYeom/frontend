@@ -74,6 +74,28 @@ const Favorites: React.FC<any> = ({ navigation }) => {
   const [favoriteStates, setFavoriteStates] = useState<boolean>({});
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  // Handle cleanup when leaving the screen (including swipe back)
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', async (e) => {
+      // Perform cleanup operations
+      await handleScreenExit();
+    });
+
+    return unsubscribe; // Cleanup the listener when component unmounts
+  }, [navigation]);
+
+  // Function to handle all tasks when exiting the screen
+  const handleScreenExit = async () => {
+    console.log('Screen exit cleanup');
+    try {
+      await addRefreshChat(100);
+      Analytics.clickWarmChatButtonBack();
+      deleteNewIMessagesV3();
+    } catch (error) {
+      console.error('Error during screen exit:', error);
+    }
+  };
+
   const fetchFavorites = async () => {
     setIsLoading(true);
     try {
@@ -168,11 +190,8 @@ const Favorites: React.FC<any> = ({ navigation }) => {
       <Header
         title={'따스한 대화 모아보기'}
         leftFunction={async () => {
-          await addRefreshChat(100);
+          await handleScreenExit();
           navigation.goBack();
-
-          Analytics.clickWarmChatButtonBack();
-          deleteNewIMessagesV3();
         }}
         bgcolor={`${palette.neutral[50]}`}
       />
