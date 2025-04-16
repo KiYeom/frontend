@@ -315,7 +315,7 @@ const NewChat: React.FC = ({ navigation }) => {
     setSending(true);
     const question = buffer ?? '';
     const isDemo = getIsDemo();
-    console.log('iamge ', image);
+    console.log('iamge ', image, question);
     const imageToSend = image;
     setImage(null);
     chatting(1, question, isDemo, imageToSend) //버퍼에 저장된 메세지를 서버로 전송하여 질문 & 대화 전체 쌍을 받아옴
@@ -386,9 +386,13 @@ const NewChat: React.FC = ({ navigation }) => {
       clearTimeout(typingTimeoutRef.current);
     }
 
-    typingTimeoutRef.current = setTimeout(() => {
+    if (typingTimeoutRef.current === null && image) {
       sendMessageToServer();
-    }, 2 * 1000);
+    } else {
+      typingTimeoutRef.current = setTimeout(() => {
+        sendMessageToServer();
+      }, 2 * 1000);
+    }
   };
 
   /*
@@ -587,9 +591,8 @@ const NewChat: React.FC = ({ navigation }) => {
     if (image) {
       console.log('이미지 전송');
       // 이미지를 보낸 경우
-      setSending(false);
-      setBuffer(''); // Set empty buffer for image-only messages
-      sendMessageToServer();
+      setBuffer(buffer ? buffer + newMessages[0].text + '\t' : newMessages[0].text + '\t');
+      //sendMessageToServer();
     } else {
       console.log('텍스트만 전송');
       // 텍스트만 보낸 경우 (디바운싱)
