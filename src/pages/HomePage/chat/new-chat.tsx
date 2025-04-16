@@ -579,11 +579,23 @@ const NewChat: React.FC = ({ navigation }) => {
       return;
     }
     console.log('onsend ');
-    setBuffer(buffer ? buffer + newMessages[0].text + '\t' : newMessages[0].text + '\t');
+    //setBuffer(buffer ? buffer + newMessages[0].text + '\t' : newMessages[0].text + '\t');
     setMessages((previousMessages) => {
       //setIMessagesV3(previousMessages, newMessages.reverse());
       return GiftedChat.append(previousMessages, newMessages);
     });
+    if (image) {
+      console.log('이미지 전송');
+      // 이미지를 보낸 경우
+      setSending(false);
+      setBuffer(''); // Set empty buffer for image-only messages
+      sendMessageToServer();
+    } else {
+      console.log('텍스트만 전송');
+      // 텍스트만 보낸 경우 (디바운싱)
+      setBuffer(buffer ? buffer + newMessages[0].text + '\t' : newMessages[0].text + '\t');
+      // Timer will be reset in the useEffect that watches buffer
+    }
   };
 
   const scrollToIndexFailed = (info) => {
