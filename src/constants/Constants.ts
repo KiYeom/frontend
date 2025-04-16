@@ -4,7 +4,7 @@ export const CHATLOG = 'CHATLOG';
 
 export const ERRORMESSAGE = '혹시 다시 얘기해주실 수 있나요? 멍멍!🐶🐾';
 
-export const SPLASH_PATH = '/src/assets/images/splash.png';
+export const SPLASH_PATH = '/src/assets/images/new_splash.png';
 export const COOKIE_PROFILE_PATH = './src/assets/images/setting_default_profile.png';
 
 export const reasons = [
