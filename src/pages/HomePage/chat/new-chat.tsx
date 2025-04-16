@@ -74,12 +74,13 @@ import { doesV3KeyExist, getNewIMessagesV3 } from '../../../utils/storageUtils';
 import { getV3OldChatting } from '../../../apis/chatting';
 import ChatHeader from '../../../components/chatHeader/chatHeader';
 import { searchChatWord } from '../../../apis/chatting';
-import { ExtendedIMessage } from '../../../utils/chatting';
+import { ApiAnswerMessage, ApiQuestionMessage, ExtendedIMessage } from '../../../utils/chatting';
 import { reportMessages } from './chat-render';
 import { useCallback } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import ImageShow from '../../../components/image-show/ImageShow';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ApiChatResponse, ApiQuestions, ApiAnswers } from '../../../utils/chatting';
 //유저와 챗봇 오브젝트 정의
 const userObject = {
   _id: 0,
@@ -213,15 +214,54 @@ const NewChat: React.FC = ({ navigation }) => {
     const serverMessages = await getV3OldChatting(botObject._id, lastDateAddSecond.toISOString());
     console.log('v3 데이터 확인하기', serverMessages);
     if (serverMessages && serverMessages.chats && serverMessages.chats.length > 0) {
+      const imageUrlPattern = /https:\/\/bucket\.remind4u\.co\.kr\/gemini\/[a-f0-9]+\.jpg/;
       for (let i = 0; i < serverMessages.chats.length; i++) {
-        messages.push({
-          _id: serverMessages.chats[i].id,
-          text: serverMessages.chats[i].text,
-          createdAt: new Date(new Date(serverMessages.chats[i].utcTime).getTime()),
-          user: serverMessages.chats[i].status === 'user' ? userObject : botObject,
-          isSaved: serverMessages.chats[i].isSaved,
-          hightlightKeyword: '',
-        }); //대화 내용을 messages에 추가
+        const chat = serverMessages.chats[i];
+        const originalText = chat.text || '';
+        // 이미지 URL이 포함된 메시지인지 확인
+        const imageUrlMatch = originalText.match(imageUrlPattern);
+        if (imageUrlMatch && originalText.includes('\n')) {
+          // 줄바꿈으로 텍스트와 이미지 URL 분리
+          const textParts = originalText.split('\n').filter((part) => part.trim() !== '');
+
+          // 텍스트 부분과 이미지 URL 부분 구분
+          const textOnly = textParts.filter((part) => !imageUrlPattern.test(part)).join('\n');
+          const imageUrls = textParts.filter((part) => imageUrlPattern.test(part));
+
+          // 이미지 URL마다 별도 메시지 추가
+          imageUrls.forEach((imageUrl) => {
+            messages.push({
+              _id: `${chat.id}-PIC`, // 이미지 메시지에 -PIC 접미사 추가
+              text: imageUrl,
+              image: imageUrl, // 이미지 URL을 image 필드에 별도 저장
+              createdAt: new Date(new Date(chat.utcTime).getTime()),
+              user: chat.status === 'user' ? userObject : botObject,
+              isSaved: chat.isSaved,
+              hightlightKeyword: '',
+            });
+          });
+          // 텍스트가 있으면 텍스트 메시지 추가
+          if (textOnly.trim() !== '') {
+            messages.push({
+              _id: chat.id,
+              text: textOnly,
+              createdAt: new Date(new Date(chat.utcTime).getTime()),
+              user: chat.status === 'user' ? userObject : botObject,
+              isSaved: chat.isSaved,
+              hightlightKeyword: '',
+            });
+          }
+        } else {
+          // 일반 텍스트 메시지는 그대로 추가
+          messages.push({
+            _id: chat.id,
+            text: originalText,
+            createdAt: new Date(new Date(chat.utcTime).getTime()),
+            user: chat.status === 'user' ? userObject : botObject,
+            isSaved: chat.isSaved,
+            hightlightKeyword: '',
+          });
+        }
       }
     }
     return messages.reverse();
@@ -289,7 +329,7 @@ const NewChat: React.FC = ({ navigation }) => {
         const v3DeviceArray = JSON.parse(v3DeviceHistory);
         messages.push(...v3DeviceArray);
       }
-      console.log('🦈🦈🦈🦈🦈🦈v3DeviceHistory', messages);
+      //console.log('🦈🦈🦈🦈🦈🦈v3DeviceHistory', messages);
       //console.log('🦈🦈🦈🦈🦈🦈v3DeviceHistory', v3DeviceHistory);
       const v3lastMessageDate: Date =
         messages.length > 0 ? new Date(messages[0].createdAt) : new Date(0);
@@ -323,24 +363,64 @@ const NewChat: React.FC = ({ navigation }) => {
         if (res) {
           //const newMessages: IMessage[] = [];
           //console.log('현재 저장된 메세지들', messages);
-          const sortedMessages = res?.reverse(); //결과를 역순으로 정렬하여 최신 메세지가 앞으로
-          const apiQuestions = sortedMessages.filter(
-            (item) => item.question !== null && item.question !== '' && item.answer === null,
+          const sortedMessages: ApiChatResponse = res?.reverse(); //결과를 역순으로 정렬하여 최신 메세지가 앞으로
+          //사용자가 작성한 메세지들을 담은 apiQuestions 배열
+          const apiQuestions: ApiQuestions = sortedMessages.filter(
+            (item): item is ApiQuestionMessage =>
+              item.question !== null && item.question !== '' && item.answer === null,
           );
-          const apiAnswers = sortedMessages.filter(
-            (item) => item.answer !== null && item.question === null,
+          //사용자 물음에 대한 응답 결과를 담은 (쿠키 대답) apiAnswers 배열
+          const apiAnswers: ApiAnswers = sortedMessages.filter(
+            (item): item is ApiAnswerMessage => item.answer !== null && item.question === null,
           );
+
+          console.log('apiQuestions', apiQuestions);
+          console.log('apiAnswers', apiAnswers);
 
           setMessages((previousMessages) => {
             const updatedMessages = [...previousMessages];
+            // 이미지 URL 패턴 (정확한 패턴으로 조정 필요)
+            const imageUrlPattern = /https:\/\/bucket\.remind4u\.co\.kr\/gemini\/[a-f0-9]+\.jpg/;
             for (let i = 0; i < apiQuestions.length; i++) {
-              if (updatedMessages[i] && updatedMessages[i].text === apiQuestions[i].question) {
-                updatedMessages[i] = {
-                  ...updatedMessages[i],
+              // 최근 메시지부터 시작해서 일치하는 메시지 찾기 (역순)
+              const questionIndex = previousMessages.findIndex((msg, idx) => {
+                // 텍스트만 있는 경우
+                if (msg.text === apiQuestions[i].question) {
+                  console.log('이 버블은 텍스트만 존재함', msg.text);
+                  return true;
+                }
+
+                // 이미지가 포함된 경우 (URL 패턴 검사)
+                if (imageUrlPattern.test(apiQuestions[i].question)) {
+                  // 1. 텍스트에 이미지 URL이 포함된 경우
+                  if (
+                    msg.text &&
+                    msg.text.includes(imageUrlPattern.exec(apiQuestions[i].question)?.[0] || '')
+                  ) {
+                    console.log('이 버블은 텍스트와 이미지가 존재함', msg.text);
+                    return true;
+                  }
+
+                  // 2. image 필드가 있는 경우
+                  if (msg.image && apiQuestions[i].question.includes(msg.image)) {
+                    console.log('이 버블은 이미지만 존재함', msg.image);
+                    return true;
+                  }
+                }
+
+                return false;
+              });
+
+              // 일치하는 메시지를 찾았으면 ID 업데이트
+              if (questionIndex !== -1) {
+                console.log('업데아트', questionIndex);
+                updatedMessages[questionIndex] = {
+                  ...updatedMessages[questionIndex],
                   _id: apiQuestions[i].id,
                 };
               }
             }
+
             // API 응답에서 봇의 대답들만 필터링했다고 가정 (예: apiAnswers)
             const newBotMessages: ExtendedIMessage[] = apiAnswers.map((item, idx) => ({
               _id: item.id,
