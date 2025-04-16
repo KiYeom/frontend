@@ -83,6 +83,7 @@ export type TIconName =
   | 'normal-emotion'
   | 'edit-icon'
   | 'favorite-icon'
+  | 'favorite-bookmark-icon'
   | 'trash-icon'
   | 'chat-search-icon'
   | 'picture-icon';
@@ -96,6 +97,7 @@ export default function Icon({
   isSaved,
   messageId,
   onFavoritePress,
+  iconType,
 }: {
   width?: number | string;
   height?: number | string;
@@ -105,6 +107,7 @@ export default function Icon({
   isSaved?: boolean;
   messageId?: string;
   onFavoritePress?: (messageId: string) => void;
+  iconType?: string;
 }) {
   switch (name) {
     case 'airplane':
@@ -186,6 +189,7 @@ export default function Icon({
     case 'edit-icon':
       return <EditIcon width={width} height={height} color={color} />;
     case 'favorite-icon':
+    case 'favorite-bookmark-icon':
       return (
         <FavoriteIcon
           width={width}
@@ -195,6 +199,7 @@ export default function Icon({
           isSaved={isSaved}
           messageId={messageId}
           onFavoritePress={onFavoritePress}
+          iconType={iconType}
         />
       );
     case 'trash-icon':

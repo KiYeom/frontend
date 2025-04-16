@@ -356,6 +356,7 @@ export default class Analytics {
   public static clickSideMenuWarmChatButton = (): void => {
     this.sendEvent('채팅 - 사이드바 - 따스한 대화 보관함 클릭', 'sideMenuWarmChatButton');
   };
+  ß;
 
   //채팅 - 사이드바 - 따스한 대화 보관함 창 진입
   public static watchWarmChatScreen = (): void => {
@@ -365,6 +366,11 @@ export default class Analytics {
   //채팅 - 사이드바 - 따스한 대화 보관함 창에서 뒤로 가기 클릭
   public static clickWarmChatButtonBack = (): void => {
     this.sendEvent('따스한 대화 보관함 - 뒤로가기 클릭', 'warmChatButtonBack');
+  };
+
+  //채팅 - 사이드바 - 따스한 대화 보관함에서 좋아요 버튼 누르기
+  public static clickFavoriteHeartButton = (messageId: string): void => {
+    this.sendEvent('따스한 대화 보관함 - 좋아요 클릭', 'favoriteHeartButton', { messageId });
   };
 
   //채팅 - 사이드바 - 모든 대화 삭제하기 클릭

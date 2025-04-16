@@ -36,24 +36,25 @@ import { useRef, useEffect } from 'react';
 import UpDownBtn from '../../../components/up-down-button/UpDownBtn';
 import { ExtendedIMessage } from '../../../utils/chatting';
 import HighlightedMessageText from './HighlightMessageText';
+import Analytics from '../../../utils/analytics';
 import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
 import ImageShow from '../../../components/image-show/ImageShow';
-import Analytics from '../../../utils/analytics';
 import { MAX_CHAT_IMAGE_WIDTH } from '../../../constants/Constants';
 
 export const reportMessages = async (messageId: string, isSaved: boolean): string | undefined => {
-  console.log('reportMessags 실행', messageId);
+  //console.log('reportMessags 실행', messageId);
   if (messageId === null) return;
   //const isSaved: boolean = true;
   const res = await saveFavoriteChatLog(messageId, !isSaved);
-  console.log('res', res);
+  //console.log('res', res);
   return messageId;
 };
 
 export const RenderBubble = (
   props: BubbleProps<ExtendedIMessage> & { onFavoritePress: (messageId: string) => void },
 ) => {
+  //console.log('renderBubble', props.currentMessage);
   const showReport = (): boolean => {
     const nowMessageUserId = props.currentMessage.user._id;
     if (props.currentMessage._id === 'welcomeMessage') return false;
@@ -118,6 +119,13 @@ export const RenderBubble = (
       </View>
     );
   }
+  const isSameSender =
+    props.previousMessage &&
+    props.previousMessage.user &&
+    props.previousMessage.user._id === props.currentMessage.user._id;
+
+  // 간격 설정: 동일 그룹이면 5px, 다르면 10px (반응형 값 사용)
+  const bubbleSpacing = isSameSender ? rsHeight * 5 : rsHeight * 10;
   return (
     <Animated.View
       //onLayout={handleMessageLayout(props.currentMessage._id)}
@@ -125,14 +133,20 @@ export const RenderBubble = (
       entering={FadeInDown}
       style={css`
         flex-direction: ${props.position === 'left' ? 'row' : 'row-reverse'};
-        align-items: end;
-        justify-content: start;
+        align-items: flex-end;
+        justify-content: flex-start;
         gap: ${rsWidth * 6 + 'px'}; //말풍선과 시간 사이의 간격
+        /* 아래쪽 margin으로 메세지 간 간격 적용 */
+        margin-bottom: ${rsHeight * 5 + 'px'};
       `}>
       <TouchableOpacity activeOpacity={1} onLongPress={props.onLongPress}>
         <View
           style={css`
-            margin-bottom: ${rsHeight * 5 + 'px'};
+            //margin-bottom: ${rsHeight * 5 + 'px'};
+            //background-color: black;
+            margin-bottom: 0;
+            flex-direction: column;
+            flex: 1;
           `}>
           <Bubble
             {...props}
@@ -174,6 +188,7 @@ export const RenderBubble = (
                 padding-horizontal: ${rsWidth * 12 + 'px'};
                 padding-vertical: ${rsHeight * 8 + 'px'};
                 margin: 0px;
+                flex: 1;
               `,
               right: css`
                 max-width: ${rsWidth * 200 + 'px'};
@@ -186,6 +201,7 @@ export const RenderBubble = (
                 padding-vertical: ${rsHeight * 8 + 'px'};
                 //padding-vertical: ${props.currentMessage.image ? 0 + 'px' : rsHeight * 8 + 'px'};
                 margin: 0px;
+                flex: 1;
               `,
             }}
           />
@@ -193,17 +209,20 @@ export const RenderBubble = (
       </TouchableOpacity>
 
       {showReport() && (
-        <View
+        <TouchableOpacity
           style={css`
             justify-content: flex-end;
-          `}>
+            //background-color: yellow;
+            //padding: 10px;
+          `}
+          hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}>
           <Icon
             name="favorite-icon"
             width={rsWidth * 14 + 'px'}
             height={rsHeight * 14 + 'px'}
             toggleable
             isSaved={props.currentMessage.isSaved}
-            messageId={'testMessageId'}
+            messageId={props.currentMessage._id}
             onFavoritePress={(id) => {
               //console.log('메세지', props.currentMessage);
               //reportMessages(props.currentMessage._id, props.currentMessage.isSaved);
@@ -213,7 +232,7 @@ export const RenderBubble = (
               Analytics.clickChatLikeButton(props.currentMessage._id);
             }}
           />
-        </View>
+        </TouchableOpacity>
       )}
 
       {props.renderTime && props.renderTime({ ...props })}
@@ -291,17 +310,19 @@ export const RenderTime = (props: TimeProps<ExtendedIMessage>) => {
           marginRight: 0,
           marginBottom: 0,
           justifyContent: 'flex-end',
+          //backgroundColor: 'blue',
         },
         right: {
           marginLeft: 0,
           marginRight: 0,
           marginBottom: 0,
           justifyContent: 'flex-end',
+          //backgroundColor: 'pink',
         },
       }}
       timeTextStyle={{
         left: {
-          color: palette.neutral[400],
+          color: palette.neutral[500],
           fontSize: rsFont * 10,
           fontFamily: 'Pretendard-Regular',
           textAlign: 'center',
@@ -341,21 +362,28 @@ export const RenderDay = (props: DayProps) => {
   );
 };
 
-export const RenderSystemMessage = (props: SystemMessageProps<ExtendedIMessage>) => {
+export const RenderSystemMessage = (props: Props<ExtendedIMessage>) => {
   return (
     <SystemMessage
       {...props}
       wrapperStyle={{
-        paddingTop: rsHeight * 20,
-        paddingBottom: rsHeight * 8,
+        //paddingTop: rsHeight * 20,
+        //paddingHorizontal: rsHeight * 8,
         paddingHorizontal: rsWidth * 10,
+        paddingVertical: rsHeight * 10,
         justifyContent: 'center',
         alignItems: 'center',
+        alignContent: 'center',
+        //backgroundColor: 'pink',
+        backgroundColor: palette.neutral[900],
+        width: rsWidth * 200,
+        borderRadius: 10,
       }}
       textStyle={{
         fontFamily: 'Pretendard-Regular',
         fontSize: 12 * rsFont,
-        color: palette.neutral[400],
+        color: palette.neutral[50],
+        //color: 'red',
       }}
     />
   );
@@ -451,6 +479,7 @@ export const RenderInputToolbar = (
             <TouchableOpacity
               onPress={async () => {
                 if (sendingStatus) return;
+                const imageUrl = image;
 
                 // 텍스트와 이미지 모두 있을 때: 두 개의 메시지 전송
                 if (sendProps.text && image && image.length > 0) {
@@ -465,7 +494,7 @@ export const RenderInputToolbar = (
                       },
                       {
                         ...sendProps.currentMessage,
-                        image: image,
+                        image: imageUrl,
                         text: ' ', // 텍스트 말풍선에 영향이 없도록 공백 문자 사용
                       },
                     ],
@@ -480,7 +509,7 @@ export const RenderInputToolbar = (
                     [
                       {
                         ...sendProps.currentMessage,
-                        image: image,
+                        image: imageUrl,
                         text: ' ', // 텍스트 말풍선이 생성되지 않도록 처리
                       },
                     ],
@@ -502,7 +531,6 @@ export const RenderInputToolbar = (
                   );
                   return;
                 }
-
                 // 텍스트도 이미지도 없는 경우는 아무 작업도 하지 않습니다.
               }}>
               <Icon
