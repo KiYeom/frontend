@@ -127,12 +127,12 @@ const NewChat: React.FC = ({ navigation }) => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       allowsEditing: false,
-      //aspect: [4, 3],
       quality: 1,
     });
     console.log(result);
     if (!result.canceled) {
       setImage(result.assets[0].uri);
+      //핸드폰에서 선택한 사진의 로컬 주소 (file://~)를 저장
     }
     return;
   };
@@ -140,13 +140,9 @@ const NewChat: React.FC = ({ navigation }) => {
   //입력 필드 높이
   const [inputHeight, setInputHeight] = useState(rsFont * 16 * 1.5 + 15 * 2);
 
-  //이모지를 보여줄 지 파악하는 상태
-  const [isShownEmoji, setIsShownEmoji] = useState<boolean>(false);
-  //화면 높이
-  const { width, height } = Dimensions.get('window');
   //console.log('화면 너비:', width, '화면 높이:', height);
   const [keyboardHeight, setKeyboardHeight] = useState<number>(0);
-  const insets = useSafeAreaInsets();
+
   //위치하는 y좌표 자리는... 화면 높이 - 입력 필드 높이-키보드 높이
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', onKeyboardDidShow);
@@ -351,7 +347,7 @@ const NewChat: React.FC = ({ navigation }) => {
   //버퍼에 저장된 메시지를 서버로 전송하는 sendMessageToServer 함수
   const sendMessageToServer = () => {
     console.log('sendMessageToServer 실행', buffer, image);
-    if ((!buffer && !image) || sending) return;
+    if ((!buffer && !image) || sending) return; //텍스트도, 이미지도 없는 경우에는 전송하지 않음
     setSending(true);
     const question = buffer ?? '';
     const isDemo = getIsDemo();
@@ -456,11 +452,9 @@ const NewChat: React.FC = ({ navigation }) => {
       });
   };
 
-  /*
-  디바운싱을 담당하는 resetTimer 함수
-    1. 타이머가 돌아가고 있다면 타이머를 초기화한다
-    2. 입력이 모두 끝나고 2초 후에 타이머가 sendMessageToServer() 함수를 실행한다.
-  */
+  //디바운싱을 담당하는 resetTimer 함수
+  //타이핑을 하고 있다면 -> 타이머 초기화 & 타이핑 정지했다면 -> 타이머 동작 & 2초 후에 서버로 전송
+  //이미지를 전송하는 경우에는 바로 서버로 전송
   const resetTimer = () => {
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);

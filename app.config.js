@@ -137,7 +137,7 @@ module.exports = {
       [
         'expo-image-picker',
         {
-          photosPermission: 'The app accesses your photos to let you share them with your friends.',
+          photosPermission: '리마인드에서 사진을 첨부하기 위해서는 사진 선택 권한이 필요합니다.',
         },
       ],
     ],
