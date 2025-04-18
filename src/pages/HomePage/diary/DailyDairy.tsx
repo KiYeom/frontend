@@ -1,6 +1,6 @@
 import { css } from '@emotion/native';
 import { useHeaderHeight } from '@react-navigation/elements';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -59,6 +59,7 @@ const DailyDairy = ({ navigation, route }) => {
   //const [text, setText] = useState<string>('');
   const maxLength = 300;
   const insets = useSafeAreaInsets();
+  console.log('insets', insets);
   const { selectedEmotions, setSelectedEmotions, diaryText, setDiaryText } = useEmotionStore();
 
   const { calendarData, fetchCalendarData, updateEntryStatus, logCalendarState } =
@@ -84,6 +85,8 @@ const DailyDairy = ({ navigation, route }) => {
     setIsRecordKeywordList(dailyStatistics.record.Keywords);
     setIsNullRecordKeywordList(dailyStatistics.record.isNULL);
   };
+  const { bottom } = useSafeAreaInsets();
+  const offset = useMemo(() => ({ closed: 0, opened: bottom }), [bottom]);
 
   useEffect(() => {
     Analytics.watchDiaryWriteScreen();
@@ -91,12 +94,15 @@ const DailyDairy = ({ navigation, route }) => {
   }, []);
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <TouchableWithoutFeedback onPressIn={Keyboard.dismiss}>
+    <GestureHandlerRootView style={{ flex: 1, paddingBottom: insets.bottom }}>
+      <TouchableWithoutFeedback
+        onPressIn={Keyboard.dismiss}
+        style={{ paddingBottom: insets.bottom, backgroundColor: 'orange' }}>
         <View
           style={css`
-            padding-bottom: ${insets.bottom + 'px'};
+            padding-bottom: 100px;
             flex: 1;
+            background-color: blue;
           `}>
           <Header title={formatDateKorean(dateID)} />
           <KeyboardAwareScrollView ScrollViewComponent={ScrollView}>
@@ -150,35 +156,33 @@ const DailyDairy = ({ navigation, route }) => {
               onChangeText={(diaryText) => setDiaryText(diaryText)}
             />
           </KeyboardAwareScrollView>
-          <View
-            style={css`
-              //background-color: pink;
-              //padding-left: ${rsWidth * 200 + 'px'};
-              //padding-right: ${rsWidth * 24 + 'px'};
-              padding-horizontal: ${rsWidth * 24 + 'px'};
-            `}>
-            <Button
-              title="일기 기록하기"
-              primary={true}
-              disabled={validateDairy(diaryText) === 'correct' ? false : true}
-              onPress={async () => {
-                Analytics.clickDiaryWriteButton();
-                await todayEmotion(dateID, selectedEmotions, diaryText);
-                navigation.navigate(RootStackName.BottomTabNavigator, {
-                  screen: TabScreenName.Home,
-                });
-
-                //console.log('~~~~', selectedEmotions);
-                const targetEmotion =
-                  selectedEmotions.find((emotion) => emotion.type === 'custom') ||
-                  selectedEmotions[0];
-                //console.log('targetEmtoin', targetEmotion);
-                updateEntryStatus(dateID, `${targetEmotion.group}-emotion`);
-              }}
-            />
-          </View>
         </View>
       </TouchableWithoutFeedback>
+      <KeyboardStickyView offset={offset}>
+        <View
+          style={css`
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            padding: ${rsHeight * 12 + 'px'} ${rsWidth * 16 + 'px'};
+            background-color: ${palette.neutral[50]};
+            border-top-width: 1px;
+            border-top-color: ${palette.neutral[200]};
+          `}>
+          <Icon
+            name="picture-icon"
+            width={rsWidth * 20}
+            height={rsHeight * 20}
+            color={palette.neutral[400]}
+          />
+          <Icon
+            name="check-icon"
+            width={rsWidth * 20}
+            height={rsHeight * 20}
+            color={palette.neutral[400]}
+          />
+        </View>
+      </KeyboardStickyView>
     </GestureHandlerRootView>
   );
 };
