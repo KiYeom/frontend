@@ -6,7 +6,7 @@ module.exports = {
   expo: {
     name: 'reMIND',
     slug: 'reMIND',
-    version: '1.5.7',
+    version: '1.5.9',
     orientation: 'portrait',
     icon: './src/assets/images/appicon.png',
     userInterfaceStyle: 'automatic',
@@ -122,6 +122,18 @@ module.exports = {
         },
       ],
       ['expo-router'],
+      [
+        'expo-splash-screen',
+        {
+          backgroundColor: '#31B28E',
+          image: './src/assets/images/logo_1024.png',
+          dark: {
+            image: './src/assets/images/logo_1024.png',
+            backgroundColor: '#31B28E',
+          },
+          imageWidth: 200,
+        },
+      ],
     ],
     runtimeVersion: '1.0.0',
     updates: {
