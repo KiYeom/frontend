@@ -1,178 +1,123 @@
 import { css } from '@emotion/native';
 import { useHeaderHeight } from '@react-navigation/elements';
-import React, { useEffect, useState, useMemo } from 'react';
-import {
-  Keyboard,
-  KeyboardAvoidingView,
-  NativeModules,
-  Platform,
-  Text,
-  TextInput,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
-import { useKeyboardHandler } from 'react-native-keyboard-controller';
-import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
+import { Keyboard, TextInput, View, TouchableOpacity } from 'react-native';
+import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
 import Icon from '../../../components/icons/icons';
 import Toast from 'react-native-root-toast';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { dailyAnalyze, todayEmotion, todayEmotionCheck } from '../../../apis/analyze';
-import {
-  emotionData,
-  emotionsByColumn,
-  HomeStackName,
-  MAXIMUM_EMOTION_COUNT,
-  MINIMUM_EMOTION_COUNT,
-  TabScreenName,
-} from '../../../constants/Constants';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { dailyAnalyze, todayEmotion } from '../../../apis/analyze';
+import { TabScreenName, RootStackName } from '../../../constants/Constants';
 import EmotionTitleBox from './emotionTitleBox';
 import Analytics from '../../../utils/analytics';
-import useRecordedEmotionStore from '../../../utils/emotion-recorded';
 import useEmotionStore from '../../../store/emotion-status';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
-import { getUserNickname } from '../../../utils/storageUtils';
-import EmotionCard from '../../../components/atoms/EmotionCard/EmotionCard';
-import EmotionChip from '../../../components/atoms/EmotionChip/EmotionChip';
-import Button from '../../../components/button/button';
-import Input from '../../../components/input/input';
-import { EmotionDesc, SmallTitle, Title } from './EmotionChart.style';
-import {
-  KeyboardAwareScrollView,
-  KeyboardToolbar,
-  KeyboardStickyView,
-} from 'react-native-keyboard-controller';
-import palette from '../../../assets/styles/theme';
-import { Alert, TouchableOpacity } from 'react-native';
-import { useRoute } from '@react-navigation/native';
+import { formatDateKorean } from '../../../utils/times';
 import Header from '../../../components/header/header';
 import { useCalendarStore } from '../../../store/calendarStore';
-import { TEmotionCheck } from '~/src/apis/analyze.type';
-import { formatDateKorean } from '../../../utils/times';
-import { RootStackName } from '../../../constants/Constants';
-import { ScrollView, GestureHandlerRootView } from 'react-native-gesture-handler';
-const validateDairy = (sentence: string): 'error' | 'default' | 'correct' => {
-  if (sentence.length > 0 && sentence.length <= 300) return 'correct';
-  else return 'default';
-};
+import palette from '../../../assets/styles/theme';
 
 const DailyDairy = ({ navigation, route }) => {
-  //const [text, setText] = useState<string>('');
-  const maxLength = 300;
-  const insets = useSafeAreaInsets();
-  console.log('insets', insets);
-  const { selectedEmotions, setSelectedEmotions, diaryText, setDiaryText } = useEmotionStore();
-
-  const { calendarData, fetchCalendarData, updateEntryStatus, logCalendarState } =
-    useCalendarStore();
-  const [isRecordKeywordList, setIsRecordKeywordList] = useState<TEmotionCheck[]>([]);
-  const [isNullRecordKeywordList, setIsNullRecordKeywordList] = useState(true);
-
-  //const route = useRoute();
-  ///console.log('📌 Route Object:', route);
-  //console.log('📌 Route Params:', route.params);
-  //const { date } = route.params || {};
-  //console.log('일기장 화면 date', date);
-
-  //useEffect(() => {
-  //console.log('Updated params:', route.params);
-  //}, [route.params]);
   const { dateID } = route.params;
-  //console.log('일기 입력 페이지에서 받은 dateID', dateID);
+  const headerHeight = useHeaderHeight();
+  const insets = useSafeAreaInsets();
 
-  const inputRef = React.useRef<TextInput>(null);
-  useEffect(() => {
-    setTimeout(() => {
-      inputRef.current?.focus();
-    }, 100);
-  });
+  // 상태: 텍스트 인풋 높이
+  const [inputHeight, setInputHeight] = useState(46); //초기 높이
 
-  const fetchData = async () => {
-    const dailyStatistics = await dailyAnalyze(dateID);
-    if (!dailyStatistics) return;
-    setIsRecordKeywordList(dailyStatistics.record.Keywords);
-    setIsNullRecordKeywordList(dailyStatistics.record.isNULL);
-  };
-  const { bottom } = useSafeAreaInsets();
-  const offset = useMemo(() => ({ closed: 0, opened: bottom }), [bottom]);
+  const { selectedEmotions, diaryText, setDiaryText } = useEmotionStore();
+  const { updateEntryStatus } = useCalendarStore();
 
+  // 서버에서 키워드 리스트 페치 (생략)
   useEffect(() => {
     Analytics.watchDiaryWriteScreen();
-    fetchData();
+    // fetchData();
   }, []);
 
+  const handleContentSizeChange = (event) => {
+    const { width, height } = event.nativeEvent.contentSize;
+    setInputHeight(height);
+  };
+
+  // 저장 로직
+  const saveDiary = async () => {
+    Analytics.clickDiaryWriteButton();
+    try {
+      await todayEmotion(dateID, selectedEmotions, diaryText);
+      const targetEmotion =
+        selectedEmotions.find((e) => e.type === 'custom') || selectedEmotions[0];
+      updateEntryStatus(dateID, `${targetEmotion.group}-emotion`);
+      navigation.navigate(RootStackName.BottomTabNavigator, {
+        screen: TabScreenName.Home,
+      });
+    } catch (err) {
+      Toast.show('저장 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+    }
+  };
+
   return (
-    <GestureHandlerRootView style={{ flex: 1, paddingBottom: insets.bottom }}>
-      <View
-        style={css`
-          padding-bottom: 100px;
-          flex: 1;
-          //background-color: blue;
-        `}>
-        <Header title={formatDateKorean(dateID)} />
-        <KeyboardAwareScrollView
-          style={{ flex: 1, gap: rsHeight * 12 + 'px' }}
-          keyboardDismissMode="none">
+    <View style={{ flex: 1, paddingBottom: insets.bottom }}>
+      <Header title={formatDateKorean(dateID)} />
+
+      <KeyboardAwareScrollView
+        style={{ flex: 1 }}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="interactive">
+        <View
+          style={css`
+            margin-top: ${rsHeight * 12 + 'px'};
+          `}>
+          <EmotionTitleBox
+            iconName="dairy-cookie"
+            mainTitle="오늘 하루를 되돌아봐요."
+            subTitle="이 감정을 가장 강하게 느낀 순간은 언제인가요?"
+          />
+        </View>
+
+        {/* 감정 카드 리스트 */}
+        {selectedEmotions.length > 0 && (
           <View
             style={css`
               margin-top: ${rsHeight * 12 + 'px'};
-              //background-color: pink;
+              flex-direction: row;
+              flex-wrap: wrap;
+              gap: ${rsWidth * 6 + 'px'};
+              padding-horizontal: ${rsWidth * 24 + 'px'};
             `}>
-            <EmotionTitleBox
-              iconName={'dairy-cookie'}
-              mainTitle={'오늘 하루를 되돌아봐요.'}
-              subTitle={'이 감정을 가장 강하게 느낀 순간은 언제인가요?'}
-            />
+            {selectedEmotions.map((emotion, i) => (
+              <EmotionTitleBox key={i} emotion={emotion} status="default" />
+            ))}
           </View>
-          {selectedEmotions.length > 0 && (
-            <View
-              style={css`
-                margin-top: ${rsHeight * 12 + 'px'};
-                background-color: black;
-                flex-direction: row;
-                flex-wrap: wrap;
-                gap: ${rsWidth * 6 + 'px'};
-                padding-horizontal: ${rsWidth * 24 + 'px'};
-              `}>
-              {selectedEmotions.length > 0
-                ? selectedEmotions.map((emotion, i) => (
-                    <EmotionCard key={i} emotion={emotion} status={'default'} />
-                  ))
-                : ''}
-            </View>
-          )}
-          <TextInput
-            style={css`
-              margin-top: ${rsHeight * 12 + 'px'};
-              margin-horizontal: ${rsWidth * 24 + 'px'};
-              border-radius: 10px;
-              background-color: ${palette.neutral[100]};
-              background-color: transparent;
-              font-size: ${rsFont * 16 + 'px'};
-              line-height: ${rsFont * 16 * 1.5 + 'px'};
-              //margin-top: ${rsHeight * 12 + 'px'};
-              //margin-bottom: ${rsHeight * 6 + 'px'};
-              padding-horizontal: ${rsWidth * 12 + 'px'};
-              padding-vertical: ${rsHeight * 12 + 'px'};
-              text-align-vertical: top;
-              font-family: Kyobo-handwriting;
-              padding-bottom: ${rsHeight * 50 + 'px'};
-              height: ${rsHeight * 200 + 'px'};
-              background-color: ${palette.neutral[100]};
-            `}
-            placeholder="이 감정을 강하게 느낀 순간을 기록해보세요"
-            placeholderTextColor={palette.neutral[300]}
-            multiline={true}
-            scrollEnabled={true}
-            value={diaryText}
-            onChangeText={(diaryText) => setDiaryText(diaryText)}
-            onBlur={() => {
-              inputRef.current?.focus();
-            }}
-          />
-        </KeyboardAwareScrollView>
-      </View>
+        )}
 
-      <KeyboardStickyView offset={offset}>
+        {/* 풀스크린 멀티라인 입력창 */}
+        <TextInput
+          multiline
+          autoFocus
+          scrollEnabled={false}
+          value={diaryText}
+          onChangeText={setDiaryText}
+          placeholder="이 감정을 강하게 느낀 순간을 기록해보세요"
+          placeholderTextColor="#AAA"
+          style={css`
+            margin-top: ${rsHeight * 12 + 'px'};
+            margin-horizontal: ${rsWidth * 24 + 'px'};
+            border-radius: 10px;
+            background-color: #f5f5f5;
+            font-size: ${rsFont * 16 + 'px'};
+            line-height: ${rsFont * 16 * 1.5 + 'px'};
+            padding: ${rsHeight * 12 + 'px'} ${rsWidth * 12 + 'px'};
+            text-align-vertical: top;
+            font-family: Kyobo-handwriting;
+            align-self: flex-start;
+            height: ${inputHeight}px;
+            padding-bottom: ${rsHeight * 50 + 'px'};
+          `}
+          onContentSizeChange={handleContentSizeChange}
+        />
+      </KeyboardAwareScrollView>
+
+      <KeyboardStickyView offset={{ closed: 0, opened: insets.bottom }}>
         <View
           style={css`
             flex-direction: row;
@@ -184,28 +129,20 @@ const DailyDairy = ({ navigation, route }) => {
             border-top-color: ${palette.neutral[200]};
           `}>
           <TouchableOpacity
-            onPress={() => console.log('사진 아이콘 클릭')}
+            onPress={() => console.log('사진')}
             hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}>
-            <Icon
-              name="picture-icon"
-              width={rsWidth * 20}
-              height={rsHeight * 20}
-              color={palette.neutral[400]}
-            />
+            <Icon name="picture-icon" width={20} color={palette.neutral[400]} />
           </TouchableOpacity>
+
           <TouchableOpacity
-            onPress={() => console.log('체크 아이콘 클릭')}
+            onPress={saveDiary}
             hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}>
-            <Icon
-              name="check-icon"
-              width={rsWidth * 20}
-              height={rsHeight * 20}
-              color={palette.neutral[400]}
-            />
+            <Icon name="check-icon" width={24} color={palette.neutral[400]} />
           </TouchableOpacity>
         </View>
       </KeyboardStickyView>
-    </GestureHandlerRootView>
+    </View>
   );
 };
+
 export default DailyDairy;

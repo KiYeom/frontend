@@ -74,8 +74,8 @@ const SmallEmotionChart = ({ navigation, route }) => {
   const openBottomSheet = () => setBottomSheetIndex(0);
   const closeBottomSheet = () => setBottomSheetIndex(-1);
 
-  //const { dateID } = route.params;
-  const dateID = route?.params?.dateID ?? '2025-04-21';
+  const { dateID } = route.params;
+  //const dateID = route?.params?.dateID ?? '2025-04-21';
   //console.log('감정 입력 페이지에서 받은 dateID', dateID);
 
   const width = Dimensions.get('window').width - 24;
