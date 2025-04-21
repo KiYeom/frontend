@@ -62,19 +62,12 @@ const DailyDairy = ({ navigation, route }) => {
 
   //사진 가져오기 로직
   const pickImage = async () => {
-    const remainingSlots =
-      MAX_DIARY_IMAGE_COUNT - image.length > 0 ? MAX_DIARY_IMAGE_COUNT - image.length : 0;
-    console.log('pickImage', remainingSlots);
-    if (remainingSlots === 0) {
-      Toast.show(`사진은 최대 ${MAX_DIARY_IMAGE_COUNT} 장까지 첨부할 수 있어요.`);
-      return;
-    }
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       allowsEditing: false,
       quality: 1,
-      allowsMultipleSelection: true,
-      selectionLimit: MAX_DIARY_IMAGE_COUNT,
+      //allowsMultipleSelection: true,
+      //selectionLimit: MAX_DIARY_IMAGE_COUNT,
     });
     console.log(result);
     if (!result.canceled) {
