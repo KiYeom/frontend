@@ -79,6 +79,13 @@ const DailyDairy = ({ navigation, route }) => {
   const { dateID } = route.params;
   //console.log('일기 입력 페이지에서 받은 dateID', dateID);
 
+  const inputRef = React.useRef<TextInput>(null);
+  useEffect(() => {
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 100);
+  });
+
   const fetchData = async () => {
     const dailyStatistics = await dailyAnalyze(dateID);
     if (!dailyStatistics) return;
@@ -95,73 +102,76 @@ const DailyDairy = ({ navigation, route }) => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1, paddingBottom: insets.bottom }}>
-      <TouchableWithoutFeedback
-        onPressIn={Keyboard.dismiss}
-        style={{ paddingBottom: insets.bottom, backgroundColor: 'orange' }}>
-        <View
-          style={css`
-            padding-bottom: 100px;
-            flex: 1;
-            background-color: blue;
-          `}>
-          <Header title={formatDateKorean(dateID)} />
-          <KeyboardAwareScrollView
-            ScrollViewComponent={ScrollView}
-            style={{ gap: rsHeight * 12 + 'px' }}>
+      <View
+        style={css`
+          padding-bottom: 100px;
+          flex: 1;
+          //background-color: blue;
+        `}>
+        <Header title={formatDateKorean(dateID)} />
+        <KeyboardAwareScrollView
+          style={{ flex: 1, gap: rsHeight * 12 + 'px' }}
+          keyboardDismissMode="none">
+          <View
+            style={css`
+              margin-top: ${rsHeight * 12 + 'px'};
+              //background-color: pink;
+            `}>
+            <EmotionTitleBox
+              iconName={'dairy-cookie'}
+              mainTitle={'오늘 하루를 되돌아봐요.'}
+              subTitle={'이 감정을 가장 강하게 느낀 순간은 언제인가요?'}
+            />
+          </View>
+          {selectedEmotions.length > 0 && (
             <View
               style={css`
                 margin-top: ${rsHeight * 12 + 'px'};
-                background-color: pink;
+                background-color: black;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: ${rsWidth * 6 + 'px'};
+                padding-horizontal: ${rsWidth * 24 + 'px'};
               `}>
-              <EmotionTitleBox
-                iconName={'dairy-cookie'}
-                mainTitle={'오늘 하루를 되돌아봐요.'}
-                subTitle={'이 감정을 가장 강하게 느낀 순간은 언제인가요?'}
-              />
+              {selectedEmotions.length > 0
+                ? selectedEmotions.map((emotion, i) => (
+                    <EmotionCard key={i} emotion={emotion} status={'default'} />
+                  ))
+                : ''}
             </View>
-            {selectedEmotions.length > 0 && (
-              <View
-                style={css`
-                  margin-top: ${rsHeight * 12 + 'px'};
-                  background-color: black;
-                  flex-direction: row;
-                  flex-wrap: wrap;
-                  gap: ${rsWidth * 6 + 'px'};
-                  padding-horizontal: ${rsWidth * 24 + 'px'};
-                `}>
-                {selectedEmotions.length > 0
-                  ? selectedEmotions.map((emotion, i) => (
-                      <EmotionCard key={i} emotion={emotion} status={'default'} />
-                    ))
-                  : ''}
-              </View>
-            )}
-            <TextInput
-              style={css`
-                margin-top: ${rsHeight * 12 + 'px'};
-                margin-horizontal: ${rsWidth * 24 + 'px'};
-                border-radius: 10px;
-                background-color: ${palette.neutral[100]};
-                font-size: ${rsFont * 16 + 'px'};
-                line-height: ${rsFont * 16 * 1.5 + 'px'};
-                //margin-top: ${rsHeight * 12 + 'px'};
-                //margin-bottom: ${rsHeight * 6 + 'px'};
-                padding-horizontal: ${rsWidth * 12 + 'px'};
-                padding-vertical: ${rsHeight * 12 + 'px'};
-                text-align-vertical: top;
-                font-family: Kyobo-handwriting;
-                flex: 1;
-              `}
-              placeholder="이 감정을 강하게 느낀 순간을 기록해보세요"
-              placeholderTextColor={palette.neutral[400]}
-              multiline={true}
-              scrollEnabled={false}
-              value={diaryText}
-              onChangeText={(diaryText) => setDiaryText(diaryText)}
-            />
-          </KeyboardAwareScrollView>
-        </View>
-      </TouchableWithoutFeedback>
+          )}
+          <TextInput
+            style={css`
+              margin-top: ${rsHeight * 12 + 'px'};
+              margin-horizontal: ${rsWidth * 24 + 'px'};
+              border-radius: 10px;
+              background-color: ${palette.neutral[100]};
+              background-color: transparent;
+              font-size: ${rsFont * 16 + 'px'};
+              line-height: ${rsFont * 16 * 1.5 + 'px'};
+              //margin-top: ${rsHeight * 12 + 'px'};
+              //margin-bottom: ${rsHeight * 6 + 'px'};
+              padding-horizontal: ${rsWidth * 12 + 'px'};
+              padding-vertical: ${rsHeight * 12 + 'px'};
+              text-align-vertical: top;
+              font-family: Kyobo-handwriting;
+              padding-bottom: ${rsHeight * 50 + 'px'};
+              height: ${rsHeight * 200 + 'px'};
+              background-color: ${palette.neutral[100]};
+            `}
+            placeholder="이 감정을 강하게 느낀 순간을 기록해보세요"
+            placeholderTextColor={palette.neutral[300]}
+            multiline={true}
+            scrollEnabled={true}
+            value={diaryText}
+            onChangeText={(diaryText) => setDiaryText(diaryText)}
+            onBlur={() => {
+              inputRef.current?.focus();
+            }}
+          />
+        </KeyboardAwareScrollView>
+      </View>
+
       <KeyboardStickyView offset={offset}>
         <View
           style={css`
