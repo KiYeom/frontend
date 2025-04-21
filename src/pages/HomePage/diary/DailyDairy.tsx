@@ -16,6 +16,7 @@ import { formatDateKorean } from '../../../utils/times';
 import Header from '../../../components/header/header';
 import { useCalendarStore } from '../../../store/calendarStore';
 import palette from '../../../assets/styles/theme';
+import * as ImagePicker from 'expo-image-picker';
 
 const DailyDairy = ({ navigation, route }) => {
   const { dateID } = route.params;
@@ -28,6 +29,9 @@ const DailyDairy = ({ navigation, route }) => {
   const { selectedEmotions, diaryText, setDiaryText } = useEmotionStore();
   const { updateEntryStatus } = useCalendarStore();
 
+  //이미지 가지고 오기
+  const [image, setImage] = useState<string | null>(null);
+
   // 서버에서 키워드 리스트 페치 (생략)
   useEffect(() => {
     Analytics.watchDiaryWriteScreen();
@@ -39,7 +43,7 @@ const DailyDairy = ({ navigation, route }) => {
     setInputHeight(height);
   };
 
-  // 저장 로직
+  // 일기 저장 로직
   const saveDiary = async () => {
     Analytics.clickDiaryWriteButton();
     try {
@@ -53,6 +57,22 @@ const DailyDairy = ({ navigation, route }) => {
     } catch (err) {
       Toast.show('저장 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
     }
+  };
+
+  //사진 가져오기 로직
+  const pickImage = async () => {
+    console.log('사진 가져오기 선택');
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: false,
+      quality: 1,
+    });
+    console.log(result);
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+      //핸드폰에서 선택한 사진의 로컬 주소 (file://~)를 저장
+    }
+    return;
   };
 
   return (
@@ -129,7 +149,7 @@ const DailyDairy = ({ navigation, route }) => {
             border-top-color: ${palette.neutral[200]};
           `}>
           <TouchableOpacity
-            onPress={() => console.log('사진')}
+            onPress={pickImage}
             hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}>
             <Icon name="picture-icon" width={20} color={palette.neutral[400]} />
           </TouchableOpacity>
