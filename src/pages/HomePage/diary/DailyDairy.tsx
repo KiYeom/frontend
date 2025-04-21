@@ -17,6 +17,7 @@ import Header from '../../../components/header/header';
 import { useCalendarStore } from '../../../store/calendarStore';
 import palette from '../../../assets/styles/theme';
 import * as ImagePicker from 'expo-image-picker';
+import AttachmentPreview from '../../../components/image-container/AttachmentPreview';
 
 const DailyDairy = ({ navigation, route }) => {
   const { dateID } = route.params;
@@ -30,7 +31,7 @@ const DailyDairy = ({ navigation, route }) => {
   const { updateEntryStatus } = useCalendarStore();
 
   //이미지 가지고 오기
-  const [image, setImage] = useState<string | null>(null);
+  const [image, setImage] = useState<string[]>([]);
 
   // 서버에서 키워드 리스트 페치 (생략)
   useEffect(() => {
@@ -66,11 +67,12 @@ const DailyDairy = ({ navigation, route }) => {
       mediaTypes: ['images'],
       allowsEditing: false,
       quality: 1,
+      allowsMultipleSelection: true,
     });
     console.log(result);
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
-      //핸드폰에서 선택한 사진의 로컬 주소 (file://~)를 저장
+      const uris = result.assets.map((asset) => asset.uri);
+      setImage((prev) => [...prev, ...uris]); // 기존 이미지에 추가
     }
     return;
   };
@@ -106,6 +108,24 @@ const DailyDairy = ({ navigation, route }) => {
             `}>
             {selectedEmotions.map((emotion, i) => (
               <EmotionTitleBox key={i} emotion={emotion} status="default" />
+            ))}
+          </View>
+        )}
+        {image.length > 0 && (
+          <View
+            style={css`
+              padding-horizontal: ${rsWidth * 24 + 'px'};
+              gap: ${rsHeight * 12 + 'px'};
+              margin-top: ${rsHeight * 12 + 'px'};
+            `}>
+            {image.map((img, idx) => (
+              <AttachmentPreview
+                key={idx}
+                image={img}
+                onDelete={(uriToDelete) =>
+                  setImage((prev) => prev.filter((uri) => uri !== uriToDelete))
+                }
+              />
             ))}
           </View>
         )}
