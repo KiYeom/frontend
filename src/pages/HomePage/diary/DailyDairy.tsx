@@ -42,7 +42,7 @@ import {
   KeyboardStickyView,
 } from 'react-native-keyboard-controller';
 import palette from '../../../assets/styles/theme';
-import { Alert } from 'react-native';
+import { Alert, TouchableOpacity } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import Header from '../../../components/header/header';
 import { useCalendarStore } from '../../../store/calendarStore';
@@ -105,7 +105,9 @@ const DailyDairy = ({ navigation, route }) => {
             background-color: blue;
           `}>
           <Header title={formatDateKorean(dateID)} />
-          <KeyboardAwareScrollView ScrollViewComponent={ScrollView}>
+          <KeyboardAwareScrollView
+            ScrollViewComponent={ScrollView}
+            style={{ gap: rsHeight * 12 + 'px' }}>
             <View
               style={css`
                 margin-top: ${rsHeight * 12 + 'px'};
@@ -148,7 +150,7 @@ const DailyDairy = ({ navigation, route }) => {
                 text-align-vertical: top;
                 font-family: Kyobo-handwriting;
               `}
-              placeholder="오늘은 어떤 일이 있었나요?"
+              placeholder="이 감정을 강하게 느낀 순간을 기록해보세요"
               placeholderTextColor={palette.neutral[400]}
               multiline={true}
               scrollEnabled={false}
@@ -165,22 +167,30 @@ const DailyDairy = ({ navigation, route }) => {
             justify-content: space-between;
             align-items: center;
             padding: ${rsHeight * 12 + 'px'} ${rsWidth * 16 + 'px'};
-            background-color: ${palette.neutral[50]};
+            background-color: ${palette.neutral[100]};
             border-top-width: 1px;
             border-top-color: ${palette.neutral[200]};
           `}>
-          <Icon
-            name="picture-icon"
-            width={rsWidth * 20}
-            height={rsHeight * 20}
-            color={palette.neutral[400]}
-          />
-          <Icon
-            name="check-icon"
-            width={rsWidth * 20}
-            height={rsHeight * 20}
-            color={palette.neutral[400]}
-          />
+          <TouchableOpacity
+            onPress={() => console.log('사진 아이콘 클릭')}
+            hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}>
+            <Icon
+              name="picture-icon"
+              width={rsWidth * 20}
+              height={rsHeight * 20}
+              color={palette.neutral[400]}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => console.log('체크 아이콘 클릭')}
+            hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}>
+            <Icon
+              name="check-icon"
+              width={rsWidth * 20}
+              height={rsHeight * 20}
+              color={palette.neutral[400]}
+            />
+          </TouchableOpacity>
         </View>
       </KeyboardStickyView>
     </GestureHandlerRootView>
