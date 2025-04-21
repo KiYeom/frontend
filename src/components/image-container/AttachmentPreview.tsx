@@ -11,11 +11,14 @@ interface Props {
   onDelete: (image: string) => void;
 }
 const AttachmentPreview: React.FC<Props> = ({ image, onDelete }) => {
-  console.log('image', image);
   return (
     <Container>
       <Image source={{ uri: image }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
-      <DeleteButton onPress={() => onDelete(image)}>
+      <DeleteButton
+        onPress={() => {
+          console.log('Delete button pressed');
+          onDelete(image);
+        }}>
         <Icon name="cancel-icon" width={7} color={'white'} />
       </DeleteButton>
     </Container>

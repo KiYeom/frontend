@@ -1,7 +1,7 @@
 import { css } from '@emotion/native';
 import { useHeaderHeight } from '@react-navigation/elements';
 import React, { useEffect, useState, useMemo, useRef } from 'react';
-import { Keyboard, TextInput, View, TouchableOpacity } from 'react-native';
+import { Keyboard, TextInput, View, TouchableOpacity, ScrollView } from 'react-native';
 import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
 import Icon from '../../../components/icons/icons';
 import Toast from 'react-native-root-toast';
@@ -18,7 +18,7 @@ import { useCalendarStore } from '../../../store/calendarStore';
 import palette from '../../../assets/styles/theme';
 import * as ImagePicker from 'expo-image-picker';
 import AttachmentPreview from '../../../components/image-container/AttachmentPreview';
-
+import { MAX_DIARY_IMAGE_COUNT } from '../../../constants/Constants';
 const DailyDairy = ({ navigation, route }) => {
   const { dateID } = route.params;
   const headerHeight = useHeaderHeight();
@@ -62,12 +62,19 @@ const DailyDairy = ({ navigation, route }) => {
 
   //사진 가져오기 로직
   const pickImage = async () => {
-    console.log('사진 가져오기 선택');
+    const remainingSlots =
+      MAX_DIARY_IMAGE_COUNT - image.length > 0 ? MAX_DIARY_IMAGE_COUNT - image.length : 0;
+    console.log('pickImage', remainingSlots);
+    if (remainingSlots === 0) {
+      Toast.show(`사진은 최대 ${MAX_DIARY_IMAGE_COUNT} 장까지 첨부할 수 있어요.`);
+      return;
+    }
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       allowsEditing: false,
       quality: 1,
       allowsMultipleSelection: true,
+      selectionLimit: MAX_DIARY_IMAGE_COUNT,
     });
     console.log(result);
     if (!result.canceled) {
@@ -112,12 +119,14 @@ const DailyDairy = ({ navigation, route }) => {
           </View>
         )}
         {image.length > 0 && (
-          <View
-            style={css`
-              padding-horizontal: ${rsWidth * 24 + 'px'};
-              gap: ${rsHeight * 12 + 'px'};
-              margin-top: ${rsHeight * 12 + 'px'};
-            `}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{
+              paddingHorizontal: rsWidth * 24,
+              gap: rsWidth * 12,
+              marginTop: rsHeight * 12,
+            }}>
             {image.map((img, idx) => (
               <AttachmentPreview
                 key={idx}
@@ -127,7 +136,7 @@ const DailyDairy = ({ navigation, route }) => {
                 }
               />
             ))}
-          </View>
+          </ScrollView>
         )}
 
         {/* 풀스크린 멀티라인 입력창 */}
