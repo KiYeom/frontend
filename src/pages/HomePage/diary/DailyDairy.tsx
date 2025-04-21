@@ -150,6 +150,7 @@ const DailyDairy = ({ navigation, route }) => {
                 padding-vertical: ${rsHeight * 12 + 'px'};
                 text-align-vertical: top;
                 font-family: Kyobo-handwriting;
+                flex: 1;
               `}
               placeholder="이 감정을 강하게 느낀 순간을 기록해보세요"
               placeholderTextColor={palette.neutral[400]}

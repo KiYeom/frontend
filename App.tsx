@@ -285,6 +285,10 @@ const App: React.FC = () => {
                 ) : (
                   <>
                     <RootStack.Screen
+                      name={RootStackName.HomeStackNavigator}
+                      component={HomeStackNavigator}
+                    />
+                    <RootStack.Screen
                       name={RootStackName.AuthStackNavigator}
                       component={AuthStackNavigator}
                     />
