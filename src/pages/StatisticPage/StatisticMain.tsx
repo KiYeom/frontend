@@ -241,7 +241,7 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
               </>
             )}
             {images.length > 0 && (
-              <View>
+              <View style={{ position: 'relative' }}>
                 <Carousel
                   ref={ref}
                   width={rsWidth * 350}
@@ -265,14 +265,26 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
                     />
                   )}
                 />
-                <Pagination.Basic
-                  progress={progress}
-                  data={images}
-                  dotStyle={{ backgroundColor: 'rgba(180,180,180,0.4)', borderRadius: 50 }}
-                  activeDotStyle={{ backgroundColor: '#B4B4B4' }}
-                  containerStyle={{ gap: 5, marginTop: 10 }}
-                  onPress={onPressPagination}
-                />
+                {images.length > 1 && (
+                  <View
+                    style={{
+                      position: 'absolute',
+                      bottom: 20,
+                      left: 0,
+                      right: 0,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Pagination.Basic
+                      progress={progress}
+                      data={images}
+                      dotStyle={{ backgroundColor: 'rgba(0,0,0,0.2)', borderRadius: 50 }}
+                      activeDotStyle={{ backgroundColor: '#FFFFFF' }}
+                      containerStyle={{ gap: 5 }}
+                      onPress={onPressPagination}
+                    />
+                  </View>
+                )}
               </View>
             )}
             {isNullClassification && (
