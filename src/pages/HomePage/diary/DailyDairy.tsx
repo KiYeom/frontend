@@ -6,7 +6,7 @@ import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboa
 import Icon from '../../../components/icons/icons';
 import Toast from 'react-native-root-toast';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { dailyAnalyze, todayEmotion } from '../../../apis/analyze';
+import { dailyAnalyze, todayEmotion, todayEmotionWithImage } from '../../../apis/analyze';
 import { TabScreenName, RootStackName } from '../../../constants/Constants';
 import EmotionTitleBox from './emotionTitleBox';
 import EmotionChip from '../../../components/atoms/EmotionChip/EmotionChip';
@@ -52,13 +52,23 @@ const DailyDairy = ({ navigation, route }) => {
   const saveDiary = async () => {
     Analytics.clickDiaryWriteButton();
     try {
-      await todayEmotion(dateID, selectedEmotions, diaryText);
-      const targetEmotion =
-        selectedEmotions.find((e) => e.type === 'custom') || selectedEmotions[0];
-      updateEntryStatus(dateID, `${targetEmotion.group}-emotion`);
-      navigation.navigate(RootStackName.BottomTabNavigator, {
-        screen: TabScreenName.Home,
-      });
+      if (image.length === 0) {
+        await todayEmotion(dateID, selectedEmotions, diaryText);
+        const targetEmotion =
+          selectedEmotions.find((e) => e.type === 'custom') || selectedEmotions[0];
+        updateEntryStatus(dateID, `${targetEmotion.group}-emotion`);
+        navigation.navigate(RootStackName.BottomTabNavigator, {
+          screen: TabScreenName.Home,
+        });
+      } else {
+        await todayEmotionWithImage(dateID, selectedEmotions, diaryText, image);
+        const targetEmotion =
+          selectedEmotions.find((e) => e.type === 'custom') || selectedEmotions[0];
+        updateEntryStatus(dateID, `${targetEmotion.group}-emotion`);
+        navigation.navigate(RootStackName.BottomTabNavigator, {
+          screen: TabScreenName.Home,
+        });
+      }
     } catch (err) {
       Toast.show('저장 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
     }
@@ -162,7 +172,7 @@ const DailyDairy = ({ navigation, route }) => {
               margin-top: ${rsHeight * 12 + 'px'};
               margin-horizontal: ${rsWidth * 24 + 'px'};
               border-radius: 10px;
-              background-color: #f5f5f5;
+              //background-color: #f5f5f5;
               font-size: ${rsFont * 16 + 'px'};
               line-height: ${rsFont * 16 * 1.5 + 'px'};
               padding: ${rsHeight * 12 + 'px'} ${rsWidth * 12 + 'px'};

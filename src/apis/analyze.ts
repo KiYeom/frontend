@@ -8,6 +8,7 @@ import {
   TPeriodTotalEmotions,
 } from './analyze.type';
 import { instance } from './interceptor';
+import { Platform } from 'react-native';
 
 //INFO : 일일 분석
 //연단위 : 유저 감정 일기와 키워드가 있는 날 조회 (구버전)
@@ -102,7 +103,7 @@ export const periodChart = async (
   }
 };
 
-//오늘의 기분 기록
+//오늘의 기분 기록 (사진이 없을 때)
 export const todayEmotion = async (
   date: string,
   data: TEmotionCheck[],
@@ -117,6 +118,54 @@ export const todayEmotion = async (
       keywords: myEmotions,
     });
     return res;
+  } catch (error) {
+    //console.log('[ERROR] todayEmotion', error);
+    return;
+  }
+};
+
+//오늘의 기분 기록 (사진이 있을 때)
+export const todayEmotionWithImage = async (
+  date: string,
+  data: TEmotionCheck[],
+  text: string,
+  image: string[],
+): Promise<string[] | undefined> => {
+  try {
+    const myEmotions = data.map(({ keyword, group, type }) => ({ keyword, group, type }));
+    //console.log('😀😀😀😀😀😀keywords😀😀😀😀😀', myEmotions);
+    const formData = new FormData();
+    formData.append('date', date);
+    formData.append('todayFeeling', text);
+    formData.append('keywords', JSON.stringify(myEmotions));
+    image.forEach((imgUri, idx) => {
+      // Android에서 file:// prefix 보정
+      let uri = imgUri;
+      if (Platform.OS === 'android' && !uri.startsWith('file://')) {
+        uri = `file://${uri}`;
+      }
+
+      // 파일명, MIME 타입 추출
+      const filename = uri.split('/').pop() || `image_${idx}.jpg`;
+      const match = /\.(\w+)$/.exec(filename);
+      const ext = match ? match[1].toLowerCase() : 'jpg';
+      const mimeType = `image/${ext === 'jpg' ? 'jpeg' : ext}`;
+
+      // RN FormData는 name/type/uri 프로퍼티가 필요
+      formData.append('images', {
+        uri,
+        name: filename,
+        type: mimeType,
+      } as any);
+    });
+
+    const res = await instance.post('/v1/analyze/today-record', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    console.log('이미지 저장 성공', res.data);
+    return res.data;
   } catch (error) {
     //console.log('[ERROR] todayEmotion', error);
     return;
