@@ -75,8 +75,8 @@ const PeriodRecord = (props: any) => {
           <RecordContainer
             key={index}
             onPress={() => {
-              console.log('클릭함', record.date);
-              console.log('클릭함');
+              //console.log('클릭함', record.date);
+              //console.log('클릭함');
               navigation.navigate(RootStackName.HomeStackNavigator, {
                 screen: HomeStackName.Report,
                 params: { dateID: record.date },

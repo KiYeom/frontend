@@ -2,7 +2,7 @@ import { css } from '@emotion/native';
 import { useNavigation, CommonActions } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import React, { useCallback, useEffect, useState, useRef } from 'react';
-import { ScrollView, TouchableOpacity, View } from 'react-native';
+import { ScrollView, TouchableOpacity, View, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { dailyAnalyze, dailyAnalyzeStatus } from '../../apis/analyze';
 import { TEmotionCheck, TLabel } from '../../apis/analyze.type';
@@ -241,7 +241,15 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
               </>
             )}
             {images.length > 0 && (
-              <View style={{ position: 'relative' }}>
+              <View style={{ position: 'relative', gap: rsHeight * 12 }}>
+                <Text
+                  style={{
+                    fontFamily: 'Kyobo-handwriting',
+                    fontSize: 18 * rsFont,
+                    color: palette.neutral[900],
+                  }}>
+                  그 때 내가 기록한 순간을 담았어요
+                </Text>
                 <Carousel
                   ref={ref}
                   width={rsWidth * 350}
@@ -249,7 +257,8 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
                   data={images}
                   onProgressChange={progress}
                   defaultIndex={0}
-                  loop
+                  loop={images.length > 1 ? true : false}
+                  enabled={images.length > 1 ? true : false}
                   style={{
                     borderRadius: 10,
                     overflow: 'hidden',
