@@ -81,18 +81,38 @@ const PeriodRecord = (props: any) => {
             {record.keywords && record.keywords.length > 0 && (
               <RecordKeywordText>{getEmotionsText(record.keywords)}</RecordKeywordText>
             )}
-            {record.images &&
-              record.images.map((uri: string, idx: number) => (
-                <View
-                  key={idx}
-                  style={{
-                    width: '100%',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Image source={{ uri }} style={{ width: 170, height: 128, borderRadius: 10 }} />
+            {record.images && (
+              <View
+                style={{
+                  width: '100%',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <View style={{ width: 170, height: 128, position: 'relative' }}>
+                  <Image
+                    source={{ uri: record.images[0] }}
+                    style={{ width: '100%', height: '100%', borderRadius: 10 }}
+                  />
+                  {record.images.length > 1 && (
+                    <View
+                      style={{
+                        position: 'absolute',
+                        top: 7,
+                        right: 7,
+                        borderRadius: 10,
+                        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                        width: 20,
+                        height: 20,
+                        padding: 3,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Icon name="multi-pic" width={14} height={11} color={'white'} />
+                    </View>
+                  )}
                 </View>
-              ))}
+              </View>
+            )}
             {record.todayFeeling && <RecordDailyText>{record.todayFeeling}</RecordDailyText>}
           </RecordContainer>
         );

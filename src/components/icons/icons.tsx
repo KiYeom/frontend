@@ -41,6 +41,7 @@ import TrashIcon from './svg/trash-icon';
 import ChatSearch from './svg/chat-search-icon';
 import ArrowUp from './svg/arrow-up';
 import Picture from './svg/picture';
+import MultiPic from './svg/multi-pic';
 
 export type TIconName =
   | 'airplane'
@@ -86,7 +87,8 @@ export type TIconName =
   | 'favorite-bookmark-icon'
   | 'trash-icon'
   | 'chat-search-icon'
-  | 'picture-icon';
+  | 'picture-icon'
+  | 'multi-pic';
 
 export default function Icon({
   width,
@@ -208,5 +210,7 @@ export default function Icon({
       return <ChatSearch width={width} height={height} color={color} />;
     case 'picture-icon':
       return <Picture width={width} height={height} color={color} />;
+    case 'multi-pic':
+      return <MultiPic width={width} height={height} color={color} />;
   }
 }

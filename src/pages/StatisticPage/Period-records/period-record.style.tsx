@@ -71,25 +71,3 @@ export const RTitle = styled.Text`
   font-size: ${18 * rsFont + 'px'};
   color: ${palette.neutral[900]};
 `;
-
-// 이미지 컴포넌트의 Props 타입 정의
-interface RImageContainerProps extends ImageProps {
-  imgSrc: string;
-  height?: number;
-}
-
-export const RImageContainer = styled(({ imgSrc, height, ...props }: RImageContainerProps) => (
-  <Image
-    source={{ uri: imgSrc }}
-    style={{
-      width: 170,
-      height: 128,
-      borderRadius: 10,
-    }}
-    {...props}
-  />
-))`
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-`;
