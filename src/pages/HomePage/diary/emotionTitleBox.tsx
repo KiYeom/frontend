@@ -6,6 +6,7 @@ import {
 } from './emotionTitleBox.styles';
 import { TIconName } from '../../../components/icons/icons';
 import Icon from '../../../components/icons/icons';
+import React from 'react';
 type EmotionTitleBoxProps = {
   iconName?: TIconName;
   mainTitle?: string;
@@ -14,6 +15,7 @@ type EmotionTitleBoxProps = {
 
 const EmotionTitleBox = (props: EmotionTitleBoxProps) => {
   const { iconName, mainTitle, subTitle } = props;
+  console.log('emotionTitlteBox', iconName, mainTitle, subTitle);
   return (
     <EmotionTitleContainer>
       {!!iconName && <Icon name={iconName} width={90} />}
@@ -24,4 +26,4 @@ const EmotionTitleBox = (props: EmotionTitleBoxProps) => {
     </EmotionTitleContainer>
   );
 };
-export default EmotionTitleBox;
+export default React.memo(EmotionTitleBox);
