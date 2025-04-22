@@ -269,7 +269,7 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
                   <View
                     style={{
                       position: 'absolute',
-                      bottom: 20,
+                      bottom: 10,
                       left: 0,
                       right: 0,
                       justifyContent: 'center',

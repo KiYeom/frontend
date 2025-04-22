@@ -10,7 +10,7 @@ export const RContainer = styled.View`
 `;
 
 //키워드 흰색 컨테이너
-export const RecordContainer = styled.View`
+export const RecordContainer = styled.TouchableOpacity`
   display: flex;
   align-items: start;
   justify-content: flex-start;

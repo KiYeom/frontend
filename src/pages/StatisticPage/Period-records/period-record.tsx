@@ -12,6 +12,7 @@ import {
   RecordKeywordText,
   RImageContainer,
 } from './period-record.style';
+import { RootStackName, HomeStackName, StatisticStackName } from '../../../constants/Constants';
 import { TouchableOpacity, View, Text, Image } from 'react-native';
 import Icon from '../../../components/icons/icons';
 import palette from '../../../assets/styles/theme';
@@ -22,7 +23,7 @@ const HINT_NAME = 'period-record';
 const HINT_MESSAGE = '자신이 기록한 날들을 한 눈에 볼 수 있어요!';
 
 const PeriodRecord = (props: any) => {
-  const { records, hintStatus, setHintStatus } = props;
+  const { records, hintStatus, setHintStatus, navigation } = props;
   const getLocalDate = (date: string, locale: string) => {
     const formattedDate = new Date(date).toLocaleDateString(locale, {
       year: 'numeric',
@@ -71,7 +72,16 @@ const PeriodRecord = (props: any) => {
         console.log('record', record);
         const iconName = getEmotionIconName(record.keywords[0]);
         return (
-          <RecordContainer key={index}>
+          <RecordContainer
+            key={index}
+            onPress={() => {
+              console.log('클릭함', record.date);
+              console.log('클릭함');
+              navigation.navigate(RootStackName.HomeStackNavigator, {
+                screen: HomeStackName.Report,
+                params: { dateID: record.date },
+              });
+            }}>
             <RecordDateArea>
               <RecordDateIcon>
                 <Icon name={iconName} width={40} height={40} color={palette.neutral[300]} />
