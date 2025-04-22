@@ -13,6 +13,7 @@ export type DailyRecordDto = {
   isNULL: boolean;
   Keywords: EmotionKeyword[];
   todayFeeling: string | null;
+  images: string[] | null;
 };
 
 export type EmotionKeyword = {

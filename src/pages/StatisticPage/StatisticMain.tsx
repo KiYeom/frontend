@@ -1,7 +1,7 @@
 import { css } from '@emotion/native';
 import { useNavigation, CommonActions } from '@react-navigation/native';
 import { Image } from 'expo-image';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { dailyAnalyze, dailyAnalyzeStatus } from '../../apis/analyze';
@@ -34,6 +34,8 @@ import {
 import EmptyBox from '../../components/emptybox/emptyBox';
 import Header from '../../components/header/header';
 import BottomTabNavigator from '~/src/navigators/BottomTabNavigator';
+import Carousel, { Pagination, ICarouselInstance } from 'react-native-reanimated-carousel';
+import { useSharedValue } from 'react-native-reanimated';
 
 const START_HOUR_OF_DAY = 6;
 
@@ -53,6 +55,7 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
   const [isNullRecordKeywordList, setIsNullRecordKeywordList] = useState(true);
   const [summaryList, setSummaryList] = useState<string[]>([]);
   const [todayFeeling, setTodayFeeling] = useState<string>('');
+  const [images, setImages] = useState<string[]>([]);
   const [availableDates, setAvailableDates] = useState<string[]>([]);
   const [hintStatus, setHintStatus] = useState<
     'emotion' | 'keyword' | 'record' | 'daily' | 'main' | undefined
@@ -68,6 +71,17 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
     //setDate(new Date(newDate));
     setDateID(getKoreanRealDateString(newDate));
   }, []);
+
+  //캐러셀 추가
+  const ref = useRef<ICarouselInstance>(null);
+  const progress = useSharedValue<number>(0);
+
+  const onPressPagination = (index: number) => {
+    ref.current?.scrollTo({
+      count: index - progress.value,
+      animated: true,
+    });
+  };
 
   //앱이 처음 실행됐을 때 실행되는 부분
   useEffect(() => {
@@ -100,6 +114,7 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
     setIsNullRecordKeywordList(dailyStatistics.record.isNULL);
     //빈 값 [] 이면 false를 넘겨주기 때문에 !을 붙여서 true로 만들어줌
     setTodayFeeling(dailyStatistics.record.todayFeeling ?? '');
+    setImages(dailyStatistics.record.images ?? []);
     //console.log('😀😀😀😀😀😀😀😀', dailyStatistics.record.todayFeeling);
   };
 
@@ -224,6 +239,41 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
                   }}
                 />
               </>
+            )}
+            {images.length > 0 && (
+              <View>
+                <Carousel
+                  ref={ref}
+                  width={rsWidth * 350}
+                  height={rsHeight * 263}
+                  data={images}
+                  onProgressChange={progress}
+                  defaultIndex={0}
+                  loop
+                  style={{
+                    borderRadius: 10,
+                    overflow: 'hidden',
+                  }}
+                  renderItem={({ item }) => (
+                    <Image
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                      }}
+                      contentFit="cover"
+                      source={{ uri: item }}
+                    />
+                  )}
+                />
+                <Pagination.Basic
+                  progress={progress}
+                  data={images}
+                  dotStyle={{ backgroundColor: 'rgba(180,180,180,0.4)', borderRadius: 50 }}
+                  activeDotStyle={{ backgroundColor: '#B4B4B4' }}
+                  containerStyle={{ gap: 5, marginTop: 10 }}
+                  onPress={onPressPagination}
+                />
+              </View>
             )}
             {isNullClassification && (
               <EmptyBox
