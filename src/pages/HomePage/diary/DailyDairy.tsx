@@ -93,7 +93,7 @@ const DailyDairy = ({ navigation, route }) => {
   const pickImage = async () => {
     if (image.length >= MAX_DIARY_IMAGE_COUNT) {
       setModalVisible(true);
-      Toast.show(`사진은 최대 ${MAX_DIARY_IMAGE_COUNT}장까지 선택할 수 있습니다.`);
+      //Toast.show(`사진은 최대 ${MAX_DIARY_IMAGE_COUNT}장까지 선택할 수 있습니다.`);
       return;
     }
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -116,7 +116,10 @@ const DailyDairy = ({ navigation, route }) => {
       {modalVisible && (
         <TierModal
           modalVisible={modalVisible}
-          onClose={() => console.log('모달 꺼짐')}
+          onClose={() => {
+            console.log('모달 꺼짐');
+            setModalVisible(false);
+          }}
           onSubmit={() => console.log('모달 확인')}
         />
       )}
