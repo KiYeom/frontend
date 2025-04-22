@@ -56,7 +56,17 @@ const DailyDairy = ({ navigation, route }) => {
         await todayEmotion(dateID, selectedEmotions, diaryText);
         const targetEmotion =
           selectedEmotions.find((e) => e.type === 'custom') || selectedEmotions[0];
-        updateEntryStatus(dateID, `${targetEmotion.group}-emotion`);
+        let statusToUpdate = 'normal-emotion'; // 기본값 설정
+        console.log('targetEmotion', targetEmotion);
+        if (targetEmotion) {
+          console.log('emotion found:', targetEmotion.group);
+          // null 체크 및 기본값 설정
+          statusToUpdate = `${targetEmotion.group || 'normal'}-emotion`;
+        } else {
+          console.log('no emotion found, using normal-emotion');
+        }
+        console.log('updating status to:', statusToUpdate);
+        updateEntryStatus(dateID, statusToUpdate);
         navigation.navigate(RootStackName.BottomTabNavigator, {
           screen: TabScreenName.Home,
         });
@@ -64,7 +74,12 @@ const DailyDairy = ({ navigation, route }) => {
         await todayEmotionWithImage(dateID, selectedEmotions, diaryText, image);
         const targetEmotion =
           selectedEmotions.find((e) => e.type === 'custom') || selectedEmotions[0];
-        updateEntryStatus(dateID, `${targetEmotion.group}-emotion`);
+        if (!targetEmotion) {
+          console.log('normal emotion');
+          updateEntryStatus(dateID, `normal-emotion`);
+        } else {
+          updateEntryStatus(dateID, `${targetEmotion.group}-emotion`);
+        }
         navigation.navigate(RootStackName.BottomTabNavigator, {
           screen: TabScreenName.Home,
         });

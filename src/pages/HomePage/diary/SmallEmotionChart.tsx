@@ -52,6 +52,7 @@ import palette from '../../../assets/styles/theme';
 import { RootStackName } from '../../../constants/Constants';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { formatDateKorean } from '../../../utils/times';
+import { MAX_SELECTED_EMOTION_COUNT } from '../../../constants/Constants';
 
 const SmallEmotionChart = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
@@ -211,7 +212,8 @@ const SmallEmotionChart = ({ navigation, route }) => {
               primary={false}
               //disabled={selectedEmotions.length < MINIMUM_EMOTION_COUNT}
               disabled={
-                selectedEmotions.filter((emotion) => emotion.type !== 'custom').length === 5
+                selectedEmotions.filter((emotion) => emotion.type !== 'custom').length ===
+                MAX_SELECTED_EMOTION_COUNT
               }
               onPress={async () => {
                 openBottomSheet();
@@ -228,6 +230,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
             <Button
               title="마음일기 쓰러가기"
               primary={true}
+              disabled={selectedEmotions.length === 0}
               onPress={() => {
                 Analytics.clickGotoDiaryWriteButton();
                 navigation.navigate(HomeStackName.DailyDairy, { dateID: dateID });

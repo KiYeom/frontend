@@ -9,6 +9,8 @@ export const COOKIE_PROFILE_PATH = './src/assets/images/setting_default_profile.
 
 export const MAX_DIARY_IMAGE_COUNT = 4; //최대 이미지 선택 개수 (일기)
 
+export const MAX_SELECTED_EMOTION_COUNT = 5; //최대 선택 감정 개수 (일기)
+
 export const reasons = [
   '쿠키가 나의 이야기를 잘 이해하지 못했다',
   '쿠키가 나를 잘 공감해주지 못했다',
