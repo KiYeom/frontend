@@ -73,6 +73,7 @@ export type TRecordEmotion = {
   date: string;
   todayFeeling: string | null;
   keywords: EmotionKeyword[];
+  images: string[]; //1.6.9 update
 };
 export type TEmotions = {
   keywords: string[];

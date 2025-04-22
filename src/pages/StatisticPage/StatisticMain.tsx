@@ -87,7 +87,7 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
     //console.log('fetchData date: ', date);
     //console.log('fetchData date: ', new Date());
     // const dailyStatistics = await dailyAnalyze(getKoreanRealDateString(date)); //date -> new Date()
-    const dailyStatistics = await dailyAnalyze(dateID);
+    const dailyStatistics = await dailyAnalyze(dateID); //대화 기반으로 분석된 감정 결과 가져옴
     if (!dailyStatistics) {
       alert('네트워크 연결이 불안정합니다. 잠시 후 다시 시도해주세요.');
       return;

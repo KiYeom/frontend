@@ -10,8 +10,9 @@ import {
   RecordDateIcon,
   RecordDateText,
   RecordKeywordText,
+  RImageContainer,
 } from './period-record.style';
-import { TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View, Text, Image } from 'react-native';
 import Icon from '../../../components/icons/icons';
 import palette from '../../../assets/styles/theme';
 import { rsFont } from '../../../utils/responsive-size';
@@ -64,52 +65,38 @@ const PeriodRecord = (props: any) => {
     <RContainer>
       <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
         <SectionTitle>내가 기록한 하루들</SectionTitle>
-        <View style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}>
-          {/*<Hint
-            visible={hintStatus && hintStatus === HINT_NAME}
-            position={Hint.positions.TOP}
-            message={HINT_MESSAGE}
-            color={'white'}
-            enableShadow
-            messageStyle={css`
-              font-family: Kyobo-handwriting;
-              font-size: ${16 * rsFont + 'px'};
-              color: ${palette.neutral[900]};
-            `}
-            onPress={() => setHintStatus(undefined)}
-            onBackgroundPress={() => setHintStatus(undefined)}>
-            <View>
-              <TouchableOpacity
-                activeOpacity={1}
-                style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}
-                onPress={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}>
-                <Icon name="information" width={16} height={16} />
-              </TouchableOpacity>
-            </View>
-          </Hint>*/}
-        </View>
+        <View style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}></View>
       </View>
-      {records.length === 0 ? (
-        <Empty type="채팅기록"></Empty>
-      ) : (
-        records.map((record, index) => {
-          const iconName = getEmotionIconName(record.keywords[0]);
-          return (
-            <RecordContainer key={index}>
-              <RecordDateArea>
-                <RecordDateIcon>
-                  <Icon name={iconName} width={40} height={40} color={palette.neutral[300]} />
-                </RecordDateIcon>
-                <RecordDateText>{getLocalDate(record.date, 'ko-KR')}</RecordDateText>
-              </RecordDateArea>
-              {record.keywords && record.keywords.length > 0 && (
-                <RecordKeywordText>{getEmotionsText(record.keywords)}</RecordKeywordText>
-              )}
-              {record.todayFeeling && <RecordDailyText>{record.todayFeeling}</RecordDailyText>}
-            </RecordContainer>
-          );
-        })
-      )}
+      {records.map((record, index) => {
+        console.log('record', record);
+        const iconName = getEmotionIconName(record.keywords[0]);
+        return (
+          <RecordContainer key={index}>
+            <RecordDateArea>
+              <RecordDateIcon>
+                <Icon name={iconName} width={40} height={40} color={palette.neutral[300]} />
+              </RecordDateIcon>
+              <RecordDateText>{getLocalDate(record.date, 'ko-KR')}</RecordDateText>
+            </RecordDateArea>
+            {record.keywords && record.keywords.length > 0 && (
+              <RecordKeywordText>{getEmotionsText(record.keywords)}</RecordKeywordText>
+            )}
+            {record.images &&
+              record.images.map((uri: string, idx: number) => (
+                <View
+                  key={idx}
+                  style={{
+                    width: '100%',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Image source={{ uri }} style={{ width: 170, height: 128, borderRadius: 10 }} />
+                </View>
+              ))}
+            {record.todayFeeling && <RecordDailyText>{record.todayFeeling}</RecordDailyText>}
+          </RecordContainer>
+        );
+      })}
     </RContainer>
   );
 };
