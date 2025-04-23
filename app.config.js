@@ -101,7 +101,6 @@ module.exports = {
       'expo-apple-authentication',
       'expo-localization',
       '@react-native-firebase/app',
-      'expo-build-properties',
       [
         'expo-asset',
         {
@@ -138,6 +137,13 @@ module.exports = {
         'expo-image-picker',
         {
           photosPermission: 'The app accesses your photos to let you share them with your friends.',
+        },
+      ],
+      [
+        'react-native-google-mobile-ads',
+        {
+          androidAppId: 'ca-app-pub-8136917168968629~3476154076',
+          iosAppId: 'ca-app-pub-8136917168968629~7618594976',
         },
       ],
     ],

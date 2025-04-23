@@ -1,13 +1,21 @@
 import { css } from '@emotion/native';
 import { useHeaderHeight } from '@react-navigation/elements';
 import React, { useEffect, useState, useMemo, useRef } from 'react';
-import { Keyboard, TextInput, View, TouchableOpacity, ScrollView } from 'react-native';
+import {
+  Keyboard,
+  TextInput,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  Platform,
+  StatusBar,
+} from 'react-native';
 import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
 import Icon from '../../../components/icons/icons';
 import Toast from 'react-native-root-toast';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { dailyAnalyze, todayEmotion, todayEmotionWithImage } from '../../../apis/analyze';
-import { TabScreenName, RootStackName } from '../../../constants/Constants';
+import { TabScreenName, RootStackName, HomeStackName } from '../../../constants/Constants';
 import EmotionTitleBox from './emotionTitleBox';
 import EmotionChip from '../../../components/atoms/EmotionChip/EmotionChip';
 import EmotionCard from '../../../components/atoms/EmotionCard/EmotionCard';
@@ -22,6 +30,31 @@ import * as ImagePicker from 'expo-image-picker';
 import AttachmentPreview from '../../../components/image-container/AttachmentPreview';
 import { MAX_DIARY_IMAGE_COUNT } from '../../../constants/Constants';
 import TierModal from '../../../components/modals/tier-modal';
+import { getUserInfo } from '../../../apis/setting';
+
+import {
+  BannerAd,
+  BannerAdSize,
+  TestIds,
+  useForeground,
+  InterstitialAd,
+  AdEventType,
+  RewardedAd,
+  RewardedAdEventType,
+} from 'react-native-google-mobile-ads';
+import {
+  getUserPlan,
+  setUserPlan,
+  getCanSendPhoto,
+  setCanSendPhoto,
+} from '../.././../utils/storageUtils';
+
+const adUnitId = __DEV__ ? TestIds.REWARDED : 'ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy';
+
+const rewarded = RewardedAd.createForAdRequest(adUnitId, {
+  keywords: ['fashion', 'clothing'],
+});
+
 const DailyDairy = ({ navigation, route }) => {
   const { dateID } = route.params;
   const headerHeight = useHeaderHeight();
@@ -36,11 +69,48 @@ const DailyDairy = ({ navigation, route }) => {
   //이미지 가지고 오기
   const [image, setImage] = useState<string[]>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [canSendPhoto, setCanSendPhoto] = useState<boolean>(false); //사진 전송 가능 여부
+
+  //광고 로드
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => {
+    const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
+      setLoaded(true);
+    });
+    const unsubscribeEarned = rewarded.addAdEventListener(
+      RewardedAdEventType.EARNED_REWARD,
+      (reward) => {
+        console.log('User earned reward of ', reward);
+      },
+    );
+
+    // Start loading the rewarded ad straight away
+    rewarded.load();
+
+    // Unsubscribe from events on unmount
+    return () => {
+      unsubscribeLoaded();
+      unsubscribeEarned();
+    };
+  }, []);
 
   // 서버에서 키워드 리스트 페치 (생략)
   useEffect(() => {
     Analytics.watchDiaryWriteScreen();
     // fetchData();
+    getUserInfo()
+      .then((res) => {
+        if (res) {
+          console.log('getUserInfo response', res);
+          setUserPlan(res.userTier); //사용자의 tier 정보를 저장
+          setCanSendPhoto(res.canSendPhoto); //사진 전송 가능 여부
+        } else {
+          return;
+        }
+      })
+      .catch((error) => {
+        console.log('getUserInfo error', error);
+      });
   }, []);
 
   const handleContentSizeChange = (event) => {
@@ -48,49 +118,69 @@ const DailyDairy = ({ navigation, route }) => {
     setInputHeight(height);
   };
 
+  if (!loaded) {
+    return null;
+  }
+
   // 일기 저장 로직
   const saveDiary = async () => {
     Analytics.clickDiaryWriteButton();
+    console.log('클릭');
+
+    if (image.length > 1) {
+      console.log('사진은 최대 1장까지 선택할 수 있습니다. error');
+      return;
+    }
+
+    const handleStatusUpdate = (emotion) => {
+      const targetEmotion = emotion.find((e) => e.type === 'custom') || emotion[0];
+      const group = targetEmotion?.group || 'normal';
+      const statusToUpdate = `${group}-emotion`;
+      console.log('updating status to:', statusToUpdate);
+      updateEntryStatus(dateID, statusToUpdate);
+    };
+
+    //홈으로 돌아가는 코드
+    const navigateToHome = () => {
+      navigation.navigate(RootStackName.BottomTabNavigator, {
+        screen: TabScreenName.Home,
+      });
+      Toast.show(`광고를 시청하고 이미지를 첨부했어요!`, {
+        duration: Toast.durations.SHORT,
+        position: Toast.positions.CENTER,
+      });
+    };
+
+    const handleSaveError = (err) => {
+      console.log('일기 저장 중 오류 발생', err);
+    };
+
     try {
       if (image.length === 0) {
         await todayEmotion(dateID, selectedEmotions, diaryText);
-        const targetEmotion =
-          selectedEmotions.find((e) => e.type === 'custom') || selectedEmotions[0];
-        let statusToUpdate = 'normal-emotion'; // 기본값 설정
-        console.log('targetEmotion', targetEmotion);
-        if (targetEmotion) {
-          console.log('emotion found:', targetEmotion.group);
-          // null 체크 및 기본값 설정
-          statusToUpdate = `${targetEmotion.group || 'normal'}-emotion`;
-        } else {
-          console.log('no emotion found, using normal-emotion');
-        }
-        console.log('updating status to:', statusToUpdate);
-        updateEntryStatus(dateID, statusToUpdate);
-        navigation.navigate(RootStackName.BottomTabNavigator, {
-          screen: TabScreenName.Home,
-        });
-      } else {
+        handleStatusUpdate(selectedEmotions);
+        navigateToHome();
+      } else if (getUserPlan() === 'free' && !getCanSendPhoto()) {
         await todayEmotionWithImage(dateID, selectedEmotions, diaryText, image);
-        const targetEmotion =
-          selectedEmotions.find((e) => e.type === 'custom') || selectedEmotions[0];
-        if (!targetEmotion) {
-          console.log('normal emotion');
-          updateEntryStatus(dateID, `normal-emotion`);
-        } else {
-          updateEntryStatus(dateID, `${targetEmotion.group}-emotion`);
-        }
-        navigation.navigate(RootStackName.BottomTabNavigator, {
-          screen: TabScreenName.Home,
-        });
+        handleStatusUpdate(selectedEmotions);
+
+        console.log('AdMob show');
+        rewarded.show(); // 광고 표시
+        setCanSendPhoto(true);
+        console.log('AdMob showed');
+
+        navigateToHome();
       }
     } catch (err) {
-      Toast.show('저장 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      handleSaveError(err);
     }
   };
 
   //사진 가져오기 로직
   const pickImage = async () => {
+    const userTier = getUserPlan();
+    const canSendPhoto = getCanSendPhoto();
+    // free 사용자 + 사진 전송 불가 상태라면 → 광고 보기
     if (image.length >= MAX_DIARY_IMAGE_COUNT) {
       setModalVisible(true);
       //Toast.show(`사진은 최대 ${MAX_DIARY_IMAGE_COUNT}장까지 선택할 수 있습니다.`);
@@ -110,6 +200,14 @@ const DailyDairy = ({ navigation, route }) => {
     }
     return;
   };
+
+  // 개발 단계인지 배포 단계인지
+  const adUnitId = __DEV__ ? TestIds.REWARDED : 'hello';
+  if (__DEV__) {
+    console.log('AdMob test mode', adUnitId);
+  } else {
+    console.log('AdMob production mode', adUnitId);
+  }
 
   return (
     <>

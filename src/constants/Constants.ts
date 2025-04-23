@@ -71,6 +71,7 @@ export enum HomeStackName {
   ChatList = 'ChatList',
   Report = 'Report', //1.5.7 UPDATE 일일 보고서
   Favorites = 'Favorites',
+  Ads = 'Ads',
 }
 
 export enum SettingStackName {
