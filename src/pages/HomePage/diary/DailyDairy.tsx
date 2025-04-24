@@ -77,7 +77,7 @@ const DailyDairy = ({ navigation, route }) => {
   const [image, setImage] = useState<string[]>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false); //사진 경고 모달
   const [adsModalVisible, setAdsModalVisible] = useState<boolean>(false); //광고 모달
-  const [canSendPhoto, setCanSendPhoto] = useState<boolean>(false); //사진 전송 가능 여부
+  const imageRef = useRef([]);
 
   //일기장 화면 진입 시 실행되는 useEffect
   const [loaded, setLoaded] = useState(false);
@@ -93,7 +93,7 @@ const DailyDairy = ({ navigation, route }) => {
       async (reward) => {
         console.log('User earned reward of ', reward);
         try {
-          await todayEmotionWithImage(dateID, selectedEmotions, diaryText, image);
+          await todayEmotionWithImage(dateID, selectedEmotions, diaryText, imageRef.current);
           updateEntryStatus(dateID, selectedEmotions[0]?.group + '-emotion');
           navigation.navigate(RootStackName.BottomTabNavigator, {
             screen: TabScreenName.Home,
@@ -126,6 +126,11 @@ const DailyDairy = ({ navigation, route }) => {
       unsubscribeEarned();
     };
   }, []);
+
+  //image 상태가 변경될 때마다 ref 업데이트
+  useEffect(() => {
+    imageRef.current = image;
+  }, [image]);
 
   const handleContentSizeChange = (event) => {
     const { width, height } = event.nativeEvent.contentSize;
@@ -182,20 +187,15 @@ const DailyDairy = ({ navigation, route }) => {
 
   //사진 가져오기 로직
   const pickImage = async () => {
-    const userTier = getUserPlan();
-    const canSendPhoto = getCanSendPhoto();
-    // free 사용자 + 사진 전송 불가 상태라면 → 광고 보기
     if (image.length >= MAX_DIARY_IMAGE_COUNT) {
       setModalVisible(true);
-      //Toast.show(`사진은 최대 ${MAX_DIARY_IMAGE_COUNT}장까지 선택할 수 있습니다.`);
       return;
     }
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       allowsEditing: false,
       quality: 1,
-      allowsMultipleSelection: true,
-      selectionLimit: MAX_DIARY_IMAGE_COUNT,
+      allowsMultipleSelection: false,
     });
     console.log(result);
     if (!result.canceled) {
@@ -345,7 +345,7 @@ const DailyDairy = ({ navigation, route }) => {
           setAdsModalVisible(false);
         }}
         onSubmit={async () => {
-          console.log('광고 보기 버튼을 클릭 클릭');
+          console.log('광고 보기 버튼을 클릭');
           if (!loaded) {
             Toast.show('광고 로딩중입니다. 잠시 기다려주세요');
             rewarded.load();
