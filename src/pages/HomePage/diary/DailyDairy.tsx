@@ -109,7 +109,6 @@ const DailyDairy = ({ navigation, route }) => {
         if (res) {
           console.log('getUserInfo response', res);
           setUserPlan(res.userTier); //사용자의 tier 정보를 저장
-          setCanSendPhoto(res.canSendPhoto); //사진 전송 가능 여부
         } else {
           return;
         }
@@ -128,6 +127,33 @@ const DailyDairy = ({ navigation, route }) => {
     return null;
   }
 
+  //홈으로 돌아가는 코드
+  const navigateToHome = (isShownAds: boolean) => {
+    navigation.navigate(RootStackName.BottomTabNavigator, {
+      screen: TabScreenName.Home,
+    });
+    isShownAds &&
+      Toast.show(`광고를 시청하고 이미지를 첨부했어요!`, {
+        duration: Toast.durations.SHORT,
+        position: Toast.positions.CENTER,
+      });
+  };
+
+  //기본 감정 선택 함수
+  const handleStatusUpdate = (emotion) => {
+    const targetEmotion = emotion.find((e) => e.type === 'custom') || emotion[0];
+    const group = targetEmotion?.group || 'normal';
+    const statusToUpdate = `${group}-emotion`;
+    console.log('updating status to:', statusToUpdate);
+    updateEntryStatus(dateID, statusToUpdate);
+  };
+
+  //광고 시청 함수
+  const watchAds = () => {
+    console.log('전면 광고 시청');
+    rewarded.show(); // 광고 표시
+  };
+
   // 일기 저장 로직
   const saveDiary = async () => {
     Analytics.clickDiaryWriteButton();
@@ -138,25 +164,6 @@ const DailyDairy = ({ navigation, route }) => {
       return;
     }
 
-    const handleStatusUpdate = (emotion) => {
-      const targetEmotion = emotion.find((e) => e.type === 'custom') || emotion[0];
-      const group = targetEmotion?.group || 'normal';
-      const statusToUpdate = `${group}-emotion`;
-      console.log('updating status to:', statusToUpdate);
-      updateEntryStatus(dateID, statusToUpdate);
-    };
-
-    //홈으로 돌아가는 코드
-    const navigateToHome = () => {
-      navigation.navigate(RootStackName.BottomTabNavigator, {
-        screen: TabScreenName.Home,
-      });
-      Toast.show(`광고를 시청하고 이미지를 첨부했어요!`, {
-        duration: Toast.durations.SHORT,
-        position: Toast.positions.CENTER,
-      });
-    };
-
     const handleSaveError = (err) => {
       console.log('일기 저장 중 오류 발생', err);
     };
@@ -165,18 +172,9 @@ const DailyDairy = ({ navigation, route }) => {
       if (image.length === 0) {
         await todayEmotion(dateID, selectedEmotions, diaryText);
         handleStatusUpdate(selectedEmotions);
-        navigateToHome();
+        navigateToHome(false);
       } else if (getUserPlan() === 'free' && !getCanSendPhoto()) {
         setAdsModalVisible(true);
-        //await todayEmotionWithImage(dateID, selectedEmotions, diaryText, image);
-        //handleStatusUpdate(selectedEmotions);
-
-        //console.log('AdMob show');
-        //rewarded.show(); // 광고 표시
-        //setCanSendPhoto(true);
-        //console.log('AdMob showed');
-
-        //navigateToHome();
       }
     } catch (err) {
       handleSaveError(err);
@@ -338,11 +336,18 @@ const DailyDairy = ({ navigation, route }) => {
         modalVisible={adsModalVisible}
         onClose={() => {
           console.log('모달 꺼짐');
-          setModalVisible(false);
+          setAdsModalVisible(false);
         }}
-        onSubmit={() => console.log('모달 확인')}
+        onSubmit={async () => {
+          console.log('광고 보기 버튼을 클릭 클릭');
+          watchAds();
+          await todayEmotionWithImage(dateID, selectedEmotions, diaryText, image);
+          handleStatusUpdate(selectedEmotions);
+          navigateToHome(true);
+        }}
         imageSource={adsImage}
         modalContent="광고를 시청하고 사진을 첨부할 수 있어요!"
+        type="ads"
       />
     </>
   );

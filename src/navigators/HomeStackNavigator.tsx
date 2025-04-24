@@ -13,7 +13,6 @@ import DailyDairy from '../pages/HomePage/diary/DailyDairy';
 import { Alert } from 'react-native';
 import DrawerNavigator from './DrawerNavigator';
 import Favorites from '../pages/HomePage/favorites/favorites';
-import AdsScreen from '../pages/AdsPage/Ads';
 import StatisticMain from '../pages/StatisticPage/StatisticMain';
 import Home from '../pages/HomePage/Home';
 const HomeStack = createNativeStackNavigator();
@@ -58,12 +57,6 @@ const HomeStackNavigator: React.FC = () => {
       <HomeStack.Screen
         name={HomeStackName.Favorites}
         component={Favorites}
-        options={{ headerShown: false }}
-      />
-      {/* 광고 전면 화면 추가 */}
-      <HomeStack.Screen
-        name={HomeStackName.Ads}
-        component={AdsScreen}
         options={{ headerShown: false }}
       />
     </HomeStack.Navigator>

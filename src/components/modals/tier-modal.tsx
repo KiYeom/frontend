@@ -35,30 +35,31 @@ const TierModal = ({
   return (
     <View>
       <Modal visible={modalVisible} animationType="fade" transparent>
-        <View
+        <TouchableOpacity
           style={{
             backgroundColor: 'rgba(0,0,0,0.5)',
             flex: 1,
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-          }}>
-          <ModalInner type={type}>
+          }}
+          onPress={onClose}>
+          <ModalInner>
             <Image source={imageSource} style={{ width: 140, height: 140 }} />
 
-            <ModalContent type={type}>{modalContent}</ModalContent>
+            <ModalContent>{modalContent}</ModalContent>
 
             <View style={{ width: '100%' }}>
               <Button
-                title="확인"
+                title={type === 'ads' ? '광고 시청하기' : '확인'}
                 primary={true}
                 onPress={() => {
-                  onClose?.();
+                  onSubmit?.();
                 }}
               />
             </View>
           </ModalInner>
-        </View>
+        </TouchableOpacity>
       </Modal>
     </View>
   );
@@ -71,10 +72,9 @@ const ModalContainer = styled.View`
   background-color: rgba(0, 0, 0, 0.5);
 `;
 
-const ModalInner = styled.View<{ type: string }>`
+const ModalInner = styled.View`
   width: 300px;
   background-color: white;
-  background-color: ${(props) => (props.type === 'ads' ? '#000000' : '#FFFFFF')};
   padding: ${rsHeight * 30 + 'px'} ${rsWidth * 24 + 'px'};
   gap: ${rsHeight * 12 + 'px'};
   border-radius: 30px;
@@ -98,11 +98,10 @@ const ModalTitle = styled.Text`
   color: black;
 `;
 
-const ModalContent = styled.Text<{ type: string }>`
+const ModalContent = styled.Text`
   font-size: ${rsWidth * 14 + 'px'};
   font-family: 'Pretendard-Regular';
   color: black;
-  color: ${(props) => (props.type === 'ads' ? '#FFFFFF' : '#000000')};
 `;
 
 const ButtonGroup = styled.View`
