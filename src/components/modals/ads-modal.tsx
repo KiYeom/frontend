@@ -15,7 +15,7 @@ import Button from '../button/button';
 import NewCheckBox from '../v3-checkbox/NewCheckBox';
 import { Image } from 'react-native';
 
-const AdsModal = ({
+const TierModal = ({
   modalVisible,
   onClose,
   onSubmit,
@@ -28,50 +28,47 @@ const AdsModal = ({
   imageSource?: ImageSourcePropType;
   modalContent?: string;
 }) => {
+  const [legelAllowed, setLegelAllowed] = React.useState<boolean>(false);
+
   return (
     <View>
       <Modal visible={modalVisible} animationType="fade" transparent>
-        <View
+        <TouchableOpacity
           style={{
             backgroundColor: 'rgba(0,0,0,0.5)',
             flex: 1,
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-          }}>
+          }}
+          onPress={onClose}>
           <ModalInner>
-            <View
-              style={{
-                width: '100%',
-                backgroundColor: '#191D30',
-                borderTopEndRadius: 30,
-                borderTopStartRadius: 30,
-                justifyContent: 'center',
-                alignItems: 'center',
-                paddingTop: rsHeight * 30,
-                paddingBottom: rsHeight * 10,
-              }}>
-              <Image source={imageSource} style={{ width: 140, height: 140 }} />
-            </View>
+            <Image source={imageSource} style={{ width: 140, height: 140 }} />
 
             <ModalContent>{modalContent}</ModalContent>
 
-            <View
-              style={{
-                width: '100%',
-                paddingBottom: rsHeight * 30,
-                paddingHorizontal: rsWidth * 24,
-              }}>
-              <Button
-                title="확인"
-                primary={true}
-                onPress={() => {
-                  onClose?.();
-                }}
-              />
-            </View>
+            <ButtonGroup>
+              <View style={{ width: '50%' }}>
+                <Button
+                  title={'취소'}
+                  primary={false}
+                  onPress={() => {
+                    onClose?.();
+                  }}
+                />
+              </View>
+              <View style={{ width: '50%' }}>
+                <Button
+                  title={'저장하기'}
+                  primary={true}
+                  onPress={() => {
+                    onSubmit?.();
+                  }}
+                />
+              </View>
+            </ButtonGroup>
           </ModalInner>
-        </View>
+        </TouchableOpacity>
       </Modal>
     </View>
   );
@@ -87,6 +84,7 @@ const ModalContainer = styled.View`
 const ModalInner = styled.View`
   width: 300px;
   background-color: white;
+  padding: ${rsHeight * 30 + 'px'} ${rsWidth * 24 + 'px'};
   gap: ${rsHeight * 12 + 'px'};
   border-radius: 30px;
   justify-content: center;
@@ -110,10 +108,10 @@ const ModalTitle = styled.Text`
 `;
 
 const ModalContent = styled.Text`
-  font-size: ${rsWidth * 14 + 'px'};
+  font-size: ${rsWidth * 15 + 'px'};
   font-family: 'Pretendard-Regular';
   color: black;
-  padding-horizontal: ${rsWidth * 24 + 'px'};
+  text-align: center;
 `;
 
 const ButtonGroup = styled.View`
@@ -130,4 +128,4 @@ const ButtonSingleGroup = styled.View`
   background-color: red;
 `;
 
-export default AdsModal;
+export default TierModal;

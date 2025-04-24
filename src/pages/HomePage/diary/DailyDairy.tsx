@@ -332,7 +332,7 @@ const DailyDairy = ({ navigation, route }) => {
         imageSource={localImage}
         modalContent="사진은 한 장만 등록할 수 있습니다."
       />
-      <TierModal
+      <AdsModal
         modalVisible={adsModalVisible}
         onClose={() => {
           console.log('모달 꺼짐');
@@ -346,8 +346,7 @@ const DailyDairy = ({ navigation, route }) => {
           navigateToHome(true);
         }}
         imageSource={adsImage}
-        modalContent="광고를 시청하고 사진을 첨부할 수 있어요!"
-        type="ads"
+        modalContent={`광고를 시청하면\n일기에 사진을 첨부할 수 있어요!`}
       />
     </>
   );
