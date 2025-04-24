@@ -1,6 +1,7 @@
 import { css } from '@emotion/native';
 import { useHeaderHeight } from '@react-navigation/elements';
-import React, { useEffect, useState, useMemo, useRef } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import React, { useEffect, useState, useMemo, useRef, useCallback } from 'react';
 import {
   Keyboard,
   TextInput,
@@ -59,6 +60,9 @@ const rewarded = RewardedAd.createForAdRequest(adUnitId, {
   keywords: ['fashion', 'clothing'],
 });
 
+//리스너 중복 등록 확인
+let listenerCount = 0;
+
 const localImage: ImageSourcePropType = require('../../../assets/images/cookie_pic_alarm.png');
 const adsImage: ImageSourcePropType = require('../../../assets/images/ads_cookie.png');
 
@@ -77,41 +81,76 @@ const DailyDairy = ({ navigation, route }) => {
   const [image, setImage] = useState<string[]>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false); //사진 경고 모달
   const [adsModalVisible, setAdsModalVisible] = useState<boolean>(false); //광고 모달
-  const imageRef = useRef([]);
+  const imageRef = useRef<string[]>([]);
+  const diaryTextRef = useRef<string>(diaryText);
+
+  const rewarded = useMemo(
+    () =>
+      RewardedAd.createForAdRequest(adUnitId, {
+        keywords: ['fashion', 'clothing'],
+      }),
+    [],
+  );
 
   //일기장 화면 진입 시 실행되는 useEffect
   const [loaded, setLoaded] = useState(false);
+  useFocusEffect(
+    useCallback(() => {
+      const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
+        console.log('광고 로드');
+        setLoaded(true);
+      });
+      //광고를 끝까지 봐서 보상을 줄 수 있을 때 일기와 사진을 등록할 수 있는 콜백 함수를 unsubscribeEarned 이라는 이름으로 등록해둔다
+      const unsubscribeEarned = rewarded.addAdEventListener(
+        RewardedAdEventType.EARNED_REWARD,
+        async (reward) => {
+          console.log('User earned reward of ', reward, diaryText);
+          try {
+            await todayEmotionWithImage(
+              dateID,
+              selectedEmotions,
+              diaryTextRef.current,
+              imageRef.current,
+            );
+            updateEntryStatus(dateID, selectedEmotions[0]?.group + '-emotion');
+
+            //setAdsModalVisible(false);
+            Toast.show('광고 시청 완료! 일기를 기록했어요.', {
+              duration: Toast.durations.SHORT,
+              position: Toast.positions.CENTER,
+            });
+          } catch (err) {
+            console.log('Error saving diary with image:', err);
+            Toast.show('일기 저장 중 오류가 발생했습니다.');
+          }
+        },
+      );
+      //광고가 닫힐 때 실행되는 이벤트 리스터
+      const unsubscribeClosed = rewarded.addAdEventListener(AdEventType.CLOSED, () => {
+        console.log('Ad was cloesed');
+        setAdsModalVisible(false);
+        navigation.navigate(RootStackName.BottomTabNavigator, {
+          screen: TabScreenName.Home,
+        });
+      });
+      //광고 로드
+      rewarded.load();
+      // 컴포넌트 언마운트 시 이벤트 리스너 해제
+      return () => {
+        console.log('컴포넌트 언마운트 시 이벤트 리스너 해제');
+        listenerCount--;
+        unsubscribeLoaded();
+        unsubscribeEarned();
+        unsubscribeClosed();
+        console.log(`리스너 해제됨 : 현재 ${listenerCount}번 등록됨`);
+      };
+    }, [rewarded, navigation]),
+  );
+
   useEffect(() => {
+    listenerCount++;
+    console.log(`리스너 등록 시작 : 현재 총 ${listenerCount}번 등록됨`);
     Analytics.watchDiaryWriteScreen();
-    //일기 화면 진입 시 광고가 로드되면 loaded 상태를 true로 변경할 콜백 함수를 unsubscribeLoaded 이라는 이름으로 등록해둔다
-    const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
-      setLoaded(true);
-    });
-    //광고를 끝까지 봐서 보상을 줄 수 있을 때 일기와 사진을 등록할 수 있는 콜백 함수를 unsubscribeEarned 이라는 이름으로 등록해둔다
-    const unsubscribeEarned = rewarded.addAdEventListener(
-      RewardedAdEventType.EARNED_REWARD,
-      async (reward) => {
-        console.log('User earned reward of ', reward);
-        try {
-          await todayEmotionWithImage(dateID, selectedEmotions, diaryText, imageRef.current);
-          updateEntryStatus(dateID, selectedEmotions[0]?.group + '-emotion');
-          navigation.navigate(RootStackName.BottomTabNavigator, {
-            screen: TabScreenName.Home,
-          });
-          Toast.show('광고 시청 완료! 일기를 기록했어요.', {
-            duration: Toast.durations.SHORT,
-            position: Toast.positions.CENTER,
-          });
-        } catch (err) {
-          console.log('Error saving diary with image:', err);
-          Toast.show('일기 저장 중 오류가 발생했습니다.');
-        }
-      },
-    );
-
-    //광고 로드
-    rewarded.load();
-
     getUserInfo()
       .then((res) => {
         res && setUserPlan(res.userTier); //사용자의 tier 정보를 저장)
@@ -119,18 +158,16 @@ const DailyDairy = ({ navigation, route }) => {
       .catch((error) => {
         console.log('getUserInfo error', error);
       });
-
-    // 컴포넌트 언마운트 시 이벤트 리스너 해제
-    return () => {
-      unsubscribeLoaded();
-      unsubscribeEarned();
-    };
   }, []);
 
   //image 상태가 변경될 때마다 ref 업데이트
   useEffect(() => {
     imageRef.current = image;
   }, [image]);
+  //텍스트 값이 바뀔 때마다 ref 업데이트
+  useEffect(() => {
+    diaryTextRef.current = diaryText;
+  }, [diaryText]);
 
   const handleContentSizeChange = (event) => {
     const { width, height } = event.nativeEvent.contentSize;
@@ -206,16 +243,27 @@ const DailyDairy = ({ navigation, route }) => {
   };
 
   //광고 시청 함수
-  const watchAds = () => {
-    if (!loaded) {
-      Toast.show('광고 로딩중입니다. 잠시 기다려주세요');
+  const watchAds = async () => {
+    try {
+      if (!loaded) {
+        Toast.show('광고 로딩중입니다. 잠시 기다려주세요');
+        rewarded.load();
+        return;
+      }
+      console.log('전면 광고 시청');
+      //setAdsModalVisible(false);
+      await rewarded.show(); // 광고 표시
+    } catch (error) {
+      console.error('Error showing ad:', error);
+      Toast.show('광고 표시 중 오류가 발생했습니다');
+      setLoaded(false);
+      rewarded.load(); // Try to load again
     }
-    console.log('전면 광고 시청');
-    rewarded.show(); // 광고 표시
   };
-  if (!loaded) {
+  /*if (!loaded) {
+    console.log('null');
     return null;
-  }
+  }*/
 
   return (
     <>
@@ -341,11 +389,11 @@ const DailyDairy = ({ navigation, route }) => {
       <AdsModal
         modalVisible={adsModalVisible}
         onClose={() => {
-          console.log('모달 꺼짐');
+          console.log('모달 꺼짐', diaryText);
           setAdsModalVisible(false);
         }}
         onSubmit={async () => {
-          console.log('광고 보기 버튼을 클릭');
+          console.log('광고 보기 버튼을 클릭', loaded);
           if (!loaded) {
             Toast.show('광고 로딩중입니다. 잠시 기다려주세요');
             rewarded.load();
