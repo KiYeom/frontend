@@ -211,7 +211,8 @@ const DailyDairy = ({ navigation, route }) => {
 
   return (
     <>
-      {modalVisible && (
+      <View style={{ flex: 1, paddingBottom: insets.bottom }}>
+        <Header title={formatDateKorean(dateID)} />
         <TierModal
           modalVisible={modalVisible}
           onClose={() => {
@@ -220,9 +221,6 @@ const DailyDairy = ({ navigation, route }) => {
           }}
           onSubmit={() => console.log('모달 확인')}
         />
-      )}
-      <View style={{ flex: 1, paddingBottom: insets.bottom }}>
-        <Header title={formatDateKorean(dateID)} />
 
         <KeyboardAwareScrollView
           style={{ flex: 1 }}
