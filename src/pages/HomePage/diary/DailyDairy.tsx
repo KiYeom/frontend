@@ -51,8 +51,10 @@ import {
   setCanSendPhoto,
 } from '../.././../utils/storageUtils';
 
+// development <-> production 에 따라 정해지는 adUnitId
 const adUnitId = __DEV__ ? TestIds.REWARDED : 'ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy';
 
+//한 번 만들어지면 되는 인스턴스
 const rewarded = RewardedAd.createForAdRequest(adUnitId, {
   keywords: ['fashion', 'clothing'],
 });
@@ -77,55 +79,58 @@ const DailyDairy = ({ navigation, route }) => {
   const [adsModalVisible, setAdsModalVisible] = useState<boolean>(false); //광고 모달
   const [canSendPhoto, setCanSendPhoto] = useState<boolean>(false); //사진 전송 가능 여부
 
-  //광고 로드
+  //일기장 화면 진입 시 실행되는 useEffect
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
+    Analytics.watchDiaryWriteScreen();
+    //일기 화면 진입 시 광고가 로드되면 loaded 상태를 true로 변경할 콜백 함수를 unsubscribeLoaded 이라는 이름으로 등록해둔다
     const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
       setLoaded(true);
     });
+    //광고를 끝까지 봐서 보상을 줄 수 있을 때 일기와 사진을 등록할 수 있는 콜백 함수를 unsubscribeEarned 이라는 이름으로 등록해둔다
     const unsubscribeEarned = rewarded.addAdEventListener(
       RewardedAdEventType.EARNED_REWARD,
-      (reward) => {
+      async (reward) => {
         console.log('User earned reward of ', reward);
+        try {
+          await todayEmotionWithImage(dateID, selectedEmotions, diaryText, image);
+          updateEntryStatus(dateID, selectedEmotions[0]?.group + '-emotion');
+          navigation.navigate(RootStackName.BottomTabNavigator, {
+            screen: TabScreenName.Home,
+          });
+          Toast.show('광고 시청 완료! 일기를 기록했어요.', {
+            duration: Toast.durations.SHORT,
+            position: Toast.positions.CENTER,
+          });
+        } catch (err) {
+          console.log('Error saving diary with image:', err);
+          Toast.show('일기 저장 중 오류가 발생했습니다.');
+        }
       },
     );
 
-    // Start loading the rewarded ad straight away
+    //광고 로드
     rewarded.load();
 
-    // Unsubscribe from events on unmount
+    getUserInfo()
+      .then((res) => {
+        res && setUserPlan(res.userTier); //사용자의 tier 정보를 저장)
+      })
+      .catch((error) => {
+        console.log('getUserInfo error', error);
+      });
+
+    // 컴포넌트 언마운트 시 이벤트 리스너 해제
     return () => {
       unsubscribeLoaded();
       unsubscribeEarned();
     };
   }, []);
 
-  // 서버에서 키워드 리스트 페치 (생략)
-  useEffect(() => {
-    Analytics.watchDiaryWriteScreen();
-    // fetchData();
-    getUserInfo()
-      .then((res) => {
-        if (res) {
-          console.log('getUserInfo response', res);
-          setUserPlan(res.userTier); //사용자의 tier 정보를 저장
-        } else {
-          return;
-        }
-      })
-      .catch((error) => {
-        console.log('getUserInfo error', error);
-      });
-  }, []);
-
   const handleContentSizeChange = (event) => {
     const { width, height } = event.nativeEvent.contentSize;
     setInputHeight(height);
   };
-
-  if (!loaded) {
-    return null;
-  }
 
   //홈으로 돌아가는 코드
   const navigateToHome = (isShownAds: boolean) => {
@@ -148,12 +153,6 @@ const DailyDairy = ({ navigation, route }) => {
     updateEntryStatus(dateID, statusToUpdate);
   };
 
-  //광고 시청 함수
-  const watchAds = () => {
-    console.log('전면 광고 시청');
-    rewarded.show(); // 광고 표시
-  };
-
   // 일기 저장 로직
   const saveDiary = async () => {
     Analytics.clickDiaryWriteButton();
@@ -173,7 +172,7 @@ const DailyDairy = ({ navigation, route }) => {
         await todayEmotion(dateID, selectedEmotions, diaryText);
         handleStatusUpdate(selectedEmotions);
         navigateToHome(false);
-      } else if (getUserPlan() === 'free' && !getCanSendPhoto()) {
+      } else if (getUserPlan() === 'free') {
         setAdsModalVisible(true);
       }
     } catch (err) {
@@ -206,12 +205,16 @@ const DailyDairy = ({ navigation, route }) => {
     return;
   };
 
-  // 개발 단계인지 배포 단계인지
-  const adUnitId = __DEV__ ? TestIds.REWARDED : 'hello';
-  if (__DEV__) {
-    console.log('AdMob test mode', adUnitId);
-  } else {
-    console.log('AdMob production mode', adUnitId);
+  //광고 시청 함수
+  const watchAds = () => {
+    if (!loaded) {
+      Toast.show('광고 로딩중입니다. 잠시 기다려주세요');
+    }
+    console.log('전면 광고 시청');
+    rewarded.show(); // 광고 표시
+  };
+  if (!loaded) {
+    return null;
   }
 
   return (
@@ -328,7 +331,10 @@ const DailyDairy = ({ navigation, route }) => {
           console.log('모달 꺼짐');
           setModalVisible(false);
         }}
-        onSubmit={() => console.log('모달 확인')}
+        onSubmit={() => {
+          console.log('모달 확인');
+          setModalVisible(false);
+        }}
         imageSource={localImage}
         modalContent="사진은 한 장만 등록할 수 있습니다."
       />
@@ -340,10 +346,15 @@ const DailyDairy = ({ navigation, route }) => {
         }}
         onSubmit={async () => {
           console.log('광고 보기 버튼을 클릭 클릭');
-          watchAds();
-          await todayEmotionWithImage(dateID, selectedEmotions, diaryText, image);
-          handleStatusUpdate(selectedEmotions);
-          navigateToHome(true);
+          if (!loaded) {
+            Toast.show('광고 로딩중입니다. 잠시 기다려주세요');
+            rewarded.load();
+            return;
+          }
+          watchAds(); //광고가 로드된 상태에서 광고 보여주기
+          //await todayEmotionWithImage(dateID, selectedEmotions, diaryText, image);
+          //handleStatusUpdate(selectedEmotions);
+          //navigateToHome(true);
         }}
         imageSource={adsImage}
         modalContent={`광고를 시청하면\n일기에 사진을 첨부할 수 있어요!`}
