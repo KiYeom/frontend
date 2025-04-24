@@ -7,7 +7,7 @@ export const ERRORMESSAGE = '혹시 다시 얘기해주실 수 있나요? 멍멍
 export const SPLASH_PATH = '/src/assets/images/new_splash.png';
 export const COOKIE_PROFILE_PATH = './src/assets/images/setting_default_profile.png';
 
-export const MAX_DIARY_IMAGE_COUNT = 4; //최대 이미지 선택 개수 (일기)
+export const MAX_DIARY_IMAGE_COUNT = 1; //최대 이미지 선택 개수 (일기)
 
 export const MAX_SELECTED_EMOTION_COUNT = 5; //최대 선택 감정 개수 (일기)
 

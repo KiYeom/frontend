@@ -9,6 +9,7 @@ import {
   ScrollView,
   Platform,
   StatusBar,
+  ImageSourcePropType,
 } from 'react-native';
 import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
 import Icon from '../../../components/icons/icons';
@@ -30,6 +31,7 @@ import * as ImagePicker from 'expo-image-picker';
 import AttachmentPreview from '../../../components/image-container/AttachmentPreview';
 import { MAX_DIARY_IMAGE_COUNT } from '../../../constants/Constants';
 import TierModal from '../../../components/modals/tier-modal';
+import AdsModal from '../../../components/modals/ads-modal';
 import { getUserInfo } from '../../../apis/setting';
 
 import {
@@ -55,6 +57,9 @@ const rewarded = RewardedAd.createForAdRequest(adUnitId, {
   keywords: ['fashion', 'clothing'],
 });
 
+const localImage: ImageSourcePropType = require('../../../assets/images/cookie_pic_alarm.png');
+const adsImage: ImageSourcePropType = require('../../../assets/images/ads_cookie.png');
+
 const DailyDairy = ({ navigation, route }) => {
   const { dateID } = route.params;
   const headerHeight = useHeaderHeight();
@@ -68,7 +73,8 @@ const DailyDairy = ({ navigation, route }) => {
 
   //이미지 가지고 오기
   const [image, setImage] = useState<string[]>([]);
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [modalVisible, setModalVisible] = useState<boolean>(false); //사진 경고 모달
+  const [adsModalVisible, setAdsModalVisible] = useState<boolean>(false); //광고 모달
   const [canSendPhoto, setCanSendPhoto] = useState<boolean>(false); //사진 전송 가능 여부
 
   //광고 로드
@@ -161,15 +167,16 @@ const DailyDairy = ({ navigation, route }) => {
         handleStatusUpdate(selectedEmotions);
         navigateToHome();
       } else if (getUserPlan() === 'free' && !getCanSendPhoto()) {
-        await todayEmotionWithImage(dateID, selectedEmotions, diaryText, image);
-        handleStatusUpdate(selectedEmotions);
+        setAdsModalVisible(true);
+        //await todayEmotionWithImage(dateID, selectedEmotions, diaryText, image);
+        //handleStatusUpdate(selectedEmotions);
 
-        console.log('AdMob show');
-        rewarded.show(); // 광고 표시
-        setCanSendPhoto(true);
-        console.log('AdMob showed');
+        //console.log('AdMob show');
+        //rewarded.show(); // 광고 표시
+        //setCanSendPhoto(true);
+        //console.log('AdMob showed');
 
-        navigateToHome();
+        //navigateToHome();
       }
     } catch (err) {
       handleSaveError(err);
@@ -213,14 +220,6 @@ const DailyDairy = ({ navigation, route }) => {
     <>
       <View style={{ flex: 1, paddingBottom: insets.bottom }}>
         <Header title={formatDateKorean(dateID)} />
-        <TierModal
-          modalVisible={modalVisible}
-          onClose={() => {
-            console.log('모달 꺼짐');
-            setModalVisible(false);
-          }}
-          onSubmit={() => console.log('모달 확인')}
-        />
 
         <KeyboardAwareScrollView
           style={{ flex: 1 }}
@@ -325,6 +324,26 @@ const DailyDairy = ({ navigation, route }) => {
           </View>
         </KeyboardStickyView>
       </View>
+      <TierModal
+        modalVisible={modalVisible}
+        onClose={() => {
+          console.log('모달 꺼짐');
+          setModalVisible(false);
+        }}
+        onSubmit={() => console.log('모달 확인')}
+        imageSource={localImage}
+        modalContent="사진은 한 장만 등록할 수 있습니다."
+      />
+      <TierModal
+        modalVisible={adsModalVisible}
+        onClose={() => {
+          console.log('모달 꺼짐');
+          setModalVisible(false);
+        }}
+        onSubmit={() => console.log('모달 확인')}
+        imageSource={adsImage}
+        modalContent="광고를 시청하고 사진을 첨부할 수 있어요!"
+      />
     </>
   );
 };

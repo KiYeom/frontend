@@ -15,23 +15,19 @@ import Button from '../button/button';
 import NewCheckBox from '../v3-checkbox/NewCheckBox';
 import { Image } from 'react-native';
 
-const TierModal = ({
+const AdsModal = ({
   modalVisible,
   onClose,
   onSubmit,
   imageSource,
   modalContent,
-  type = 'normal', //기본값 설정
 }: {
   modalVisible?: boolean;
   onClose?: () => void;
   onSubmit?: () => void;
   imageSource?: ImageSourcePropType;
   modalContent?: string;
-  type?: 'normal' | 'ads';
 }) => {
-  const [legelAllowed, setLegelAllowed] = React.useState<boolean>(false);
-
   return (
     <View>
       <Modal visible={modalVisible} animationType="fade" transparent>
@@ -43,12 +39,29 @@ const TierModal = ({
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <ModalInner type={type}>
-            <Image source={imageSource} style={{ width: 140, height: 140 }} />
+          <ModalInner>
+            <View
+              style={{
+                width: '100%',
+                backgroundColor: '#191D30',
+                borderTopEndRadius: 30,
+                borderTopStartRadius: 30,
+                justifyContent: 'center',
+                alignItems: 'center',
+                paddingTop: rsHeight * 30,
+                paddingBottom: rsHeight * 10,
+              }}>
+              <Image source={imageSource} style={{ width: 140, height: 140 }} />
+            </View>
 
-            <ModalContent type={type}>{modalContent}</ModalContent>
+            <ModalContent>{modalContent}</ModalContent>
 
-            <View style={{ width: '100%' }}>
+            <View
+              style={{
+                width: '100%',
+                paddingBottom: rsHeight * 30,
+                paddingHorizontal: rsWidth * 24,
+              }}>
               <Button
                 title="확인"
                 primary={true}
@@ -71,11 +84,9 @@ const ModalContainer = styled.View`
   background-color: rgba(0, 0, 0, 0.5);
 `;
 
-const ModalInner = styled.View<{ type: string }>`
+const ModalInner = styled.View`
   width: 300px;
   background-color: white;
-  background-color: ${(props) => (props.type === 'ads' ? '#000000' : '#FFFFFF')};
-  padding: ${rsHeight * 30 + 'px'} ${rsWidth * 24 + 'px'};
   gap: ${rsHeight * 12 + 'px'};
   border-radius: 30px;
   justify-content: center;
@@ -98,11 +109,11 @@ const ModalTitle = styled.Text`
   color: black;
 `;
 
-const ModalContent = styled.Text<{ type: string }>`
+const ModalContent = styled.Text`
   font-size: ${rsWidth * 14 + 'px'};
   font-family: 'Pretendard-Regular';
   color: black;
-  color: ${(props) => (props.type === 'ads' ? '#FFFFFF' : '#000000')};
+  padding-horizontal: ${rsWidth * 24 + 'px'};
 `;
 
 const ButtonGroup = styled.View`
@@ -119,4 +130,4 @@ const ButtonSingleGroup = styled.View`
   background-color: red;
 `;
 
-export default TierModal;
+export default AdsModal;
