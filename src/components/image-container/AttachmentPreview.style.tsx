@@ -18,6 +18,9 @@ export const DeleteButton = styled.TouchableOpacity`
   top: 7px;
   right: 7px;
   background-color: rgba(0, 0, 0, 0.4);
+  width: ${rsWidth * 12 + 'px'};
+  height: ${rsHeight * 12 + 'px'};
+  justify-content: center;
   border-radius: 12px;
   padding: 3px;
   z-index: 1;
