@@ -74,14 +74,14 @@ const DailyDairy = ({ navigation, route }) => {
   // 상태: 텍스트 인풋 높이
   const [inputHeight, setInputHeight] = useState(46); //초기 높이
 
-  const { selectedEmotions, diaryText, setDiaryText } = useEmotionStore();
+  const { selectedEmotions, diaryText, setDiaryText, setImages, images } = useEmotionStore();
   const { updateEntryStatus } = useCalendarStore();
 
   //이미지 가지고 오기
-  const [image, setImage] = useState<string[]>([]);
+  //const [image, setImage] = useState<string[]>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false); //사진 경고 모달
   const [adsModalVisible, setAdsModalVisible] = useState<boolean>(false); //광고 모달
-  const imageRef = useRef<string[]>([]);
+  const imageRef = useRef<string[]>(images);
   const diaryTextRef = useRef<string>(diaryText);
 
   const rewarded = useMemo(
@@ -162,8 +162,8 @@ const DailyDairy = ({ navigation, route }) => {
 
   //image 상태가 변경될 때마다 ref 업데이트
   useEffect(() => {
-    imageRef.current = image;
-  }, [image]);
+    imageRef.current = images;
+  }, [images]);
   //텍스트 값이 바뀔 때마다 ref 업데이트
   useEffect(() => {
     diaryTextRef.current = diaryText;
@@ -200,7 +200,7 @@ const DailyDairy = ({ navigation, route }) => {
     Analytics.clickDiaryWriteButton();
     console.log('클릭');
 
-    if (image.length > 1) {
+    if (images.length > 1) {
       console.log('사진은 최대 1장까지 선택할 수 있습니다. error');
       return;
     }
@@ -210,7 +210,7 @@ const DailyDairy = ({ navigation, route }) => {
     };
 
     try {
-      if (image.length === 0) {
+      if (images.length === 0) {
         await todayEmotion(dateID, selectedEmotions, diaryText);
         handleStatusUpdate(selectedEmotions);
         navigateToHome(false);
@@ -224,7 +224,7 @@ const DailyDairy = ({ navigation, route }) => {
 
   //사진 가져오기 로직
   const pickImage = async () => {
-    if (image.length >= MAX_DIARY_IMAGE_COUNT) {
+    if (images.length >= MAX_DIARY_IMAGE_COUNT) {
       setModalVisible(true);
       return;
     }
@@ -237,7 +237,8 @@ const DailyDairy = ({ navigation, route }) => {
     console.log(result);
     if (!result.canceled) {
       const uris = result.assets.map((asset) => asset.uri);
-      setImage((prev) => [...prev, ...uris]); // 기존 이미지에 추가
+      //setImage((prev) => [...prev, ...uris]); // 기존 이미지에 추가
+      setImages((prev) => [...prev, ...uris]);
     }
     return;
   };
@@ -300,7 +301,7 @@ const DailyDairy = ({ navigation, route }) => {
               ))}
             </View>
           )}
-          {image.length > 0 && (
+          {images.length > 0 && (
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -309,12 +310,12 @@ const DailyDairy = ({ navigation, route }) => {
                 gap: rsWidth * 12,
                 marginTop: rsHeight * 12,
               }}>
-              {image.map((img, idx) => (
+              {images.map((img, idx) => (
                 <AttachmentPreview
                   key={idx}
                   image={img}
                   onDelete={(uriToDelete) =>
-                    setImage((prev) => prev.filter((uri) => uri !== uriToDelete))
+                    setImages((prev) => prev.filter((uri) => uri !== uriToDelete))
                   }
                 />
               ))}

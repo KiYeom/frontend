@@ -63,6 +63,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
     addEmotion,
     removeEmotion,
     setDiaryText,
+    setImages,
   } = useEmotionStore();
   //const [selectedEmotionsV2, setSelectedEmotionsV2] = useState([]);
   //const { recordedEmotions, setRecordedEmotions } = useRecordedEmotionStore();
@@ -88,6 +89,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
     //console.log('~~~~~~', selectedEmotions);
     setSelectedEmotions(diaryData.Keywords);
     setDiaryText(diaryData.todayFeeling ?? '');
+    setImages(diaryData.images ?? []);
   };
 
   useEffect(() => {
