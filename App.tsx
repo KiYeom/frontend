@@ -50,10 +50,14 @@ if (!__DEV__) {
   console.log('development mode');
 }
 
-if (process.env.EXPO_PUBLIC_AMPLITUDE) {
+if (!__DEV__ && process.env.EXPO_PUBLIC_AMPLITUDE) {
   amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE, undefined, {
     minIdLength: 1,
   });
+} else {
+  console.log(
+    __DEV__ ? '[Amplitude] skipped in development (__DEV__=true)' : '[Amplitude] no API key found',
+  );
 }
 
 SplashScreen.preventAutoHideAsync();
