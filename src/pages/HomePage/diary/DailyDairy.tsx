@@ -11,6 +11,8 @@ import {
   Platform,
   StatusBar,
   ImageSourcePropType,
+  Alert,
+  Linking,
 } from 'react-native';
 import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
 import Icon from '../../../components/icons/icons';
@@ -147,6 +149,34 @@ const DailyDairy = ({ navigation, route }) => {
     }, [rewarded, navigation]),
   );
 
+  //사진 접근 권한
+  const getPermission = async () => {
+    if (Platform.OS !== 'web') {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      console.log('사진 접근 권한:', status); //사진 접근 권한 버튼 누른 뒤에 실행됨
+      if (status !== 'granted') {
+        Alert.alert(
+          '사진 접근 권한이 필요합니다',
+          '사진 업로드를 위해 앱 설정에서 사진 접근 권한을 허용해주세요.',
+          [
+            { text: '취소', style: 'cancel' },
+            {
+              text: '설정',
+              onPress: () => {
+                // iOS, Android 둘 다 앱 설정 화면으로 이동
+                Linking.openSettings();
+              },
+            },
+          ],
+          { cancelable: true },
+        );
+
+        return false;
+      }
+      return true;
+    }
+  };
+
   useEffect(() => {
     listenerCount++;
     console.log(`리스너 등록 시작 : 현재 총 ${listenerCount}번 등록됨`);
@@ -224,6 +254,12 @@ const DailyDairy = ({ navigation, route }) => {
 
   //사진 가져오기 로직
   const pickImage = async () => {
+    const permission = await getPermission();
+    console.log('사진 접근 권한:', permission);
+    if (!permission) {
+      console.log('사진 접근 권한 없음');
+      return;
+    }
     if (images.length >= MAX_DIARY_IMAGE_COUNT) {
       setModalVisible(true);
       return;
