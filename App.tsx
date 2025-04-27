@@ -42,9 +42,13 @@ import * as SystemUI from 'expo-system-ui';
 import 'react-native-gesture-handler';
 import Favorites from './src/pages/HomePage/favorites/favorites';
 
-Sentry.init({
-  dsn: 'https://038362834934b1090d94fe368fdbcbf7@o4507944128020480.ingest.us.sentry.io/4507944132870145',
-});
+if (!__DEV__) {
+  Sentry.init({
+    dsn: 'https://038362834934b1090d94fe368fdbcbf7@o4507944128020480.ingest.us.sentry.io/4507944132870145',
+  });
+} else {
+  console.log('development mode');
+}
 
 if (process.env.EXPO_PUBLIC_AMPLITUDE) {
   amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE, undefined, {

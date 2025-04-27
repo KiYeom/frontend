@@ -130,7 +130,7 @@ module.exports = {
             image: './src/assets/images/logo_1024.png',
             backgroundColor: '#31B28E',
           },
-          imageWidth: 200,
+          imageWidth: 190,
         },
       ],
       [
