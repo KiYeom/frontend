@@ -36,6 +36,7 @@ import { MAX_DIARY_IMAGE_COUNT } from '../../../constants/Constants';
 import TierModal from '../../../components/modals/tier-modal';
 import AdsModal from '../../../components/modals/ads-modal';
 import { getUserInfo } from '../../../apis/setting';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 
 import {
   BannerAd,
@@ -86,6 +87,9 @@ const DailyDairy = ({ navigation, route }) => {
   const imageRef = useRef<string[]>(images);
   const diaryTextRef = useRef<string>(diaryText);
 
+  //네비게이션 로딩 상태
+  const [isNavigationLoading, setNavigationLoading] = useState(false);
+
   const rewarded = useMemo(
     () =>
       RewardedAd.createForAdRequest(adUnitId, {
@@ -117,10 +121,6 @@ const DailyDairy = ({ navigation, route }) => {
             updateEntryStatus(dateID, selectedEmotions[0]?.group + '-emotion');
 
             //setAdsModalVisible(false);
-            Toast.show('광고 시청 완료! 일기를 기록했어요.', {
-              duration: Toast.durations.SHORT,
-              position: Toast.positions.CENTER,
-            });
           } catch (err) {
             console.log('Error saving diary with image:', err);
             Toast.show('일기 저장 중 오류가 발생했습니다.');
@@ -131,9 +131,20 @@ const DailyDairy = ({ navigation, route }) => {
       const unsubscribeClosed = rewarded.addAdEventListener(AdEventType.CLOSED, () => {
         console.log('Ad was cloesed');
         setAdsModalVisible(false);
-        navigation.navigate(RootStackName.BottomTabNavigator, {
-          screen: TabScreenName.Home,
-        });
+        setNavigationLoading(true); //네비게이션 로딩
+
+        // 짧은 지연 후 네비게이션 - 로딩 표시가 보이도록
+        setTimeout(() => {
+          navigation.navigate(RootStackName.BottomTabNavigator, {
+            screen: TabScreenName.Home,
+          });
+          Toast.show('광고 시청 완료! 일기를 기록했어요.', {
+            duration: Toast.durations.SHORT,
+            position: Toast.positions.CENTER,
+          });
+          // 네비게이션 후 로딩 상태 해제
+          setNavigationLoading(false);
+        }, 1000); // 0.5초 지연
       });
       //광고 로드
       rewarded.load();
@@ -144,6 +155,7 @@ const DailyDairy = ({ navigation, route }) => {
         unsubscribeLoaded();
         unsubscribeEarned();
         unsubscribeClosed();
+        setNavigationLoading(false);
         console.log(`리스너 해제됨 : 현재 ${listenerCount}번 등록됨`);
       };
     }, [rewarded, navigation]),
@@ -444,6 +456,21 @@ const DailyDairy = ({ navigation, route }) => {
         imageSource={adsImage}
         modalContent={`광고를 시청하면\n일기에 사진을 첨부할 수 있어요!`}
       />
+      {isNavigationLoading && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+          }}>
+          <ActivityIndicator size="large" color={palette.primary[500]} />
+        </View>
+      )}
     </>
   );
 };
