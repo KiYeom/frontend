@@ -322,7 +322,14 @@ const DailyDairy = ({ navigation, route }) => {
         <KeyboardAwareScrollView
           style={{ flex: 1 }}
           keyboardShouldPersistTaps="handled"
-          keyboardDismissMode="interactive">
+          keyboardDismissMode="interactive"
+          bottomOffset={insets.bottom + 60} // 안전정역 + 스티키뷰 높이
+          // 키보드에 올라가는 높이 + 스티키 뷰 높이
+          scrollEnabled={true}
+          contentContainerStyle={{
+            flexGrow: 1,
+            paddingBottom: insets.bottom + 60,
+          }}>
           <View
             style={css`
               margin-top: ${rsHeight * 12 + 'px'};
@@ -371,30 +378,34 @@ const DailyDairy = ({ navigation, route }) => {
           )}
 
           {/* 풀스크린 멀티라인 입력창 */}
-          <TextInput
-            multiline
-            autoFocus
-            scrollEnabled={false}
-            value={diaryText}
-            onChangeText={setDiaryText}
-            placeholder="이 감정을 강하게 느낀 순간을 기록해보세요"
-            placeholderTextColor="#AAA"
-            style={css`
-              margin-top: ${rsHeight * 12 + 'px'};
-              margin-horizontal: ${rsWidth * 24 + 'px'};
-              border-radius: 10px;
-              //background-color: #f5f5f5;
-              font-size: ${rsFont * 16 + 'px'};
-              line-height: ${rsFont * 16 * 1.5 + 'px'};
-              padding: ${rsHeight * 12 + 'px'} ${rsWidth * 12 + 'px'};
-              text-align-vertical: top;
-              font-family: Kyobo-handwriting;
-              align-self: flex-start;
-              height: ${inputHeight}px;
-              padding-bottom: ${rsHeight * 50 + 'px'};
-            `}
-            onContentSizeChange={handleContentSizeChange}
-          />
+          <View style={{ flex: 1, marginHorizontal: rsWidth * 24 }}>
+            <TextInput
+              multiline
+              autoFocus
+              scrollEnabled={false}
+              value={diaryText}
+              onChangeText={setDiaryText}
+              placeholder="이 감정을 강하게 느낀 순간을 기록해보세요"
+              placeholderTextColor="#AAA"
+              style={css`
+                flex: 1;
+                margin-top: ${rsHeight * 12 + 'px'};
+                //margin-horizontal: ${rsWidth * 24 + 'px'};
+                border-radius: 10px;
+                background-color: red;
+                font-size: ${rsFont * 16 + 'px'};
+                line-height: ${rsFont * 16 * 1.5 + 'px'};
+                padding: ${rsHeight * 12 + 'px'} ${rsWidth * 12 + 'px'};
+                text-align-vertical: top;
+                font-family: Kyobo-handwriting;
+                align-self: flex-start;
+                height: ${inputHeight}px;
+                width: 100%;
+                padding-bottom: ${rsHeight * 50 + 'px'};
+              `}
+              onContentSizeChange={handleContentSizeChange}
+            />
+          </View>
         </KeyboardAwareScrollView>
 
         <KeyboardStickyView offset={{ closed: 0, opened: insets.bottom }}>
