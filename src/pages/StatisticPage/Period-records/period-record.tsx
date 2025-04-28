@@ -10,8 +10,10 @@ import {
   RecordDateIcon,
   RecordDateText,
   RecordKeywordText,
+  RImageContainer,
 } from './period-record.style';
-import { TouchableOpacity, View } from 'react-native';
+import { RootStackName, HomeStackName, StatisticStackName } from '../../../constants/Constants';
+import { TouchableOpacity, View, Text, Image } from 'react-native';
 import Icon from '../../../components/icons/icons';
 import palette from '../../../assets/styles/theme';
 import { rsFont } from '../../../utils/responsive-size';
@@ -21,7 +23,7 @@ const HINT_NAME = 'period-record';
 const HINT_MESSAGE = '자신이 기록한 날들을 한 눈에 볼 수 있어요!';
 
 const PeriodRecord = (props: any) => {
-  const { records, hintStatus, setHintStatus } = props;
+  const { records, hintStatus, setHintStatus, navigation } = props;
   const getLocalDate = (date: string, locale: string) => {
     const formattedDate = new Date(date).toLocaleDateString(locale, {
       year: 'numeric',
@@ -64,52 +66,67 @@ const PeriodRecord = (props: any) => {
     <RContainer>
       <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
         <SectionTitle>내가 기록한 하루들</SectionTitle>
-        <View style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}>
-          {/*<Hint
-            visible={hintStatus && hintStatus === HINT_NAME}
-            position={Hint.positions.TOP}
-            message={HINT_MESSAGE}
-            color={'white'}
-            enableShadow
-            messageStyle={css`
-              font-family: Kyobo-handwriting;
-              font-size: ${16 * rsFont + 'px'};
-              color: ${palette.neutral[900]};
-            `}
-            onPress={() => setHintStatus(undefined)}
-            onBackgroundPress={() => setHintStatus(undefined)}>
-            <View>
-              <TouchableOpacity
-                activeOpacity={1}
-                style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}
-                onPress={() => setHintStatus(hintStatus ? undefined : HINT_NAME)}>
-                <Icon name="information" width={16} height={16} />
-              </TouchableOpacity>
-            </View>
-          </Hint>*/}
-        </View>
+        <View style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}></View>
       </View>
-      {records.length === 0 ? (
-        <Empty type="채팅기록"></Empty>
-      ) : (
-        records.map((record, index) => {
-          const iconName = getEmotionIconName(record.keywords[0]);
-          return (
-            <RecordContainer key={index}>
-              <RecordDateArea>
-                <RecordDateIcon>
-                  <Icon name={iconName} width={40} height={40} color={palette.neutral[300]} />
-                </RecordDateIcon>
-                <RecordDateText>{getLocalDate(record.date, 'ko-KR')}</RecordDateText>
-              </RecordDateArea>
-              {record.keywords && record.keywords.length > 0 && (
-                <RecordKeywordText>{getEmotionsText(record.keywords)}</RecordKeywordText>
-              )}
-              {record.todayFeeling && <RecordDailyText>{record.todayFeeling}</RecordDailyText>}
-            </RecordContainer>
-          );
-        })
-      )}
+      {records.map((record, index) => {
+        console.log('record', record);
+        const iconName = getEmotionIconName(record.keywords[0]);
+        return (
+          <RecordContainer
+            key={index}
+            onPress={() => {
+              //console.log('클릭함', record.date);
+              //console.log('클릭함');
+              navigation.navigate(RootStackName.HomeStackNavigator, {
+                screen: HomeStackName.Report,
+                params: { dateID: record.date },
+              });
+            }}>
+            <RecordDateArea>
+              <RecordDateIcon>
+                <Icon name={iconName} width={40} height={40} color={palette.neutral[300]} />
+              </RecordDateIcon>
+              <RecordDateText>{getLocalDate(record.date, 'ko-KR')}</RecordDateText>
+            </RecordDateArea>
+            {record.keywords && record.keywords.length > 0 && (
+              <RecordKeywordText>{getEmotionsText(record.keywords)}</RecordKeywordText>
+            )}
+            {record.images && (
+              <View
+                style={{
+                  width: '100%',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <View style={{ width: 170, height: 128, position: 'relative' }}>
+                  <Image
+                    source={{ uri: record.images[0] }}
+                    style={{ width: '100%', height: '100%', borderRadius: 10 }}
+                  />
+                  {record.images.length > 1 && (
+                    <View
+                      style={{
+                        position: 'absolute',
+                        top: 7,
+                        right: 7,
+                        borderRadius: 10,
+                        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                        width: 20,
+                        height: 20,
+                        padding: 3,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Icon name="multi-pic" width={14} height={11} color={'white'} />
+                    </View>
+                  )}
+                </View>
+              </View>
+            )}
+            {record.todayFeeling && <RecordDailyText>{record.todayFeeling}</RecordDailyText>}
+          </RecordContainer>
+        );
+      })}
     </RContainer>
   );
 };

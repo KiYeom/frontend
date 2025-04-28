@@ -65,7 +65,8 @@ export const StatisticTitle = styled.Text`
   color: ${palette.neutral[900]};
   text-align: center;
   //background-color: red;
-  height: ${rsHeight * 70 + 'px'};
+  line-height: ${Math.round(24 * rsFont * 1.3)}px; /* 글자 크기의 1.3배 정도 */
+  //height: ${rsHeight * 70 + 'px'};
   padding: ${rsHeight * 8 + 'px'} 0 ${rsHeight * 8 + 'px'} 0;
 `;
 

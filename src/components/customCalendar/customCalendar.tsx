@@ -151,7 +151,7 @@ const CustomCalendar = ({ navigation }) => {
       }}
       //날짜를 눌렀을 때 처리하는 콜백 함수
       onDayPress={(day: DateData) => {
-        console.log('day pressed', day);
+        //console.log('day pressed', day);
         setSelected(day.dateString);
       }}
       //dayComponent를 override

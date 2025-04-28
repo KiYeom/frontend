@@ -2,11 +2,14 @@ import 'dotenv/config';
 const dotenv = require('dotenv');
 dotenv.config();
 
+const environment = process.env.APP_ENV || 'development';
+//console.log('environment', environment);
+
 module.exports = {
   expo: {
     name: 'reMIND',
     slug: 'reMIND',
-    version: '1.5.9',
+    version: '1.6.9',
     orientation: 'portrait',
     icon: './src/assets/images/appicon.png',
     userInterfaceStyle: 'automatic',
@@ -42,6 +45,7 @@ module.exports = {
       bundler: 'metro',
     },
     extra: {
+      APP_ENV: environment,
       eas: {
         projectId: '1cd0480c-0399-4503-ae2d-ec73641ea4fd',
       },
@@ -101,7 +105,6 @@ module.exports = {
       'expo-apple-authentication',
       'expo-localization',
       '@react-native-firebase/app',
-      'expo-build-properties',
       [
         'expo-asset',
         {
@@ -131,7 +134,20 @@ module.exports = {
             image: './src/assets/images/logo_1024.png',
             backgroundColor: '#31B28E',
           },
-          imageWidth: 200,
+          imageWidth: 190,
+        },
+      ],
+      [
+        'expo-image-picker',
+        {
+          photosPermission: 'The app accesses your photos to let you share them with your friends.',
+        },
+      ],
+      [
+        'react-native-google-mobile-ads',
+        {
+          androidAppId: 'ca-app-pub-8136917168968629~3476154076',
+          iosAppId: 'ca-app-pub-8136917168968629~7618594976',
         },
       ],
     ],

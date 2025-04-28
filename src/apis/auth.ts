@@ -16,7 +16,7 @@ export const ssoLogin = async (code: string, vender: TVender): Promise<TAuth | u
     });
     return res.data;
   } catch (error) {
-    console.error('[ERROR] ssoLogin', error);
+    //console.error('[ERROR] ssoLogin', error);
     return;
   }
 };

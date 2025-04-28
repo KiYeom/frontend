@@ -1,6 +1,6 @@
 import { MMKV } from 'react-native-mmkv';
 import { ONE_DAY_IN_MS } from '../constants/Constants';
-import { TGender, TNotice, TVender } from '../constants/types';
+import { TGender, TNotice, TVender, TPLAN } from '../constants/types';
 import { getKoreanServerTodayDateString } from './times';
 import { showAppNotice } from './app-notice';
 
@@ -14,6 +14,8 @@ const REFRESH_TOKEN = 'refresh_token';
 const USER_NICKNAME = 'user_nickname';
 const USER_BIRTHDATE = 'user_birthdate';
 const USER_GENDER = 'user_gender';
+const USER_PLAN = 'user_plan';
+const CAN_SEND_PHOTO = 'canSendPhoto';
 const NOTIFICATION_SENT = 'notification_sent';
 const USER_ACCOUNT_PROVIDER = 'user_account_provider';
 
@@ -178,6 +180,28 @@ export const setUserGender = (userGender: TGender): void => {
 
 export const deleteUserGender = (): void => {
   storage.delete(USER_GENDER);
+};
+
+//UserPlan
+export const getUserPlan = (): string | undefined => {
+  return storage.getString(USER_PLAN);
+};
+export const setUserPlan = (userPlan: TPLAN): void => {
+  storage.set(USER_PLAN, userPlan);
+};
+export const deleteUserPlan = (): void => {
+  storage.delete(USER_PLAN);
+};
+
+//Photo
+export const getCanSendPhoto = (): boolean => {
+  return storage.getBoolean(CAN_SEND_PHOTO) ?? false;
+};
+export const setCanSendPhoto = (canSendPhoto: boolean): void => {
+  storage.set(CAN_SEND_PHOTO, canSendPhoto);
+};
+export const deleteCanSendPhoto = (): void => {
+  storage.delete(CAN_SEND_PHOTO);
 };
 
 //NotificationSent

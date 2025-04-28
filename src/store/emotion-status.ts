@@ -18,11 +18,18 @@ export interface EmotionStore {
   clearEmotions: () => void;
   updateEmotion: (emotionDetail: string, updatedEmotion: Emotion) => void;
   setDiaryText: (value: string) => void;
+  images: string[];
+  // 이미지 액션들
+  setImages: (value: string[] | ((prev: string[]) => string[])) => void;
+  addImage: (url: string) => void;
+  removeImage: (url: string) => void;
+  clearImages: () => void;
 }
 
 const useEmotionStore = create<EmotionStore>((set) => ({
   selectedEmotions: [],
   diaryText: '',
+  images: [],
   setSelectedEmotions: (value: Emotion[]) => set({ selectedEmotions: value }),
   addEmotion: (emotion) =>
     set((state) => ({
@@ -40,5 +47,16 @@ const useEmotionStore = create<EmotionStore>((set) => ({
       ),
     })),
   setDiaryText: (value: string) => set({ diaryText: value }),
+  // 이미지 리듀서
+  setImages: (valueOrUpdater) =>
+    set((state) => ({
+      images:
+        typeof valueOrUpdater === 'function'
+          ? (valueOrUpdater as (prev: string[]) => string[])(state.images)
+          : valueOrUpdater,
+    })),
+  addImage: (url) => set((state) => ({ images: [...state.images, url] })),
+  removeImage: (url) => set((state) => ({ images: state.images.filter((i) => i !== url) })),
+  clearImages: () => set({ images: [] }),
 }));
 export default useEmotionStore;
