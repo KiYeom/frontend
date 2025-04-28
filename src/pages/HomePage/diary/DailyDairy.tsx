@@ -37,7 +37,7 @@ import TierModal from '../../../components/modals/tier-modal';
 import AdsModal from '../../../components/modals/ads-modal';
 import { getUserInfo } from '../../../apis/setting';
 import { ActivityIndicator, StyleSheet } from 'react-native';
-
+import config from '../../../utils/config';
 import {
   BannerAd,
   BannerAdSize,
@@ -55,16 +55,14 @@ import {
   setCanSendPhoto,
 } from '../.././../utils/storageUtils';
 
+const ANDROID_AD_UNIT_ID = process.env.EXPO_PUBLIC_ADMOB_ID_ANDROID;
+const IOS_AD_UNIT_ID = process.env.EXPO_PUBLIC_ADMOB_ID_IOS;
 // development <-> production 에 따라 정해지는 adUnitId
-const adUnitId = __DEV__ ? TestIds.REWARDED : 'ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy';
 
-//한 번 만들어지면 되는 인스턴스
-const rewarded = RewardedAd.createForAdRequest(adUnitId, {
-  keywords: ['fashion', 'clothing'],
-});
-
+const adUnitId = config.getAdUnitId(ANDROID_AD_UNIT_ID, IOS_AD_UNIT_ID);
+//console.log('adUnitId:', adUnitId);
 //리스너 중복 등록 확인
-let listenerCount = 0;
+//let listenerCount = 0;
 
 const localImage: ImageSourcePropType = require('../../../assets/images/cookie_pic_alarm.png');
 const adsImage: ImageSourcePropType = require('../../../assets/images/ads_cookie.png');
@@ -103,14 +101,14 @@ const DailyDairy = ({ navigation, route }) => {
   useFocusEffect(
     useCallback(() => {
       const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
-        console.log('광고 로드');
+        //console.log('광고 로드');
         setLoaded(true);
       });
       //광고를 끝까지 봐서 보상을 줄 수 있을 때 일기와 사진을 등록할 수 있는 콜백 함수를 unsubscribeEarned 이라는 이름으로 등록해둔다
       const unsubscribeEarned = rewarded.addAdEventListener(
         RewardedAdEventType.EARNED_REWARD,
         async (reward) => {
-          console.log('User earned reward of ', reward, diaryText);
+          //console.log('User earned reward of ', reward, diaryText);
           try {
             await todayEmotionWithImage(
               dateID,
@@ -122,14 +120,14 @@ const DailyDairy = ({ navigation, route }) => {
 
             //setAdsModalVisible(false);
           } catch (err) {
-            console.log('Error saving diary with image:', err);
+            //console.log('Error saving diary with image:', err);
             Toast.show('일기 저장 중 오류가 발생했습니다.');
           }
         },
       );
       //광고가 닫힐 때 실행되는 이벤트 리스터
       const unsubscribeClosed = rewarded.addAdEventListener(AdEventType.CLOSED, () => {
-        console.log('Ad was cloesed');
+        //console.log('Ad was cloesed');
         setAdsModalVisible(false);
         setNavigationLoading(true); //네비게이션 로딩
 
@@ -150,13 +148,13 @@ const DailyDairy = ({ navigation, route }) => {
       rewarded.load();
       // 컴포넌트 언마운트 시 이벤트 리스너 해제
       return () => {
-        console.log('컴포넌트 언마운트 시 이벤트 리스너 해제');
-        listenerCount--;
+        //console.log('컴포넌트 언마운트 시 이벤트 리스너 해제');
+        //listenerCount--;
         unsubscribeLoaded();
         unsubscribeEarned();
         unsubscribeClosed();
         setNavigationLoading(false);
-        console.log(`리스너 해제됨 : 현재 ${listenerCount}번 등록됨`);
+        //console.log(`리스너 해제됨 : 현재 ${listenerCount}번 등록됨`);
       };
     }, [rewarded, navigation]),
   );
@@ -165,7 +163,7 @@ const DailyDairy = ({ navigation, route }) => {
   const getPermission = async () => {
     if (Platform.OS !== 'web') {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      console.log('사진 접근 권한:', status); //사진 접근 권한 버튼 누른 뒤에 실행됨
+      //console.log('사진 접근 권한:', status); //사진 접근 권한 버튼 누른 뒤에 실행됨
       if (status !== 'granted') {
         Alert.alert(
           '사진 접근 권한이 필요합니다',
@@ -190,15 +188,15 @@ const DailyDairy = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-    listenerCount++;
-    console.log(`리스너 등록 시작 : 현재 총 ${listenerCount}번 등록됨`);
+    //listenerCount++;
+    //console.log(`리스너 등록 시작 : 현재 총 ${listenerCount}번 등록됨`);
     Analytics.watchDiaryWriteScreen();
     getUserInfo()
       .then((res) => {
         res && setUserPlan(res.userTier); //사용자의 tier 정보를 저장)
       })
       .catch((error) => {
-        console.log('getUserInfo error', error);
+        //console.log('getUserInfo error', error);
       });
   }, []);
 
@@ -233,22 +231,22 @@ const DailyDairy = ({ navigation, route }) => {
     const targetEmotion = emotion.find((e) => e.type === 'custom') || emotion[0];
     const group = targetEmotion?.group || 'normal';
     const statusToUpdate = `${group}-emotion`;
-    console.log('updating status to:', statusToUpdate);
+    //console.log('updating status to:', statusToUpdate);
     updateEntryStatus(dateID, statusToUpdate);
   };
 
   // 일기 저장 로직
   const saveDiary = async () => {
     Analytics.clickDiaryWriteButton();
-    console.log('클릭');
+    //console.log('클릭');
 
     if (images.length > 1) {
-      console.log('사진은 최대 1장까지 선택할 수 있습니다. error');
+      //console.log('사진은 최대 1장까지 선택할 수 있습니다. error');
       return;
     }
 
     const handleSaveError = (err) => {
-      console.log('일기 저장 중 오류 발생', err);
+      //console.log('일기 저장 중 오류 발생', err);
     };
 
     try {
@@ -267,9 +265,9 @@ const DailyDairy = ({ navigation, route }) => {
   //사진 가져오기 로직
   const pickImage = async () => {
     const permission = await getPermission();
-    console.log('사진 접근 권한:', permission);
+    //console.log('사진 접근 권한:', permission);
     if (!permission) {
-      console.log('사진 접근 권한 없음');
+      //console.log('사진 접근 권한 없음');
       return;
     }
     if (images.length >= MAX_DIARY_IMAGE_COUNT) {
@@ -282,7 +280,7 @@ const DailyDairy = ({ navigation, route }) => {
       quality: 1,
       allowsMultipleSelection: false,
     });
-    console.log(result);
+    //console.log(result);
     if (!result.canceled) {
       const uris = result.assets.map((asset) => asset.uri);
       //setImage((prev) => [...prev, ...uris]); // 기존 이미지에 추가
@@ -299,11 +297,11 @@ const DailyDairy = ({ navigation, route }) => {
         rewarded.load();
         return;
       }
-      console.log('전면 광고 시청');
+      //console.log('전면 광고 시청');
       //setAdsModalVisible(false);
       await rewarded.show(); // 광고 표시
     } catch (error) {
-      console.error('Error showing ad:', error);
+      //console.error('Error showing ad:', error);
       Toast.show('광고 표시 중 오류가 발생했습니다');
       setLoaded(false);
       rewarded.load(); // Try to load again
@@ -392,7 +390,7 @@ const DailyDairy = ({ navigation, route }) => {
                 margin-top: ${rsHeight * 12 + 'px'};
                 //margin-horizontal: ${rsWidth * 24 + 'px'};
                 border-radius: 10px;
-                background-color: red;
+                //background-color: red;
                 font-size: ${rsFont * 16 + 'px'};
                 line-height: ${rsFont * 16 * 1.5 + 'px'};
                 padding: ${rsHeight * 12 + 'px'} ${rsWidth * 12 + 'px'};
@@ -436,11 +434,11 @@ const DailyDairy = ({ navigation, route }) => {
       <TierModal
         modalVisible={modalVisible}
         onClose={() => {
-          console.log('모달 꺼짐');
+          //console.log('모달 꺼짐');
           setModalVisible(false);
         }}
         onSubmit={() => {
-          console.log('모달 확인');
+          //console.log('모달 확인');
           setModalVisible(false);
         }}
         imageSource={localImage}
@@ -449,11 +447,11 @@ const DailyDairy = ({ navigation, route }) => {
       <AdsModal
         modalVisible={adsModalVisible}
         onClose={() => {
-          console.log('모달 꺼짐', diaryText);
+          //console.log('모달 꺼짐', diaryText);
           setAdsModalVisible(false);
         }}
         onSubmit={async () => {
-          console.log('광고 보기 버튼을 클릭', loaded);
+          //console.log('광고 보기 버튼을 클릭', loaded);
           if (!loaded) {
             Toast.show('광고 로딩중입니다. 잠시 기다려주세요');
             rewarded.load();

@@ -2,11 +2,14 @@ import 'dotenv/config';
 const dotenv = require('dotenv');
 dotenv.config();
 
+const environment = process.env.APP_ENV || 'development';
+//console.log('environment', environment);
+
 module.exports = {
   expo: {
     name: 'reMIND',
     slug: 'reMIND',
-    version: '1.5.9',
+    version: '1.6.9',
     orientation: 'portrait',
     icon: './src/assets/images/appicon.png',
     userInterfaceStyle: 'automatic',
@@ -42,6 +45,7 @@ module.exports = {
       bundler: 'metro',
     },
     extra: {
+      APP_ENV: environment,
       eas: {
         projectId: '1cd0480c-0399-4503-ae2d-ec73641ea4fd',
       },

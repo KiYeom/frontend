@@ -47,7 +47,7 @@ if (!__DEV__) {
     dsn: 'https://038362834934b1090d94fe368fdbcbf7@o4507944128020480.ingest.us.sentry.io/4507944132870145',
   });
 } else {
-  console.log('development mode');
+  //console.log('development mode');
 }
 
 if (!__DEV__ && process.env.EXPO_PUBLIC_AMPLITUDE) {
@@ -55,9 +55,9 @@ if (!__DEV__ && process.env.EXPO_PUBLIC_AMPLITUDE) {
     minIdLength: 1,
   });
 } else {
-  console.log(
+  /*console.log(
     __DEV__ ? '[Amplitude] skipped in development (__DEV__=true)' : '[Amplitude] no API key found',
-  );
+  );*/
 }
 
 SplashScreen.preventAutoHideAsync();

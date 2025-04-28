@@ -15,7 +15,7 @@ type EmotionTitleBoxProps = {
 
 const EmotionTitleBox = (props: EmotionTitleBoxProps) => {
   const { iconName, mainTitle, subTitle } = props;
-  console.log('emotionTitlteBox', iconName, mainTitle, subTitle);
+  //console.log('emotionTitlteBox', iconName, mainTitle, subTitle);
   return (
     <EmotionTitleContainer>
       {!!iconName && <Icon name={iconName} width={90} />}

@@ -106,7 +106,7 @@ const NewChat: React.FC = ({ navigation }) => {
 
   //즐겨찾기 함수
   const toggleFavorite = async (messageId: string) => {
-    console.log('toggleFavorite 함수 실행', messageId);
+    //console.log('toggleFavorite 함수 실행', messageId);
     setMessages((prevMessages) => {
       const updatedMessages = prevMessages.map((m) =>
         m._id === messageId ? { ...m, isSaved: !m.isSaved } : m,
@@ -441,13 +441,13 @@ const NewChat: React.FC = ({ navigation }) => {
   const scrollToMessageById = (messageId: string | number) => {
     const index = messages.findIndex((message) => message._id === messageId);
     if (index === -1) {
-      console.log('해당 메시지를 찾을 수 없습니다.');
+      //console.log('해당 메시지를 찾을 수 없습니다.');
       return;
     }
     // 메시지 인덱스로 메시지 객체를 가져옵니다.
     const targetMessage = messages[index];
-    console.log('targetMessage', targetMessage);
-    console.log(`Scrolling to index ${index} for message id: ${messageId}`);
+    //console.log('targetMessage', targetMessage);
+    //console.log(`Scrolling to index ${index} for message id: ${messageId}`);
     //console.log('giftedChatRef.current?.props?.messageContainerRef?.current?', giftedChatRef.current?.props?.messageContainerRef?.current?);
     try {
       setTimeout(() => {
@@ -459,7 +459,7 @@ const NewChat: React.FC = ({ navigation }) => {
         });
       }, 150);
     } catch (error) {
-      console.log('렌더링이 되지 않아 스크롤 실패', error);
+      //console.log('렌더링이 되지 않아 스크롤 실패', error);
     }
   };
 
@@ -484,7 +484,7 @@ const NewChat: React.FC = ({ navigation }) => {
       })
       .catch((err) => {
         alert('대화 내역을 불러오는 중 오류가 발생했어요. 다시 시도해주세요.');
-        console.log(err);
+        //console.log(err);
         navigation.navigate(TabScreenName.Home);
       });
   }, []);
@@ -505,8 +505,8 @@ const NewChat: React.FC = ({ navigation }) => {
             setInit(false);
           })
           .catch((err) => {
-            console.log('대화 내역을 불러오는 중 오류가 발생했어요. 다시 시도해주세요.');
-            console.log(err);
+            //console.log('대화 내역을 불러오는 중 오류가 발생했어요. 다시 시도해주세요.');
+            //console.log(err);
             navigation.navigate('Home');
           });
       }
@@ -532,8 +532,8 @@ const NewChat: React.FC = ({ navigation }) => {
     const offset = info.averageItemLength * info.index * 2;
     const flatList = messageContainerRef.current;
     // 임시 오프셋으로 스크롤
-    console.log('정보1', info.index);
-    console.log('정보2', info.averageItemLength);
+    //console.log('정보1', info.index);
+    //console.log('정보2', info.averageItemLength);
     flatList.scrollToOffset({ offset: offset });
     // 잠시 후 정확한 인덱스로 다시 스크롤 시도
     setTimeout(() => {

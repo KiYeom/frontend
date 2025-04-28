@@ -75,7 +75,7 @@ const Profile = () => {
         setCarousels(res);
       })
       .catch((error: any) => {
-        console.error('[ERROR] homeCarousel: ', error);
+        //console.error('[ERROR] homeCarousel: ', error);
       });
   }, []);
   const width = 350 * rsWidth;

@@ -164,7 +164,7 @@ export const todayEmotionWithImage = async (
         'Content-Type': 'multipart/form-data',
       },
     });
-    console.log('이미지 저장 성공', res.data);
+    //console.log('이미지 저장 성공', res.data);
     return res.data;
   } catch (error) {
     //console.log('[ERROR] todayEmotion', error);
@@ -193,7 +193,7 @@ export const dailyEmotionAnalyze = async (
     //console.log('res.data', res.data);
     return res.data; //id, nickname, dates 리턴
   } catch (error) {
-    console.log('😀[ERROR] daily analyze', error);
+    //console.log('😀[ERROR] daily analyze', error);
     return;
   }
 };
