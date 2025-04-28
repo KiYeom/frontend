@@ -248,7 +248,7 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
                     fontSize: 18 * rsFont,
                     color: palette.neutral[900],
                   }}>
-                  그 때 내가 기록한 순간을 담았어요
+                  그 때 내가 기록한 순간을 담았어요!
                 </Text>
                 <Carousel
                   ref={ref}

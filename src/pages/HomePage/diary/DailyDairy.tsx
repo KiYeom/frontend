@@ -302,7 +302,9 @@ const DailyDairy = ({ navigation, route }) => {
     // EXIF 방향에 따라 액션 준비
     const ori = Number(imageInfo.exif?.Orientation);
     const actions = [];
-    if (ori) actions.push({ rotate: 0 });
+    if (ori === 3) actions.push({ rotate: 180 });
+    else if (ori === 6) actions.push({ rotate: 90 });
+    else if (ori === 8) actions.push({ rotate: -90 });
 
     try {
       console.log('actions', actions);
