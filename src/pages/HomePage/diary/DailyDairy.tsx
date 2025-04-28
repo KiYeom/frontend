@@ -37,6 +37,7 @@ import TierModal from '../../../components/modals/tier-modal';
 import AdsModal from '../../../components/modals/ads-modal';
 import { getUserInfo } from '../../../apis/setting';
 import { ActivityIndicator, StyleSheet } from 'react-native';
+//import config from '../../../utils/config';
 import config from '../../../utils/config';
 import {
   BannerAd,
@@ -54,6 +55,9 @@ import {
   getCanSendPhoto,
   setCanSendPhoto,
 } from '../.././../utils/storageUtils';
+import { FlipType, SaveFormat, useImageManipulator } from 'expo-image-manipulator';
+import * as ImageManipulator from 'expo-image-manipulator';
+// 사용 예
 
 const ANDROID_AD_UNIT_ID = process.env.EXPO_PUBLIC_ADMOB_ID_ANDROID;
 const IOS_AD_UNIT_ID = process.env.EXPO_PUBLIC_ADMOB_ID_IOS;
@@ -291,6 +295,30 @@ const DailyDairy = ({ navigation, route }) => {
     }
   };
 
+  // 사진 돌리기 + 보정 함수
+  const handleImage = async (imageInfo) => {
+    console.log('▶️ handleImage start', imageInfo.uri);
+
+    // EXIF 방향에 따라 액션 준비
+    const ori = Number(imageInfo.exif?.Orientation);
+    const actions = [];
+    if (ori) actions.push({ rotate: 0 });
+
+    try {
+      console.log('actions', actions);
+      // manipulateAsync 한 방에 render + save
+      const result = await ImageManipulator.manipulateAsync(imageInfo.uri, actions, {
+        compress: 0.8,
+        format: SaveFormat.JPEG,
+      });
+      console.log('✔️ manipulateAsync 결과:', result.uri);
+      return result.uri;
+    } catch (e) {
+      console.error('❌ manipulateAsync 에러:', e);
+      return imageInfo.uri;
+    }
+  };
+
   //사진 가져오기 로직
   const pickImage = async () => {
     const permission = await getPermission();
@@ -308,12 +336,16 @@ const DailyDairy = ({ navigation, route }) => {
       allowsEditing: false,
       quality: 0.5,
       allowsMultipleSelection: false,
+      exif: true,
     });
     //console.log(result);
     if (!result.canceled) {
-      const uris = result.assets.map((asset) => asset.uri);
+      const imageInfo = result.assets[0];
+      const newImage = await handleImage(imageInfo);
+      console.log('newImage', newImage);
+      //const uris = result.assets.map((asset) => asset.uri);
       //setImage((prev) => [...prev, ...uris]); // 기존 이미지에 추가
-      setImages((prev) => [...prev, ...uris]);
+      setImages((prev) => [...prev, newImage]);
     }
     return;
   };
