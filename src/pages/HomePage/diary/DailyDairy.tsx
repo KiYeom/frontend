@@ -387,13 +387,14 @@ const DailyDairy = ({ navigation, route }) => {
               placeholderTextColor="#AAA"
               style={css`
                 flex: 1;
-                margin-top: ${rsHeight * 12 + 'px'};
+                margin-top: ${rsHeight * 6 + 'px'};
                 //margin-horizontal: ${rsWidth * 24 + 'px'};
                 border-radius: 10px;
                 //background-color: red;
                 font-size: ${rsFont * 16 + 'px'};
                 line-height: ${rsFont * 16 * 1.5 + 'px'};
-                padding: ${rsHeight * 12 + 'px'} ${rsWidth * 12 + 'px'};
+                //padding: ${rsHeight * 12 + 'px'} ${rsWidth * 12 + 'px'};
+                padding: ${rsHeight * 12 + 'px'} 0;
                 text-align-vertical: top;
                 font-family: Kyobo-handwriting;
                 align-self: flex-start;

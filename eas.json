@@ -7,6 +7,7 @@
       "developmentClient": true,
       "distribution": "internal",
       "channel": "development",
+      "autoIncrement": true,
       "env": {
         "APP_ENV": "development"
       }
@@ -41,6 +42,7 @@
     },
     "staging": {
       "channel": "staging",
+      "autoIncrement": true,
       "env": {
         "APP_ENV": "staging"
       }
