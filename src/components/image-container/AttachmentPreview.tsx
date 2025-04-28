@@ -15,6 +15,7 @@ const AttachmentPreview: React.FC<Props> = ({ image, onDelete }) => {
     <Container>
       <Image source={{ uri: image }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
       <DeleteButton
+        hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
         onPress={() => {
           console.log('Delete button pressed');
           onDelete(image);
