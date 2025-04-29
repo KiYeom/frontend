@@ -18,7 +18,7 @@ import Icon from '../../../components/icons/icons';
 import palette from '../../../assets/styles/theme';
 import { rsFont } from '../../../utils/responsive-size';
 import { css } from '@emotion/native';
-import Analytics from '~/src/utils/analytics';
+import Analytics from '../../../utils/analytics';
 
 const HINT_NAME = 'period-record';
 const HINT_MESSAGE = '자신이 기록한 날들을 한 눈에 볼 수 있어요!';
