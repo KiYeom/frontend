@@ -230,12 +230,14 @@ const DailyDairy = ({ navigation, route }) => {
   }, [diaryText]);
 
   const handleContentSizeChange = (event) => {
+    //console.log('호출');
     const now = Date.now();
     if (now - lastContentSizeChange.current > throttleDelay) {
       lastContentSizeChange.current = now;
       // Only update if there's a significant change (more than 20px)
       const newHeight = event.nativeEvent.contentSize.height;
       if (Math.abs(newHeight - textInputContainerHeight) > 20) {
+        //console.log("    '높이 변경', newHeight);");
         setTextInputContainerHeight(Math.max(minInputHeight, newHeight));
       }
     }
@@ -306,6 +308,7 @@ const DailyDairy = ({ navigation, route }) => {
       allowsEditing: false,
       quality: 0.5,
       allowsMultipleSelection: false,
+      exif: false,
     });
     //console.log(result);
     if (!result.canceled) {
@@ -385,7 +388,7 @@ const DailyDairy = ({ navigation, route }) => {
             <View
               style={{
                 height: 120,
-                backgroundColor: 'gray',
+                //backgroundColor: 'gray',
                 justifyContent: 'center',
               }}>
               <ScrollView
@@ -413,12 +416,12 @@ const DailyDairy = ({ navigation, route }) => {
           {/* 풀스크린 멀티라인 입력창 */}
           <View
             style={{
-              backgroundColor: 'blue',
+              //backgroundColor: 'blue',
               flex: 1,
               marginHorizontal: rsWidth * 24,
-              marginTop: rsHeight * 6,
+              marginVertical: rsHeight * 5,
               minHeight: textInputContainerHeight,
-              padding: 10,
+              //padding: 10,
             }}>
             <TextInput
               multiline
@@ -427,9 +430,9 @@ const DailyDairy = ({ navigation, route }) => {
               value={diaryText}
               onChangeText={setDiaryText}
               placeholder="이 감정을 강하게 느낀 순간을 기록해보세요"
-              placeholderTextColor="#AAA"
+              placeholderTextColor="#B6BDC6"
               style={{
-                backgroundColor: 'red',
+                //backgroundColor: 'red',
                 flex: 1,
                 fontSize: rsFont * 16,
                 lineHeight: rsFont * 16 * 1.5,
@@ -438,6 +441,7 @@ const DailyDairy = ({ navigation, route }) => {
                 textAlignVertical: 'top',
                 fontFamily: 'Kyobo-handwriting',
                 width: '100%',
+                borderRadius: 10,
               }}
               onContentSizeChange={handleContentSizeChange}
             />
