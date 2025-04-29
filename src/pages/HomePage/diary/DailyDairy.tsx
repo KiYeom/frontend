@@ -129,8 +129,8 @@ const DailyDairy = ({ navigation, route }) => {
         RewardedAdEventType.EARNED_REWARD,
         async (reward) => {
           //console.log('User earned reward of ', reward, diaryText);
-          Analytics.watchEarnRewardScreen();
           try {
+            Analytics.watchEarnRewardScreen();
             await todayEmotionWithImage(
               dateID,
               selectedEmotions,
