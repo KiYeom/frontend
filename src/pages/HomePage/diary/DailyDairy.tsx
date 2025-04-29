@@ -84,9 +84,15 @@ const DailyDairy = ({ navigation, route }) => {
   const [adsModalVisible, setAdsModalVisible] = useState<boolean>(false); //광고 모달
   const imageRef = useRef<string[]>(images);
   const diaryTextRef = useRef<string>(diaryText);
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
 
   //네비게이션 로딩 상태
   const [isNavigationLoading, setNavigationLoading] = useState(false);
+  const [textInputContainerHeight, setTextInputContainerHeight] = useState(200);
+  const minInputHeight = 200;
+
+  const lastContentSizeChange = useRef(Date.now());
+  const throttleDelay = 100; // 100ms throttle
 
   const rewarded = useMemo(
     () =>
@@ -95,6 +101,20 @@ const DailyDairy = ({ navigation, route }) => {
       }),
     [],
   );
+  // Keyboard event listeners
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+      setIsKeyboardVisible(true);
+    });
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setIsKeyboardVisible(false);
+    });
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
 
   //일기장 화면 진입 시 실행되는 useEffect
   const [loaded, setLoaded] = useState(false);
@@ -210,8 +230,15 @@ const DailyDairy = ({ navigation, route }) => {
   }, [diaryText]);
 
   const handleContentSizeChange = (event) => {
-    const { width, height } = event.nativeEvent.contentSize;
-    setInputHeight(height);
+    const now = Date.now();
+    if (now - lastContentSizeChange.current > throttleDelay) {
+      lastContentSizeChange.current = now;
+      // Only update if there's a significant change (more than 20px)
+      const newHeight = event.nativeEvent.contentSize.height;
+      if (Math.abs(newHeight - textInputContainerHeight) > 20) {
+        setTextInputContainerHeight(Math.max(minInputHeight, newHeight));
+      }
+    }
   };
 
   //홈으로 돌아가는 코드
@@ -277,7 +304,7 @@ const DailyDairy = ({ navigation, route }) => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       allowsEditing: false,
-      quality: 1,
+      quality: 0.5,
       allowsMultipleSelection: false,
     });
     //console.log(result);
@@ -355,52 +382,63 @@ const DailyDairy = ({ navigation, route }) => {
             </View>
           )}
           {images.length > 0 && (
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{
-                paddingHorizontal: rsWidth * 24,
-                gap: rsWidth * 12,
-                marginTop: rsHeight * 12,
+            <View
+              style={{
+                height: 120,
+                backgroundColor: 'gray',
+                justifyContent: 'center',
               }}>
-              {images.map((img, idx) => (
-                <AttachmentPreview
-                  key={idx}
-                  image={img}
-                  onDelete={(uriToDelete) =>
-                    setImages((prev) => prev.filter((uri) => uri !== uriToDelete))
-                  }
-                />
-              ))}
-            </ScrollView>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={{ height: rsHeight * 100 }}
+                contentContainerStyle={{
+                  paddingHorizontal: rsWidth * 24,
+                  gap: rsWidth * 12,
+                  marginTop: rsHeight * 10,
+                }}>
+                {images.map((img, idx) => (
+                  <AttachmentPreview
+                    key={idx}
+                    image={img}
+                    onDelete={(uriToDelete) =>
+                      setImages((prev) => prev.filter((uri) => uri !== uriToDelete))
+                    }
+                  />
+                ))}
+              </ScrollView>
+            </View>
           )}
 
           {/* 풀스크린 멀티라인 입력창 */}
-          <View style={{ flex: 1, marginHorizontal: rsWidth * 24 }}>
+          <View
+            style={{
+              backgroundColor: 'blue',
+              flex: 1,
+              marginHorizontal: rsWidth * 24,
+              marginTop: rsHeight * 6,
+              minHeight: textInputContainerHeight,
+              padding: 10,
+            }}>
             <TextInput
               multiline
               autoFocus
-              scrollEnabled={false}
+              scrollEnabled={true}
               value={diaryText}
               onChangeText={setDiaryText}
               placeholder="이 감정을 강하게 느낀 순간을 기록해보세요"
               placeholderTextColor="#AAA"
-              style={css`
-                flex: 1;
-                margin-top: ${rsHeight * 12 + 'px'};
-                //margin-horizontal: ${rsWidth * 24 + 'px'};
-                border-radius: 10px;
-                //background-color: red;
-                font-size: ${rsFont * 16 + 'px'};
-                line-height: ${rsFont * 16 * 1.5 + 'px'};
-                padding: ${rsHeight * 12 + 'px'} ${rsWidth * 12 + 'px'};
-                text-align-vertical: top;
-                font-family: Kyobo-handwriting;
-                align-self: flex-start;
-                height: ${inputHeight}px;
-                width: 100%;
-                padding-bottom: ${rsHeight * 50 + 'px'};
-              `}
+              style={{
+                backgroundColor: 'red',
+                flex: 1,
+                fontSize: rsFont * 16,
+                lineHeight: rsFont * 16 * 1.5,
+                padding: rsHeight * 12,
+                paddingHorizontal: 0,
+                textAlignVertical: 'top',
+                fontFamily: 'Kyobo-handwriting',
+                width: '100%',
+              }}
               onContentSizeChange={handleContentSizeChange}
             />
           </View>
