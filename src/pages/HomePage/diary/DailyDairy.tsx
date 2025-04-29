@@ -129,6 +129,7 @@ const DailyDairy = ({ navigation, route }) => {
         RewardedAdEventType.EARNED_REWARD,
         async (reward) => {
           //console.log('User earned reward of ', reward, diaryText);
+          Analytics.watchEarnRewardScreen();
           try {
             await todayEmotionWithImage(
               dateID,
@@ -142,6 +143,7 @@ const DailyDairy = ({ navigation, route }) => {
           } catch (err) {
             //console.log('Error saving diary with image:', err);
             Toast.show('일기 저장 중 오류가 발생했습니다.');
+            Analytics.watchNoEarnRewardScreen();
           }
         },
       );

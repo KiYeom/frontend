@@ -479,6 +479,19 @@ export default class Analytics {
     );
   };
 
+  //일기 기록 화면 - <사진 첨부> - <광고 모달> - 저장하기 클릭 후 광고 송출 - 리워드 지급
+  public static watchEarnRewardScreen = (): void => {
+    this.sendEvent(
+      '일기 사진 첨부 광고 송출 후, 리워드 지급 - 홈 화면으로 이동',
+      'watchEarnRewardScreen',
+    );
+  };
+
+  //일기 기록 화면 - <사진 첨부> - <광고 모달> - 저장하기 클릭 후 광고 송출 - 리워드 미지급
+  public static watchNoEarnRewardScreen = (): void => {
+    this.sendEvent('일기 사진 첨부 광고 송출 후, 일기 저장에 오류 발생', 'watchEarnRewardScreen');
+  };
+
   //일기 기록 화면 - <사진첨부> - <광고> - 취소 버튼 클릭
   public static clickNoWatchAdsButton = (): void => {
     this.sendEvent('일기 기록 화면 - <광고 시청> 모달 - <취소> 버튼 클릭', 'cancel');
