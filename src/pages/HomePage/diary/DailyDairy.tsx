@@ -293,6 +293,7 @@ const DailyDairy = ({ navigation, route }) => {
 
   //사진 가져오기 로직
   const pickImage = async () => {
+    Analytics.clickAddPicButton();
     const permission = await getPermission();
     //console.log('사진 접근 권한:', permission);
     if (!permission) {
@@ -330,6 +331,7 @@ const DailyDairy = ({ navigation, route }) => {
       //console.log('전면 광고 시청');
       //setAdsModalVisible(false);
       await rewarded.show(); // 광고 표시
+      Analytics.watchAdsScreen();
     } catch (error) {
       //console.error('Error showing ad:', error);
       Toast.show('광고 표시 중 오류가 발생했습니다');
@@ -490,19 +492,18 @@ const DailyDairy = ({ navigation, route }) => {
         modalVisible={adsModalVisible}
         onClose={() => {
           //console.log('모달 꺼짐', diaryText);
+          Analytics.clickNoWatchAdsButton();
           setAdsModalVisible(false);
         }}
         onSubmit={async () => {
           //console.log('광고 보기 버튼을 클릭', loaded);
+          Analytics.clickWatchAdsButton();
           if (!loaded) {
             Toast.show('광고 로딩중입니다. 잠시 기다려주세요');
             rewarded.load();
             return;
           }
           watchAds(); //광고가 로드된 상태에서 광고 보여주기
-          //await todayEmotionWithImage(dateID, selectedEmotions, diaryText, image);
-          //handleStatusUpdate(selectedEmotions);
-          //navigateToHome(true);
         }}
         imageSource={adsImage}
         modalContent={`광고를 시청하면\n일기에 사진을 첨부할 수 있어요!`}

@@ -18,6 +18,7 @@ import Icon from '../../../components/icons/icons';
 import palette from '../../../assets/styles/theme';
 import { rsFont } from '../../../utils/responsive-size';
 import { css } from '@emotion/native';
+import Analytics from '~/src/utils/analytics';
 
 const HINT_NAME = 'period-record';
 const HINT_MESSAGE = '자신이 기록한 날들을 한 눈에 볼 수 있어요!';
@@ -77,6 +78,7 @@ const PeriodRecord = (props: any) => {
             onPress={() => {
               //console.log('클릭함', record.date);
               //console.log('클릭함');
+              Analytics.clickCTAGoDailyReportPageInPeriod(record.date ?? '2050-01-01');
               navigation.navigate(RootStackName.HomeStackNavigator, {
                 screen: HomeStackName.Report,
                 params: { dateID: record.date },
