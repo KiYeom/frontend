@@ -55,9 +55,12 @@ import {
   setCanSendPhoto,
 } from '../.././../utils/storageUtils';
 
-const ANDROID_AD_UNIT_ID = process.env.EXPO_PUBLIC_ADMOB_ID_ANDROID;
-const IOS_AD_UNIT_ID = process.env.EXPO_PUBLIC_ADMOB_ID_IOS;
-// development <-> production 에 따라 정해지는 adUnitId
+//fix : env 로
+//const ANDROID_AD_UNIT_ID = process.env.EXPO_PUBLIC_ADMOB_ID_ANDROID;
+//const IOS_AD_UNIT_ID = process.env.EXPO_PUBLIC_ADMOB_ID_IOS;
+
+const ANDROID_AD_UNIT_ID = 'ca-app-pub-8136917168968629/7210877770';
+const IOS_AD_UNIT_ID = 'ca-app-pub-8136917168968629/5465491775';
 
 const adUnitId = config.getAdUnitId(ANDROID_AD_UNIT_ID, IOS_AD_UNIT_ID);
 //console.log('adUnitId:', adUnitId);
