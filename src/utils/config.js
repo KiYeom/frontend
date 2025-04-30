@@ -19,10 +19,10 @@ const isDevelopment = APP_ENV === 'development' || !APP_ENV; // APP_ENV가 없�
 // 플랫폼별, 환경별 광고 ID 유틸리티
 const getAdUnitId = (androidProductionId, iosProductionId) => {
   // 개발/스테이징 환경이면 테스트 ID 사용
-  if (!isProduction) {
+  /*if (!isProduction) {
     console.log('테스트 광고 ID 사용', TestIds.REWARDED);
     return TestIds.REWARDED;
-  }
+  }*/
 
   // 프로덕션이면 플랫폼에 맞는 실제 ID 사용
   return Platform.OS === 'ios' ? iosProductionId : androidProductionId;
