@@ -6,6 +6,15 @@ export const TitleContainer = styled.View`
   height: ${rsHeight * 147 + 'px'};
   gap: ${rsHeight * 10 + 'px'};
   padding: ${rsHeight * 40 + 'px'} ${rsWidth * 24 + 'px'} 0 ${rsWidth * 24 + 'px'};
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+export const TitleTextContainter = styled.View`
+  gap: ${rsHeight * 10 + 'px'};
+  display: flex;
+  flex-direction: column;
 `;
 
 export const Annotation = styled.Text`
@@ -21,7 +30,7 @@ export const Description = styled.Text`
 `;
 
 export const Title = styled.Text`
-  font-size: ${rsFont * 30 + 'px'};
+  font-size: ${rsFont * 25 + 'px'};
   font-family: Pretendard-SemiBold;
   color: ${palette.neutral[900]};
 `;

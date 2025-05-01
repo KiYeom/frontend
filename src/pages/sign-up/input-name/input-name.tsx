@@ -25,6 +25,7 @@ import {
   TermsContainer,
   Title,
   TitleContainer,
+  TitleTextContainter,
 } from './input-name.styles';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { rsWidth } from '../../../utils/responsive-size';
@@ -109,10 +110,13 @@ const InputName = ({ route, navigation }) => {
         `}>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
           <TitleContainer>
-            <Annotation>만나서 반가워요💚</Annotation>
-            <Title>나는 너의 고민을 들어주는{'\n'} AI 강아지 쿠키야</Title>
+            <TitleTextContainter>
+              <Annotation>만나서 반가워!</Annotation>
+              <Title>나는 너의 고민을 들어주는{'\n'}AI 강아지 쿠키야</Title>
+            </TitleTextContainter>
+            <Icon name="hello-cookie" width={rsWidth * 84} height={rsWidth * 103} />
           </TitleContainer>
-          <Icon name="hello-cookie" width={rsWidth * 84} height={rsWidth * 103} />
+
           <ContentContainer>
             <Input
               placeholder="닉네임만 입력하면 바로 시작!🚀"
