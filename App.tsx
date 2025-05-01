@@ -41,15 +41,34 @@ import { Appearance, useColorScheme } from 'react-native';
 import * as SystemUI from 'expo-system-ui';
 import 'react-native-gesture-handler';
 import Favorites from './src/pages/HomePage/favorites/favorites';
+import Constants from 'expo-constants';
 
-Sentry.init({
-  dsn: 'https://038362834934b1090d94fe368fdbcbf7@o4507944128020480.ingest.us.sentry.io/4507944132870145',
-});
+const { APP_ENV } = Constants.expoConfig?.extra || {};
+// 환경 확인
+const isProduction = APP_ENV === 'production';
+const isStaging = APP_ENV === 'staging';
+const isDevelopment = APP_ENV === 'development' || !APP_ENV; // APP_ENV가 없으면 개발 환경으로 간주
 
-if (process.env.EXPO_PUBLIC_AMPLITUDE) {
+if (!__DEV__) {
+  Sentry.init({
+    dsn: 'https://038362834934b1090d94fe368fdbcbf7@o4507944128020480.ingest.us.sentry.io/4507944132870145',
+  });
+}
+if (!__DEV__ && isStaging && process.env.EXPO_PUBLIC_AMPLITUDE) {
+  console.log('staging');
   amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE, undefined, {
     minIdLength: 1,
   });
+}
+
+if (!__DEV__ && process.env.EXPO_PUBLIC_AMPLITUDE) {
+  amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE, undefined, {
+    minIdLength: 1,
+  });
+} else {
+  /*console.log(
+    __DEV__ ? '[Amplitude] skipped in development (__DEV__=true)' : '[Amplitude] no API key found',
+  );*/
 }
 
 SplashScreen.preventAutoHideAsync();

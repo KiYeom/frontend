@@ -1,6 +1,7 @@
 import styled from '@emotion/native';
 import palette from '../../../assets/styles/theme';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
+import { Image, ImageProps } from 'react-native';
 
 export const RContainer = styled.View`
   width: 100%;
@@ -9,7 +10,7 @@ export const RContainer = styled.View`
 `;
 
 //키워드 흰색 컨테이너
-export const RecordContainer = styled.View`
+export const RecordContainer = styled.TouchableOpacity`
   display: flex;
   align-items: start;
   justify-content: flex-start;

@@ -52,6 +52,7 @@ import palette from '../../../assets/styles/theme';
 import { RootStackName } from '../../../constants/Constants';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { formatDateKorean } from '../../../utils/times';
+import { MAX_SELECTED_EMOTION_COUNT } from '../../../constants/Constants';
 
 const SmallEmotionChart = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
@@ -62,6 +63,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
     addEmotion,
     removeEmotion,
     setDiaryText,
+    setImages,
   } = useEmotionStore();
   //const [selectedEmotionsV2, setSelectedEmotionsV2] = useState([]);
   //const { recordedEmotions, setRecordedEmotions } = useRecordedEmotionStore();
@@ -75,6 +77,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
   const closeBottomSheet = () => setBottomSheetIndex(-1);
 
   const { dateID } = route.params;
+  //const dateID = route?.params?.dateID ?? '2025-04-21';
   //console.log('감정 입력 페이지에서 받은 dateID', dateID);
 
   const width = Dimensions.get('window').width - 24;
@@ -86,6 +89,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
     //console.log('~~~~~~', selectedEmotions);
     setSelectedEmotions(diaryData.Keywords);
     setDiaryText(diaryData.todayFeeling ?? '');
+    setImages(diaryData.images ?? []);
   };
 
   useEffect(() => {
@@ -210,7 +214,8 @@ const SmallEmotionChart = ({ navigation, route }) => {
               primary={false}
               //disabled={selectedEmotions.length < MINIMUM_EMOTION_COUNT}
               disabled={
-                selectedEmotions.filter((emotion) => emotion.type !== 'custom').length === 5
+                selectedEmotions.filter((emotion) => emotion.type !== 'custom').length ===
+                MAX_SELECTED_EMOTION_COUNT
               }
               onPress={async () => {
                 openBottomSheet();
@@ -227,6 +232,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
             <Button
               title="마음일기 쓰러가기"
               primary={true}
+              disabled={selectedEmotions.length === 0}
               onPress={() => {
                 Analytics.clickGotoDiaryWriteButton();
                 navigation.navigate(HomeStackName.DailyDairy, { dateID: dateID });

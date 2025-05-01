@@ -71,7 +71,7 @@ function setInterceptor(instance: any) {
         instance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
         return instance(error.config);
       } else {
-        console.error(error, ' 네트워크 연결 문제');
+        //console.error(error, ' 네트워크 연결 문제');
       }
       return Promise.reject(error);
     },
@@ -113,7 +113,7 @@ export const reissueAccessToken = async (
       }
     }
   } catch (error) {
-    console.error('[ERROR] reissueAccessToken ', error);
+    //console.error('[ERROR] reissueAccessToken ', error);
     return;
   }
 };

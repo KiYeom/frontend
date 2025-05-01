@@ -1,8 +1,8 @@
 import { css } from '@emotion/native';
 import { useNavigation, CommonActions } from '@react-navigation/native';
 import { Image } from 'expo-image';
-import React, { useCallback, useEffect, useState } from 'react';
-import { ScrollView, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
+import { ScrollView, TouchableOpacity, View, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { dailyAnalyze, dailyAnalyzeStatus } from '../../apis/analyze';
 import { TEmotionCheck, TLabel } from '../../apis/analyze.type';
@@ -34,6 +34,8 @@ import {
 import EmptyBox from '../../components/emptybox/emptyBox';
 import Header from '../../components/header/header';
 import BottomTabNavigator from '~/src/navigators/BottomTabNavigator';
+import Carousel, { Pagination, ICarouselInstance } from 'react-native-reanimated-carousel';
+import { useSharedValue } from 'react-native-reanimated';
 
 const START_HOUR_OF_DAY = 6;
 
@@ -53,6 +55,7 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
   const [isNullRecordKeywordList, setIsNullRecordKeywordList] = useState(true);
   const [summaryList, setSummaryList] = useState<string[]>([]);
   const [todayFeeling, setTodayFeeling] = useState<string>('');
+  const [images, setImages] = useState<string[]>([]);
   const [availableDates, setAvailableDates] = useState<string[]>([]);
   const [hintStatus, setHintStatus] = useState<
     'emotion' | 'keyword' | 'record' | 'daily' | 'main' | undefined
@@ -68,6 +71,17 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
     //setDate(new Date(newDate));
     setDateID(getKoreanRealDateString(newDate));
   }, []);
+
+  //캐러셀 추가
+  const ref = useRef<ICarouselInstance>(null);
+  const progress = useSharedValue<number>(0);
+
+  const onPressPagination = (index: number) => {
+    ref.current?.scrollTo({
+      count: index - progress.value,
+      animated: true,
+    });
+  };
 
   //앱이 처음 실행됐을 때 실행되는 부분
   useEffect(() => {
@@ -87,7 +101,7 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
     //console.log('fetchData date: ', date);
     //console.log('fetchData date: ', new Date());
     // const dailyStatistics = await dailyAnalyze(getKoreanRealDateString(date)); //date -> new Date()
-    const dailyStatistics = await dailyAnalyze(dateID);
+    const dailyStatistics = await dailyAnalyze(dateID); //대화 기반으로 분석된 감정 결과 가져옴
     if (!dailyStatistics) {
       alert('네트워크 연결이 불안정합니다. 잠시 후 다시 시도해주세요.');
       return;
@@ -100,6 +114,7 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
     setIsNullRecordKeywordList(dailyStatistics.record.isNULL);
     //빈 값 [] 이면 false를 넘겨주기 때문에 !을 붙여서 true로 만들어줌
     setTodayFeeling(dailyStatistics.record.todayFeeling ?? '');
+    setImages(dailyStatistics.record.images ?? []);
     //console.log('😀😀😀😀😀😀😀😀', dailyStatistics.record.todayFeeling);
   };
 
@@ -224,6 +239,62 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
                   }}
                 />
               </>
+            )}
+            {images.length > 0 && (
+              <View style={{ position: 'relative', gap: rsHeight * 12 }}>
+                <Text
+                  style={{
+                    fontFamily: 'Kyobo-handwriting',
+                    fontSize: 18 * rsFont,
+                    color: palette.neutral[900],
+                  }}>
+                  그 때 내가 기록한 순간을 담았어요!
+                </Text>
+                <Carousel
+                  ref={ref}
+                  width={rsWidth * 350}
+                  height={rsHeight * 263}
+                  data={images}
+                  onProgressChange={progress}
+                  defaultIndex={0}
+                  loop={images.length > 1 ? true : false}
+                  enabled={images.length > 1 ? true : false}
+                  style={{
+                    borderRadius: 10,
+                    overflow: 'hidden',
+                  }}
+                  renderItem={({ item }) => (
+                    <Image
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                      }}
+                      contentFit="cover"
+                      source={{ uri: item }}
+                    />
+                  )}
+                />
+                {images.length > 1 && (
+                  <View
+                    style={{
+                      position: 'absolute',
+                      bottom: 10,
+                      left: 0,
+                      right: 0,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Pagination.Basic
+                      progress={progress}
+                      data={images}
+                      dotStyle={{ backgroundColor: 'rgba(0,0,0,0.2)', borderRadius: 50 }}
+                      activeDotStyle={{ backgroundColor: '#FFFFFF' }}
+                      containerStyle={{ gap: 5 }}
+                      onPress={onPressPagination}
+                    />
+                  </View>
+                )}
+              </View>
             )}
             {isNullClassification && (
               <EmptyBox

@@ -242,6 +242,15 @@ export default class Analytics {
     this.sendEvent('기간 분석 화면 - CTA 일기 버튼 클릭', 'periodCTADiaryButton');
   };
 
+  //기간 분석 화면 - 일일 기간 리포트 버튼 클릭 (CTA)
+  public static clickCTAGoDailyReportPageInPeriod = (date: string): void => {
+    this.sendEvent(
+      '기간 분석 화면 - CTA 일일 리포트 이동 버튼 클릭',
+      'periodCTAGoDailyReportPageButton',
+      { date },
+    );
+  };
+
   //채팅 화면
   public static watchChatScreen = (): void => {
     this.sendEvent('채팅 화면 진입', 'chatScreen');
@@ -450,6 +459,42 @@ export default class Analytics {
   //일기 기록 화면 - <쿠키에게 알려주기> 버튼 클릭
   public static clickDiaryWriteButton = (): void => {
     this.sendEvent('일기 기록 화면 - <일기 기록하기> 버튼 클릭', 'diaryWriteButton');
+  };
+
+  //일기 기록 화면 - <사진첨부> 버튼 클릭
+  public static clickAddPicButton = (): void => {
+    this.sendEvent('일기 기록 화면 - <사진 첨부하기> 버튼 클릭', 'addPicButton');
+  };
+
+  //일기 기록 화면 - <사진첨부> - <광고> - 네 버튼 클릭
+  public static clickWatchAdsButton = (): void => {
+    this.sendEvent('일기 기록 화면 - <광고 시청> 모달 - <저장하기> 버튼 클릭', 'save');
+  };
+
+  //일기 기록 화면 - <사진 첨부> - <광고 모달> - 저장하기 클릭 후 광고 송출
+  public static watchAdsScreen = (): void => {
+    this.sendEvent(
+      '일기 기록 화면 - <사진 첨부> - <광고 모달> - 저장하기 클릭 후 광고 송출',
+      'watchAdsScreen',
+    );
+  };
+
+  //일기 기록 화면 - <사진 첨부> - <광고 모달> - 저장하기 클릭 후 광고 송출 - 리워드 지급
+  public static watchEarnRewardScreen = (): void => {
+    this.sendEvent(
+      '일기 사진 첨부 광고 송출 후, 리워드 지급 - 홈 화면으로 이동',
+      'watchEarnRewardScreen',
+    );
+  };
+
+  //일기 기록 화면 - <사진 첨부> - <광고 모달> - 저장하기 클릭 후 광고 송출 - 리워드 미지급
+  public static watchNoEarnRewardScreen = (): void => {
+    this.sendEvent('일기 사진 첨부 광고 송출 후, 일기 저장에 오류 발생', 'watchEarnRewardScreen');
+  };
+
+  //일기 기록 화면 - <사진첨부> - <광고> - 취소 버튼 클릭
+  public static clickNoWatchAdsButton = (): void => {
+    this.sendEvent('일기 기록 화면 - <광고 시청> 모달 - <취소> 버튼 클릭', 'cancel');
   };
 
   //감정 기록 - 기록하기 버튼 클릭

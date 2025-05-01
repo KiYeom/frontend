@@ -20,6 +20,9 @@ export type TUserInfo = {
   isUser: boolean;
   isInFormal: boolean;
   wantsEmo: boolean;
+  createdAt: string;
+  canSendPhoto: boolean;
+  userTier: 'pro' | 'free';
 };
 
 export type TDisplayUserInfo = {
