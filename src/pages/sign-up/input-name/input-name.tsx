@@ -17,6 +17,7 @@ import { UseSigninStatus } from '../../../utils/signin-status';
 import { setInfoWhenLogin, setUserNickname } from '../../../utils/storageUtils';
 import Button from '../../../components/button/button';
 import Input from '../../../components/input/input';
+import Icon from '../../../components/icons/icons';
 import { Checkbox } from 'react-native-paper';
 import {
   Annotation,
@@ -109,8 +110,9 @@ const InputName = ({ route, navigation }) => {
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
           <TitleContainer>
             <Annotation>만나서 반가워요💚</Annotation>
-            <Title>쿠키가 불러드릴{'\n'}닉네임만 알려주세요🐶</Title>
+            <Title>나는 너의 고민을 들어주는{'\n'} AI 강아지 쿠키야</Title>
           </TitleContainer>
+          <Icon name="hello-cookie" width={rsWidth * 84} height={rsWidth * 103} />
           <ContentContainer>
             <Input
               placeholder="닉네임만 입력하면 바로 시작!🚀"
