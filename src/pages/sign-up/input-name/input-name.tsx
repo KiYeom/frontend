@@ -26,6 +26,9 @@ import {
   Title,
   TitleContainer,
   TitleTextContainter,
+  SubTitle,
+  ButtonGroupContainer,
+  SubContentContainer,
 } from './input-name.styles';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { rsWidth } from '../../../utils/responsive-size';
@@ -48,6 +51,7 @@ const InputName = ({ route, navigation }) => {
   const [privacyAllowed, setPrivacyAllowed] = React.useState<boolean>(false);
   const [fourth, setFourth] = React.useState<boolean>(false);
   const [allowGuestMode, setAllowGuestMode] = React.useState<boolean>(true);
+  const [isCasualMode, setIsCasualMode] = React.useState<boolean>(true);
 
   const guestModeSignUp = async () => {
     if (name) {
@@ -118,16 +122,40 @@ const InputName = ({ route, navigation }) => {
           </TitleContainer>
 
           <ContentContainer>
-            <Input
-              placeholder="닉네임만 입력하면 바로 시작!🚀"
-              status={validateName(name)}
-              message="2~15 글자 사이의 닉네임을 지어주세요"
-              withMessage={true}
-              onChange={(text) => {
-                if (text.length < 15) setName(text);
-              }}
-              value={name}
-            />
+            <SubContentContainer>
+              <SubTitle>불러줬으면 하는 이름이 있을까?</SubTitle>
+              <Input
+                placeholder="닉네임만 입력하면 바로 시작!🚀"
+                status={validateName(name)}
+                message="2~15 글자 사이의 닉네임을 지어주세요"
+                withMessage={true}
+                onChange={(text) => {
+                  if (text.length < 15) setName(text);
+                }}
+                value={name}
+              />
+            </SubContentContainer>
+            <SubContentContainer>
+              <SubTitle>어떤 말투가 더 편해?</SubTitle>
+              <ButtonGroupContainer>
+                <TouchableOpacity
+                  style={{ width: '45%' }}
+                  onPress={() => {
+                    console.log('존댓말 클릭');
+                    setIsCasualMode(false);
+                  }}>
+                  <Button title="존댓말" disabled={isCasualMode} primary={false} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{ width: '45%' }}
+                  onPress={() => {
+                    console.log('반말 클릭');
+                    setIsCasualMode(true);
+                  }}>
+                  <Button title="반말" disabled={!isCasualMode} primary={false} />
+                </TouchableOpacity>
+              </ButtonGroupContainer>
+            </SubContentContainer>
           </ContentContainer>
 
           <TermsContainer>
@@ -166,15 +194,6 @@ const InputName = ({ route, navigation }) => {
               onPress={() => {
                 setLegalAllowed(!legalAllowed);
               }}>
-              {/*<Checkbox
-                value={legalAllowed}
-                onValueChange={() => {
-                  setLegalAllowed(!legalAllowed);
-                }}
-                label={'서비스 이용약관에 동의합니다.'}
-                color={legalAllowed ? palette.primary[400] : palette.neutral[200]}
-                labelStyle={{ fontSize: 14 }} //라벨 스타일링
-              />*/}
               <NewCheckBox
                 checked={legalAllowed}
                 onToggle={() => setLegalAllowed(!legalAllowed)}
