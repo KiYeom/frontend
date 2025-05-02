@@ -33,11 +33,31 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { rsWidth } from '../../../utils/responsive-size';
 import NewCheckBox from '../../../components/v3-checkbox/NewCheckBox';
+import { switchChatTone } from '../../../apis/setting';
 
 const validateName = (name: string): 'error' | 'default' | 'correct' => {
   if (name.length !== 0 && (name.length < 2 || name.length > 15)) return 'error';
   else if (name.length >= 2 && name.length <= 15) return 'correct';
   else return 'default';
+};
+
+const messages = {
+  casual: {
+    annotation: '만나서 반가워!',
+    onboardTitle: `나는 너의 고민을 들어주는\nAI 강아지 쿠키야`,
+    setNameTitle: '불러줬으면 하는 이름이 있을까?',
+    formatModeTitle: '어떤 말투가 더 편해?',
+    placeholder: '쿠키에게 불리고 싶은 이름을 입력해줘',
+    nameGuide: '2~15 글자 사이의 닉네임을 지어줘',
+  },
+  formal: {
+    annotation: '만나서 반가워요!',
+    onboardTitle: `저는 당신의 고민을 들어주는\nAI 강아지 쿠키라고 해요`,
+    setNameTitle: '불러줬으면 하는 이름이 있을까요?',
+    formatModeTitle: '어떤 말투가 더 편하신가요?',
+    placeholder: '쿠키에게 불리고 싶은 이름을 입력해주세요',
+    nameGuide: '2~15 글자 사이의 닉네임을 지어주세요',
+  },
 };
 
 const InputName = ({ route, navigation }) => {
@@ -101,6 +121,8 @@ const InputName = ({ route, navigation }) => {
   const isButtonEnabled =
     validateName(name) === 'correct' && !loading && legalAllowed && privacyAllowed && fourth;
 
+  const messageStyle = isCasualMode ? 'casual' : 'formal';
+
   useEffect(() => {
     Analytics.watchSignUpScreen();
   }, []);
@@ -115,19 +137,19 @@ const InputName = ({ route, navigation }) => {
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
           <TitleContainer>
             <TitleTextContainter>
-              <Annotation>만나서 반가워!</Annotation>
-              <Title>나는 너의 고민을 들어주는{'\n'}AI 강아지 쿠키야</Title>
+              <Annotation>{messages[messageStyle].annotation}</Annotation>
+              <Title>{messages[messageStyle].onboardTitle}</Title>
             </TitleTextContainter>
             <Icon name="hello-cookie" width={rsWidth * 84} height={rsWidth * 103} />
           </TitleContainer>
 
           <ContentContainer>
             <SubContentContainer>
-              <SubTitle>불러줬으면 하는 이름이 있을까?</SubTitle>
+              <SubTitle>{messages[messageStyle].setNameTitle}</SubTitle>
               <Input
-                placeholder="닉네임만 입력하면 바로 시작!🚀"
+                placeholder={messages[messageStyle].placeholder}
                 status={validateName(name)}
-                message="2~15 글자 사이의 닉네임을 지어주세요"
+                message={messages[messageStyle].nameGuide}
                 withMessage={true}
                 onChange={(text) => {
                   if (text.length < 15) setName(text);
@@ -136,12 +158,12 @@ const InputName = ({ route, navigation }) => {
               />
             </SubContentContainer>
             <SubContentContainer>
-              <SubTitle>어떤 말투가 더 편해?</SubTitle>
+              <SubTitle>{messages[messageStyle].formatModeTitle}</SubTitle>
               <ButtonGroupContainer>
                 <TouchableOpacity
                   style={{ width: '45%' }}
                   onPress={() => {
-                    console.log('존댓말 클릭');
+                    //console.log('존댓말 클릭');
                     setIsCasualMode(false);
                   }}>
                   <Button title="존댓말" disabled={isCasualMode} primary={false} />
@@ -149,7 +171,7 @@ const InputName = ({ route, navigation }) => {
                 <TouchableOpacity
                   style={{ width: '45%' }}
                   onPress={() => {
-                    console.log('반말 클릭');
+                    //console.log('반말 클릭');
                     setIsCasualMode(true);
                   }}>
                   <Button title="반말" disabled={!isCasualMode} primary={false} />
@@ -275,6 +297,7 @@ const InputName = ({ route, navigation }) => {
               onPress={() => {
                 Analytics.clickSignUpSaveButton();
                 saveNickName(name);
+                switchChatTone(isCasualMode); //변경 사항을 서버에 patch로 업데이트
               }}
             />
           </View>
