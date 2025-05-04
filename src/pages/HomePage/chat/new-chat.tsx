@@ -62,6 +62,7 @@ import { searchChatWord } from '../../../apis/chatting';
 import { ExtendedIMessage } from '../../../utils/chatting';
 import { reportMessages } from './chat-render';
 import { useCallback } from 'react';
+import { getUserInfo } from '../../../apis/setting';
 //유저와 챗봇 오브젝트 정의
 const userObject = {
   _id: 0,
@@ -78,6 +79,15 @@ const systemObject = {
   _id: -1,
   name: 'system',
   avatar: null,
+};
+
+const welcome = {
+  casual: {
+    text: `반가워, ${getUserNickname()}!💚 나는 ${getUserNickname()}님 곁에서 힘이 되고싶은 골든 리트리버 쿠키야🐶 오늘은 어떤 하루를 보냈어?`,
+  },
+  formal: {
+    text: `반가워요, ${getUserNickname()}님!💚 저는 ${getUserNickname()}님 곁에서 힘이 되어드리고 싶은 골든 리트리버 쿠키예요🐶 오늘은 어떤 하루를 보내셨나요?`,
+  },
 };
 
 const NewChat: React.FC = ({ navigation }) => {
@@ -100,6 +110,9 @@ const NewChat: React.FC = ({ navigation }) => {
   const [enableUp, setEnableUp] = useState<boolean>(false);
   const [enableDown, setEnableDown] = useState<boolean>(false);
   const [searchLoading, setSearchLoading] = useState<boolean>(false);
+
+  //반말 정보 불러오기
+  const [isInFormalMode, setIsInformalMode] = useState<boolean>(true);
 
   const { riskStatusV2, riskScoreV2, setRiskScoreV2, setRiskStatusV2, setHandleDangerPressV2 } =
     useRiskStoreVer2();
@@ -187,7 +200,7 @@ const NewChat: React.FC = ({ navigation }) => {
         //console.log('🤖🤖🤖🤖🤖🤖🤖🤖새로 온 사람🤖🤖🤖🤖🤖🤖🤖🤖');
         const systemMessage = {
           _id: 'systemMessage',
-          text: `이 곳은 ${getUserNickname()}님과 저만의 비밀 공간이니, 어떤 이야기도 편하게 나눠주세요!\n\n반말로 대화를 나누고 싶으시다면 위에서 오른쪽에 있는 탭 바를 열고, 반말 모드를 켜 주세요!🍀💕`,
+          text: `이 곳에서 이야기하는 내용들은 모두 익명으로 비밀 보장이 됩니다.안심하시고 답답한 나의 속마음을 편하게 이야기해보세요.\n어떤 감정, 어떤 대화이든 쿠키는 보호자님 곁에서 이야기를 경청합니다.`,
           createdAt: new Date(),
           user: systemObject,
           isSaved: false,
@@ -196,7 +209,7 @@ const NewChat: React.FC = ({ navigation }) => {
         };
         const welcomeMessage = {
           _id: 'welcomeMessage',
-          text: `반가워요, ${getUserNickname()}님!💚 저는 ${getUserNickname()}님 곁에서 힘이 되어드리고 싶은 골든 리트리버 쿠키예요🐶 오늘은 어떤 기분이세요?`,
+          text: isInFormalMode ? welcome.casual.text : welcome.formal.text,
           createdAt: new Date(),
           user: botObject,
           isSaved: false,
@@ -486,6 +499,14 @@ const NewChat: React.FC = ({ navigation }) => {
         alert('대화 내역을 불러오는 중 오류가 발생했어요. 다시 시도해주세요.');
         //console.log(err);
         navigation.navigate(TabScreenName.Home);
+      });
+    getUserInfo()
+      .then((res) => {
+        res && setIsInformalMode(res.isInFormal);
+      })
+      .catch((error) => {
+        console.log('getUserInfo 에러 발생');
+        //console.log('getUserInfo error', error);
       });
   }, []);
 

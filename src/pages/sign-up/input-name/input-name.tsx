@@ -17,6 +17,7 @@ import { UseSigninStatus } from '../../../utils/signin-status';
 import { setInfoWhenLogin, setUserNickname } from '../../../utils/storageUtils';
 import Button from '../../../components/button/button';
 import Input from '../../../components/input/input';
+import Icon from '../../../components/icons/icons';
 import { Checkbox } from 'react-native-paper';
 import {
   Annotation,
@@ -24,15 +25,39 @@ import {
   TermsContainer,
   Title,
   TitleContainer,
+  TitleTextContainter,
+  SubTitle,
+  ButtonGroupContainer,
+  SubContentContainer,
 } from './input-name.styles';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { rsWidth } from '../../../utils/responsive-size';
 import NewCheckBox from '../../../components/v3-checkbox/NewCheckBox';
+import { switchChatTone } from '../../../apis/setting';
 
 const validateName = (name: string): 'error' | 'default' | 'correct' => {
   if (name.length !== 0 && (name.length < 2 || name.length > 15)) return 'error';
   else if (name.length >= 2 && name.length <= 15) return 'correct';
   else return 'default';
+};
+
+const messages = {
+  casual: {
+    annotation: '만나서 반가워!',
+    onboardTitle: `나는 너의 고민을 들어주는\nAI 강아지 쿠키야`,
+    setNameTitle: '불러줬으면 하는 이름이 있을까?',
+    formatModeTitle: '어떤 말투가 더 편해?',
+    placeholder: '쿠키에게 불리고 싶은 이름을 입력해줘',
+    nameGuide: '2~15 글자 사이의 닉네임을 지어줘',
+  },
+  formal: {
+    annotation: '만나서 반가워요!',
+    onboardTitle: `저는 당신의 고민을 들어주는\nAI 강아지 쿠키라고 해요`,
+    setNameTitle: '불러줬으면 하는 이름이 있을까요?',
+    formatModeTitle: '어떤 말투가 더 편하신가요?',
+    placeholder: '쿠키에게 불리고 싶은 이름을 입력해주세요',
+    nameGuide: '2~15 글자 사이의 닉네임을 지어주세요',
+  },
 };
 
 const InputName = ({ route, navigation }) => {
@@ -46,6 +71,7 @@ const InputName = ({ route, navigation }) => {
   const [privacyAllowed, setPrivacyAllowed] = React.useState<boolean>(false);
   const [fourth, setFourth] = React.useState<boolean>(false);
   const [allowGuestMode, setAllowGuestMode] = React.useState<boolean>(true);
+  const [isCasualMode, setIsCasualMode] = React.useState<boolean>(true);
 
   const guestModeSignUp = async () => {
     if (name) {
@@ -95,6 +121,8 @@ const InputName = ({ route, navigation }) => {
   const isButtonEnabled =
     validateName(name) === 'correct' && !loading && legalAllowed && privacyAllowed && fourth;
 
+  const messageStyle = isCasualMode ? 'casual' : 'formal';
+
   useEffect(() => {
     Analytics.watchSignUpScreen();
   }, []);
@@ -108,20 +136,48 @@ const InputName = ({ route, navigation }) => {
         `}>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
           <TitleContainer>
-            <Annotation>만나서 반가워요💚</Annotation>
-            <Title>쿠키가 불러드릴{'\n'}닉네임만 알려주세요🐶</Title>
+            <TitleTextContainter>
+              <Annotation>{messages[messageStyle].annotation}</Annotation>
+              <Title>{messages[messageStyle].onboardTitle}</Title>
+            </TitleTextContainter>
+            <Icon name="hello-cookie" width={rsWidth * 84} height={rsWidth * 103} />
           </TitleContainer>
+
           <ContentContainer>
-            <Input
-              placeholder="닉네임만 입력하면 바로 시작!🚀"
-              status={validateName(name)}
-              message="2~15 글자 사이의 닉네임을 지어주세요"
-              withMessage={true}
-              onChange={(text) => {
-                if (text.length < 15) setName(text);
-              }}
-              value={name}
-            />
+            <SubContentContainer>
+              <SubTitle>{messages[messageStyle].setNameTitle}</SubTitle>
+              <Input
+                placeholder={messages[messageStyle].placeholder}
+                status={validateName(name)}
+                message={messages[messageStyle].nameGuide}
+                withMessage={true}
+                onChange={(text) => {
+                  if (text.length < 15) setName(text);
+                }}
+                value={name}
+              />
+            </SubContentContainer>
+            <SubContentContainer>
+              <SubTitle>{messages[messageStyle].formatModeTitle}</SubTitle>
+              <ButtonGroupContainer>
+                <TouchableOpacity
+                  style={{ width: '45%' }}
+                  onPress={() => {
+                    //console.log('존댓말 클릭');
+                    setIsCasualMode(false);
+                  }}>
+                  <Button title="존댓말" disabled={isCasualMode} primary={false} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{ width: '45%' }}
+                  onPress={() => {
+                    //console.log('반말 클릭');
+                    setIsCasualMode(true);
+                  }}>
+                  <Button title="반말" disabled={!isCasualMode} primary={false} />
+                </TouchableOpacity>
+              </ButtonGroupContainer>
+            </SubContentContainer>
           </ContentContainer>
 
           <TermsContainer>
@@ -160,15 +216,6 @@ const InputName = ({ route, navigation }) => {
               onPress={() => {
                 setLegalAllowed(!legalAllowed);
               }}>
-              {/*<Checkbox
-                value={legalAllowed}
-                onValueChange={() => {
-                  setLegalAllowed(!legalAllowed);
-                }}
-                label={'서비스 이용약관에 동의합니다.'}
-                color={legalAllowed ? palette.primary[400] : palette.neutral[200]}
-                labelStyle={{ fontSize: 14 }} //라벨 스타일링
-              />*/}
               <NewCheckBox
                 checked={legalAllowed}
                 onToggle={() => setLegalAllowed(!legalAllowed)}
@@ -250,6 +297,7 @@ const InputName = ({ route, navigation }) => {
               onPress={() => {
                 Analytics.clickSignUpSaveButton();
                 saveNickName(name);
+                switchChatTone(isCasualMode); //변경 사항을 서버에 patch로 업데이트
               }}
             />
           </View>
