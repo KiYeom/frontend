@@ -200,7 +200,7 @@ const NewChat: React.FC = ({ navigation }) => {
         //console.log('🤖🤖🤖🤖🤖🤖🤖🤖새로 온 사람🤖🤖🤖🤖🤖🤖🤖🤖');
         const systemMessage = {
           _id: 'systemMessage',
-          text: `이 곳은 ${getUserNickname()}님과 저만의 비밀 공간이니, 어떤 이야기도 편하게 나눠주세요!\n\n반말로 대화를 나누고 싶으시다면 위에서 오른쪽에 있는 탭 바를 열고, 반말 모드를 켜 주세요!🍀💕`,
+          text: `이 곳에서 이야기하는 내용들은 모두 익명으로 비밀 보장이 됩니다.안심하시고 답답한 나의 속마음을 편하게 이야기해보세요.\n어떤 감정, 어떤 대화이든 쿠키는 보호자님 곁에서 이야기를 경청합니다.`,
           createdAt: new Date(),
           user: systemObject,
           isSaved: false,
