@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import {
   Dimensions,
   Platform,
@@ -77,10 +77,26 @@ import { searchChatWord } from '../../../apis/chatting';
 import { ApiAnswerMessage, ApiQuestionMessage, ExtendedIMessage } from '../../../utils/chatting';
 import { reportMessages } from './chat-render';
 import { useCallback } from 'react';
+import { getUserInfo } from '../../../apis/setting';
 import * as ImagePicker from 'expo-image-picker';
 import ImageShow from '../../../components/image-show/ImageShow';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ApiChatResponse, ApiQuestions, ApiAnswers } from '../../../utils/chatting';
+import AdsModal from '../../../components/modals/ads-modal';
+import { ImageSourcePropType } from 'react-native';
+import config from '../../../utils/config';
+import {
+  BannerAd,
+  BannerAdSize,
+  TestIds,
+  useForeground,
+  InterstitialAd,
+  AdEventType,
+  RewardedAd,
+  RewardedAdEventType,
+} from 'react-native-google-mobile-ads';
+
+const adsImage: ImageSourcePropType = require('../../../assets/images/ads_cookie.png');
 //유저와 챗봇 오브젝트 정의
 const userObject = {
   _id: 0,
@@ -98,6 +114,20 @@ const systemObject = {
   name: 'system',
   avatar: null,
 };
+
+const welcome = {
+  casual: {
+    text: `반가워, ${getUserNickname()}!💚 나는 ${getUserNickname()}님 곁에서 힘이 되고싶은 골든 리트리버 쿠키야🐶 오늘은 어떤 하루를 보냈어?`,
+  },
+  formal: {
+    text: `반가워요, ${getUserNickname()}님!💚 저는 ${getUserNickname()}님 곁에서 힘이 되어드리고 싶은 골든 리트리버 쿠키예요🐶 오늘은 어떤 하루를 보내셨나요?`,
+  },
+};
+
+const ANDROID_AD_UNIT_ID = 'ca-app-pub-8136917168968629/7210877770';
+const IOS_AD_UNIT_ID = 'ca-app-pub-8136917168968629/5465491775';
+
+const adUnitId = config.getAdUnitId(ANDROID_AD_UNIT_ID, IOS_AD_UNIT_ID);
 
 const NewChat: React.FC = ({ navigation }) => {
   const [init, setInit] = useState<boolean>(false);
@@ -120,8 +150,13 @@ const NewChat: React.FC = ({ navigation }) => {
   const [enableDown, setEnableDown] = useState<boolean>(false);
   const [searchLoading, setSearchLoading] = useState<boolean>(false);
 
+  //반말 정보 불러오기
+  const [isInFormalMode, setIsInformalMode] = useState<boolean>(true);
+
   //1.5.8 사진 추가
   const [image, setImage] = useState<string | null>(null);
+  //1.7.9 이미지 전송 시 광고 첨부
+  const [adsModalVisible, setAdsModalVisible] = useState<boolean>(false); //광고 모달
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -170,7 +205,7 @@ const NewChat: React.FC = ({ navigation }) => {
 
   //즐겨찾기 함수
   const toggleFavorite = async (messageId: string) => {
-    console.log('toggleFavorite 함수 실행', messageId);
+    //console.log('toggleFavorite 함수 실행', messageId);
     setMessages((prevMessages) => {
       const updatedMessages = prevMessages.map((m) =>
         m._id === messageId ? { ...m, isSaved: !m.isSaved } : m,
@@ -290,7 +325,7 @@ const NewChat: React.FC = ({ navigation }) => {
         //console.log('🤖🤖🤖🤖🤖🤖🤖🤖새로 온 사람🤖🤖🤖🤖🤖🤖🤖🤖');
         const systemMessage = {
           _id: 'systemMessage',
-          text: `이 곳은 ${getUserNickname()}님과 저만의 비밀 공간이니, 어떤 이야기도 편하게 나눠주세요!\n\n반말로 대화를 나누고 싶으시다면 위에서 오른쪽에 있는 탭 바를 열고, 반말 모드를 켜 주세요!🍀💕`,
+          text: `이 곳에서 이야기하는 내용들은 모두 익명으로 비밀 보장이 됩니다.안심하시고 답답한 나의 속마음을 편하게 이야기해보세요.\n어떤 감정, 어떤 대화이든 쿠키는 보호자님 곁에서 이야기를 경청합니다.`,
           createdAt: new Date(),
           user: systemObject,
           isSaved: false,
@@ -299,7 +334,7 @@ const NewChat: React.FC = ({ navigation }) => {
         };
         const welcomeMessage = {
           _id: 'welcomeMessage',
-          text: `반가워요, ${getUserNickname()}님!💚 저는 ${getUserNickname()}님 곁에서 힘이 되어드리고 싶은 골든 리트리버 쿠키예요🐶 오늘은 어떤 기분이세요?`,
+          text: isInFormalMode ? welcome.casual.text : welcome.formal.text,
           createdAt: new Date(),
           user: botObject,
           isSaved: false,
@@ -354,6 +389,14 @@ const NewChat: React.FC = ({ navigation }) => {
     console.log('iamge ', image, question);
     const imageToSend = image;
     setImage(null);
+    if (imageToSend) {
+      console.log('이미지가 존재한다');
+      setAdsModalVisible(true);
+      return;
+    } else {
+      console.log('이미지가 존재하지 않는다');
+      return;
+    }
     chatting(1, question, isDemo, imageToSend) //버퍼에 저장된 메세지를 서버로 전송하여 질문 & 대화 전체 쌍을 받아옴
       .then((res) => {
         if (res) {
@@ -577,13 +620,13 @@ const NewChat: React.FC = ({ navigation }) => {
   const scrollToMessageById = (messageId: string | number) => {
     const index = messages.findIndex((message) => message._id === messageId);
     if (index === -1) {
-      console.log('해당 메시지를 찾을 수 없습니다.');
+      //console.log('해당 메시지를 찾을 수 없습니다.');
       return;
     }
     // 메시지 인덱스로 메시지 객체를 가져옵니다.
     const targetMessage = messages[index];
-    console.log('targetMessage', targetMessage);
-    console.log(`Scrolling to index ${index} for message id: ${messageId}`);
+    //console.log('targetMessage', targetMessage);
+    //console.log(`Scrolling to index ${index} for message id: ${messageId}`);
     //console.log('giftedChatRef.current?.props?.messageContainerRef?.current?', giftedChatRef.current?.props?.messageContainerRef?.current?);
     try {
       setTimeout(() => {
@@ -595,7 +638,7 @@ const NewChat: React.FC = ({ navigation }) => {
         });
       }, 150);
     } catch (error) {
-      console.log('렌더링이 되지 않아 스크롤 실패', error);
+      //console.log('렌더링이 되지 않아 스크롤 실패', error);
     }
   };
 
@@ -620,8 +663,16 @@ const NewChat: React.FC = ({ navigation }) => {
       })
       .catch((err) => {
         alert('대화 내역을 불러오는 중 오류가 발생했어요. 다시 시도해주세요.');
-        console.log(err);
+        //console.log(err);
         navigation.navigate(TabScreenName.Home);
+      });
+    getUserInfo()
+      .then((res) => {
+        res && setIsInformalMode(res.isInFormal);
+      })
+      .catch((error) => {
+        console.log('getUserInfo 에러 발생');
+        //console.log('getUserInfo error', error);
       });
   }, []);
 
@@ -641,8 +692,8 @@ const NewChat: React.FC = ({ navigation }) => {
             setInit(false);
           })
           .catch((err) => {
-            console.log('대화 내역을 불러오는 중 오류가 발생했어요. 다시 시도해주세요.');
-            console.log(err);
+            //console.log('대화 내역을 불러오는 중 오류가 발생했어요. 다시 시도해주세요.');
+            //console.log(err);
             navigation.navigate('Home');
           });
       }
@@ -681,8 +732,8 @@ const NewChat: React.FC = ({ navigation }) => {
     const offset = info.averageItemLength * info.index * 2;
     const flatList = messageContainerRef.current;
     // 임시 오프셋으로 스크롤
-    console.log('정보1', info.index);
-    console.log('정보2', info.averageItemLength);
+    //console.log('정보1', info.index);
+    //console.log('정보2', info.averageItemLength);
     flatList.scrollToOffset({ offset: offset });
     // 잠시 후 정확한 인덱스로 다시 스크롤 시도
     setTimeout(() => {
@@ -716,6 +767,52 @@ const NewChat: React.FC = ({ navigation }) => {
   }, [navigation]);
 
   const messageContainerRef = useRef<React.ElementRef<typeof GiftedChat>>(null);
+
+  const rewarded = useMemo(
+    () =>
+      RewardedAd.createForAdRequest(adUnitId, {
+        keywords: ['fashion', 'clothing'],
+      }),
+    [],
+  );
+
+  //일기장 화면 진입 시 실행되는 useEffect
+  const [loaded, setLoaded] = useState(false);
+  useFocusEffect(
+    useCallback(() => {
+      const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
+        //console.log('광고 로드');
+        setLoaded(true);
+      });
+      //광고를 끝까지 봐서 보상을 줄 수 있을 때 일기와 사진을 등록할 수 있는 콜백 함수를 unsubscribeEarned 이라는 이름으로 등록해둔다
+      const unsubscribeEarned = rewarded.addAdEventListener(
+        RewardedAdEventType.EARNED_REWARD,
+        (reward) => {
+          //console.log('광고 시청 완료');
+          setAdsModalVisible(false);
+          setBuffer(buffer ? buffer + '\t' : '\t');
+          setImage(image);
+          sendMessageToServer();
+        },
+      );
+      //광고가 닫힐 때 실행되는 이벤트 리스터
+      const unsubscribeClosed = rewarded.addAdEventListener(AdEventType.CLOSED, () => {
+        //console.log('Ad was cloesed');
+        setAdsModalVisible(false);
+      });
+      //광고 로드
+      rewarded.load();
+      // 컴포넌트 언마운트 시 이벤트 리스너 해제
+      return () => {
+        //console.log('컴포넌트 언마운트 시 이벤트 리스너 해제');
+        //listenerCount--;
+        unsubscribeLoaded();
+        unsubscribeEarned();
+        unsubscribeClosed();
+        //console.log(`리스너 해제됨 : 현재 ${listenerCount}번 등록됨`);
+      };
+    }, [rewarded, navigation]),
+  );
 
   /* 채팅 화면 전체 구성 */
   return (
@@ -858,6 +955,26 @@ const NewChat: React.FC = ({ navigation }) => {
           <ActivityIndicator />
         </View>
       )}
+      <AdsModal
+        modalVisible={adsModalVisible}
+        onClose={() => {
+          //console.log('모달 꺼짐', diaryText);
+          Analytics.clickNoWatchAdsButton();
+          setAdsModalVisible(false);
+        }}
+        onSubmit={async () => {
+          //console.log('광고 보기 버튼을 클릭', loaded);
+          Analytics.clickWatchAdsButton();
+          if (!loaded) {
+            Toast.show('광고 로딩중입니다. 잠시 기다려주세요');
+            rewarded.load();
+            return;
+          }
+          //watchAds(); //광고가 로드된 상태에서 광고 보여주기
+        }}
+        imageSource={adsImage}
+        modalContent={`광고를 시청하면\n일기에 사진을 첨부할 수 있어요!`}
+      />
       <Animated.View
         style={{
           position: 'absolute',

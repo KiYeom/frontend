@@ -9,7 +9,7 @@ const ArrowBtn = (props) => {
     <ScrollBtnContainer
       enable={enable}
       onPress={() => {
-        console.log(iconName, '버튼 누름');
+        //console.log(iconName, '버튼 누름');
         if (iconName === 'arrow-up') {
           handleSearch(searchWord, 'up');
         } else if (iconName === 'arrow-down') {

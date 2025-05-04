@@ -13,6 +13,7 @@ export type TOptionButton = {
 };
 
 export type TGender = '여성' | '남성';
+export type TPLAN = 'free' | 'pro';
 
 export type TVender = 'kakao' | 'google' | 'apple' | 'guest';
 

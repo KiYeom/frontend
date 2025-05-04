@@ -33,7 +33,8 @@ const HINT_NAME = 'main';
 const HINT_MESSAGE =
   '그동안 쿠키와의 대화를 통해 나의 감정 변화를 확인하고, 대화 주제 및 나의 기록을 통해 지난 날의 자신을 돌아보세요!\n※ 본 보고서는 참고용이며, 필요 시 전문가와 상의하세요.';
 
-const PeriodStatisticPage: React.FC<any> = () => {
+//기간별 그래프 화면
+const PeriodStatisticPage: React.FC<any> = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [visible, setVisible] = React.useState(false);
@@ -57,7 +58,7 @@ const PeriodStatisticPage: React.FC<any> = () => {
   const [emotionsData, setEmotionsData] = useState([]);
   const [openModal, setOpenModal] = React.useState(false);
 
-  const navigation = useNavigation();
+  //const navigation = useNavigation();
 
   const insets = useSafeAreaInsets();
 
@@ -194,6 +195,7 @@ const PeriodStatisticPage: React.FC<any> = () => {
               records={recordEmotions ? recordEmotions.records : []}
               hintStatus={hintStatus}
               setHintStatus={setHintStatus}
+              navigation={navigation}
             />
           ) : (
             <EmptyBox
