@@ -96,7 +96,6 @@ import {
   RewardedAdEventType,
 } from 'react-native-google-mobile-ads';
 
-const adsImage: ImageSourcePropType = require('../../../assets/images/ads_cookie.png');
 //유저와 챗봇 오브젝트 정의
 const userObject = {
   _id: 0,
@@ -107,7 +106,6 @@ const botObject = {
   _id: 1,
   name: '쿠키',
   avatar: require('../../../assets/images/cookieprofile.png'),
-  //avatar: require(cookieprofile),
 };
 const systemObject = {
   _id: -1,
@@ -126,8 +124,9 @@ const welcome = {
 
 const ANDROID_AD_UNIT_ID = 'ca-app-pub-8136917168968629/7210877770';
 const IOS_AD_UNIT_ID = 'ca-app-pub-8136917168968629/5465491775';
-
-const adUnitId = config.getAdUnitId(ANDROID_AD_UNIT_ID, IOS_AD_UNIT_ID);
+const adsImage: ImageSourcePropType = require('../../../assets/images/ads_cookie.png');
+//const adUnitId = config.getAdUnitId(ANDROID_AD_UNIT_ID, IOS_AD_UNIT_ID);
+const adUnitId = TestIds.REWARDED;
 
 const NewChat: React.FC = ({ navigation }) => {
   const [init, setInit] = useState<boolean>(false);
@@ -157,6 +156,16 @@ const NewChat: React.FC = ({ navigation }) => {
   const [image, setImage] = useState<string | null>(null);
   //1.7.9 이미지 전송 시 광고 첨부
   const [adsModalVisible, setAdsModalVisible] = useState<boolean>(false); //광고 모달
+  const imageUriRef = useRef<string | null>(null);
+  const bufferRef = useRef<string>('');
+  //일기장 화면 진입 시 실행되는 useEffect
+  const [loaded, setLoaded] = useState(false);
+
+  // 2) buffer를 업데이트할 때 항상 ref에도 함께 기록
+  const updateBuffer = (text: string) => {
+    setBuffer(text);
+    bufferRef.current = text;
+  };
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -166,7 +175,9 @@ const NewChat: React.FC = ({ navigation }) => {
     });
     console.log(result);
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      const uri = result.assets[0].uri;
+      setImage(uri);
+      imageUriRef.current = uri;
       //핸드폰에서 선택한 사진의 로컬 주소 (file://~)를 저장
     }
     return;
@@ -379,6 +390,95 @@ const NewChat: React.FC = ({ navigation }) => {
     setNewIMessagesV3(messagesString);
   };
 
+  // 텍스트 전용 메시지 전송 함수
+  const sendTextOnlyMessage = () => {
+    if (!buffer || sending) return;
+
+    setSending(true);
+    const question = buffer ?? '';
+    const isDemo = getIsDemo();
+
+    // API 호출
+    chatting(1, question, isDemo)
+      .then((res) => {
+        // API 응답 처리
+        if (res) {
+          const sortedMessages = res?.reverse();
+          const apiQuestions = sortedMessages.filter(
+            (item) => item.question !== null && item.question !== '' && item.answer === null,
+          );
+          const apiAnswers = sortedMessages.filter(
+            (item) => item.answer !== null && item.question === null,
+          );
+
+          setMessages((previousMessages) => {
+            // ID 업데이트 및 메시지 추가 로직
+            // ...
+          });
+        }
+      })
+      .catch((err) => {
+        // 오류 처리
+      })
+      .finally(() => {
+        setBuffer(null);
+        setSending(false);
+      });
+  };
+
+  // 이미지가 포함된 메시지 전송 함수
+  // 1) ref로 저장해 둔 URI를 파라미터로 받아오도록 시그니처 변경
+  const sendImageMessage = (imageUri: string, questionText?: string) => {
+    // questionText는 버퍼 내용이 필요하면 옵션으로 전달
+    console.log('sendImageMessage 실행', questionText, imageUri);
+
+    if ((!questionText && !imageUri) || sending) return;
+
+    setSending(true);
+    const question = questionText ?? '';
+    const isDemo = getIsDemo();
+
+    // API 호출: imageUri 사용
+    chatting(1, question, isDemo, imageUri)
+      .then((res) => {
+        if (!res) return;
+
+        const sortedMessages: ApiChatResponse = res.reverse();
+        const apiQuestions = sortedMessages.filter(
+          (item): item is ApiQuestionMessage => item.question !== null && item.answer === null,
+        );
+        const apiAnswers = sortedMessages.filter(
+          (item): item is ApiAnswerMessage => item.answer !== null && item.question === null,
+        );
+
+        setMessages((prev) => {
+          const updated = [...prev];
+          // (여기까지는 기존 로직과 동일)
+          // … ID 매핑 로직 …
+
+          // 봇 메시지 생성
+          const newBotMessages: ExtendedIMessage[] = apiAnswers.map((item) => ({
+            _id: item.id,
+            text: item.answer ?? '',
+            createdAt: new Date(),
+            user: botObject,
+            isSaved: false,
+          }));
+
+          setIMessagesV3(updated, newBotMessages);
+          return GiftedChat.append(updated, newBotMessages);
+        });
+      })
+      .catch((err) => {
+        console.log('이미지 처리 오류', err);
+      })
+      .finally(() => {
+        setBuffer(null);
+        setImage(null);
+        setSending(false);
+      });
+  };
+
   //버퍼에 저장된 메시지를 서버로 전송하는 sendMessageToServer 함수
   const sendMessageToServer = () => {
     console.log('sendMessageToServer 실행', buffer, image);
@@ -395,7 +495,7 @@ const NewChat: React.FC = ({ navigation }) => {
       return;
     } else {
       console.log('이미지가 존재하지 않는다');
-      return;
+      // 이미지 없는 경우 처리
     }
     chatting(1, question, isDemo, imageToSend) //버퍼에 저장된 메세지를 서버로 전송하여 질문 & 대화 전체 쌍을 받아옴
       .then((res) => {
@@ -503,13 +603,19 @@ const NewChat: React.FC = ({ navigation }) => {
       clearTimeout(typingTimeoutRef.current);
     }
 
-    if (typingTimeoutRef.current === null && image) {
+    /*if (typingTimeoutRef.current === null && image) {
       sendMessageToServer();
     } else {
       typingTimeoutRef.current = setTimeout(() => {
         sendMessageToServer();
       }, 2 * 1000);
+    }*/
+    if (image) {
+      return;
     }
+    typingTimeoutRef.current = setTimeout(() => {
+      sendMessageToServer();
+    }, 2 * 1000);
   };
 
   /*
@@ -744,7 +850,10 @@ const NewChat: React.FC = ({ navigation }) => {
   //버퍼가 변경됨에 따라 타이머를 재설정함
   //타이머 = 유저의 타이핑 시간 (연속된 타이핑인지를 체크)
   useEffect(() => {
-    if (buffer) {
+    /*if (buffer) {
+      resetTimer();
+    }*/
+    if (buffer && !image) {
       resetTimer();
     }
   }, [buffer]);
@@ -770,29 +879,31 @@ const NewChat: React.FC = ({ navigation }) => {
 
   const rewarded = useMemo(
     () =>
-      RewardedAd.createForAdRequest(adUnitId, {
+      RewardedAd.createForAdRequest(TestIds.REWARDED, {
         keywords: ['fashion', 'clothing'],
       }),
     [],
   );
 
-  //일기장 화면 진입 시 실행되는 useEffect
-  const [loaded, setLoaded] = useState(false);
   useFocusEffect(
     useCallback(() => {
       const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
-        //console.log('광고 로드');
+        console.log('광고 로드');
         setLoaded(true);
+      });
+      // 광고 오류 이벤트 리스너 추가
+      const unsubscribeError = rewarded.addAdEventListener(AdEventType.ERROR, (error) => {
+        console.error('광고 오류 발생:', error);
       });
       //광고를 끝까지 봐서 보상을 줄 수 있을 때 일기와 사진을 등록할 수 있는 콜백 함수를 unsubscribeEarned 이라는 이름으로 등록해둔다
       const unsubscribeEarned = rewarded.addAdEventListener(
         RewardedAdEventType.EARNED_REWARD,
         (reward) => {
-          //console.log('광고 시청 완료');
           setAdsModalVisible(false);
-          setBuffer(buffer ? buffer + '\t' : '\t');
-          setImage(image);
-          sendMessageToServer();
+          const uriToSend = imageUriRef.current;
+          const text = bufferRef.current;
+          if (uriToSend) sendImageMessage(uriToSend, text);
+          console.log('광고 시청 완료', reward);
         },
       );
       //광고가 닫힐 때 실행되는 이벤트 리스터
@@ -813,6 +924,8 @@ const NewChat: React.FC = ({ navigation }) => {
       };
     }, [rewarded, navigation]),
   );
+
+  //이미지를 전송하는 로직
 
   /* 채팅 화면 전체 구성 */
   return (
@@ -892,6 +1005,7 @@ const NewChat: React.FC = ({ navigation }) => {
         onSend={(messages) => onSend(messages)}
         user={userObject}
         onInputTextChanged={(text) => {
+          updateBuffer(text);
           if (typingTimeoutRef.current) {
             resetTimer();
           }
@@ -930,6 +1044,7 @@ const NewChat: React.FC = ({ navigation }) => {
             setInputHeight,
             image,
             setImage,
+            setAdsModalVisible,
           )
         }
         textInputProps={{
@@ -958,19 +1073,20 @@ const NewChat: React.FC = ({ navigation }) => {
       <AdsModal
         modalVisible={adsModalVisible}
         onClose={() => {
-          //console.log('모달 꺼짐', diaryText);
           Analytics.clickNoWatchAdsButton();
           setAdsModalVisible(false);
+          //setImage(null);
         }}
         onSubmit={async () => {
           //console.log('광고 보기 버튼을 클릭', loaded);
+          console.log('사용중인 광고 ID', TestIds.REWARDED);
           Analytics.clickWatchAdsButton();
           if (!loaded) {
             Toast.show('광고 로딩중입니다. 잠시 기다려주세요');
             rewarded.load();
             return;
           }
-          //watchAds(); //광고가 로드된 상태에서 광고 보여주기
+          rewarded.show();
         }}
         imageSource={adsImage}
         modalContent={`광고를 시청하면\n일기에 사진을 첨부할 수 있어요!`}

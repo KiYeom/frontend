@@ -24,8 +24,11 @@ const getAdUnitId = (androidProductionId, iosProductionId) => {
     return TestIds.REWARDED;
   }*/
 
-  // 프로덕션이면 플랫폼에 맞는 실제 ID 사용
-  return Platform.OS === 'ios' ? iosProductionId : androidProductionId;
+  // 프로덕션이면 플랫폼에 맞는 실제 ID 사용 (1.7.9 주석 풀기)
+  //return Platform.OS === 'ios' ? iosProductionId : androidProductionId;
+  console.log(isProduction ? '프로덕션 환경' : isDevelopment ? '개발 환경' : '스테이징 환경');
+  console.log('테스트 광고 ID 사용', TestIds.REWARDED);
+  return TestIds.REWARDED;
 };
 
 export default {
