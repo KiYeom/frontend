@@ -406,6 +406,8 @@ export const RenderInputToolbar = (
   image?: string | null,
   setImage?: (value: string | null) => void,
   setAdsModalVisible?: (value: boolean) => void,
+  setBuffer?: (value: string) => void,
+  bufferRef?: React.MutableRefObject<string>,
 ) =>
   !isSearchMode ? (
     <View>
@@ -488,6 +490,12 @@ export const RenderInputToolbar = (
                 }
                 if (imageToSend) {
                   console.log('이미지 전송');
+                  if (messageText && messageText.trim() !== '') {
+                    console.log('messageText:', messageText);
+                    setBuffer(messageText);
+                    bufferRef.current = messageText;
+                    console.log('텍스트 버퍼 저장:', messageText);
+                  }
                   setAdsModalVisible(true);
                   return;
                 }
