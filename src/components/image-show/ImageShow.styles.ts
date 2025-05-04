@@ -4,7 +4,9 @@ import { rsFont, rsHeight, rsWidth } from '../../utils/responsive-size';
 import { Image } from 'react-native';
 
 export const ImageShowContainer = styled.View`
-  background-color: rgba(0, 0, 0, 0.4);
+  //background-color: rgba(0, 0, 0, 0.4);
+  border-top: 1px solid black;
+  //background-color: pink;
   position: relative;
   padding-horizontal: ${rsWidth * 10 + 'px'};
   padding-vertical: ${rsHeight * 10 + 'px'};

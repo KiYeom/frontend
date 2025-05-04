@@ -5,6 +5,7 @@ import Icon, { TIconName } from '../icons/icons';
 import { IconContainer, InputContainer, InputField, WithMessage } from './input.styles';
 import { ImageShowContainer, CancelButton } from './ImageShow.styles';
 import { useEffect, useState } from 'react';
+import AttachmentPreview from '../image-container/AttachmentPreview';
 
 type ImageShowProps = {
   image?: string | null;
@@ -35,21 +36,16 @@ const ImageShow = ({ image, setImage }: ImageShowProps) => {
 
   return (
     <ImageShowContainer>
-      <CancelButton
-        onPress={() => {
-          console.log('image : ', image);
-          console.log('취소 버튼 클릭');
-          if (setImage) {
-            setImage(null);
-          }
-        }}>
-        <Icon name="cancel-icon" size={rsWidth * 14} color={'white'} />
-      </CancelButton>
       {/*<Text style={{ color: 'white' }}>이미지</Text>*/}
       {image && (
-        <Image
-          source={{ uri: image }}
-          style={{ width: scaledSize.width, height: scaledSize.height }}
+        <AttachmentPreview
+          image={image}
+          onDelete={(image) => {
+            console.log('삭제 버튼 클릭');
+            if (setImage) {
+              setImage(null);
+            }
+          }}
         />
       )}
     </ImageShowContainer>
