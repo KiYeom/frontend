@@ -384,61 +384,6 @@ const NewChat: React.FC = ({ navigation }) => {
     setNewIMessagesV3(messagesString);
   };
 
-  // 이미지가 포함된 메시지 전송 함수
-  // 1) ref로 저장해 둔 URI를 파라미터로 받아오도록 시그니처 변경
-  const sendImageMessage = (imageUri: string, questionText?: string) => {
-    // questionText는 버퍼 내용이 필요하면 옵션으로 전달
-    console.log('sendImageMessage 실행', questionText, imageUri);
-
-    if ((!questionText && !imageUri) || sending) return;
-
-    setSending(true);
-    const question = questionText ?? '';
-    const isDemo = getIsDemo();
-
-    // API 호출: imageUri 사용
-    chatting(1, question, isDemo, imageUri)
-      .then((res) => {
-        if (!res) return;
-
-        const sortedMessages: ApiChatResponse = res.reverse();
-        const apiQuestions = sortedMessages.filter(
-          (item): item is ApiQuestionMessage => item.question !== null && item.answer === null,
-        );
-        const apiAnswers = sortedMessages.filter(
-          (item): item is ApiAnswerMessage => item.answer !== null && item.question === null,
-        );
-
-        setMessages((prev) => {
-          const updated = [...prev];
-          // (여기까지는 기존 로직과 동일)
-          // … ID 매핑 로직 …
-
-          // 봇 메시지 생성
-          const newBotMessages: ExtendedIMessage[] = apiAnswers.map((item) => ({
-            _id: item.id,
-            text: item.answer ?? '',
-            createdAt: new Date(),
-            user: botObject,
-            isSaved: false,
-          }));
-
-          setIMessagesV3(updated, newBotMessages);
-          return GiftedChat.append(updated, newBotMessages);
-        });
-      })
-      .catch((err) => {
-        console.log('이미지 처리 오류', err);
-      })
-      .finally(() => {
-        setBuffer(null);
-        setImage(null);
-        setSending(false);
-        bufferRef.current = null;
-        imageUriRef.current = null;
-      });
-  };
-
   //버퍼에 저장된 메시지를 서버로 전송하는 sendMessageToServer 함수
   const sendMessageToServer = () => {
     console.log('sendMessageToServer 실행1', bufferRef, imageUriRef);
@@ -711,19 +656,27 @@ const NewChat: React.FC = ({ navigation }) => {
     }, [navigation]),
   );
 
-  //비행기를 클릭헀을 때 실행되는 onSend 함수
-  //api 로 유저 - 채팅 한 쌍을 받아오기 전에는 id 값을 임의로 설정하여 화면에 보여준다.
+  //비행기 버튼의 onPress 핸들러 내에서 "sendProps.onSend() 가 호출될 때" 실행
+  //이미지나 텍스트를 전송하고자 할 때 전송 버퍼에 저장하는 역할을 함
   const onSend = (newMessages: ExtendedIMessage[] = []) => {
-    const text = newMessages[0]?.text.trim();
-    if (!text) {
+    //텍스트가 비어있는 경우 전송하지 않음
+    const text =
+      newMessages && newMessages[0] && newMessages[0].text ? newMessages[0].text.trim() : '';
+    if (image) {
+      console.log('🤖onSend 함수 실행...🤖 이미지를 포함하여 전송', image);
+      console.log('🤖onSend 함수 실행...🤖 함께 전달받은 텍스트', text);
+      setAdsModalVisible(true);
       return;
     }
 
-    const updated = bufferRef.current ? `${bufferRef.current}${text}\t` : `${text}\t`;
-    //setBuffer(buffer ? buffer + newMessages[0].text + '\t' : newMessages[0].text + '\t');
-    //bufferRef.current = buffer ? buffer + newMessages[0].text + '\t' : newMessages[0].text + '\t';
+    console.log('🤖onSend 함수 실행...🤖 text : ', text);
+    if (!text) {
+      console.log('전송할 텍스트가 없음');
+      return;
+    }
 
-    console.log('onSend 실행', updated);
+    //버퍼에 저장이 값은 이미지 uri 이나 텍스트는 \t 를 붙여서 저장함
+    const updated = bufferRef.current ? `${bufferRef.current}${text}\t` : `${text}\t`;
 
     setBuffer(updated);
     bufferRef.current = updated;
@@ -923,7 +876,7 @@ const NewChat: React.FC = ({ navigation }) => {
         any
         messageContainerRef={messageContainerRef}
         messages={messages}
-        onSend={(messages) => onSend(messages)}
+        onSend={(messages) => onSend(messages)} //직접 정의한 onSend 콜백 함수
         user={userObject}
         onInputTextChanged={(text) => {
           if (typingTimeoutRef.current) {
@@ -1000,6 +953,7 @@ const NewChat: React.FC = ({ navigation }) => {
           //setImage(null);
         }}
         onSubmit={async () => {
+          console.log('===== 모달창의 저장하기 버튼을 클릭 ====');
           //console.log('광고 보기 버튼을 클릭', loaded);
           console.log('사용중인 광고 ID', TestIds.REWARDED);
           console.log('전송하고자 하는 텍스트 버퍼', buffer);
@@ -1011,6 +965,7 @@ const NewChat: React.FC = ({ navigation }) => {
             rewarded.load();
             return;
           }
+          //로드가 되면 광고 시청하기
           rewarded.show();
         }}
         imageSource={adsImage}

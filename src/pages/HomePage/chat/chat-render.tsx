@@ -489,14 +489,25 @@ export const RenderInputToolbar = (
                   return;
                 }
                 if (imageToSend) {
-                  console.log('이미지 전송');
-                  if (messageText && messageText.trim() !== '') {
+                  console.log('이미지 전송, sendProps.onSend 호출');
+                  sendProps.onSend(
+                    [
+                      {
+                        ...sendProps.currentMessage,
+                        text: messageText,
+                        image: imageToSend,
+                      },
+                    ],
+                    true,
+                  );
+
+                  /*if (messageText && messageText.trim() !== '') {
                     console.log('messageText:', messageText);
                     setBuffer(messageText);
                     bufferRef.current = messageText;
                     console.log('텍스트 버퍼 저장:', messageText);
-                  }
-                  setAdsModalVisible(true);
+                  }*/
+                  ///setAdsModalVisible(true);
                   return;
                 }
                 if (messageText && messageText.trim() !== '') {
