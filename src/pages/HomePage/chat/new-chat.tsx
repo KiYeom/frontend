@@ -450,10 +450,53 @@ const NewChat: React.FC = ({ navigation }) => {
   const sendMessageToServer = () => {
     const buf = bufferRef.current;
     const img = imageRef.current;
-    console.log('sendMessageToServer 실행', buffer, image);
+    //console.log('sendMessageToServer 실행', buffer, image);
     console.log('sendMessageToServer 내에서 읽은 값', buf, img);
     if ((!buf && !img) || sending) return; //텍스트도, 이미지도 없는 경우에는 전송하지 않음
     setSending(true);
+
+    if (img) {
+      // 1) 화면에 보여줄 임시 메시지 객체 생성
+      const pendingMsg: ExtendedIMessage = {
+        _id: uuid.v4().toString(), // 랜덤 ID
+        text: '', // 텍스트가 있으면 버퍼, 없으면 빈 문자열
+        image: img, // 이미지가 있으면 URI
+        createdAt: new Date(),
+        user: userObject, // '나' 유저
+        isSaved: false,
+      };
+
+      // 2) UI에 즉시 추가
+      // 2) UI에 바로 추가하고, 로컬에도 저장
+      setMessages((prev) => {
+        console.log('ui에 즉시 추가');
+        const updated = GiftedChat.append(prev, [pendingMsg]);
+        console.log('로컬에도 저장');
+        setIMessagesV3(prev, [pendingMsg]);
+        return updated;
+      });
+      if (buf) {
+        const pendingMsg: ExtendedIMessage = {
+          _id: uuid.v4().toString(), // 랜덤 ID
+          text: buf, // 텍스트가 있으면 버퍼, 없으면 빈 문자열
+          image: '', // 이미지가 있으면 URI
+          createdAt: new Date(),
+          user: userObject, // '나' 유저
+          isSaved: false,
+        };
+        setMessages((prev) => {
+          console.log('ui에 즉시 추가');
+          const updated = GiftedChat.append(prev, [pendingMsg]);
+          console.log('로컬에도 저장');
+          setIMessagesV3(prev, [pendingMsg]);
+          return updated;
+        });
+      }
+    }
+
+    setBuffer(null); // 버퍼 비우기
+    setImage(null); // 선택된 이미지 비우기
+
     const question = buf ?? '';
     const isDemo = getIsDemo();
     console.log('iamge ', img, question);
