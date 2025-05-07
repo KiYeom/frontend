@@ -310,7 +310,7 @@ const NewChat: React.FC = ({ navigation }) => {
     const messages: ExtendedIMessage[] = [];
     const lastDateAddSecond = new Date(lastMessageDate.getTime() + 10 * 1000);
     const serverMessages = await getV3OldChatting(botObject._id, lastDateAddSecond.toISOString());
-    console.log('v3 데이터 확인하기', serverMessages);
+    //console.log('v3 데이터 확인하기', serverMessages);
     if (serverMessages && serverMessages.chats && serverMessages.chats.length > 0) {
       const imageUrlPattern = /https:\/\/bucket\.remind4u\.co\.kr\/gemini\/[a-f0-9]+\.jpg/;
       for (let i = 0; i < serverMessages.chats.length; i++) {
@@ -459,7 +459,7 @@ const NewChat: React.FC = ({ navigation }) => {
       // 1) 화면에 보여줄 임시 메시지 객체 생성
       const pendingMsg: ExtendedIMessage = {
         _id: uuid.v4().toString(), // 랜덤 ID
-        text: '', // 텍스트가 있으면 버퍼, 없으면 빈 문자열
+        text: img, // 텍스트 있어도 그냥 이미지만 나오게 return 걸어둠
         image: img, // 이미지가 있으면 URI
         createdAt: new Date(),
         user: userObject, // '나' 유저
@@ -475,11 +475,11 @@ const NewChat: React.FC = ({ navigation }) => {
         setIMessagesV3(prev, [pendingMsg]);
         return updated;
       });
-      if (buf) {
+      if (buf?.trim() !== '') {
+        console.log('버퍼에 텍스트가 존재함', buf);
         const pendingMsg: ExtendedIMessage = {
           _id: uuid.v4().toString(), // 랜덤 ID
-          text: buf, // 텍스트가 있으면 버퍼, 없으면 빈 문자열
-          image: '', // 이미지가 있으면 URI
+          text: buf ?? '', // 텍스트가 있으면 버퍼, 없으면 빈 문자열
           createdAt: new Date(),
           user: userObject, // '나' 유저
           isSaved: false,
@@ -491,6 +491,8 @@ const NewChat: React.FC = ({ navigation }) => {
           setIMessagesV3(prev, [pendingMsg]);
           return updated;
         });
+      } else {
+        console.log('버퍼에 텍스트가 존재하지 않음', buffer);
       }
     }
 
