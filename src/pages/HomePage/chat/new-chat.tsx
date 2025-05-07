@@ -45,7 +45,7 @@ import {
 } from '../../../utils/storageUtils';
 import Analytics from '../../../utils/analytics';
 import { rsFont, rsWidth } from '../../../utils/responsive-size';
-import { chatting, getOldChatting } from '../../../apis/chatting';
+import { chatting, getOldChatting, updateSendPhotoPermission } from '../../../apis/chatting';
 import { TabScreenName } from '../../../constants/Constants';
 import { Linking } from 'react-native';
 import {
@@ -158,7 +158,10 @@ const NewChat: React.FC = ({ navigation }) => {
   const [adsModalVisible, setAdsModalVisible] = useState<boolean>(false); //광고 모달
   const imageUriRef = useRef<string | null>(null);
   const bufferRef = useRef<string | null>(null);
-  //일기장 화면 진입 시 실행되는 useEffect
+  // 1) 모달이 열릴 때까지 대기할 메시지를 담아 둘 state
+  const [pendingMessages, setPendingMessages] = useState<ExtendedIMessage[] | null>(null);
+
+  // 화면 진입 시 실행되는 useEffect
   const [loaded, setLoaded] = useState(false);
 
   const pickImage = async () => {
@@ -384,21 +387,33 @@ const NewChat: React.FC = ({ navigation }) => {
     setNewIMessagesV3(messagesString);
   };
 
+  const checkSendPhotoPermission = async (): Promise<boolean> => {
+    try {
+      const res = await updateSendPhotoPermission(true);
+      console.log('사진 전송 권한 응답:', res);
+      // res가 falsy이거나 canSendPhoto가 없으면 false 반환
+      return !!res?.canSendPhoto;
+    } catch (err) {
+      console.error('사진 전송 권한 확인 중 오류 발생', err);
+      return false;
+    }
+  };
+
   //버퍼에 저장된 메시지를 서버로 전송하는 sendMessageToServer 함수
   const sendMessageToServer = () => {
     console.log('sendMessageToServer 실행1', bufferRef, imageUriRef);
     console.log('sendMessageToServer 실행2', buffer, !buffer, image, !image, sending);
     //bufferRef.current = null;
     //imageUriRef.current = null;
-    return;
-    if ((!buffer && !imageUriRef) || sending) return;
+
+    if ((!bufferRef && !imageUriRef) || sending) return;
     setSending(true);
-    const question = buffer ?? '';
+    const question = bufferRef ?? '';
     const isDemo = getIsDemo();
 
-    /*
-    chatting(1, question, isDemo) //버퍼에 저장된 메세지를 서버로 전송하여 질문 & 대화 전체 쌍을 받아옴
+    chatting(1, question, isDemo, imageUriRef) //버퍼에 저장된 메세지를 서버로 전송하여 질문 & 대화 전체 쌍을 받아옴
       .then((res) => {
+        console.log('전송 성공', question, imageUriRef);
         if (res) {
           const sortedMessages = res?.reverse(); //결과를 역순으로 정렬하여 최신 메세지가 앞으로
           const apiQuestions = sortedMessages.filter(
@@ -435,6 +450,7 @@ const NewChat: React.FC = ({ navigation }) => {
         }
       })
       .catch((err) => {
+        console.log('전송 실패');
         const newMessages: ExtendedIMessage[] = [
           {
             _id: uuid.v4().toString(),
@@ -452,7 +468,7 @@ const NewChat: React.FC = ({ navigation }) => {
       .finally(() => {
         setBuffer(null);
         setSending(false);
-      }); */
+      });
   };
 
   //디바운싱을 담당하는 resetTimer 함수
@@ -764,6 +780,7 @@ const NewChat: React.FC = ({ navigation }) => {
       const unsubscribeEarned = rewarded.addAdEventListener(
         RewardedAdEventType.EARNED_REWARD,
         (reward) => {
+          console.log('광고 시청 완료', reward);
           setAdsModalVisible(false);
           const uriToSend = imageUriRef.current;
           const bufferText = bufferRef.current;
@@ -773,8 +790,15 @@ const NewChat: React.FC = ({ navigation }) => {
           console.log('~~~~bufferRef~~~~', bufferText);
           //console.log('~~~~buffer~~~~', buffer);
           //console.log('text', text);
-          if (uriToSend) sendMessageToServer();
-          console.log('광고 시청 완료', reward);
+          if (uriToSend) {
+            const res = checkSendPhotoPermission();
+            console.log('사진 전송 권한 : ', res);
+            if (res) {
+              sendMessageToServer();
+            }
+            return;
+          }
+          sendMessageToServer();
         },
       );
       //광고가 닫힐 때 실행되는 이벤트 리스터

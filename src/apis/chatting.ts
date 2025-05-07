@@ -5,6 +5,7 @@ import {
   TOldAnswer,
   TChatAnswerV3,
   TChatSearchResult,
+  TChatSendPhotoPermission,
 } from './chatting.types';
 import { Platform } from 'react-native';
 import { uriToBlob } from '../utils/chatting';
@@ -17,6 +18,18 @@ const errorMessage: TChatAnswerV3 = [
     question: null,
   },
 ];
+
+export const updateSendPhotoPermission = async (
+  canSendPhoto: boolean,
+): Promise<TChatSendPhotoPermission | undefined> => {
+  try {
+    const res = await instance.patch('/v1/users/update-sendphoto', { canSendPhoto });
+    return res.data;
+  } catch (error) {
+    console.log('에러 발생', error);
+    return;
+  }
+};
 
 export const chatting = async (
   characterId: number,

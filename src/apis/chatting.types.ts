@@ -2,6 +2,10 @@ import { IMessage } from 'react-native-gifted-chat';
 export type TChatAnswer = {
   answer: string;
 };
+
+export type TChatSendPhotoPermission = {
+  canSendPhoto: boolean;
+};
 //1.5.7 UPDATE
 export type TChatAnswerV3 = TChatLogV3[];
 export type TChatLogV3 = {

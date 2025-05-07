@@ -54,7 +54,7 @@ export const reportMessages = async (messageId: string, isSaved: boolean): strin
 export const RenderBubble = (
   props: BubbleProps<ExtendedIMessage> & { onFavoritePress: (messageId: string) => void },
 ) => {
-  //console.log('renderBubble', props.currentMessage);
+  console.log('renderBubble', props.currentMessage);
   const showReport = (): boolean => {
     const nowMessageUserId = props.currentMessage.user._id;
     if (props.currentMessage._id === 'welcomeMessage') return false;
@@ -500,14 +500,6 @@ export const RenderInputToolbar = (
                     ],
                     true,
                   );
-
-                  /*if (messageText && messageText.trim() !== '') {
-                    console.log('messageText:', messageText);
-                    setBuffer(messageText);
-                    bufferRef.current = messageText;
-                    console.log('텍스트 버퍼 저장:', messageText);
-                  }*/
-                  ///setAdsModalVisible(true);
                   return;
                 }
                 if (messageText && messageText.trim() !== '') {
