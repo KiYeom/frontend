@@ -54,7 +54,7 @@ export const reportMessages = async (messageId: string, isSaved: boolean): strin
 export const RenderBubble = (
   props: BubbleProps<ExtendedIMessage> & { onFavoritePress: (messageId: string) => void },
 ) => {
-  console.log('renderBubble', props.currentMessage);
+  //console.log('renderBubble', props.currentMessage);
   const showReport = (): boolean => {
     const nowMessageUserId = props.currentMessage.user._id;
     if (props.currentMessage._id === 'welcomeMessage') return false;
@@ -405,9 +405,6 @@ export const RenderInputToolbar = (
   setInputHeight: (value: number) => void,
   image?: string | null,
   setImage?: (value: string | null) => void,
-  setAdsModalVisible?: (value: boolean) => void,
-  setBuffer?: (value: string) => void,
-  bufferRef?: React.MutableRefObject<string>,
 ) =>
   !isSearchMode ? (
     <View>
@@ -480,40 +477,61 @@ export const RenderInputToolbar = (
               //backgroundColor: 'yellow',
             }}>
             <TouchableOpacity
-              onPress={() => {
+              onPress={async () => {
                 if (sendingStatus) return;
-                const messageText = sendProps.text;
-                const imageToSend = image;
+                const imageUrl = image;
 
-                if ((!messageText || messageText.trim() === '') && !imageToSend) {
-                  return;
-                }
-                if (imageToSend) {
-                  console.log('이미지 전송, sendProps.onSend 호출');
+                // 텍스트와 이미지 모두 있을 때: 두 개의 메시지 전송
+                if (sendProps.text && image && image.length > 0) {
                   sendProps.onSend(
                     [
                       {
                         ...sendProps.currentMessage,
-                        text: messageText,
-                        image: imageToSend,
+                        text: sendProps.text,
+                        // 필요한 경우 고유 ID와 생성 시각 추가
+                        // _id: uuid(),
+                        // createdAt: new Date(),
+                      },
+                      {
+                        ...sendProps.currentMessage,
+                        image: imageUrl,
+                        text: ' ', // 텍스트 말풍선에 영향이 없도록 공백 문자 사용
                       },
                     ],
                     true,
                   );
                   return;
                 }
-                if (messageText && messageText.trim() !== '') {
+
+                // 이미지만 있는 경우: 이미지 메시지 하나 전송
+                if (image && image.length > 0) {
                   sendProps.onSend(
                     [
                       {
                         ...sendProps.currentMessage,
-                        text: messageText,
+                        image: imageUrl,
+                        text: ' ', // 텍스트 말풍선이 생성되지 않도록 처리
                       },
                     ],
                     true,
                   );
                   return;
                 }
+
+                // 텍스트만 있는 경우: 텍스트 메시지 하나 전송
+                if (sendProps.text && sendProps.text.length > 0) {
+                  sendProps.onSend(
+                    [
+                      {
+                        ...sendProps.currentMessage,
+                        text: sendProps.text,
+                      },
+                    ],
+                    true,
+                  );
+                  return;
+                }
+                // 텍스트도 이미지도 없는 경우는 아무 작업도 하지 않습니다.
               }}>
               <Icon
                 name="airplane"
