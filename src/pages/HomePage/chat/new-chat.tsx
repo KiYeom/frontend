@@ -72,7 +72,7 @@ import { useRiskStoreVer2 } from '../../../store/useRiskStoreVer2';
 import clickHeaderGiftBoxButton from '../../../utils/analytics';
 import Home from '../Home';
 import { doesV3KeyExist, getNewIMessagesV3 } from '../../../utils/storageUtils';
-import { getV3OldChatting } from '../../../apis/chatting';
+import { getV3OldChatting, updateSendPhotoPermission } from '../../../apis/chatting';
 import ChatHeader from '../../../components/chatHeader/chatHeader';
 import { searchChatWord } from '../../../apis/chatting';
 import { ApiAnswerMessage, ApiQuestionMessage, ExtendedIMessage } from '../../../utils/chatting';
@@ -181,6 +181,8 @@ const NewChat: React.FC = ({ navigation }) => {
         RewardedAdEventType.EARNED_REWARD,
         async (reward) => {
           console.log('User earned reward of ', reward);
+          const res = await updateSendPhotoPermission(true);
+          console.log('광고 시청 후 사진 전송 권한 업데이트 결과', res?.canSendPhoto);
         },
       );
       //광고가 닫힐 때 실행되는 이벤트 리스터
@@ -967,7 +969,7 @@ const NewChat: React.FC = ({ navigation }) => {
         onSubmit={() => {
           console.log('모달 열림, 전송');
           watchAds(); //1. 광고 시청하기
-          //2. 광고 시청을 다 하면, 사용자의 사진 추가 권한을 true 로 변경한다.
+          //2. 광고 시청을 성공적으로 하여 보상을 받은 경우, api 를 호출하여 사용자의 사진 추가 권한을 true 로 변경한다.
           //3. sendMessageToServer() 실행하여 이미지 첨부
           //3. 사용자의 질문과 쿠키의 답변을 화면에 나타낸다.
         }}

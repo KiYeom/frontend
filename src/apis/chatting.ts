@@ -26,7 +26,7 @@ export const updateSendPhotoPermission = async (
     const res = await instance.patch('/v1/users/update-sendphoto', { canSendPhoto });
     return res.data;
   } catch (error) {
-    console.log('에러 발생', error);
+    console.log('updateSendPhotoPermission error', error);
     return;
   }
 };
