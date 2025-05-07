@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import {
   Dimensions,
   Platform,
@@ -7,6 +7,7 @@ import {
   Text,
   Keyboard,
   Animated,
+  ImageSourcePropType,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -82,6 +83,16 @@ import ImageShow from '../../../components/image-show/ImageShow';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ApiChatResponse, ApiQuestions, ApiAnswers } from '../../../utils/chatting';
 import AdsModal from '../../../components/modals/ads-modal';
+import {
+  BannerAd,
+  BannerAdSize,
+  TestIds,
+  useForeground,
+  InterstitialAd,
+  AdEventType,
+  RewardedAd,
+  RewardedAdEventType,
+} from 'react-native-google-mobile-ads';
 //유저와 챗봇 오브젝트 정의
 const userObject = {
   _id: 0,
@@ -101,6 +112,7 @@ const systemObject = {
 };
 const adsImage: ImageSourcePropType = require('../../../assets/images/ads_cookie.png');
 
+const adUnitId = TestIds.REWARDED;
 const NewChat: React.FC = ({ navigation }) => {
   const [init, setInit] = useState<boolean>(false);
   const [screenLoading, setScreenLoading] = useState<boolean>(false);
@@ -146,6 +158,49 @@ const NewChat: React.FC = ({ navigation }) => {
 
   //console.log('화면 너비:', width, '화면 높이:', height);
   const [keyboardHeight, setKeyboardHeight] = useState<number>(0);
+
+  const rewarded = useMemo(
+    () =>
+      RewardedAd.createForAdRequest(adUnitId, {
+        keywords: ['fashion', 'clothing'],
+      }),
+    [],
+  );
+  // Ke
+
+  //광고 로드 상태
+  const [loaded, setLoaded] = useState(false);
+  useFocusEffect(
+    useCallback(() => {
+      const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
+        console.log('광고 로드');
+        setLoaded(true);
+      });
+      //광고를 끝까지 봐서 보상을 줄 수 있을 때 일기와 사진을 등록할 수 있는 콜백 함수를 unsubscribeEarned 이라는 이름으로 등록해둔다
+      const unsubscribeEarned = rewarded.addAdEventListener(
+        RewardedAdEventType.EARNED_REWARD,
+        async (reward) => {
+          console.log('User earned reward of ', reward);
+        },
+      );
+      //광고가 닫힐 때 실행되는 이벤트 리스터
+      const unsubscribeClosed = rewarded.addAdEventListener(AdEventType.CLOSED, () => {
+        console.log('Ad was cloesed');
+        setModalVisible(false);
+      });
+      //광고 로드
+      rewarded.load();
+      // 컴포넌트 언마운트 시 이벤트 리스너 해제
+      return () => {
+        //console.log('컴포넌트 언마운트 시 이벤트 리스너 해제');
+        //listenerCount--;
+        unsubscribeLoaded();
+        unsubscribeEarned();
+        unsubscribeClosed();
+        //console.log(`리스너 해제됨 : 현재 ${listenerCount}번 등록됨`);
+      };
+    }, [rewarded, navigation]),
+  );
 
   //위치하는 y좌표 자리는... 화면 높이 - 입력 필드 높이-키보드 높이
   useEffect(() => {
@@ -205,6 +260,25 @@ const NewChat: React.FC = ({ navigation }) => {
       }
       setScreenLoading(false);
     });
+  };
+
+  //광고 시청 함수
+  const watchAds = async () => {
+    try {
+      if (!loaded) {
+        Toast.show('광고 로딩중입니다. 잠시 기다려주세요');
+        rewarded.load();
+        return;
+      }
+      //console.log('전면 광고 시청');
+      //setAdsModalVisible(false);
+      await rewarded.show(); // 광고 표시
+    } catch (error) {
+      //console.error('Error showing ad:', error);
+      Toast.show('광고 표시 중 오류가 발생했습니다');
+      setLoaded(false);
+      rewarded.load(); // Try to load again
+    }
   };
 
   //1.5.7v3 서버에서 대화 내용을 불러오는 함수
@@ -891,10 +965,14 @@ const NewChat: React.FC = ({ navigation }) => {
           setModalVisible(false);
         }}
         onSubmit={() => {
-          console.log('모달 열림');
+          console.log('모달 열림, 전송');
+          watchAds(); //1. 광고 시청하기
+          //2. 광고 시청을 다 하면, 사용자의 사진 추가 권한을 true 로 변경한다.
+          //3. sendMessageToServer() 실행하여 이미지 첨부
+          //3. 사용자의 질문과 쿠키의 답변을 화면에 나타낸다.
         }}
         imageSource={adsImage}
-        modalContent={`광고를 시청하면\쿠키에게 사진을 보낼 수 있어요!`}
+        modalContent={`광고를 시청하면\n쿠키에게 사진을 보낼 수 있어요!`}
       />
     </SafeAreaView>
   );
