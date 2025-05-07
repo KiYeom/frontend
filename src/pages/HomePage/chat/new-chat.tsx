@@ -139,6 +139,20 @@ const NewChat: React.FC = ({ navigation }) => {
   //광고 모달 추가
   const [modalVisible, setModalVisible] = useState<boolean>(false);
 
+  // 최신의 state를 읽도록 ref를 사용한다.
+  const bufferRef = useRef<string | null>(null);
+  const imageRef = useRef<string | null>(null);
+
+  // state를 변경할 때마다 ref도 업데이트
+  useEffect(() => {
+    bufferRef.current = buffer;
+    console.log('buffer ref 업데아트', bufferRef.current);
+  }, [buffer]);
+  useEffect(() => {
+    imageRef.current = image;
+    console.log('image ref 업데아트', imageRef.current);
+  }, [image]);
+
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
@@ -183,6 +197,14 @@ const NewChat: React.FC = ({ navigation }) => {
           console.log('User earned reward of ', reward);
           const res = await updateSendPhotoPermission(true);
           console.log('광고 시청 후 사진 전송 권한 업데이트 결과', res?.canSendPhoto);
+          if (res) {
+            console.log(
+              '콜백 함수 내에서 sendMessageToServer 실행!!!',
+              bufferRef.current,
+              imageRef.current,
+            );
+            sendMessageToServer();
+          }
         },
       );
       //광고가 닫힐 때 실행되는 이벤트 리스터
@@ -426,15 +448,18 @@ const NewChat: React.FC = ({ navigation }) => {
 
   //버퍼에 저장된 메시지를 서버로 전송하는 sendMessageToServer 함수
   const sendMessageToServer = () => {
+    const buf = bufferRef.current;
+    const img = imageRef.current;
     console.log('sendMessageToServer 실행', buffer, image);
-    if ((!buffer && !image) || sending) return; //텍스트도, 이미지도 없는 경우에는 전송하지 않음
+    console.log('sendMessageToServer 내에서 읽은 값', buf, img);
+    if ((!buf && !img) || sending) return; //텍스트도, 이미지도 없는 경우에는 전송하지 않음
     setSending(true);
-    const question = buffer ?? '';
+    const question = buf ?? '';
     const isDemo = getIsDemo();
-    console.log('iamge ', image, question);
-    const imageToSend = image;
+    console.log('iamge ', img, question);
+    const imageToSend = img ?? '';
     //setImage(null);
-    /*
+
     chatting(1, question, isDemo, imageToSend) //버퍼에 저장된 메세지를 서버로 전송하여 질문 & 대화 전체 쌍을 받아옴
       .then((res) => {
         if (res) {
@@ -530,7 +555,7 @@ const NewChat: React.FC = ({ navigation }) => {
       .finally(() => {
         setBuffer(null);
         setSending(false);
-      });*/
+      });
   };
 
   //디바운싱을 담당하는 resetTimer 함수
@@ -969,9 +994,9 @@ const NewChat: React.FC = ({ navigation }) => {
         onSubmit={() => {
           console.log('모달 열림, 전송');
           watchAds(); //1. 광고 시청하기
-          //2. 광고 시청을 성공적으로 하여 보상을 받은 경우, api 를 호출하여 사용자의 사진 추가 권한을 true 로 변경한다.
-          //3. sendMessageToServer() 실행하여 이미지 첨부
-          //3. 사용자의 질문과 쿠키의 답변을 화면에 나타낸다.
+          //2. 광고 시청을 성공적으로 하여 보상을 받은 경우, api 를 호출하여 사용자의 사진 추가 권한을 true 로 변경한다. (O)
+          //3. 변경 후, 홈 화면으로 가서 사용자의 질문을 보낸다 (화면과 서버에, sendMessageToServer())
+          //4. 사용자의 질문과 쿠키의 답변을 화면에 나타낸다.
         }}
         imageSource={adsImage}
         modalContent={`광고를 시청하면\n쿠키에게 사진을 보낼 수 있어요!`}
