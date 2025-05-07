@@ -408,12 +408,21 @@ const NewChat: React.FC = ({ navigation }) => {
 
     if ((!bufferRef && !imageUriRef) || sending) return;
     setSending(true);
-    const question = bufferRef ?? '';
+    const question = bufferRef.current ?? '';
     const isDemo = getIsDemo();
 
-    chatting(1, question, isDemo, imageUriRef) //버퍼에 저장된 메세지를 서버로 전송하여 질문 & 대화 전체 쌍을 받아옴
+    console.log('qeustion : ', question);
+    console.log('imageUriRef : ', imageUriRef.current);
+    //이미지가 존재하는 경우와 없는 경우를 나눠서 전송
+    const sendChat = (imageUri) => {
+      if (imageUri) {
+        return chatting(1, question, isDemo, imageUri);
+      }
+      return chatting(1, question, isDemo);
+    };
+    sendChat(imageUriRef.current) //버퍼에 저장된 메세지를 서버로 전송하여 질문 & 대화 전체 쌍을 받아옴
       .then((res) => {
-        console.log('전송 성공', question, imageUriRef);
+        console.log('전송 성공', question, imageUriRef || '이미지 없음');
         if (res) {
           const sortedMessages = res?.reverse(); //결과를 역순으로 정렬하여 최신 메세지가 앞으로
           const apiQuestions = sortedMessages.filter(
@@ -450,7 +459,7 @@ const NewChat: React.FC = ({ navigation }) => {
         }
       })
       .catch((err) => {
-        console.log('전송 실패');
+        console.log('전송 실패', err);
         const newMessages: ExtendedIMessage[] = [
           {
             _id: uuid.v4().toString(),
@@ -649,11 +658,9 @@ const NewChat: React.FC = ({ navigation }) => {
   }, []);
 
   // useFocusEffect를 사용하여 화면이 포커스될 때마다 refresh flag를 확인
+  /*
   useFocusEffect(
     useCallback(() => {
-      /*if (getRefreshChat() > 99) {
-        console.log('getRefreshChat() > 99');
-      }*/
       if (getRefreshChat() > 0) {
         // refresh flag가 설정되어 있다면 메시지를 새로 불러오고 flag를 초기화
         setRefreshChat(0);
@@ -670,7 +677,7 @@ const NewChat: React.FC = ({ navigation }) => {
           });
       }
     }, [navigation]),
-  );
+  );*/
 
   //비행기 버튼의 onPress 핸들러 내에서 "sendProps.onSend() 가 호출될 때" 실행
   //이미지나 텍스트를 전송하고자 할 때 전송 버퍼에 저장하는 역할을 함
@@ -681,6 +688,8 @@ const NewChat: React.FC = ({ navigation }) => {
     if (image) {
       console.log('🤖onSend 함수 실행...🤖 이미지를 포함하여 전송', image);
       console.log('🤖onSend 함수 실행...🤖 함께 전달받은 텍스트', text);
+      console.log('이미지 전송 → 광고 모달 띄우기');
+      setPendingMessages(newMessages);
       setAdsModalVisible(true);
       return;
     }
@@ -775,6 +784,7 @@ const NewChat: React.FC = ({ navigation }) => {
       // 광고 오류 이벤트 리스너 추가
       const unsubscribeError = rewarded.addAdEventListener(AdEventType.ERROR, (error) => {
         console.error('광고 오류 발생:', error);
+        console.log('광고 오류 발생할 경우, 화면에서 리프레시 버튼 만들어야 함');
       });
       //광고를 끝까지 봐서 보상을 줄 수 있을 때 일기와 사진을 등록할 수 있는 콜백 함수를 unsubscribeEarned 이라는 이름으로 등록해둔다
       const unsubscribeEarned = rewarded.addAdEventListener(
