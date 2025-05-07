@@ -184,12 +184,17 @@ const NewChat: React.FC = ({ navigation }) => {
 
   //광고 로드 상태
   const [loaded, setLoaded] = useState(false);
+  //console.log('rewarded', rewarded);
   useFocusEffect(
     useCallback(() => {
       const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
         console.log('광고 로드');
         setLoaded(true);
       });
+      const unsubscribeError = rewarded.addAdEventListener(AdEventType.ERROR, (error) => {
+        console.error('RewardedAd 로드/표시 중 에러:', error);
+      });
+
       //광고를 끝까지 봐서 보상을 줄 수 있을 때 일기와 사진을 등록할 수 있는 콜백 함수를 unsubscribeEarned 이라는 이름으로 등록해둔다
       const unsubscribeEarned = rewarded.addAdEventListener(
         RewardedAdEventType.EARNED_REWARD,
@@ -221,6 +226,7 @@ const NewChat: React.FC = ({ navigation }) => {
         unsubscribeLoaded();
         unsubscribeEarned();
         unsubscribeClosed();
+        unsubscribeError();
         //console.log(`리스너 해제됨 : 현재 ${listenerCount}번 등록됨`);
       };
     }, [rewarded, navigation]),
@@ -813,7 +819,7 @@ const NewChat: React.FC = ({ navigation }) => {
     if (image) {
       console.log('이미지 전송');
       // 이미지를 보낸 경우
-      setBuffer(buffer ? buffer + newMessages[0].text + '\t' : newMessages[0].text + '\t');
+      setBuffer(buffer ? buffer + newMessages[0].text : newMessages[0].text);
       setModalVisible(true);
       /*
       이미지가 화면에 보이려면
