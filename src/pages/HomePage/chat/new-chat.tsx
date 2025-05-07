@@ -81,6 +81,7 @@ import * as ImagePicker from 'expo-image-picker';
 import ImageShow from '../../../components/image-show/ImageShow';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ApiChatResponse, ApiQuestions, ApiAnswers } from '../../../utils/chatting';
+import AdsModal from '../../../components/modals/ads-modal';
 //유저와 챗봇 오브젝트 정의
 const userObject = {
   _id: 0,
@@ -98,6 +99,7 @@ const systemObject = {
   name: 'system',
   avatar: null,
 };
+const adsImage: ImageSourcePropType = require('../../../assets/images/ads_cookie.png');
 
 const NewChat: React.FC = ({ navigation }) => {
   const [init, setInit] = useState<boolean>(false);
@@ -122,6 +124,8 @@ const NewChat: React.FC = ({ navigation }) => {
 
   //1.5.8 사진 추가
   const [image, setImage] = useState<string | null>(null);
+  //광고 모달 추가
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -353,7 +357,7 @@ const NewChat: React.FC = ({ navigation }) => {
     const isDemo = getIsDemo();
     console.log('iamge ', image, question);
     const imageToSend = image;
-    setImage(null);
+    //setImage(null);
     /*
     chatting(1, question, isDemo, imageToSend) //버퍼에 저장된 메세지를 서버로 전송하여 질문 & 대화 전체 쌍을 받아옴
       .then((res) => {
@@ -460,13 +464,12 @@ const NewChat: React.FC = ({ navigation }) => {
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
     }
-
-    if (typingTimeoutRef.current === null && image) {
-      sendMessageToServer();
-    } else {
+    if (!image) {
       typingTimeoutRef.current = setTimeout(() => {
         sendMessageToServer();
       }, 2 * 1000);
+    } else {
+      console.log('이미지가 있어요');
     }
   };
 
@@ -627,11 +630,9 @@ const NewChat: React.FC = ({ navigation }) => {
   }, []);
 
   // useFocusEffect를 사용하여 화면이 포커스될 때마다 refresh flag를 확인
+  /*
   useFocusEffect(
     useCallback(() => {
-      /*if (getRefreshChat() > 99) {
-        console.log('getRefreshChat() > 99');
-      }*/
       if (getRefreshChat() > 0) {
         // refresh flag가 설정되어 있다면 메시지를 새로 불러오고 flag를 초기화
         setRefreshChat(0);
@@ -648,7 +649,7 @@ const NewChat: React.FC = ({ navigation }) => {
           });
       }
     }, [navigation]),
-  );
+  ); */
 
   //비행기를 클릭헀을 때 실행되는 onSend 함수
   //api 로 유저 - 채팅 한 쌍을 받아오기 전에는 id 값을 임의로 설정하여 화면에 보여준다.
@@ -659,20 +660,31 @@ const NewChat: React.FC = ({ navigation }) => {
     }
     console.log('onsend ');
     //setBuffer(buffer ? buffer + newMessages[0].text + '\t' : newMessages[0].text + '\t');
-    setMessages((previousMessages) => {
+    /*setMessages((previousMessages) => {
       //setIMessagesV3(previousMessages, newMessages.reverse());
       return GiftedChat.append(previousMessages, newMessages);
-    });
+    });*/
     if (image) {
       console.log('이미지 전송');
       // 이미지를 보낸 경우
       setBuffer(buffer ? buffer + newMessages[0].text + '\t' : newMessages[0].text + '\t');
-      //sendMessageToServer();
+      setModalVisible(true);
+      /*
+      이미지가 화면에 보이려면
+          setMessages((previousMessages) => {
+      //setIMessagesV3(previousMessages, newMessages.reverse());
+      return GiftedChat.append(previousMessages, newMessages);
+    });
+      */
     } else {
       console.log('텍스트만 전송');
       // 텍스트만 보낸 경우 (디바운싱)
       setBuffer(buffer ? buffer + newMessages[0].text + '\t' : newMessages[0].text + '\t');
       // Timer will be reset in the useEffect that watches buffer
+      setMessages((previousMessages) => {
+        //setIMessagesV3(previousMessages, newMessages.reverse());
+        return GiftedChat.append(previousMessages, newMessages);
+      });
     }
   };
 
@@ -871,6 +883,19 @@ const NewChat: React.FC = ({ navigation }) => {
           pointerEvents: 'box-none',
         }}
         pointerEvents="box-none"></Animated.View>
+      <AdsModal
+        modalVisible={modalVisible}
+        onClose={() => {
+          //console.log('모달 꺼짐', diaryText);
+          console.log('모달 꺼짐');
+          setModalVisible(false);
+        }}
+        onSubmit={() => {
+          console.log('모달 열림');
+        }}
+        imageSource={adsImage}
+        modalContent={`광고를 시청하면\쿠키에게 사진을 보낼 수 있어요!`}
+      />
     </SafeAreaView>
   );
 };
