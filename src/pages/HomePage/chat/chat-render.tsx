@@ -437,9 +437,9 @@ export const RenderInputToolbar = (
               //width: 35 * rsWidth,
               flexDirection: 'column',
               justifyContent: 'center',
-              alignItems: 'flex-start',
+              alignItems: 'center',
               alignSelf: 'center',
-              marginRight: 15 * rsWidth,
+              marginRight: 15,
             }}
             icon={() => (
               <Icon
