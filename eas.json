@@ -53,7 +53,7 @@
       },
       "env": {
         "APP_ENV": "staging",
-        "APP_VARIANT": "staging",
+        "APP_VARIANT": "staging_test_v2",
         "EXPO_PUBLIC_REWARED_AD_UNIT_ID_IOS": "ca-app-pub-8136917168968629/5465491775",
         "EXPO_PUBLIC_REWARED_AD_UNIT_ID_ANDROID": "ca-app-pub-8136917168968629/7210877770"
       }

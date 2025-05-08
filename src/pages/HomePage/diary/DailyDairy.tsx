@@ -56,9 +56,10 @@ import {
 } from '../.././../utils/storageUtils';
 import Constants from 'expo-constants';
 
+const appVariant = Constants.expoConfig?.extra?.appVariant;
+const testEnv = Constants.expoConfig?.extra?.APP_ENV;
 const adUnitId =
-  process.env.EXPO_PUBLIC_APP_VARIANT === 'production' ||
-  process.env.EXPO_PUBLIC_APP_VARIANT === 'staging'
+  appVariant === 'production' || appVariant === 'staging'
     ? Platform.OS === 'android'
       ? process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_ANDROID
       : process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_IOS
@@ -69,8 +70,9 @@ const adsImage: ImageSourcePropType = require('../../../assets/images/ads_cookie
 
 const DailyDairy = ({ navigation, route }) => {
   console.log('일기장 adUnitId', adUnitId);
-  console.log('테스트 Id 인가?', TestIds.REWARDED);
-  console.log('현재 빌드 상태', process.env.EXPO_PUBLIC_APP_VARIANT);
+  console.log('테스트 Id 인가?!', TestIds.REWARDED);
+  console.log('현재 빌드 상태', appVariant);
+  console.log('비교군', testEnv);
   console.log('테스트 값인가?', TestIds.REWARDED === adUnitId);
   const { dateID } = route.params;
   const headerHeight = useHeaderHeight();
