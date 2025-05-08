@@ -1,7 +1,7 @@
-//import 'dotenv/config';
-//import { RotationGestureHandler } from 'react-native-gesture-handler';
-//const dotenv = require('dotenv');
-//dotenv.config();
+import 'dotenv/config';
+import { RotationGestureHandler } from 'react-native-gesture-handler';
+const dotenv = require('dotenv');
+dotenv.config();
 
 const environment = process.env.APP_ENV || 'development';
 //console.log('environment', environment);
@@ -10,21 +10,7 @@ const IS_DEV = process.env.APP_VARIANT === 'development';
 const IS_PREVIEW = process.env.APP_VARIANT === 'preview';
 const IS_STAGING = process.env.APP_VARIANT === 'staging';
 const IS_PROD = process.env.APP_VARIANT === 'production';
-console.log('---- DITENV 제거 후 테스트 ----');
-console.log('hih1', process.env.APP_ENV);
-console.log('hih2', process.env.APP_VARIANT);
-console.log(
-  'IS_DEV',
-  IS_DEV,
-  'IS_PREVIEW',
-  IS_PREVIEW,
-  'IS_STAGING',
-  IS_STAGING,
-  'IS_PROD',
-  IS_PROD,
-);
-
-const appVariant = IS_PROD ? 'production' : IS_STAGING ? 'staging' : 'development';
+const appVariant = process.env.APP_VARIANT || 'preview';
 
 module.exports = {
   expo: {
