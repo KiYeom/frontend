@@ -9,12 +9,15 @@ export const TitleContainer = styled.View`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  //background-color: pink;
 `;
 
 export const TitleTextContainter = styled.View`
-  gap: ${rsHeight * 10 + 'px'};
+  gap: ${rsHeight * 5 + 'px'};
   display: flex;
   flex-direction: column;
+  //background-color: yellow;
+  flex: 1;
 `;
 
 export const Annotation = styled.Text`

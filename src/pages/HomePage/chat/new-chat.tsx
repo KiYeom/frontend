@@ -94,6 +94,9 @@ import {
   RewardedAd,
   RewardedAdEventType,
 } from 'react-native-google-mobile-ads';
+import Constants from 'expo-constants';
+import { getUserInfo } from '../../../apis/setting';
+
 //유저와 챗봇 오브젝트 정의
 const userObject = {
   _id: 0,
@@ -113,8 +116,24 @@ const systemObject = {
 };
 const adsImage: ImageSourcePropType = require('../../../assets/images/ads_cookie.png');
 
-const adUnitId = TestIds.REWARDED;
+const appVariant = Constants.expoConfig?.extra?.appVariant;
+const adUnitId =
+  appVariant === 'production' || appVariant === 'staging'
+    ? Platform.OS === 'android'
+      ? process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_ANDROID
+      : process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_IOS
+    : TestIds.REWARDED;
+const welcome = {
+  casual: {
+    text: `반가워, ${getUserNickname()}!💚 나는 ${getUserNickname()}님 곁에서 힘이 되고싶은 골든 리트리버 쿠키야🐶 오늘은 어떤 하루를 보냈어?`,
+  },
+  formal: {
+    text: `반가워요, ${getUserNickname()}님!💚 저는 ${getUserNickname()}님 곁에서 힘이 되어드리고 싶은 골든 리트리버 쿠키예요🐶 오늘은 어떤 하루를 보내셨나요?`,
+  },
+};
 const NewChat: React.FC = ({ navigation }) => {
+  console.log('광고 아이디', adUnitId);
+  console.log('테스트모드인가요? : ', adUnitId === TestIds.REWARDED);
   const [init, setInit] = useState<boolean>(false);
   const [screenLoading, setScreenLoading] = useState<boolean>(false);
   const [refreshTimerMS, setRefreshTimerMS] = useState<number>(500);
@@ -140,6 +159,9 @@ const NewChat: React.FC = ({ navigation }) => {
   //광고 모달 추가
   const [modalVisible, setModalVisible] = useState<boolean>(false);
 
+  //반말 정보 불러오기
+  const [isInFormalMode, setIsInformalMode] = useState<boolean>(true);
+
   // 최신의 state를 읽도록 ref를 사용한다.
   const bufferRef = useRef<string | null>(null);
   const imageRef = useRef<string | null>(null);
@@ -157,6 +179,7 @@ const NewChat: React.FC = ({ navigation }) => {
   const textInputRef = useRef<TextInput>(null);
 
   const pickImage = async () => {
+    console.log('pickImage 클릭함');
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       allowsEditing: false,
@@ -413,7 +436,7 @@ const NewChat: React.FC = ({ navigation }) => {
         };
         const welcomeMessage = {
           _id: 'welcomeMessage',
-          text: `반가워요, ${getUserNickname()}님!💚 저는 ${getUserNickname()}님 곁에서 힘이 되어드리고 싶은 골든 리트리버 쿠키예요🐶 오늘은 어떤 기분이세요?`,
+          text: isInFormalMode ? welcome.casual.text : welcome.formal.text,
           createdAt: new Date(),
           user: botObject,
           isSaved: false,
@@ -432,10 +455,10 @@ const NewChat: React.FC = ({ navigation }) => {
       }
     } else {
       //v3 키가 존재하는 경우
-      //console.log('👯👯👯👯👯👯👯👯v3 키가 존재함👯👯👯👯👯👯', isV3KeyExist);
+      console.log('👯👯👯👯👯👯👯👯v3 키가 존재함👯👯👯👯👯👯', isV3KeyExist);
       const v3DeviceHistory = getNewIMessagesV3();
       if (v3DeviceHistory) {
-        //console.log('v3DeviceHistory', v3DeviceHistory);
+        console.log('v3DeviceHistory', v3DeviceHistory);
         const v3DeviceArray = JSON.parse(v3DeviceHistory);
         messages.push(...v3DeviceArray);
       }
@@ -483,8 +506,8 @@ const NewChat: React.FC = ({ navigation }) => {
       setMessages((prev) => {
         console.log('ui에 즉시 추가');
         const updated = GiftedChat.append(prev, [pendingMsg]);
-        console.log('로컬에도 저장');
-        setIMessagesV3(prev, [pendingMsg]);
+        console.log('로컬에도 저장', updated);
+        //setIMessagesV3(prev, [pendingMsg]);
         return updated;
       });
       if (buf?.trim() !== '') {
@@ -500,7 +523,7 @@ const NewChat: React.FC = ({ navigation }) => {
           console.log('ui에 즉시 추가');
           const updated = GiftedChat.append(prev, [pendingMsg]);
           console.log('로컬에도 저장');
-          setIMessagesV3(prev, [pendingMsg]);
+          //setIMessagesV3(prev, [pendingMsg]);
           return updated;
         });
       } else {
@@ -543,13 +566,14 @@ const NewChat: React.FC = ({ navigation }) => {
             for (let i = 0; i < apiQuestions.length; i++) {
               // 최근 메시지부터 시작해서 일치하는 메시지 찾기 (역순)
               const questionIndex = previousMessages.findIndex((msg, idx) => {
-                // 텍스트만 있는 경우
+                //console.log('msg : ', msg);
+                //텍스트들만 있는 경우 Id 매핑
                 if (msg.text === apiQuestions[i].question) {
                   console.log('이 버블은 텍스트만 존재함', msg.text);
                   return true;
                 }
 
-                // 이미지가 포함된 경우 (URL 패턴 검사)
+                // 이미지가 포함되어 전송된 경우
                 if (imageUrlPattern.test(apiQuestions[i].question)) {
                   // 1. 텍스트에 이미지 URL이 포함된 경우
                   if (
@@ -559,7 +583,6 @@ const NewChat: React.FC = ({ navigation }) => {
                     console.log('이 버블은 텍스트와 이미지가 존재함', msg.text);
                     return true;
                   }
-
                   // 2. image 필드가 있는 경우
                   if (msg.image && apiQuestions[i].question.includes(msg.image)) {
                     console.log('이 버블은 이미지만 존재함', msg.image);
@@ -572,7 +595,7 @@ const NewChat: React.FC = ({ navigation }) => {
 
               // 일치하는 메시지를 찾았으면 ID 업데이트
               if (questionIndex !== -1) {
-                console.log('업데아트', questionIndex);
+                console.log('원하는 메세지를 찾아 Id 업데이트', questionIndex);
                 updatedMessages[questionIndex] = {
                   ...updatedMessages[questionIndex],
                   _id: apiQuestions[i].id,
@@ -784,6 +807,14 @@ const NewChat: React.FC = ({ navigation }) => {
         alert('대화 내역을 불러오는 중 오류가 발생했어요. 다시 시도해주세요.');
         console.log(err);
         navigation.navigate(TabScreenName.Home);
+      });
+    getUserInfo()
+      .then((res) => {
+        res && setIsInformalMode(res.isInFormal);
+      })
+      .catch((error) => {
+        console.log('getUserInfo 에러 발생');
+        //console.log('getUserInfo error', error);
       });
   }, []);
 
