@@ -69,11 +69,11 @@ const localImage: ImageSourcePropType = require('../../../assets/images/cookie_p
 const adsImage: ImageSourcePropType = require('../../../assets/images/ads_cookie.png');
 
 const DailyDairy = ({ navigation, route }) => {
-  console.log('일기장 adUnitId', adUnitId);
+  /*console.log('일기장 adUnitId', adUnitId);
   console.log('테스트 Id 인가?!', TestIds.REWARDED);
   console.log('현재 빌드 상태', appVariant);
   console.log('비교군', testEnv);
-  console.log('테스트 값인가?', TestIds.REWARDED === adUnitId);
+  console.log('테스트 값인가?', TestIds.REWARDED === adUnitId);*/
   const { dateID } = route.params;
   const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();

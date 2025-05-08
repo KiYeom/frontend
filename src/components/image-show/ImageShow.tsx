@@ -41,7 +41,7 @@ const ImageShow = ({ image, setImage }: ImageShowProps) => {
         <AttachmentPreview
           image={image}
           onDelete={(image) => {
-            console.log('삭제 버튼 클릭');
+            //console.log('삭제 버튼 클릭');
             if (setImage) {
               setImage(null);
             }

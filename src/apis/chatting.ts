@@ -26,7 +26,7 @@ export const updateSendPhotoPermission = async (
     const res = await instance.patch('/v1/users/update-sendphoto', { canSendPhoto });
     return res.data;
   } catch (error) {
-    console.log('updateSendPhotoPermission error', error);
+    //console.log('updateSendPhotoPermission error', error);
     return;
   }
 };
@@ -84,7 +84,7 @@ export const chatting = async (
         return res.data;
       }
     } catch (error) {
-      console.log(`Attempt ${attempts} failed:`, error);
+      //console.log(`Attempt ${attempts} failed:`, error);
 
       if (attempts >= maxAttempts) {
         throw error;

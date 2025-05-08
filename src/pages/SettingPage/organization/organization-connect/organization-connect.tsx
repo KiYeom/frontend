@@ -38,6 +38,7 @@ import {
   RewardedAdEventType,
 } from 'react-native-google-mobile-ads';
 import Constants from 'expo-constants';
+import { getUserNickname } from '~/src/utils/storageUtils';
 
 const validateCode = (code: string): 'error' | 'default' | 'correct' => {
   if (code.length !== 0 && (code.length < 2 || code.length > 15)) return 'error';
@@ -45,16 +46,18 @@ const validateCode = (code: string): 'error' | 'default' | 'correct' => {
   else return 'default';
 };
 
+const userName = getUserNickname();
+
 const appVariant = Constants.expoConfig?.extra?.appVariant;
 const adUnitId =
-  appVariant === 'production' || appVariant === 'staging'
+  (appVariant === 'production' || appVariant === 'staging') && userName !== 'Test_remind'
     ? Platform.OS === 'android'
       ? process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_ANDROID
       : process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_IOS
     : TestIds.REWARDED;
 const { APP_ENV } = Constants.expoConfig?.extra || {};
 const adUnitId2 =
-  APP_ENV === 'production' || APP_ENV === 'staging'
+  (APP_ENV === 'production' || APP_ENV === 'staging') && userName !== 'Test_remind'
     ? Platform.OS === 'android'
       ? process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_ANDROID
       : process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_IOS
@@ -74,6 +77,9 @@ const OrganizationConnect: React.FC = ({ navigation }) => {
     const messageParts = [
       `[앱 환경 및 광고 ID 정보]`,
       ``, // 줄바꿈을 위한 빈 문자열
+      `■ 사용자 이름 (getUserNickname):`,
+      `  ${getUserNickname}`,
+      ``,
       `■ 직접 설정된 광고 ID (adUnitId by appVariant):`,
       `  ${adUnitId || 'N/A'}`,
       ``,

@@ -214,26 +214,26 @@ const NewChat: React.FC = ({ navigation }) => {
   useFocusEffect(
     useCallback(() => {
       const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
-        console.log('광고 로드');
+        //console.log('광고 로드');
         setLoaded(true);
       });
       const unsubscribeError = rewarded.addAdEventListener(AdEventType.ERROR, (error) => {
-        console.error('RewardedAd 로드/표시 중 에러:', error);
+        //console.error('RewardedAd 로드/표시 중 에러:', error);
       });
 
       //광고를 끝까지 봐서 보상을 줄 수 있을 때 일기와 사진을 등록할 수 있는 콜백 함수를 unsubscribeEarned 이라는 이름으로 등록해둔다
       const unsubscribeEarned = rewarded.addAdEventListener(
         RewardedAdEventType.EARNED_REWARD,
         async (reward) => {
-          console.log('User earned reward of ', reward);
+          //.log('User earned reward of ', reward);
           const res = await updateSendPhotoPermission(true);
-          console.log('광고 시청 후 사진 전송 권한 업데이트 결과', res?.canSendPhoto);
+          //console.log('광고 시청 후 사진 전송 권한 업데이트 결과', res?.canSendPhoto);
           if (res) {
-            console.log(
+            /*console.log(
               '콜백 함수 내에서 sendMessageToServer 실행!!!',
               bufferRef.current,
               imageRef.current,
-            );
+            );*/
             if (textInputRef.current) {
               textInputRef.current.clear(); // 입력 필드 초기화
             }
@@ -243,7 +243,7 @@ const NewChat: React.FC = ({ navigation }) => {
       );
       //광고가 닫힐 때 실행되는 이벤트 리스터
       const unsubscribeClosed = rewarded.addAdEventListener(AdEventType.CLOSED, () => {
-        console.log('Ad was cloesed');
+        //console.log('Ad was cloesed');
         setModalVisible(false);
       });
       //광고 로드
@@ -275,12 +275,12 @@ const NewChat: React.FC = ({ navigation }) => {
     // event.endCoordinates.height를 통해 키보드 높이 정보를 얻습니다.
     const keyboardHeight = event.endCoordinates.height;
     setKeyboardHeight(keyboardHeight);
-    console.log('키보드 높이:', keyboardHeight);
+    //console.log('키보드 높이:', keyboardHeight);
   };
 
   const onKeyboardDidHide = () => {
     setKeyboardHeight(0);
-    console.log('키보드가 숨겨졌습니다.');
+    //console.log('키보드가 숨겨졌습니다.');
   };
 
   const { riskStatusV2, riskScoreV2, setRiskScoreV2, setRiskStatusV2, setHandleDangerPressV2 } =
@@ -288,7 +288,7 @@ const NewChat: React.FC = ({ navigation }) => {
 
   //즐겨찾기 함수
   const toggleFavorite = async (messageId: string) => {
-    console.log('toggleFavorite 함수 실행', messageId);
+    //console.log('toggleFavorite 함수 실행', messageId);
     setMessages((prevMessages) => {
       const updatedMessages = prevMessages.map((m) =>
         m._id === messageId ? { ...m, isSaved: !m.isSaved } : m,
@@ -455,10 +455,10 @@ const NewChat: React.FC = ({ navigation }) => {
       }
     } else {
       //v3 키가 존재하는 경우
-      console.log('👯👯👯👯👯👯👯👯v3 키가 존재함👯👯👯👯👯👯', isV3KeyExist);
+      ///console.log('👯👯👯👯👯👯👯👯v3 키가 존재함👯👯👯👯👯👯', isV3KeyExist);
       const v3DeviceHistory = getNewIMessagesV3();
       if (v3DeviceHistory) {
-        console.log('v3DeviceHistory', v3DeviceHistory);
+        //console.log('v3DeviceHistory', v3DeviceHistory);
         const v3DeviceArray = JSON.parse(v3DeviceHistory);
         messages.push(...v3DeviceArray);
       }
@@ -486,7 +486,7 @@ const NewChat: React.FC = ({ navigation }) => {
     const buf = bufferRef.current;
     const img = imageRef.current;
     //console.log('sendMessageToServer 실행', buffer, image);
-    console.log('sendMessageToServer 내에서 읽은 값', buf, img);
+    //console.log('sendMessageToServer 내에서 읽은 값', buf, img);
     if ((!buf && !img) || sending) return; //텍스트도, 이미지도 없는 경우에는 전송하지 않음
     setSending(true);
 
@@ -504,14 +504,14 @@ const NewChat: React.FC = ({ navigation }) => {
       // 2) UI에 즉시 추가
       // 2) UI에 바로 추가하고, 로컬에도 저장
       setMessages((prev) => {
-        console.log('ui에 즉시 추가');
+        //console.log('ui에 즉시 추가');
         const updated = GiftedChat.append(prev, [pendingMsg]);
-        console.log('로컬에도 저장', updated);
+        //console.log('로컬에도 저장', updated);
         //setIMessagesV3(prev, [pendingMsg]);
         return updated;
       });
       if (buf?.trim() !== '') {
-        console.log('버퍼에 텍스트가 존재함', buf);
+        //console.log('버퍼에 텍스트가 존재함', buf);
         const pendingMsg: ExtendedIMessage = {
           _id: uuid.v4().toString(), // 랜덤 ID
           text: buf ?? '', // 텍스트가 있으면 버퍼, 없으면 빈 문자열
@@ -520,14 +520,14 @@ const NewChat: React.FC = ({ navigation }) => {
           isSaved: false,
         };
         setMessages((prev) => {
-          console.log('ui에 즉시 추가');
+          //console.log('ui에 즉시 추가');
           const updated = GiftedChat.append(prev, [pendingMsg]);
-          console.log('로컬에도 저장');
+          //console.log('로컬에도 저장');
           //setIMessagesV3(prev, [pendingMsg]);
           return updated;
         });
       } else {
-        console.log('버퍼에 텍스트가 존재하지 않음', buffer);
+        //console.log('버퍼에 텍스트가 존재하지 않음', buffer);
       }
     }
 
@@ -556,8 +556,8 @@ const NewChat: React.FC = ({ navigation }) => {
             (item): item is ApiAnswerMessage => item.answer !== null && item.question === null,
           );
 
-          console.log('apiQuestions', apiQuestions);
-          console.log('apiAnswers', apiAnswers);
+          //console.log('apiQuestions', apiQuestions);
+          //console.log('apiAnswers', apiAnswers);
 
           setMessages((previousMessages) => {
             const updatedMessages = [...previousMessages];
@@ -569,7 +569,7 @@ const NewChat: React.FC = ({ navigation }) => {
                 //console.log('msg : ', msg);
                 //텍스트들만 있는 경우 Id 매핑
                 if (msg.text === apiQuestions[i].question) {
-                  console.log('이 버블은 텍스트만 존재함', msg.text);
+                  //console.log('이 버블은 텍스트만 존재함', msg.text);
                   return true;
                 }
 
@@ -580,12 +580,12 @@ const NewChat: React.FC = ({ navigation }) => {
                     msg.text &&
                     msg.text.includes(imageUrlPattern.exec(apiQuestions[i].question)?.[0] || '')
                   ) {
-                    console.log('이 버블은 텍스트와 이미지가 존재함', msg.text);
+                    //console.log('이 버블은 텍스트와 이미지가 존재함', msg.text);
                     return true;
                   }
                   // 2. image 필드가 있는 경우
                   if (msg.image && apiQuestions[i].question.includes(msg.image)) {
-                    console.log('이 버블은 이미지만 존재함', msg.image);
+                    //console.log('이 버블은 이미지만 존재함', msg.image);
                     return true;
                   }
                 }
@@ -595,7 +595,7 @@ const NewChat: React.FC = ({ navigation }) => {
 
               // 일치하는 메시지를 찾았으면 ID 업데이트
               if (questionIndex !== -1) {
-                console.log('원하는 메세지를 찾아 Id 업데이트', questionIndex);
+                //console.log('원하는 메세지를 찾아 Id 업데이트', questionIndex);
                 updatedMessages[questionIndex] = {
                   ...updatedMessages[questionIndex],
                   _id: apiQuestions[i].id,
@@ -650,7 +650,7 @@ const NewChat: React.FC = ({ navigation }) => {
         sendMessageToServer();
       }, 2 * 1000);
     } else {
-      console.log('이미지가 있어요');
+      //console.log('이미지가 있어요');
     }
   };
 
@@ -762,13 +762,13 @@ const NewChat: React.FC = ({ navigation }) => {
   const scrollToMessageById = (messageId: string | number) => {
     const index = messages.findIndex((message) => message._id === messageId);
     if (index === -1) {
-      console.log('해당 메시지를 찾을 수 없습니다.');
+      //console.log('해당 메시지를 찾을 수 없습니다.');
       return;
     }
     // 메시지 인덱스로 메시지 객체를 가져옵니다.
     const targetMessage = messages[index];
-    console.log('targetMessage', targetMessage);
-    console.log(`Scrolling to index ${index} for message id: ${messageId}`);
+    //console.log('targetMessage', targetMessage);
+    //console.log(`Scrolling to index ${index} for message id: ${messageId}`);
     //console.log('giftedChatRef.current?.props?.messageContainerRef?.current?', giftedChatRef.current?.props?.messageContainerRef?.current?);
     try {
       setTimeout(() => {
@@ -780,7 +780,7 @@ const NewChat: React.FC = ({ navigation }) => {
         });
       }, 150);
     } catch (error) {
-      console.log('렌더링이 되지 않아 스크롤 실패', error);
+      //console.log('렌더링이 되지 않아 스크롤 실패', error);
     }
   };
 
@@ -805,7 +805,7 @@ const NewChat: React.FC = ({ navigation }) => {
       })
       .catch((err) => {
         alert('대화 내역을 불러오는 중 오류가 발생했어요. 다시 시도해주세요.');
-        console.log(err);
+        //console.log(err);
         navigation.navigate(TabScreenName.Home);
       });
     getUserInfo()
@@ -813,7 +813,7 @@ const NewChat: React.FC = ({ navigation }) => {
         res && setIsInformalMode(res.isInFormal);
       })
       .catch((error) => {
-        console.log('getUserInfo 에러 발생');
+        //console.log('getUserInfo 에러 발생');
         //console.log('getUserInfo error', error);
       });
   }, []);
@@ -843,18 +843,18 @@ const NewChat: React.FC = ({ navigation }) => {
   //비행기를 클릭헀을 때 실행되는 onSend 함수
   //api 로 유저 - 채팅 한 쌍을 받아오기 전에는 id 값을 임의로 설정하여 화면에 보여준다.
   const onSend = (newMessages: ExtendedIMessage[] = []) => {
-    console.log('onSend 실행', newMessages[0].text);
+    //console.log('onSend 실행', newMessages[0].text);
     if (!newMessages[0].text.trim() && !newMessages[0].image) {
       return;
     }
-    console.log('onsend ');
+    //console.log('onsend ');
     //setBuffer(buffer ? buffer + newMessages[0].text + '\t' : newMessages[0].text + '\t');
     /*setMessages((previousMessages) => {
       //setIMessagesV3(previousMessages, newMessages.reverse());
       return GiftedChat.append(previousMessages, newMessages);
     });*/
     if (image) {
-      console.log('이미지 전송');
+      //console.log('이미지 전송');
       // 이미지를 보낸 경우
       setBuffer(buffer ? buffer + newMessages[0].text : newMessages[0].text);
       setModalVisible(true);
@@ -866,7 +866,7 @@ const NewChat: React.FC = ({ navigation }) => {
     });
       */
     } else {
-      console.log('텍스트만 전송');
+      //console.log('텍스트만 전송');
       // 텍스트만 보낸 경우 (디바운싱)
       setBuffer(buffer ? buffer + newMessages[0].text + '\t' : newMessages[0].text + '\t');
       // Timer will be reset in the useEffect that watches buffer
@@ -883,8 +883,8 @@ const NewChat: React.FC = ({ navigation }) => {
     const offset = info.averageItemLength * info.index * 2;
     const flatList = messageContainerRef.current;
     // 임시 오프셋으로 스크롤
-    console.log('정보1', info.index);
-    console.log('정보2', info.averageItemLength);
+    //console.log('정보1', info.index);
+    //console.log('정보2', info.averageItemLength);
     flatList.scrollToOffset({ offset: offset });
     // 잠시 후 정확한 인덱스로 다시 스크롤 시도
     setTimeout(() => {
@@ -1077,11 +1077,11 @@ const NewChat: React.FC = ({ navigation }) => {
         modalVisible={modalVisible}
         onClose={() => {
           //console.log('모달 꺼짐', diaryText);
-          console.log('모달 꺼짐');
+          //console.log('모달 꺼짐');
           setModalVisible(false);
         }}
         onSubmit={() => {
-          console.log('모달 열림, 전송');
+          //console.log('모달 열림, 전송');
           watchAds(); //1. 광고 시청하기
           //2. 광고 시청을 성공적으로 하여 보상을 받은 경우, api 를 호출하여 사용자의 사진 추가 권한을 true 로 변경한다. (O)
           //3. 변경 후, 홈 화면으로 가서 사용자의 질문을 보낸다 (화면과 서버에, sendMessageToServer())
