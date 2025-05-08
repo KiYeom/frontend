@@ -38,7 +38,7 @@ import {
   RewardedAdEventType,
 } from 'react-native-google-mobile-ads';
 import Constants from 'expo-constants';
-import { getUserNickname } from '~/src/utils/storageUtils';
+import { getUserNickname } from '../../../../utils/storageUtils';
 
 const validateCode = (code: string): 'error' | 'default' | 'correct' => {
   if (code.length !== 0 && (code.length < 2 || code.length > 15)) return 'error';
