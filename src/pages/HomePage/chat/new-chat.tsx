@@ -132,8 +132,8 @@ const welcome = {
   },
 };
 const NewChat: React.FC = ({ navigation }) => {
-  console.log('광고 아이디', adUnitId);
-  console.log('테스트모드인가요? : ', adUnitId === TestIds.REWARDED);
+  //console.log('광고 아이디', adUnitId);
+  //console.log('테스트모드인가요? : ', adUnitId === TestIds.REWARDED);
   const [init, setInit] = useState<boolean>(false);
   const [screenLoading, setScreenLoading] = useState<boolean>(false);
   const [refreshTimerMS, setRefreshTimerMS] = useState<number>(500);
@@ -169,23 +169,23 @@ const NewChat: React.FC = ({ navigation }) => {
   // state를 변경할 때마다 ref도 업데이트
   useEffect(() => {
     bufferRef.current = buffer;
-    console.log('buffer ref 업데아트', bufferRef.current);
+    //console.log('buffer ref 업데아트', bufferRef.current);
   }, [buffer]);
   useEffect(() => {
     imageRef.current = image;
-    console.log('image ref 업데아트', imageRef.current);
+    //console.log('image ref 업데아트', imageRef.current);
   }, [image]);
   //textinput 을 가리키고 있는 ref
   const textInputRef = useRef<TextInput>(null);
 
   const pickImage = async () => {
-    console.log('pickImage 클릭함');
+    //console.log('pickImage 클릭함');
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       allowsEditing: false,
       quality: 1,
     });
-    console.log(result);
+    //console.log(result);
     if (!result.canceled) {
       setImage(result.assets[0].uri);
       //핸드폰에서 선택한 사진의 로컬 주소 (file://~)를 저장

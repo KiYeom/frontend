@@ -95,14 +95,14 @@ export const RenderBubble = (
           });
         },
         (error) => {
-          console.error('이미지 크기를 가져오는데 실패함:', error);
+          //console.error('이미지 크기를 가져오는데 실패함:', error);
         },
       );
     }
   }, [props?.currentMessage?.image]);
 
   if (isImage) {
-    console.log('이미지 렌더링 진행');
+    //console.log('이미지 렌더링 진행');
     return (
       <View
         style={css`
@@ -227,7 +227,7 @@ export const RenderBubble = (
               //console.log('메세지', props.currentMessage);
               //reportMessages(props.currentMessage._id, props.currentMessage.isSaved);
               //console.log('icon에서의 press 함수', props.currentMessage._id);
-              console.log('클릭');
+              //console.log('클릭');
               props.onFavoritePress(props.currentMessage._id);
               Analytics.clickChatLikeButton(props.currentMessage._id);
             }}
@@ -450,7 +450,7 @@ export const RenderInputToolbar = (
               />
             )}
             onPressActionButton={() => {
-              console.log('액션 버튼 클릭됨');
+              //console.log('액션 버튼 클릭됨');
               pickImage();
             }}
           />

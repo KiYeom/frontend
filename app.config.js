@@ -16,7 +16,7 @@ module.exports = {
   expo: {
     name: 'reMIND',
     slug: 'reMIND',
-    version: '1.6.9',
+    version: '1.7.9',
     orientation: 'portrait',
     icon: './src/assets/images/appicon.png',
     userInterfaceStyle: 'automatic',
@@ -93,7 +93,7 @@ module.exports = {
       [
         'expo-notifications',
         {
-          icon: './src/assets/images/notification.png',
+          icon: './src/assets/images/appicon.png',
           color: '#31B28E',
           mode: 'production',
         },

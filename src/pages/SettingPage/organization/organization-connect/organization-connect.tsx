@@ -52,6 +52,13 @@ const adUnitId =
       ? process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_ANDROID
       : process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_IOS
     : TestIds.REWARDED;
+const { APP_ENV } = Constants.expoConfig?.extra || {};
+const adUnitId2 =
+  APP_ENV === 'production' || APP_ENV === 'staging'
+    ? Platform.OS === 'android'
+      ? process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_ANDROID
+      : process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_IOS
+    : TestIds.REWARDED;
 
 const OrganizationConnect: React.FC = ({ navigation }) => {
   const [code, setCode] = React.useState('');
@@ -67,8 +74,11 @@ const OrganizationConnect: React.FC = ({ navigation }) => {
     const messageParts = [
       `[앱 환경 및 광고 ID 정보]`,
       ``, // 줄바꿈을 위한 빈 문자열
-      `■ 직접 설정된 광고 ID (adUnitId):`,
+      `■ 직접 설정된 광고 ID (adUnitId by appVariant):`,
       `  ${adUnitId || 'N/A'}`,
+      ``,
+      `■ 직접 설정된 광고 ID (adUnitId2 by APP_ENV):`,
+      `  ${adUnitId2 || 'N/A'}`,
       ``,
       `■ Google 테스트 ID (TestIds.REWARDED):`,
       `  ${TestIds.REWARDED || 'N/A'}`,
@@ -76,8 +86,14 @@ const OrganizationConnect: React.FC = ({ navigation }) => {
       `■ 현재 빌드 상태 (appVariant):`,
       `  ${appVariant || 'N/A'}`,
       ``,
-      `■ 테스트 광고 ID 사용 여부:`,
+      `■ 현재 빌드 상태 (APP_ENV):`,
+      `  ${APP_ENV || 'N/A'}`,
+      ``,
+      `■ 테스트 광고 ID 사용 여부(adUnitId):`,
       `  ${TestIds.REWARDED === adUnitId ? 'True (테스트 ID 사용 중)' : 'False (실제 또는 스테이징 ID 사용 중)'}`,
+      ``,
+      `■ 테스트 광고 ID 사용 여부(adUnitId2):`,
+      `  ${TestIds.REWARDED === adUnitId2 ? 'True (테스트 ID 사용 중)' : 'False (실제 또는 스테이징 ID 사용 중)'}`,
     ];
 
     Alert.alert(
