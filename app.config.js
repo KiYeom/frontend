@@ -1,9 +1,14 @@
 import 'dotenv/config';
+import { RotationGestureHandler } from 'react-native-gesture-handler';
 const dotenv = require('dotenv');
 dotenv.config();
 
 const environment = process.env.APP_ENV || 'development';
 //console.log('environment', environment);
+
+const IS_DEV = process.env.APP_VARIANT === 'development';
+const IS_PREVIEW = process.env.APP_VARIANT === 'preview';
+const IS_PROD = process.env.APP_VARIANT === 'production';
 
 module.exports = {
   expo: {

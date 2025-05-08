@@ -54,23 +54,24 @@ import {
   getCanSendPhoto,
   setCanSendPhoto,
 } from '../.././../utils/storageUtils';
+import Constants from 'expo-constants';
 
-//fix : env 로
-//const ANDROID_AD_UNIT_ID = process.env.EXPO_PUBLIC_ADMOB_ID_ANDROID;
-//const IOS_AD_UNIT_ID = process.env.EXPO_PUBLIC_ADMOB_ID_IOS;
-
-const ANDROID_AD_UNIT_ID = 'ca-app-pub-8136917168968629/7210877770';
-const IOS_AD_UNIT_ID = 'ca-app-pub-8136917168968629/5465491775';
-
-const adUnitId = config.getAdUnitId(ANDROID_AD_UNIT_ID, IOS_AD_UNIT_ID);
-//console.log('adUnitId:', adUnitId);
-//리스너 중복 등록 확인
-//let listenerCount = 0;
+const adUnitId =
+  process.env.EXPO_PUBLIC_APP_VARIANT === 'production' ||
+  process.env.EXPO_PUBLIC_APP_VARIANT === 'staging'
+    ? Platform.OS === 'android'
+      ? process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_ANDROID
+      : process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_IOS
+    : TestIds.REWARDED;
 
 const localImage: ImageSourcePropType = require('../../../assets/images/cookie_pic_alarm.png');
 const adsImage: ImageSourcePropType = require('../../../assets/images/ads_cookie.png');
 
 const DailyDairy = ({ navigation, route }) => {
+  console.log('일기장 adUnitId', adUnitId);
+  console.log('테스트 Id 인가?', TestIds.REWARDED);
+  console.log('현재 빌드 상태', process.env.EXPO_PUBLIC_APP_VARIANT);
+  console.log('테스트 값인가?', TestIds.REWARDED === adUnitId);
   const { dateID } = route.params;
   const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();

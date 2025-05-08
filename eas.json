@@ -9,7 +9,8 @@
       "channel": "development",
       "autoIncrement": true,
       "env": {
-        "APP_ENV": "development"
+        "APP_ENV": "development",
+        "APP_VARIANT": "development"
       }
     },
     "preview": {
@@ -37,14 +38,24 @@
       "channel": "production",
       "autoIncrement": true,
       "env": {
-        "APP_ENV": "production"
+        "APP_ENV": "production",
+        "APP_VARIANT": "production",
+        "EXPO_PUBLIC_REWARED_AD_UNIT_ID_IOS": "ca-app-pub-8136917168968629/5465491775",
+        "EXPO_PUBLIC_REWARED_AD_UNIT_ID_ANDROID": "ca-app-pub-8136917168968629/7210877770"
       }
     },
     "staging": {
       "channel": "staging",
+      "developmentClient": true,
       "autoIncrement": true,
+      "ios": {
+        "simulator": true
+      },
       "env": {
-        "APP_ENV": "staging"
+        "APP_ENV": "staging",
+        "APP_VARIANT": "staging",
+        "EXPO_PUBLIC_REWARED_AD_UNIT_ID_IOS": "ca-app-pub-8136917168968629/5465491775",
+        "EXPO_PUBLIC_REWARED_AD_UNIT_ID_ANDROID": "ca-app-pub-8136917168968629/7210877770"
       }
     }
   }

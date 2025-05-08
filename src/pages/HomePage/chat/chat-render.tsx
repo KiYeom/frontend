@@ -38,7 +38,7 @@ import { ExtendedIMessage } from '../../../utils/chatting';
 import HighlightedMessageText from './HighlightMessageText';
 import Analytics from '../../../utils/analytics';
 import * as ImagePicker from 'expo-image-picker';
-import { useState } from 'react';
+import { useState, RefObject } from 'react';
 import ImageShow from '../../../components/image-show/ImageShow';
 import { MAX_CHAT_IMAGE_WIDTH } from '../../../constants/Constants';
 
@@ -257,7 +257,7 @@ export const RenderMessageImage = (
         margin: 0,
         padding: 0,
         backgroundColor: 'transparent',
-      }} // ✅ 올바른 ViewStyle 형태
+      }}
     />
   );
 };
@@ -405,6 +405,7 @@ export const RenderInputToolbar = (
   setInputHeight: (value: number) => void,
   image?: string | null,
   setImage?: (value: string | null) => void,
+  textInputRef?: RefObject<TextInput>,
 ) =>
   !isSearchMode ? (
     <View>
@@ -459,6 +460,7 @@ export const RenderInputToolbar = (
             value={composerProps.text}
             onChangeText={composerProps.onTextChanged}
             setInputHeight={setInputHeight}
+            textInputRef={textInputRef}
           />
         )}
         renderSend={(sendProps) => (
@@ -498,7 +500,7 @@ export const RenderInputToolbar = (
                         text: ' ', // 텍스트 말풍선에 영향이 없도록 공백 문자 사용
                       },
                     ],
-                    true,
+                    false,
                   );
                   return;
                 }

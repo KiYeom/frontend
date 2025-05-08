@@ -8,13 +8,20 @@ type CustomMultiTextInputProps = {
   onChangeText?: (text: string) => void;
   inputHeight?: number;
   setInputHeight?: (value: number) => void;
+  textInputRef?: React.RefObject<TextInput>;
 };
 
 const MaximizedTextLine = 5;
 
 //
 const CustomMultiTextInput = (props: CustomMultiTextInputProps) => {
-  const { value, onChangeText = () => {}, inputHeight, setInputHeight = () => {} } = props;
+  const {
+    value,
+    onChangeText = () => {},
+    inputHeight,
+    setInputHeight = () => {},
+    textInputRef,
+  } = props;
   const handleContentSizeChange = (event) => {
     const { height } = event.nativeEvent.contentSize;
     setInputHeight(height < rsFont * 16 * 1.5 + 15 * 2 ? rsFont * 16 * 1.5 + 15 * 2 : height);
@@ -35,6 +42,7 @@ const CustomMultiTextInput = (props: CustomMultiTextInputProps) => {
         backgroundColor: palette.neutral[50],
       }}
       multiline
+      ref={textInputRef}
       value={value}
       onChangeText={onChangeText}
       placeholder="메시지 입력"

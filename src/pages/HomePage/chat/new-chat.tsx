@@ -8,6 +8,7 @@ import {
   Keyboard,
   Animated,
   ImageSourcePropType,
+  TextInput,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -152,6 +153,8 @@ const NewChat: React.FC = ({ navigation }) => {
     imageRef.current = image;
     console.log('image ref 업데아트', imageRef.current);
   }, [image]);
+  //textinput 을 가리키고 있는 ref
+  const textInputRef = useRef<TextInput>(null);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -208,6 +211,9 @@ const NewChat: React.FC = ({ navigation }) => {
               bufferRef.current,
               imageRef.current,
             );
+            if (textInputRef.current) {
+              textInputRef.current.clear(); // 입력 필드 초기화
+            }
             sendMessageToServer();
           }
         },
@@ -998,6 +1004,7 @@ const NewChat: React.FC = ({ navigation }) => {
             setInputHeight,
             image,
             setImage,
+            textInputRef,
           )
         }
         textInputProps={{
