@@ -96,7 +96,18 @@ import {
 } from 'react-native-google-mobile-ads';
 import Constants from 'expo-constants';
 import { getUserInfo } from '../../../apis/setting';
-import adUnitId from '../../../utils/advertise'; //앱 시작 시 결정된 값
+//import adUnitId from '../../../utils/advertise'; //앱 시작 시 결정된 값
+
+const userName = getUserNickname() ?? 'Test_remind_empty';
+const appVariant = Constants.expoConfig?.extra?.appVariant;
+const isProductionOrStaging = appVariant === 'production' || appVariant === 'staging';
+const isTestUser = userName === 'Test_remind';
+const adUnitId =
+  isProductionOrStaging && !isTestUser
+    ? Platform.OS === 'android'
+      ? process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_ANDROID
+      : process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_IOS
+    : TestIds.REWARDED;
 
 //유저와 챗봇 오브젝트 정의
 const userObject = {
@@ -218,11 +229,11 @@ const NewChat: React.FC = ({ navigation }) => {
   useFocusEffect(
     useCallback(() => {
       const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
-        //console.log('광고 로드');
+        console.log('광고 로드');
         setLoaded(true);
       });
       const unsubscribeError = rewarded.addAdEventListener(AdEventType.ERROR, (error) => {
-        //console.error('RewardedAd 로드/표시 중 에러:', error);
+        console.error('RewardedAd 로드/표시 중 에러:', error);
         Analytics.watchNoEarnRewardScreenInChatting();
       });
 
@@ -837,7 +848,7 @@ const NewChat: React.FC = ({ navigation }) => {
   */
 
   useEffect(() => {
-    console.log("getUserInfo 실행")
+    console.log('getUserInfo 실행');
     getUserInfo()
       .then((res) => {
         res && setIsInformalMode(res.isInFormal);

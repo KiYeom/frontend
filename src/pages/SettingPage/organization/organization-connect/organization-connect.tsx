@@ -39,7 +39,6 @@ import {
 } from 'react-native-google-mobile-ads';
 import Constants from 'expo-constants';
 import { getUserNickname } from '../../../../utils/storageUtils';
-import adUnitId from '../../../../utils/advertise';
 
 const validateCode = (code: string): 'error' | 'default' | 'correct' => {
   if (code.length !== 0 && (code.length < 2 || code.length > 15)) return 'error';
@@ -47,22 +46,16 @@ const validateCode = (code: string): 'error' | 'default' | 'correct' => {
   else return 'default';
 };
 
+const userName = getUserNickname() ?? 'Test_remind_empty';
 const appVariant = Constants.expoConfig?.extra?.appVariant;
-
-//const appVariant = Constants.expoConfig?.extra?.appVariant;
-/*const adUnitId =
-  (appVariant === 'production' || appVariant === 'staging') && userName !== 'Test_remind'
+const isProductionOrStaging = appVariant === 'production' || appVariant === 'staging';
+const isTestUser = userName === 'Test_remind';
+const adUnitId =
+  isProductionOrStaging && !isTestUser
     ? Platform.OS === 'android'
       ? process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_ANDROID
       : process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_IOS
-    : TestIds.REWARDED;*/
-//const { APP_ENV } = Constants.expoConfig?.extra || {};
-/*const adUnitId2 =
-  (APP_ENV === 'production' || APP_ENV === 'staging') && userName !== 'Test_remind'
-    ? Platform.OS === 'android'
-      ? process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_ANDROID
-      : process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_IOS
-    : TestIds.REWARDED;*/
+    : TestIds.REWARDED;
 
 const OrganizationConnect: React.FC = ({ navigation }) => {
   const [code, setCode] = React.useState('');
@@ -79,7 +72,7 @@ const OrganizationConnect: React.FC = ({ navigation }) => {
       `[앱 환경 및 광고 ID 정보]`,
       ``, // 줄바꿈을 위한 빈 문자열
       `■ 사용자 이름 (getUserNickname):`,
-      `  ${getUserNickname}`,
+      `  ${getUserNickname()}`,
       ``,
       `■ 직접 설정된 광고 ID (adUnitId by advertise.ts):`,
       `  ${adUnitId || 'N/A'}`,
@@ -92,6 +85,9 @@ const OrganizationConnect: React.FC = ({ navigation }) => {
       ``,
       `■ 테스트 광고 ID 사용 여부(adUnitId):`,
       `  ${TestIds.REWARDED === adUnitId ? 'True (테스트 ID 사용 중)' : 'False (실제 또는 스테이징 ID 사용 중)'}`,
+      ``,
+      `■ 테스트 광고 (false)인 경우, 디바이스에 따른 실제 광고 값 확인 (android or ios or adUnitId):`,
+      `  ${process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_ANDROID === adUnitId ? 'Android' : process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_IOS === adUnitId ? 'iOS' : adUnitId}`,
       ``,
     ];
 

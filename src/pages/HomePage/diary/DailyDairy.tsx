@@ -54,16 +54,19 @@ import {
   setCanSendPhoto,
 } from '../.././../utils/storageUtils';
 import Constants from 'expo-constants';
-import adUnitId from '../../../utils/advertise';
+//import adUnitId from '../../../utils/advertise';
+import { getUserNickname } from '../../../utils/storageUtils';
 
-//const appVariant = Constants.expoConfig?.extra?.appVariant;
-//const testEnv = Constants.expoConfig?.extra?.APP_ENV;
-/*const adUnitId =
-  appVariant === 'production' || appVariant === 'staging'
+const userName = getUserNickname() ?? 'Test_remind_empty';
+const appVariant = Constants.expoConfig?.extra?.appVariant;
+const isProductionOrStaging = appVariant === 'production' || appVariant === 'staging';
+const isTestUser = userName === 'Test_remind';
+const adUnitId =
+  isProductionOrStaging && !isTestUser
     ? Platform.OS === 'android'
       ? process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_ANDROID
       : process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_IOS
-    : TestIds.REWARDED;*/
+    : TestIds.REWARDED;
 
 const localImage: ImageSourcePropType = require('../../../assets/images/cookie_pic_alarm.png');
 const adsImage: ImageSourcePropType = require('../../../assets/images/ads_cookie.png');
