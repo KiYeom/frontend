@@ -128,21 +128,6 @@ const systemObject = {
 };
 const adsImage: ImageSourcePropType = require('../../../assets/images/ads_cookie.png');
 
-//const appVariant = Constants.expoConfig?.extra?.appVariant;
-/*const adUnitId =
-  appVariant === 'production' || appVariant === 'staging'
-    ? Platform.OS === 'android'
-      ? process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_ANDROID
-      : process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_IOS
-    : TestIds.REWARDED;*/
-const welcome = {
-  casual: {
-    text: `반가워, ${getUserNickname()}!💚 나는 ${getUserNickname()}님 곁에서 힘이 되고싶은 골든 리트리버 쿠키야🐶 오늘은 어떤 하루를 보냈어?`,
-  },
-  formal: {
-    text: `반가워요, ${getUserNickname()}님!💚 저는 ${getUserNickname()}님 곁에서 힘이 되어드리고 싶은 골든 리트리버 쿠키예요🐶 오늘은 어떤 하루를 보내셨나요?`,
-  },
-};
 const NewChat: React.FC = ({ navigation }) => {
   //console.log('채팅 화면 진입, adUnitId : ', adUnitId);
   //console.log('채팅 화면 진입, 테스트 아이디인가? : ', adUnitId === TestIds.REWARDED);
@@ -175,6 +160,7 @@ const NewChat: React.FC = ({ navigation }) => {
 
   //반말 정보 불러오기
   const [isInFormalMode, setIsInformalMode] = useState<boolean>(true);
+  const informalModeRef = useRef<boolean>(true); // API 값을 즉시 저장할 ref
 
   // 최신의 state를 읽도록 ref를 사용한다.
   const bufferRef = useRef<string | null>(null);
@@ -489,7 +475,9 @@ const NewChat: React.FC = ({ navigation }) => {
         };
         const welcomeMessage = {
           _id: 'welcomeMessage',
-          text: isInFormalMode ? welcome.casual.text : welcome.formal.text,
+          text: informalModeRef.current
+            ? `반가워, ${getUserNickname()}!💚 나는 ${getUserNickname()}님 곁에서 힘이 되고싶은 골든 리트리버 쿠키야🐶 오늘은 어떤 하루를 보냈어?`
+            : `반가워요, ${getUserNickname()}님!💚 저는 ${getUserNickname()}님 곁에서 힘이 되어드리고 싶은 골든 리트리버 쿠키예요🐶 오늘은 어떤 하루를 보내셨나요?`,
           createdAt: new Date(),
           user: botObject,
           isSaved: false,
@@ -851,10 +839,19 @@ const NewChat: React.FC = ({ navigation }) => {
     console.log('getUserInfo 실행');
     getUserInfo()
       .then((res) => {
-        res && setIsInformalMode(res.isInFormal);
+        //res.isInformal === false => 반말 모드
+        console.log('getUserInfo 결과', res, res.isInFormal);
+        //res && setIsInformalMode(res.isInFormal);
+        if (res) {
+          console.log(`현재 모드 : ${res.isInFormal}`);
+          informalModeRef.current = res.isInFormal;
+        } else {
+          informalModeRef.current = false; //기본값 : 반말 모드
+        }
         loadChatHistory();
       })
       .catch((error) => {
+        informalModeRef.current = false; //기본값 : 반말 모드
         loadChatHistory();
       });
   }, []);
@@ -1099,6 +1096,7 @@ const NewChat: React.FC = ({ navigation }) => {
             textInputRef,
           )
         }
+        lightboxProps={undefined}
         textInputProps={{
           placeholder: getIsDemo() ? '메시지 입력.' : '메시지 입력',
           marginLeft: rsWidth * 15,

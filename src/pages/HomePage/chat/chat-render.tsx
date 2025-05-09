@@ -248,6 +248,9 @@ export const RenderMessageImage = (
   return (
     <MessageImage
       {...props}
+      lightboxProps={{
+        disabled: true,
+      }}
       imageStyle={{
         width: scaledSize.width,
         height: scaledSize.height,
