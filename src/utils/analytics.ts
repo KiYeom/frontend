@@ -56,6 +56,16 @@ export default class Analytics {
     this.sendEvent('회원가입 화면(닉네임+약관) 진입', 'signUpScreen');
   };
 
+  //회원가입 - 존댓말 버튼 클릭
+  public static clickFormalChatStyleButton = (): void => {
+    this.sendEvent('회원가입 화면 - 존댓말 버튼 클릭', 'clickFormalChatStyleButton');
+  };
+
+  //회원가입 - 반말 버튼 클릭
+  public static clickInformalChatStyleButton = (): void => {
+    this.sendEvent('회원가입 화면 - 반말 버튼 클릭', 'clickInformalChatStyleButton');
+  };
+
   //회원가입 - 저장 버튼 클릭
   public static clickSignUpSaveButton = (): void => {
     this.sendEvent(

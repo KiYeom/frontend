@@ -501,7 +501,7 @@ export const RenderInputToolbar = (
                         text: ' ', // 텍스트 말풍선에 영향이 없도록 공백 문자 사용
                       },
                     ],
-                    false,
+                    true,
                   );
                   return;
                 }

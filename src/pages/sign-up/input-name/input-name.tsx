@@ -166,6 +166,7 @@ const InputName = ({ route, navigation }) => {
                   style={{ width: '45%' }}
                   onPress={() => {
                     //console.log('존댓말 클릭');
+                    Analytics.clickFormalChatStyleButton();
                     setIsCasualMode(false);
                   }}>
                   <Button title="존댓말" disabled={isCasualMode} primary={false} />
@@ -174,6 +175,7 @@ const InputName = ({ route, navigation }) => {
                   style={{ width: '45%' }}
                   onPress={() => {
                     //console.log('반말 클릭');
+                    Analytics.clickInformalChatStyleButton();
                     setIsCasualMode(true);
                   }}>
                   <Button title="반말" disabled={!isCasualMode} primary={false} />

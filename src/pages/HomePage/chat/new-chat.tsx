@@ -172,11 +172,11 @@ const NewChat: React.FC = ({ navigation }) => {
   // state를 변경할 때마다 ref도 업데이트
   useEffect(() => {
     bufferRef.current = buffer;
-    //console.log('buffer ref 업데아트', bufferRef.current);
+    console.log('buffer ref 업데아트', bufferRef.current);
   }, [buffer]);
   useEffect(() => {
     imageRef.current = image;
-    //console.log('image ref 업데아트', imageRef.current);
+    console.log('image ref 업데아트', imageRef.current);
   }, [image]);
   //textinput 을 가리키고 있는 ref
   const textInputRef = useRef<TextInput>(null);
@@ -190,6 +190,7 @@ const NewChat: React.FC = ({ navigation }) => {
     });
     //console.log(result);
     if (!result.canceled) {
+      console.log('setImage');
       setImage(result.assets[0].uri);
       //핸드폰에서 선택한 사진의 로컬 주소 (file://~)를 저장
     }
@@ -234,12 +235,8 @@ const NewChat: React.FC = ({ navigation }) => {
           const res = await updateSendPhotoPermission(true);
           //console.log('광고 시청 후 사진 전송 권한 업데이트 결과', res?.canSendPhoto);
           if (res) {
-            /*console.log(
-              '콜백 함수 내에서 sendMessageToServer 실행!!!',
-              bufferRef.current,
-              imageRef.current,
-            );*/
             if (textInputRef.current) {
+              console.log('입력 필드 초기화');
               textInputRef.current.clear(); // 입력 필드 초기화
             }
             sendMessageToServer();
@@ -340,17 +337,19 @@ const NewChat: React.FC = ({ navigation }) => {
     } catch (error) {
       //console.error('Error showing ad:', error);
       Toast.show('광고 표시 중 오류가 발생했습니다');
+      console.log('광고 표시 중 오류가 발생했습니다', error);
       setLoaded(false);
       rewarded.load(); // Try to load again
     }
   };
 
-  //1.5.7v3 서버에서 대화 내용을 불러오는 함수
+  //1.5.7v3 서버에서 대화 내용을 불러오는 함수 (직접 이미지인지 판단하지 않음)
+  /*
   const v3getIMessageFromServer = async (lastMessageDate: Date): Promise<ExtendedIMessage[]> => {
     const messages: ExtendedIMessage[] = [];
     const lastDateAddSecond = new Date(lastMessageDate.getTime() + 10 * 1000);
     const serverMessages = await getV3OldChatting(botObject._id, lastDateAddSecond.toISOString());
-    //console.log('v3 데이터 확인하기', serverMessages);
+    //console.log('서버에서 불러온 v3 데이터 전체 확인하기', serverMessages);
     if (serverMessages && serverMessages.chats && serverMessages.chats.length > 0) {
       const imageUrlPattern = /https:\/\/bucket\.remind4u\.co\.kr\/gemini\/[a-f0-9]+\.jpg/;
       for (let i = 0; i < serverMessages.chats.length; i++) {
@@ -403,6 +402,44 @@ const NewChat: React.FC = ({ navigation }) => {
       }
     }
     return messages.reverse();
+  };*/
+  //1.5.7v3 서버에서 대화 내용을 불러오는 함수
+  const v3getIMessageFromServer = async (lastMessageDate: Date): Promise<ExtendedIMessage[]> => {
+    const messages: ExtendedIMessage[] = [];
+    const lastDateAddSecond = new Date(lastMessageDate.getTime() + 10 * 1000);
+    const serverMessages = await getV3OldChatting(botObject._id, lastDateAddSecond.toISOString());
+
+    if (serverMessages && serverMessages.chats && serverMessages.chats.length > 0) {
+      for (let i = 0; i < serverMessages.chats.length; i++) {
+        const chat = serverMessages.chats[i];
+        const originalText = chat.text || '';
+
+        // ID에 "-PIC" 접미사가 있는지 확인하여 이미지인지 판단
+        if (chat.id.includes('-PIC')) {
+          // 이미지 메시지 처리
+          messages.push({
+            _id: chat.id,
+            text: originalText,
+            image: originalText, // 이미지 URL을 image 필드에 저장
+            createdAt: new Date(new Date(chat.utcTime).getTime()),
+            user: chat.status === 'user' ? userObject : botObject,
+            isSaved: chat.isSaved,
+            hightlightKeyword: '',
+          });
+        } else {
+          // 일반 텍스트 메시지 처리
+          messages.push({
+            _id: chat.id,
+            text: originalText,
+            createdAt: new Date(new Date(chat.utcTime).getTime()),
+            user: chat.status === 'user' ? userObject : botObject,
+            isSaved: chat.isSaved,
+            hightlightKeyword: '',
+          });
+        }
+      }
+    }
+    return messages.reverse();
   };
 
   //대화 내용을 불러오는 getHistory 함수
@@ -416,11 +453,11 @@ const NewChat: React.FC = ({ navigation }) => {
     //deleteNewIMessagesV3(); //이거 삭제하기
 
     if (!isV3KeyExist) {
-      //v3 키가 존재하지 않는 경우
-      //console.log('🔑🔑🔑🔑🔑🔑🔑🔑🔑v3 키가 존재하지 않음🔑🔑🔑🔑🔑🔑🔑🔑', isV3KeyExist);
+      //v3 키가 존재하지 않는 경우 (=로그아웃을 실행하고 채팅 화면을 다시 켰을 때)
+      console.log('🔑🔑🔑🔑🔑🔑🔑🔑🔑v3 키가 존재하지 않음🔑🔑🔑🔑🔑🔑🔑🔑', isV3KeyExist);
       const v3lastMessageDate = new Date(0);
       const v3ServerMessages = await v3getIMessageFromServer(v3lastMessageDate); //전체 데이터 가져오기
-      //console.log('v3ServerMessages', v3ServerMessages);
+      console.log('🔑🔑🔑🔑🔑🔑🔑🔑🔑v3ServerMessages', v3ServerMessages);
       if (v3ServerMessages && v3ServerMessages.length > 0) {
         //console.log('💚💚💚💚💚💚💚💚💚💚💚이전에 썼던 사람 마이그레이션 하기💚💚💚💚💚💚💚💚');
         setNewIMessagesV3(JSON.stringify(v3ServerMessages)); //로컬 마이그레이션
@@ -490,10 +527,14 @@ const NewChat: React.FC = ({ navigation }) => {
   const sendMessageToServer = () => {
     const buf = bufferRef.current;
     const img = imageRef.current;
-    //console.log('sendMessageToServer 실행', buffer, image);
-    //console.log('sendMessageToServer 내에서 읽은 값', buf, img);
+    console.log('sendMessageToServer 실행', buffer, image);
+    console.log('sendMessageToServer 내에서 읽은 값', buf, img);
     if ((!buf && !img) || sending) return; //텍스트도, 이미지도 없는 경우에는 전송하지 않음
     setSending(true);
+    setBuffer(null); // 버퍼 비우기
+    setImage(null); // 선택된 이미지 비우기
+    bufferRef.current = null;
+    imageRef.current = null;
 
     if (img) {
       // 1) 화면에 보여줄 임시 메시지 객체 생성
@@ -535,10 +576,6 @@ const NewChat: React.FC = ({ navigation }) => {
         //console.log('버퍼에 텍스트가 존재하지 않음', buffer);
       }
     }
-
-    setBuffer(null); // 버퍼 비우기
-    setImage(null); // 선택된 이미지 비우기
-
     const question = buf ?? '';
     const isDemo = getIsDemo();
     console.log('iamge ', img, question);
@@ -639,7 +676,10 @@ const NewChat: React.FC = ({ navigation }) => {
       })
       .finally(() => {
         setBuffer(null);
+        setImage(null);
         setSending(false);
+        bufferRef.current = null; // 버퍼 ref 초기화
+        imageRef.current = null; // 이미지 ref 초기화
       });
   };
 
@@ -848,7 +888,7 @@ const NewChat: React.FC = ({ navigation }) => {
   //비행기를 클릭헀을 때 실행되는 onSend 함수
   //api 로 유저 - 채팅 한 쌍을 받아오기 전에는 id 값을 임의로 설정하여 화면에 보여준다.
   const onSend = (newMessages: ExtendedIMessage[] = []) => {
-    //console.log('onSend 실행', newMessages[0].text);
+    console.log('onSend 실행', newMessages);
     if (!newMessages[0].text.trim() && !newMessages[0].image) {
       return;
     }
@@ -861,7 +901,8 @@ const NewChat: React.FC = ({ navigation }) => {
     if (image) {
       //console.log('이미지 전송');
       // 이미지를 보낸 경우
-      setBuffer(buffer ? buffer + newMessages[0].text : newMessages[0].text);
+      //setBuffer(buffer ? buffer + newMessages[0].text + '\t' : newMessages[0].text + '\t');
+      setBuffer(newMessages[0].text);
       setModalVisible(true);
       /*
       이미지가 화면에 보이려면
