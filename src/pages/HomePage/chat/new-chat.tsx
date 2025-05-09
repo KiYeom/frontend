@@ -835,13 +835,25 @@ const NewChat: React.FC = ({ navigation }) => {
   ** 성공할 경우 (then) : 서버에서 가지고 온 대화인 messageHistory를 messages 상태에 저장
   ** 실패할 경우 (catch) : 사용자에게 안내와 함께 홈 화면으로 이동
   */
+
   useEffect(() => {
-    //console.log('===========useEffect 실행===========');
+    console.log("getUserInfo 실행")
+    getUserInfo()
+      .then((res) => {
+        res && setIsInformalMode(res.isInFormal);
+        loadChatHistory();
+      })
+      .catch((error) => {
+        loadChatHistory();
+      });
+  }, []);
+
+  const loadChatHistory = () => {
+    console.log('loadChatHistory 실행');
     setInit(true);
     if (getRefreshChat() === 0) {
       Analytics.watchNewChatScreen();
     }
-    //console.log('🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨');
     getHistory()
       .then((messageHistory) => {
         //console.log('😀😀😀😀😀😀useEffect 결과😀😀😀😀', messageHistory);
@@ -853,15 +865,7 @@ const NewChat: React.FC = ({ navigation }) => {
         //console.log(err);
         navigation.navigate(TabScreenName.Home);
       });
-    getUserInfo()
-      .then((res) => {
-        res && setIsInformalMode(res.isInFormal);
-      })
-      .catch((error) => {
-        //console.log('getUserInfo 에러 발생');
-        //console.log('getUserInfo error', error);
-      });
-  }, []);
+  };
 
   // useFocusEffect를 사용하여 화면이 포커스될 때마다 refresh flag를 확인
   /*
