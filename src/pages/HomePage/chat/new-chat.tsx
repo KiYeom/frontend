@@ -96,6 +96,7 @@ import {
 } from 'react-native-google-mobile-ads';
 import Constants from 'expo-constants';
 import { getUserInfo } from '../../../apis/setting';
+import adUnitId from '../../../utils/advertise'; //앱 시작 시 결정된 값
 
 //유저와 챗봇 오브젝트 정의
 const userObject = {
@@ -116,13 +117,13 @@ const systemObject = {
 };
 const adsImage: ImageSourcePropType = require('../../../assets/images/ads_cookie.png');
 
-const appVariant = Constants.expoConfig?.extra?.appVariant;
-const adUnitId =
+//const appVariant = Constants.expoConfig?.extra?.appVariant;
+/*const adUnitId =
   appVariant === 'production' || appVariant === 'staging'
     ? Platform.OS === 'android'
       ? process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_ANDROID
       : process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_IOS
-    : TestIds.REWARDED;
+    : TestIds.REWARDED;*/
 const welcome = {
   casual: {
     text: `반가워, ${getUserNickname()}!💚 나는 ${getUserNickname()}님 곁에서 힘이 되고싶은 골든 리트리버 쿠키야🐶 오늘은 어떤 하루를 보냈어?`,
@@ -132,6 +133,8 @@ const welcome = {
   },
 };
 const NewChat: React.FC = ({ navigation }) => {
+  //console.log('채팅 화면 진입, adUnitId : ', adUnitId);
+  //console.log('채팅 화면 진입, 테스트 아이디인가? : ', adUnitId === TestIds.REWARDED);
   //console.log('광고 아이디', adUnitId);
   //console.log('테스트모드인가요? : ', adUnitId === TestIds.REWARDED);
   const [init, setInit] = useState<boolean>(false);
@@ -206,7 +209,7 @@ const NewChat: React.FC = ({ navigation }) => {
       }),
     [],
   );
-  // Ke
+  //
 
   //광고 로드 상태
   const [loaded, setLoaded] = useState(false);
@@ -219,12 +222,14 @@ const NewChat: React.FC = ({ navigation }) => {
       });
       const unsubscribeError = rewarded.addAdEventListener(AdEventType.ERROR, (error) => {
         //console.error('RewardedAd 로드/표시 중 에러:', error);
+        Analytics.watchNoEarnRewardScreenInChatting();
       });
 
       //광고를 끝까지 봐서 보상을 줄 수 있을 때 일기와 사진을 등록할 수 있는 콜백 함수를 unsubscribeEarned 이라는 이름으로 등록해둔다
       const unsubscribeEarned = rewarded.addAdEventListener(
         RewardedAdEventType.EARNED_REWARD,
         async (reward) => {
+          Analytics.watchEarnRewardScreenInChatting();
           //.log('User earned reward of ', reward);
           const res = await updateSendPhotoPermission(true);
           //console.log('광고 시청 후 사진 전송 권한 업데이트 결과', res?.canSendPhoto);
@@ -1076,19 +1081,22 @@ const NewChat: React.FC = ({ navigation }) => {
       <AdsModal
         modalVisible={modalVisible}
         onClose={() => {
-          //console.log('모달 꺼짐', diaryText);
-          //console.log('모달 꺼짐');
+          Analytics.clickNoWatchAdsButtonInChatting();
           setModalVisible(false);
         }}
         onSubmit={() => {
-          //console.log('모달 열림, 전송');
+          Analytics.clickWatchAdsButtonInChatting();
           watchAds(); //1. 광고 시청하기
           //2. 광고 시청을 성공적으로 하여 보상을 받은 경우, api 를 호출하여 사용자의 사진 추가 권한을 true 로 변경한다. (O)
           //3. 변경 후, 홈 화면으로 가서 사용자의 질문을 보낸다 (화면과 서버에, sendMessageToServer())
           //4. 사용자의 질문과 쿠키의 답변을 화면에 나타낸다.
         }}
         imageSource={adsImage}
-        modalContent={`광고를 시청하면\n쿠키에게 사진을 보낼 수 있어요!`}
+        modalContent={
+          TestIds.REWARDED === adUnitId
+            ? `광고를 시청하면\n쿠키에게 사진을 보여줄 수 있어요 :)`
+            : `광고를 시청하면\n쿠키에게 사진을 보여줄 수 있어요`
+        }
       />
     </SafeAreaView>
   );

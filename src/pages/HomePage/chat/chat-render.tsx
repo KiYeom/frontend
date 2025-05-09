@@ -451,6 +451,7 @@ export const RenderInputToolbar = (
             )}
             onPressActionButton={() => {
               //console.log('액션 버튼 클릭됨');
+              Analytics.clickAddPicButtonInChatting();
               pickImage();
             }}
           />

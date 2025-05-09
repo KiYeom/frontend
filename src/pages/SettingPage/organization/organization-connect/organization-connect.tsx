@@ -39,6 +39,7 @@ import {
 } from 'react-native-google-mobile-ads';
 import Constants from 'expo-constants';
 import { getUserNickname } from '../../../../utils/storageUtils';
+import adUnitId from '../../../../utils/advertise';
 
 const validateCode = (code: string): 'error' | 'default' | 'correct' => {
   if (code.length !== 0 && (code.length < 2 || code.length > 15)) return 'error';
@@ -46,22 +47,22 @@ const validateCode = (code: string): 'error' | 'default' | 'correct' => {
   else return 'default';
 };
 
-const userName = getUserNickname();
-
 const appVariant = Constants.expoConfig?.extra?.appVariant;
-const adUnitId =
+
+//const appVariant = Constants.expoConfig?.extra?.appVariant;
+/*const adUnitId =
   (appVariant === 'production' || appVariant === 'staging') && userName !== 'Test_remind'
     ? Platform.OS === 'android'
       ? process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_ANDROID
       : process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_IOS
-    : TestIds.REWARDED;
-const { APP_ENV } = Constants.expoConfig?.extra || {};
-const adUnitId2 =
+    : TestIds.REWARDED;*/
+//const { APP_ENV } = Constants.expoConfig?.extra || {};
+/*const adUnitId2 =
   (APP_ENV === 'production' || APP_ENV === 'staging') && userName !== 'Test_remind'
     ? Platform.OS === 'android'
       ? process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_ANDROID
       : process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_IOS
-    : TestIds.REWARDED;
+    : TestIds.REWARDED;*/
 
 const OrganizationConnect: React.FC = ({ navigation }) => {
   const [code, setCode] = React.useState('');
@@ -80,11 +81,8 @@ const OrganizationConnect: React.FC = ({ navigation }) => {
       `■ 사용자 이름 (getUserNickname):`,
       `  ${getUserNickname}`,
       ``,
-      `■ 직접 설정된 광고 ID (adUnitId by appVariant):`,
+      `■ 직접 설정된 광고 ID (adUnitId by advertise.ts):`,
       `  ${adUnitId || 'N/A'}`,
-      ``,
-      `■ 직접 설정된 광고 ID (adUnitId2 by APP_ENV):`,
-      `  ${adUnitId2 || 'N/A'}`,
       ``,
       `■ Google 테스트 ID (TestIds.REWARDED):`,
       `  ${TestIds.REWARDED || 'N/A'}`,
@@ -92,14 +90,9 @@ const OrganizationConnect: React.FC = ({ navigation }) => {
       `■ 현재 빌드 상태 (appVariant):`,
       `  ${appVariant || 'N/A'}`,
       ``,
-      `■ 현재 빌드 상태 (APP_ENV):`,
-      `  ${APP_ENV || 'N/A'}`,
-      ``,
       `■ 테스트 광고 ID 사용 여부(adUnitId):`,
       `  ${TestIds.REWARDED === adUnitId ? 'True (테스트 ID 사용 중)' : 'False (실제 또는 스테이징 ID 사용 중)'}`,
       ``,
-      `■ 테스트 광고 ID 사용 여부(adUnitId2):`,
-      `  ${TestIds.REWARDED === adUnitId2 ? 'True (테스트 ID 사용 중)' : 'False (실제 또는 스테이징 ID 사용 중)'}`,
     ];
 
     Alert.alert(
@@ -125,8 +118,8 @@ const OrganizationConnect: React.FC = ({ navigation }) => {
       clearTimeout(clickTimerRef.current);
     }
 
-    // 10번 클릭했을 경우 디버그 정보 표시
-    if (clickCountRef.current >= 10) {
+    // 20번 클릭했을 경우 디버그 정보 표시
+    if (clickCountRef.current >= 20) {
       clickCountRef.current = 0;
       showDebugInfoInAlert();
     } else {
