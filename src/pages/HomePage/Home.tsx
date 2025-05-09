@@ -1,10 +1,11 @@
 import { css } from '@emotion/native';
 import { Image } from 'expo-image';
 import * as WebBrowser from 'expo-web-browser';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { ScrollView, Text, TouchableOpacity, View, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Carousel, { ICarouselInstance, Pagination } from 'react-native-reanimated-carousel';
+import { useSharedValue } from 'react-native-reanimated';
 import { getCarousel } from '../../apis/carousel';
 import { TCarousel } from '../../apis/carousel.types';
 import { getRiskScore } from '../../apis/riskscore';
@@ -20,8 +21,6 @@ import Analytics from '../../utils/analytics';
 import requestNotificationPermission from '../../utils/NotificationToken';
 import { ratio, rsHeight, rsWidth } from '../../utils/responsive-size';
 import { getRiskData, getUserAccountProvider, setRiskData } from '../../utils/storageUtils';
-import EmotionBtn from '../../components/EmotionBtn/EmotionBtn';
-import HomeChatBtn from '../../components/HomeBtn/HomeChatBtn';
 import Header from './Homeheader';
 import { getKoreanServerTodayDateString } from '../../utils/times';
 import { useRiskStoreVer2 } from '../../store/useRiskStoreVer2';
@@ -54,6 +53,17 @@ const Home: React.FC<any> = ({ navigation }) => {
   const width = Dimensions.get('window').width - 40;
   const rsHeight = 1; // 비율 계산 예시
   const ratio = 1; // 비율 계산 예시
+
+  //캐러셀 추가 (페이지네이션)
+  const ref = useRef<ICarouselInstance>(null);
+  const progress = useSharedValue<number>(0);
+
+  const onPressPagination = (index: number) => {
+    ref.current?.scrollTo({
+      count: index - progress.value,
+      animated: true,
+    });
+  };
 
   //위험 상태에 따른 클릭 이벤트 처리 (쿠키 편지로 이동)
   const navigateToDangerAlert = () => {
@@ -122,36 +132,60 @@ const Home: React.FC<any> = ({ navigation }) => {
               navigateToDangerAlert();
             }}
           />
-          <Carousel
-            width={width}
-            height={rsHeight * 112}
-            data={carousels}
-            defaultIndex={0}
-            autoPlay
-            autoPlayInterval={5000}
-            loop
-            style={{
-              borderRadius: ratio * 20,
-              overflow: 'hidden',
-            }}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                activeOpacity={1}
-                onPress={() => {
-                  Analytics.clickTabHomeCarousel(item.image);
-                  WebBrowser.openBrowserAsync(item.url);
-                }}>
-                <Image
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                  }}
-                  contentFit="cover"
-                  source={{ uri: item.image }}
-                />
-              </TouchableOpacity>
-            )}
-          />
+          <View style={{ position: 'relative' }}>
+            <Carousel
+              ref={ref}
+              width={width}
+              height={rsHeight * 112}
+              data={carousels}
+              onProgressChange={progress}
+              defaultIndex={0}
+              autoPlay
+              autoPlayInterval={2500}
+              loop
+              enabled
+              style={{
+                borderRadius: ratio * 20,
+                overflow: 'hidden',
+              }}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  activeOpacity={1}
+                  onPress={() => {
+                    Analytics.clickTabHomeCarousel(item.image);
+                    WebBrowser.openBrowserAsync(item.url);
+                  }}>
+                  <Image
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                    }}
+                    contentFit="cover"
+                    source={{ uri: item.image }}
+                  />
+                </TouchableOpacity>
+              )}
+            />
+            <View
+              style={{
+                position: 'absolute',
+                bottom: 10,
+                left: 0,
+                right: 0,
+                justifyContent: 'center',
+                alignItems: 'center',
+                //backgroundColor: 'pink',
+              }}>
+              <Pagination.Basic
+                progress={progress}
+                data={carousels}
+                dotStyle={{ backgroundColor: 'rgba(0,0,0,0.2)', borderRadius: 50 }}
+                activeDotStyle={{ backgroundColor: '#FFFFFF' }}
+                containerStyle={{ gap: 5 }}
+                onPress={onPressPagination}
+              />
+            </View>
+          </View>
 
           <CustomCalendar navigation={navigation} />
         </View>

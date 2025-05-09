@@ -56,6 +56,16 @@ export default class Analytics {
     this.sendEvent('회원가입 화면(닉네임+약관) 진입', 'signUpScreen');
   };
 
+  //회원가입 - 존댓말 버튼 클릭
+  public static clickFormalChatStyleButton = (): void => {
+    this.sendEvent('회원가입 화면 - 존댓말 버튼 클릭', 'clickFormalChatStyleButton');
+  };
+
+  //회원가입 - 반말 버튼 클릭
+  public static clickInformalChatStyleButton = (): void => {
+    this.sendEvent('회원가입 화면 - 반말 버튼 클릭', 'clickInformalChatStyleButton');
+  };
+
   //회원가입 - 저장 버튼 클릭
   public static clickSignUpSaveButton = (): void => {
     this.sendEvent(
@@ -259,6 +269,42 @@ export default class Analytics {
   //업데이트된 채팅 화면
   public static watchNewChatScreen = (): void => {
     this.sendEvent('업데이트된 채팅 화면 진입', 'newChatScreen');
+  };
+
+  //채팅 - 사진 전송 버튼 클릭
+  public static clickAddPicButtonInChatting = (): void => {
+    this.sendEvent('채팅 - <사진 첨부하기> 버튼 클릭', 'clickAddPicButtonInChatting');
+  };
+
+  //채팅 - <사진첨부> - <광고> - 네 버튼 클릭
+  public static clickWatchAdsButtonInChatting = (): void => {
+    this.sendEvent('채팅 - <광고 모달> - <광고보기> 버튼 클릭', 'save');
+  };
+
+  //채팅 - <사진 첨부> - <광고 모달> - 저장하기 클릭 후 광고 송출
+  public static watchAdsScreenInChatting = (): void => {
+    this.sendEvent(
+      '채팅 - <사진첨부하기> - <광고 모달> - <광고보기> 버튼 클릭 후 광고 송출',
+      'watchAdsScreenInChatting',
+    );
+  };
+
+  //채팅 - <사진 첨부> - <광고 모달> - 저장하기 클릭 후 광고 송출 - 리워드 지급
+  public static watchEarnRewardScreenInChatting = (): void => {
+    this.sendEvent('채팅 사진 첨부 광고 송출 후, 리워드 지급', 'watchEarnRewardScreenInChatting');
+  };
+
+  //채팅 - <사진 첨부> - <광고 모달> - 저장하기 클릭 후 광고 송출 - 리워드 미지급
+  public static watchNoEarnRewardScreenInChatting = (): void => {
+    this.sendEvent(
+      '채팅 사진 첨부 광고 송출 후, 채팅 저장에 오류 발생',
+      'watchNoEarnRewardScreenInChatting',
+    );
+  };
+
+  //채팅 - <사진첨부> - <광고모달> - 취소 버튼 클릭
+  public static clickNoWatchAdsButtonInChatting = (): void => {
+    this.sendEvent('채팅 - <사진첨부하기> - <광고 모달> - <취소> 버튼 클릭', 'cancel');
   };
 
   //채팅 - 채팅 전송 버튼 클릭

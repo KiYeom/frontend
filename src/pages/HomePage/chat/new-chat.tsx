@@ -1,7 +1,23 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Dimensions, Platform, View, ActivityIndicator } from 'react-native';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
+import {
+  Dimensions,
+  Platform,
+  View,
+  ActivityIndicator,
+  Text,
+  Keyboard,
+  Animated,
+  ImageSourcePropType,
+  TextInput,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { GiftedChat, IMessage, SendProps, SystemMessage } from 'react-native-gifted-chat';
+import {
+  GiftedChat,
+  IMessage,
+  SendProps,
+  SystemMessage,
+  MessageImage,
+} from 'react-native-gifted-chat';
 import { useFocusEffect } from '@react-navigation/native';
 import Header from '../../../components/header/header';
 import * as WebBrowser from 'expo-web-browser';
@@ -43,6 +59,7 @@ import {
   RenderLoading,
   RenderSystemMessage,
   RenderTime,
+  RenderMessageImage,
 } from './chat-render';
 import { css } from '@emotion/native';
 import uuid from 'react-native-uuid';
@@ -56,13 +73,42 @@ import { useRiskStoreVer2 } from '../../../store/useRiskStoreVer2';
 import clickHeaderGiftBoxButton from '../../../utils/analytics';
 import Home from '../Home';
 import { doesV3KeyExist, getNewIMessagesV3 } from '../../../utils/storageUtils';
-import { getV3OldChatting } from '../../../apis/chatting';
+import { getV3OldChatting, updateSendPhotoPermission } from '../../../apis/chatting';
 import ChatHeader from '../../../components/chatHeader/chatHeader';
 import { searchChatWord } from '../../../apis/chatting';
-import { ExtendedIMessage } from '../../../utils/chatting';
+import { ApiAnswerMessage, ApiQuestionMessage, ExtendedIMessage } from '../../../utils/chatting';
 import { reportMessages } from './chat-render';
 import { useCallback } from 'react';
+import * as ImagePicker from 'expo-image-picker';
+import ImageShow from '../../../components/image-show/ImageShow';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ApiChatResponse, ApiQuestions, ApiAnswers } from '../../../utils/chatting';
+import AdsModal from '../../../components/modals/ads-modal';
+import {
+  BannerAd,
+  BannerAdSize,
+  TestIds,
+  useForeground,
+  InterstitialAd,
+  AdEventType,
+  RewardedAd,
+  RewardedAdEventType,
+} from 'react-native-google-mobile-ads';
+import Constants from 'expo-constants';
 import { getUserInfo } from '../../../apis/setting';
+//import adUnitId from '../../../utils/advertise'; //앱 시작 시 결정된 값
+
+const userName = getUserNickname() ?? 'Test_remind_empty';
+const appVariant = Constants.expoConfig?.extra?.appVariant;
+const isProductionOrStaging = appVariant === 'production' || appVariant === 'staging';
+const isTestUser = userName === 'Test_remind';
+const adUnitId =
+  isProductionOrStaging && !isTestUser
+    ? Platform.OS === 'android'
+      ? process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_ANDROID
+      : process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_IOS
+    : TestIds.REWARDED;
+
 //유저와 챗봇 오브젝트 정의
 const userObject = {
   _id: 0,
@@ -80,23 +126,19 @@ const systemObject = {
   name: 'system',
   avatar: null,
 };
-
-const welcome = {
-  casual: {
-    text: `반가워, ${getUserNickname()}!💚 나는 ${getUserNickname()}님 곁에서 힘이 되고싶은 골든 리트리버 쿠키야🐶 오늘은 어떤 하루를 보냈어?`,
-  },
-  formal: {
-    text: `반가워요, ${getUserNickname()}님!💚 저는 ${getUserNickname()}님 곁에서 힘이 되어드리고 싶은 골든 리트리버 쿠키예요🐶 오늘은 어떤 하루를 보내셨나요?`,
-  },
-};
+const adsImage: ImageSourcePropType = require('../../../assets/images/ads_cookie.png');
 
 const NewChat: React.FC = ({ navigation }) => {
+  //console.log('채팅 화면 진입, adUnitId : ', adUnitId);
+  //console.log('채팅 화면 진입, 테스트 아이디인가? : ', adUnitId === TestIds.REWARDED);
+  //console.log('광고 아이디', adUnitId);
+  //console.log('테스트모드인가요? : ', adUnitId === TestIds.REWARDED);
   const [init, setInit] = useState<boolean>(false);
   const [screenLoading, setScreenLoading] = useState<boolean>(false);
   const [refreshTimerMS, setRefreshTimerMS] = useState<number>(500);
 
   const [messages, setMessages] = useState<ExtendedIMessage[]>([]); //채팅 메시지 목록을 관리하는 상태
-  const [sending, setSending] = useState<boolean>(false); //메시지를 보내고 있는 중인지 여부를 나타내는 상태
+  const [sending, setSending] = useState<boolean>(false); //메시지를 보내고 있는 중인지 여부를 나타내는 상태 (보내고 있으면 true, 아니면 false)
   const [buffer, setBuffer] = useState<string | null>(null); //사용자가 입력한 메시지를 저장하는 임시 버퍼
 
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null); //타이핑 시간을 관리하는 타이머 (초기값 null, 이후 setTimeout의 반환값인 NodeJS.Timeout 객체를 저장)
@@ -111,8 +153,134 @@ const NewChat: React.FC = ({ navigation }) => {
   const [enableDown, setEnableDown] = useState<boolean>(false);
   const [searchLoading, setSearchLoading] = useState<boolean>(false);
 
+  //1.5.8 사진 추가
+  const [image, setImage] = useState<string | null>(null);
+  //광고 모달 추가
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+
   //반말 정보 불러오기
   const [isInFormalMode, setIsInformalMode] = useState<boolean>(true);
+  const informalModeRef = useRef<boolean>(true); // API 값을 즉시 저장할 ref
+
+  // 최신의 state를 읽도록 ref를 사용한다.
+  const bufferRef = useRef<string | null>(null);
+  const imageRef = useRef<string | null>(null);
+
+  // state를 변경할 때마다 ref도 업데이트
+  useEffect(() => {
+    bufferRef.current = buffer;
+    console.log('buffer ref 업데아트', bufferRef.current);
+  }, [buffer]);
+  useEffect(() => {
+    imageRef.current = image;
+    console.log('image ref 업데아트', imageRef.current);
+  }, [image]);
+  //textinput 을 가리키고 있는 ref
+  const textInputRef = useRef<TextInput>(null);
+
+  const pickImage = async () => {
+    //console.log('pickImage 클릭함');
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: false,
+      quality: 1,
+    });
+    //console.log(result);
+    if (!result.canceled) {
+      console.log('setImage');
+      setImage(result.assets[0].uri);
+      //핸드폰에서 선택한 사진의 로컬 주소 (file://~)를 저장
+    }
+    return;
+  };
+
+  //입력 필드 높이
+  const [inputHeight, setInputHeight] = useState(rsFont * 16 * 1.5 + 15 * 2);
+
+  //console.log('화면 너비:', width, '화면 높이:', height);
+  const [keyboardHeight, setKeyboardHeight] = useState<number>(0);
+
+  const rewarded = useMemo(
+    () =>
+      RewardedAd.createForAdRequest(adUnitId, {
+        keywords: ['fashion', 'clothing'],
+      }),
+    [],
+  );
+  //
+
+  //광고 로드 상태
+  const [loaded, setLoaded] = useState(false);
+  //console.log('rewarded', rewarded);
+  useFocusEffect(
+    useCallback(() => {
+      const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
+        console.log('광고 로드');
+        setLoaded(true);
+      });
+      const unsubscribeError = rewarded.addAdEventListener(AdEventType.ERROR, (error) => {
+        console.error('RewardedAd 로드/표시 중 에러:', error);
+        Analytics.watchNoEarnRewardScreenInChatting();
+      });
+
+      //광고를 끝까지 봐서 보상을 줄 수 있을 때 일기와 사진을 등록할 수 있는 콜백 함수를 unsubscribeEarned 이라는 이름으로 등록해둔다
+      const unsubscribeEarned = rewarded.addAdEventListener(
+        RewardedAdEventType.EARNED_REWARD,
+        async (reward) => {
+          Analytics.watchEarnRewardScreenInChatting();
+          //.log('User earned reward of ', reward);
+          const res = await updateSendPhotoPermission(true);
+          //console.log('광고 시청 후 사진 전송 권한 업데이트 결과', res?.canSendPhoto);
+          if (res) {
+            if (textInputRef.current) {
+              console.log('입력 필드 초기화');
+              textInputRef.current.clear(); // 입력 필드 초기화
+            }
+            sendMessageToServer();
+          }
+        },
+      );
+      //광고가 닫힐 때 실행되는 이벤트 리스터
+      const unsubscribeClosed = rewarded.addAdEventListener(AdEventType.CLOSED, () => {
+        //console.log('Ad was cloesed');
+        setModalVisible(false);
+      });
+      //광고 로드
+      rewarded.load();
+      // 컴포넌트 언마운트 시 이벤트 리스너 해제
+      return () => {
+        //console.log('컴포넌트 언마운트 시 이벤트 리스너 해제');
+        //listenerCount--;
+        unsubscribeLoaded();
+        unsubscribeEarned();
+        unsubscribeClosed();
+        unsubscribeError();
+        //console.log(`리스너 해제됨 : 현재 ${listenerCount}번 등록됨`);
+      };
+    }, [rewarded, navigation]),
+  );
+
+  //위치하는 y좌표 자리는... 화면 높이 - 입력 필드 높이-키보드 높이
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', onKeyboardDidShow);
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', onKeyboardDidHide);
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+  const onKeyboardDidShow = (event) => {
+    // event.endCoordinates.height를 통해 키보드 높이 정보를 얻습니다.
+    const keyboardHeight = event.endCoordinates.height;
+    setKeyboardHeight(keyboardHeight);
+    //console.log('키보드 높이:', keyboardHeight);
+  };
+
+  const onKeyboardDidHide = () => {
+    setKeyboardHeight(0);
+    //console.log('키보드가 숨겨졌습니다.');
+  };
 
   const { riskStatusV2, riskScoreV2, setRiskScoreV2, setRiskStatusV2, setHandleDangerPressV2 } =
     useRiskStoreVer2();
@@ -152,22 +320,120 @@ const NewChat: React.FC = ({ navigation }) => {
     });
   };
 
+  //광고 시청 함수
+  const watchAds = async () => {
+    try {
+      if (!loaded) {
+        Toast.show('광고 로딩중입니다. 잠시 기다려주세요');
+        rewarded.load();
+        return;
+      }
+      //console.log('전면 광고 시청');
+      //setAdsModalVisible(false);
+      await rewarded.show(); // 광고 표시
+    } catch (error) {
+      //console.error('Error showing ad:', error);
+      Toast.show('광고 표시 중 오류가 발생했습니다');
+      console.log('광고 표시 중 오류가 발생했습니다', error);
+      setLoaded(false);
+      rewarded.load(); // Try to load again
+    }
+  };
+
+  //1.5.7v3 서버에서 대화 내용을 불러오는 함수 (직접 이미지인지 판단하지 않음)
+  /*
+  const v3getIMessageFromServer = async (lastMessageDate: Date): Promise<ExtendedIMessage[]> => {
+    const messages: ExtendedIMessage[] = [];
+    const lastDateAddSecond = new Date(lastMessageDate.getTime() + 10 * 1000);
+    const serverMessages = await getV3OldChatting(botObject._id, lastDateAddSecond.toISOString());
+    //console.log('서버에서 불러온 v3 데이터 전체 확인하기', serverMessages);
+    if (serverMessages && serverMessages.chats && serverMessages.chats.length > 0) {
+      const imageUrlPattern = /https:\/\/bucket\.remind4u\.co\.kr\/gemini\/[a-f0-9]+\.jpg/;
+      for (let i = 0; i < serverMessages.chats.length; i++) {
+        const chat = serverMessages.chats[i];
+        const originalText = chat.text || '';
+        // 이미지 URL이 포함된 메시지인지 확인
+        const imageUrlMatch = originalText.match(imageUrlPattern);
+        if (imageUrlMatch && originalText.includes('\n')) {
+          // 줄바꿈으로 텍스트와 이미지 URL 분리
+          const textParts = originalText.split('\n').filter((part) => part.trim() !== '');
+
+          // 텍스트 부분과 이미지 URL 부분 구분
+          const textOnly = textParts.filter((part) => !imageUrlPattern.test(part)).join('\n');
+          const imageUrls = textParts.filter((part) => imageUrlPattern.test(part));
+
+          // 이미지 URL마다 별도 메시지 추가
+          imageUrls.forEach((imageUrl) => {
+            messages.push({
+              _id: `${chat.id}-PIC`, // 이미지 메시지에 -PIC 접미사 추가
+              text: imageUrl,
+              image: imageUrl, // 이미지 URL을 image 필드에 별도 저장
+              createdAt: new Date(new Date(chat.utcTime).getTime()),
+              user: chat.status === 'user' ? userObject : botObject,
+              isSaved: chat.isSaved,
+              hightlightKeyword: '',
+            });
+          });
+          // 텍스트가 있으면 텍스트 메시지 추가
+          if (textOnly.trim() !== '') {
+            messages.push({
+              _id: chat.id,
+              text: textOnly,
+              createdAt: new Date(new Date(chat.utcTime).getTime()),
+              user: chat.status === 'user' ? userObject : botObject,
+              isSaved: chat.isSaved,
+              hightlightKeyword: '',
+            });
+          }
+        } else {
+          // 일반 텍스트 메시지는 그대로 추가
+          messages.push({
+            _id: chat.id,
+            text: originalText,
+            createdAt: new Date(new Date(chat.utcTime).getTime()),
+            user: chat.status === 'user' ? userObject : botObject,
+            isSaved: chat.isSaved,
+            hightlightKeyword: '',
+          });
+        }
+      }
+    }
+    return messages.reverse();
+  };*/
   //1.5.7v3 서버에서 대화 내용을 불러오는 함수
   const v3getIMessageFromServer = async (lastMessageDate: Date): Promise<ExtendedIMessage[]> => {
     const messages: ExtendedIMessage[] = [];
     const lastDateAddSecond = new Date(lastMessageDate.getTime() + 10 * 1000);
     const serverMessages = await getV3OldChatting(botObject._id, lastDateAddSecond.toISOString());
-    //console.log('v3 데이터 확인하기', serverMessages);
+
     if (serverMessages && serverMessages.chats && serverMessages.chats.length > 0) {
       for (let i = 0; i < serverMessages.chats.length; i++) {
-        messages.push({
-          _id: serverMessages.chats[i].id,
-          text: serverMessages.chats[i].text,
-          createdAt: new Date(new Date(serverMessages.chats[i].utcTime).getTime()),
-          user: serverMessages.chats[i].status === 'user' ? userObject : botObject,
-          isSaved: serverMessages.chats[i].isSaved,
-          hightlightKeyword: '',
-        }); //대화 내용을 messages에 추가
+        const chat = serverMessages.chats[i];
+        const originalText = chat.text || '';
+
+        // ID에 "-PIC" 접미사가 있는지 확인하여 이미지인지 판단
+        if (chat.id.includes('-PIC')) {
+          // 이미지 메시지 처리
+          messages.push({
+            _id: chat.id,
+            text: originalText,
+            image: originalText, // 이미지 URL을 image 필드에 저장
+            createdAt: new Date(new Date(chat.utcTime).getTime()),
+            user: chat.status === 'user' ? userObject : botObject,
+            isSaved: chat.isSaved,
+            hightlightKeyword: '',
+          });
+        } else {
+          // 일반 텍스트 메시지 처리
+          messages.push({
+            _id: chat.id,
+            text: originalText,
+            createdAt: new Date(new Date(chat.utcTime).getTime()),
+            user: chat.status === 'user' ? userObject : botObject,
+            isSaved: chat.isSaved,
+            hightlightKeyword: '',
+          });
+        }
       }
     }
     return messages.reverse();
@@ -184,11 +450,11 @@ const NewChat: React.FC = ({ navigation }) => {
     //deleteNewIMessagesV3(); //이거 삭제하기
 
     if (!isV3KeyExist) {
-      //v3 키가 존재하지 않는 경우
-      //console.log('🔑🔑🔑🔑🔑🔑🔑🔑🔑v3 키가 존재하지 않음🔑🔑🔑🔑🔑🔑🔑🔑', isV3KeyExist);
+      //v3 키가 존재하지 않는 경우 (=로그아웃을 실행하고 채팅 화면을 다시 켰을 때)
+      console.log('🔑🔑🔑🔑🔑🔑🔑🔑🔑v3 키가 존재하지 않음🔑🔑🔑🔑🔑🔑🔑🔑', isV3KeyExist);
       const v3lastMessageDate = new Date(0);
       const v3ServerMessages = await v3getIMessageFromServer(v3lastMessageDate); //전체 데이터 가져오기
-      //console.log('v3ServerMessages', v3ServerMessages);
+      console.log('🔑🔑🔑🔑🔑🔑🔑🔑🔑v3ServerMessages', v3ServerMessages);
       if (v3ServerMessages && v3ServerMessages.length > 0) {
         //console.log('💚💚💚💚💚💚💚💚💚💚💚이전에 썼던 사람 마이그레이션 하기💚💚💚💚💚💚💚💚');
         setNewIMessagesV3(JSON.stringify(v3ServerMessages)); //로컬 마이그레이션
@@ -200,7 +466,7 @@ const NewChat: React.FC = ({ navigation }) => {
         //console.log('🤖🤖🤖🤖🤖🤖🤖🤖새로 온 사람🤖🤖🤖🤖🤖🤖🤖🤖');
         const systemMessage = {
           _id: 'systemMessage',
-          text: `이 곳에서 이야기하는 내용들은 모두 익명으로 비밀 보장이 됩니다.안심하시고 답답한 나의 속마음을 편하게 이야기해보세요.\n어떤 감정, 어떤 대화이든 쿠키는 보호자님 곁에서 이야기를 경청합니다.`,
+          text: `이 곳은 ${getUserNickname()}님과 저만의 비밀 공간이니, 어떤 이야기도 편하게 나눠주세요!\n\n반말로 대화를 나누고 싶으시다면 위에서 오른쪽에 있는 탭 바를 열고, 반말 모드를 켜 주세요!🍀💕`,
           createdAt: new Date(),
           user: systemObject,
           isSaved: false,
@@ -209,7 +475,9 @@ const NewChat: React.FC = ({ navigation }) => {
         };
         const welcomeMessage = {
           _id: 'welcomeMessage',
-          text: isInFormalMode ? welcome.casual.text : welcome.formal.text,
+          text: informalModeRef.current
+            ? `반가워, ${getUserNickname()}!💚 나는 ${getUserNickname()}님 곁에서 힘이 되고싶은 골든 리트리버 쿠키야🐶 오늘은 어떤 하루를 보냈어?`
+            : `반가워요, ${getUserNickname()}님!💚 저는 ${getUserNickname()}님 곁에서 힘이 되어드리고 싶은 골든 리트리버 쿠키예요🐶 오늘은 어떤 하루를 보내셨나요?`,
           createdAt: new Date(),
           user: botObject,
           isSaved: false,
@@ -228,13 +496,14 @@ const NewChat: React.FC = ({ navigation }) => {
       }
     } else {
       //v3 키가 존재하는 경우
-      //console.log('👯👯👯👯👯👯👯👯v3 키가 존재함👯👯👯👯👯👯', isV3KeyExist);
+      ///console.log('👯👯👯👯👯👯👯👯v3 키가 존재함👯👯👯👯👯👯', isV3KeyExist);
       const v3DeviceHistory = getNewIMessagesV3();
       if (v3DeviceHistory) {
         //console.log('v3DeviceHistory', v3DeviceHistory);
         const v3DeviceArray = JSON.parse(v3DeviceHistory);
         messages.push(...v3DeviceArray);
       }
+      //console.log('🦈🦈🦈🦈🦈🦈v3DeviceHistory', messages);
       //console.log('🦈🦈🦈🦈🦈🦈v3DeviceHistory', v3DeviceHistory);
       const v3lastMessageDate: Date =
         messages.length > 0 ? new Date(messages[0].createdAt) : new Date(0);
@@ -255,42 +524,126 @@ const NewChat: React.FC = ({ navigation }) => {
 
   //버퍼에 저장된 메시지를 서버로 전송하는 sendMessageToServer 함수
   const sendMessageToServer = () => {
-    if (!buffer || sending) return;
+    const buf = bufferRef.current;
+    const img = imageRef.current;
+    console.log('sendMessageToServer 실행', buffer, image);
+    console.log('sendMessageToServer 내에서 읽은 값', buf, img);
+    if ((!buf && !img) || sending) return; //텍스트도, 이미지도 없는 경우에는 전송하지 않음
     setSending(true);
-    const question = buffer ?? '';
+    setBuffer(null); // 버퍼 비우기
+    setImage(null); // 선택된 이미지 비우기
+    bufferRef.current = null;
+    imageRef.current = null;
+
+    if (img) {
+      // 1) 화면에 보여줄 임시 메시지 객체 생성
+      const pendingMsg: ExtendedIMessage = {
+        _id: uuid.v4().toString(), // 랜덤 ID
+        text: img, // 텍스트 있어도 그냥 이미지만 나오게 return 걸어둠
+        image: img, // 이미지가 있으면 URI
+        createdAt: new Date(),
+        user: userObject, // '나' 유저
+        isSaved: false,
+      };
+
+      // 2) UI에 즉시 추가
+      // 2) UI에 바로 추가하고, 로컬에도 저장
+      setMessages((prev) => {
+        //console.log('ui에 즉시 추가');
+        const updated = GiftedChat.append(prev, [pendingMsg]);
+        //console.log('로컬에도 저장', updated);
+        //setIMessagesV3(prev, [pendingMsg]);
+        return updated;
+      });
+      if (buf?.trim() !== '') {
+        //console.log('버퍼에 텍스트가 존재함', buf);
+        const pendingMsg: ExtendedIMessage = {
+          _id: uuid.v4().toString(), // 랜덤 ID
+          text: buf ?? '', // 텍스트가 있으면 버퍼, 없으면 빈 문자열
+          createdAt: new Date(),
+          user: userObject, // '나' 유저
+          isSaved: false,
+        };
+        setMessages((prev) => {
+          //console.log('ui에 즉시 추가');
+          const updated = GiftedChat.append(prev, [pendingMsg]);
+          //console.log('로컬에도 저장');
+          //setIMessagesV3(prev, [pendingMsg]);
+          return updated;
+        });
+      } else {
+        //console.log('버퍼에 텍스트가 존재하지 않음', buffer);
+      }
+    }
+    const question = buf ?? '';
     const isDemo = getIsDemo();
-    chatting(1, question, isDemo) //버퍼에 저장된 메세지를 서버로 전송하여 질문 & 대화 전체 쌍을 받아옴
+    console.log('iamge ', img, question);
+    const imageToSend = img ?? '';
+    //setImage(null);
+
+    chatting(1, question, isDemo, imageToSend) //버퍼에 저장된 메세지를 서버로 전송하여 질문 & 대화 전체 쌍을 받아옴
       .then((res) => {
-        //console.log('v3로 받은 유저와 쿠키의 답변', res);
-        //console.log('getOldChatting 결과', getNewIMessagesV3());
-        //console.log('화면에 나오는 메세지들', messages); //최신순으로 저장되어있음. messages[0]이 내가 보낸 가장 마지막 메세지
         if (res) {
           //const newMessages: IMessage[] = [];
           //console.log('현재 저장된 메세지들', messages);
-          const sortedMessages = res?.reverse(); //결과를 역순으로 정렬하여 최신 메세지가 앞으로
-          const apiQuestions = sortedMessages.filter(
-            (item) => item.question !== null && item.question !== '' && item.answer === null,
+          const sortedMessages: ApiChatResponse = res?.reverse(); //결과를 역순으로 정렬하여 최신 메세지가 앞으로
+          //사용자가 작성한 메세지들을 담은 apiQuestions 배열
+          const apiQuestions: ApiQuestions = sortedMessages.filter(
+            (item): item is ApiQuestionMessage =>
+              item.question !== null && item.question !== '' && item.answer === null,
           );
-          const apiAnswers = sortedMessages.filter(
-            (item) => item.answer !== null && item.question === null,
+          //사용자 물음에 대한 응답 결과를 담은 (쿠키 대답) apiAnswers 배열
+          const apiAnswers: ApiAnswers = sortedMessages.filter(
+            (item): item is ApiAnswerMessage => item.answer !== null && item.question === null,
           );
+
+          //console.log('apiQuestions', apiQuestions);
+          //console.log('apiAnswers', apiAnswers);
 
           setMessages((previousMessages) => {
             const updatedMessages = [...previousMessages];
+            // 이미지 URL 패턴 (정확한 패턴으로 조정 필요)
+            const imageUrlPattern = /https:\/\/bucket\.remind4u\.co\.kr\/gemini\/[a-f0-9]+\.jpg/;
             for (let i = 0; i < apiQuestions.length; i++) {
-              /*console.log('apiQuestions[i]', apiQuestions[i]);
-              console.log('updatedMessages[i]', updatedMessages[i]);
-              console.log('apiQuestions[i].question', apiQuestions[i].question);
-              console.log('updatedMessages[i].text', updatedMessages[i].text);
-              console.log('updatedMessages[i]._id', updatedMessages[i]._id);
-              console.log('apiQuestions[i].id', apiQuestions[i].id);*/
-              if (updatedMessages[i] && updatedMessages[i].text === apiQuestions[i].question) {
-                updatedMessages[i] = {
-                  ...updatedMessages[i],
+              // 최근 메시지부터 시작해서 일치하는 메시지 찾기 (역순)
+              const questionIndex = previousMessages.findIndex((msg, idx) => {
+                //console.log('msg : ', msg);
+                //텍스트들만 있는 경우 Id 매핑
+                if (msg.text === apiQuestions[i].question) {
+                  //console.log('이 버블은 텍스트만 존재함', msg.text);
+                  return true;
+                }
+
+                // 이미지가 포함되어 전송된 경우
+                if (imageUrlPattern.test(apiQuestions[i].question)) {
+                  // 1. 텍스트에 이미지 URL이 포함된 경우
+                  if (
+                    msg.text &&
+                    msg.text.includes(imageUrlPattern.exec(apiQuestions[i].question)?.[0] || '')
+                  ) {
+                    //console.log('이 버블은 텍스트와 이미지가 존재함', msg.text);
+                    return true;
+                  }
+                  // 2. image 필드가 있는 경우
+                  if (msg.image && apiQuestions[i].question.includes(msg.image)) {
+                    //console.log('이 버블은 이미지만 존재함', msg.image);
+                    return true;
+                  }
+                }
+
+                return false;
+              });
+
+              // 일치하는 메시지를 찾았으면 ID 업데이트
+              if (questionIndex !== -1) {
+                //console.log('원하는 메세지를 찾아 Id 업데이트', questionIndex);
+                updatedMessages[questionIndex] = {
+                  ...updatedMessages[questionIndex],
                   _id: apiQuestions[i].id,
                 };
               }
             }
+
             // API 응답에서 봇의 대답들만 필터링했다고 가정 (예: apiAnswers)
             const newBotMessages: ExtendedIMessage[] = apiAnswers.map((item, idx) => ({
               _id: item.id,
@@ -300,12 +653,7 @@ const NewChat: React.FC = ({ navigation }) => {
               isSaved: false,
             }));
 
-            //setIMessages(updatedMessages, newMessages.reverse());
             setIMessagesV3(updatedMessages, newBotMessages);
-            /*console.log(
-              '🥵🥵🥵🥵🥵🥵🥵확인하기 : 로컬에 저장된 값🥵🥵🥵🥵🥵🥵🥵',
-              getNewIMessagesV3(),
-            );*/
             return GiftedChat.append(updatedMessages, newBotMessages);
           });
         }
@@ -327,23 +675,27 @@ const NewChat: React.FC = ({ navigation }) => {
       })
       .finally(() => {
         setBuffer(null);
+        setImage(null);
         setSending(false);
+        bufferRef.current = null; // 버퍼 ref 초기화
+        imageRef.current = null; // 이미지 ref 초기화
       });
   };
 
-  /*
-  디바운싱을 담당하는 resetTimer 함수
-    1. 타이머가 돌아가고 있다면 타이머를 초기화한다
-    2. 입력이 모두 끝나고 2초 후에 타이머가 sendMessageToServer() 함수를 실행한다.
-  */
+  //디바운싱을 담당하는 resetTimer 함수
+  //타이핑을 하고 있다면 -> 타이머 초기화 & 타이핑 정지했다면 -> 타이머 동작 & 2초 후에 서버로 전송
+  //이미지를 전송하는 경우에는 바로 서버로 전송
   const resetTimer = () => {
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
     }
-
-    typingTimeoutRef.current = setTimeout(() => {
-      sendMessageToServer();
-    }, 2 * 1000);
+    if (!image) {
+      typingTimeoutRef.current = setTimeout(() => {
+        sendMessageToServer();
+      }, 2 * 1000);
+    } else {
+      //console.log('이미지가 있어요');
+    }
   };
 
   /*
@@ -482,13 +834,34 @@ const NewChat: React.FC = ({ navigation }) => {
   ** 성공할 경우 (then) : 서버에서 가지고 온 대화인 messageHistory를 messages 상태에 저장
   ** 실패할 경우 (catch) : 사용자에게 안내와 함께 홈 화면으로 이동
   */
+
   useEffect(() => {
-    //console.log('===========useEffect 실행===========');
+    console.log('getUserInfo 실행');
+    getUserInfo()
+      .then((res) => {
+        //res.isInformal === false => 반말 모드
+        console.log('getUserInfo 결과', res, res.isInFormal);
+        //res && setIsInformalMode(res.isInFormal);
+        if (res) {
+          console.log(`현재 모드 : ${res.isInFormal}`);
+          informalModeRef.current = res.isInFormal;
+        } else {
+          informalModeRef.current = false; //기본값 : 반말 모드
+        }
+        loadChatHistory();
+      })
+      .catch((error) => {
+        informalModeRef.current = false; //기본값 : 반말 모드
+        loadChatHistory();
+      });
+  }, []);
+
+  const loadChatHistory = () => {
+    console.log('loadChatHistory 실행');
     setInit(true);
     if (getRefreshChat() === 0) {
       Analytics.watchNewChatScreen();
     }
-    //console.log('🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨🫨');
     getHistory()
       .then((messageHistory) => {
         //console.log('😀😀😀😀😀😀useEffect 결과😀😀😀😀', messageHistory);
@@ -500,22 +873,12 @@ const NewChat: React.FC = ({ navigation }) => {
         //console.log(err);
         navigation.navigate(TabScreenName.Home);
       });
-    getUserInfo()
-      .then((res) => {
-        res && setIsInformalMode(res.isInFormal);
-      })
-      .catch((error) => {
-        console.log('getUserInfo 에러 발생');
-        //console.log('getUserInfo error', error);
-      });
-  }, []);
+  };
 
   // useFocusEffect를 사용하여 화면이 포커스될 때마다 refresh flag를 확인
+  /*
   useFocusEffect(
     useCallback(() => {
-      /*if (getRefreshChat() > 99) {
-        console.log('getRefreshChat() > 99');
-      }*/
       if (getRefreshChat() > 0) {
         // refresh flag가 설정되어 있다면 메시지를 새로 불러오고 flag를 초기화
         setRefreshChat(0);
@@ -526,25 +889,50 @@ const NewChat: React.FC = ({ navigation }) => {
             setInit(false);
           })
           .catch((err) => {
-            //console.log('대화 내역을 불러오는 중 오류가 발생했어요. 다시 시도해주세요.');
-            //console.log(err);
+            console.log('대화 내역을 불러오는 중 오류가 발생했어요. 다시 시도해주세요.');
+            console.log(err);
             navigation.navigate('Home');
           });
       }
     }, [navigation]),
-  );
+  ); */
 
   //비행기를 클릭헀을 때 실행되는 onSend 함수
   //api 로 유저 - 채팅 한 쌍을 받아오기 전에는 id 값을 임의로 설정하여 화면에 보여준다.
   const onSend = (newMessages: ExtendedIMessage[] = []) => {
-    if (!newMessages[0].text.trim()) {
+    console.log('onSend 실행', newMessages);
+    if (!newMessages[0].text.trim() && !newMessages[0].image) {
       return;
     }
-    setBuffer(buffer ? buffer + newMessages[0].text + '\t' : newMessages[0].text + '\t');
-    setMessages((previousMessages) => {
+    //console.log('onsend ');
+    //setBuffer(buffer ? buffer + newMessages[0].text + '\t' : newMessages[0].text + '\t');
+    /*setMessages((previousMessages) => {
+      //setIMessagesV3(previousMessages, newMessages.reverse());
+      return GiftedChat.append(previousMessages, newMessages);
+    });*/
+    if (image) {
+      //console.log('이미지 전송');
+      // 이미지를 보낸 경우
+      //setBuffer(buffer ? buffer + newMessages[0].text + '\t' : newMessages[0].text + '\t');
+      setBuffer(newMessages[0].text);
+      setModalVisible(true);
+      /*
+      이미지가 화면에 보이려면
+          setMessages((previousMessages) => {
       //setIMessagesV3(previousMessages, newMessages.reverse());
       return GiftedChat.append(previousMessages, newMessages);
     });
+      */
+    } else {
+      //console.log('텍스트만 전송');
+      // 텍스트만 보낸 경우 (디바운싱)
+      setBuffer(buffer ? buffer + newMessages[0].text + '\t' : newMessages[0].text + '\t');
+      // Timer will be reset in the useEffect that watches buffer
+      setMessages((previousMessages) => {
+        //setIMessagesV3(previousMessages, newMessages.reverse());
+        return GiftedChat.append(previousMessages, newMessages);
+      });
+    }
   };
 
   const scrollToIndexFailed = (info) => {
@@ -651,6 +1039,7 @@ const NewChat: React.FC = ({ navigation }) => {
         handleSearch={handleSearch}
         updateMessageHighlights={updateMessageHighlights}
       />
+
       <GiftedChat
         listViewProps={{
           onScrollToIndexFailed: scrollToIndexFailed,
@@ -700,12 +1089,19 @@ const NewChat: React.FC = ({ navigation }) => {
             setEnableDown,
             handleSearch,
             searchWord,
+            pickImage,
+            setInputHeight,
+            image,
+            setImage,
+            textInputRef,
           )
         }
+        lightboxProps={undefined}
         textInputProps={{
           placeholder: getIsDemo() ? '메시지 입력.' : '메시지 입력',
           marginLeft: rsWidth * 15,
         }}
+        //renderMessageImage={RenderMessageImage}
         keyboardShouldPersistTaps={'never'}
         alwaysShowSend
       />
@@ -724,6 +1120,38 @@ const NewChat: React.FC = ({ navigation }) => {
           <ActivityIndicator />
         </View>
       )}
+      <Animated.View
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 100,
+          pointerEvents: 'box-none',
+        }}
+        pointerEvents="box-none"></Animated.View>
+      <AdsModal
+        modalVisible={modalVisible}
+        onClose={() => {
+          Analytics.clickNoWatchAdsButtonInChatting();
+          setModalVisible(false);
+        }}
+        onSubmit={() => {
+          Analytics.clickWatchAdsButtonInChatting();
+          watchAds(); //1. 광고 시청하기
+          //2. 광고 시청을 성공적으로 하여 보상을 받은 경우, api 를 호출하여 사용자의 사진 추가 권한을 true 로 변경한다. (O)
+          //3. 변경 후, 홈 화면으로 가서 사용자의 질문을 보낸다 (화면과 서버에, sendMessageToServer())
+          //4. 사용자의 질문과 쿠키의 답변을 화면에 나타낸다.
+        }}
+        imageSource={adsImage}
+        modalContent={
+          TestIds.REWARDED === adUnitId
+            ? `광고를 시청하면\n쿠키에게 사진을 보여줄 수 있어요 :)`
+            : `광고를 시청하면\n쿠키에게 사진을 보여줄 수 있어요`
+        }
+      />
     </SafeAreaView>
   );
 };

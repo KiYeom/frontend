@@ -28,8 +28,6 @@ const TierModal = ({
   imageSource?: ImageSourcePropType;
   modalContent?: string;
 }) => {
-  const [legelAllowed, setLegelAllowed] = React.useState<boolean>(false);
-
   return (
     <View>
       <Modal visible={modalVisible} animationType="fade" transparent>

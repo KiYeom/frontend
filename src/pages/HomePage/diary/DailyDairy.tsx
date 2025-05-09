@@ -37,7 +37,6 @@ import TierModal from '../../../components/modals/tier-modal';
 import AdsModal from '../../../components/modals/ads-modal';
 import { getUserInfo } from '../../../apis/setting';
 import { ActivityIndicator, StyleSheet } from 'react-native';
-import config from '../../../utils/config';
 import {
   BannerAd,
   BannerAdSize,
@@ -54,23 +53,31 @@ import {
   getCanSendPhoto,
   setCanSendPhoto,
 } from '../.././../utils/storageUtils';
+import Constants from 'expo-constants';
+//import adUnitId from '../../../utils/advertise';
+import { getUserNickname } from '../../../utils/storageUtils';
 
-//fix : env 로
-//const ANDROID_AD_UNIT_ID = process.env.EXPO_PUBLIC_ADMOB_ID_ANDROID;
-//const IOS_AD_UNIT_ID = process.env.EXPO_PUBLIC_ADMOB_ID_IOS;
-
-const ANDROID_AD_UNIT_ID = 'ca-app-pub-8136917168968629/7210877770';
-const IOS_AD_UNIT_ID = 'ca-app-pub-8136917168968629/5465491775';
-
-const adUnitId = config.getAdUnitId(ANDROID_AD_UNIT_ID, IOS_AD_UNIT_ID);
-//console.log('adUnitId:', adUnitId);
-//리스너 중복 등록 확인
-//let listenerCount = 0;
+const userName = getUserNickname() ?? 'Test_remind_empty';
+const appVariant = Constants.expoConfig?.extra?.appVariant;
+const isProductionOrStaging = appVariant === 'production' || appVariant === 'staging';
+const isTestUser = userName === 'Test_remind';
+const adUnitId =
+  isProductionOrStaging && !isTestUser
+    ? Platform.OS === 'android'
+      ? process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_ANDROID
+      : process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_IOS
+    : TestIds.REWARDED;
 
 const localImage: ImageSourcePropType = require('../../../assets/images/cookie_pic_alarm.png');
 const adsImage: ImageSourcePropType = require('../../../assets/images/ads_cookie.png');
 
 const DailyDairy = ({ navigation, route }) => {
+  /*console.log('일기장 adUnitId', adUnitId);
+  console.log('테스트 Id 인가?!', TestIds.REWARDED);
+  console.log('현재 빌드 상태', appVariant);
+  console.log('비교군', testEnv);
+  console.log('테스트 값인가?', TestIds.REWARDED === adUnitId);*/
+  console.log('가지고 온 adUnitId', adUnitId);
   const { dateID } = route.params;
   const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();
@@ -307,6 +314,7 @@ const DailyDairy = ({ navigation, route }) => {
     }
     if (images.length >= MAX_DIARY_IMAGE_COUNT) {
       setModalVisible(true);
+
       return;
     }
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -511,7 +519,11 @@ const DailyDairy = ({ navigation, route }) => {
           watchAds(); //광고가 로드된 상태에서 광고 보여주기
         }}
         imageSource={adsImage}
-        modalContent={`광고를 시청하면\n일기에 사진을 첨부할 수 있어요!`}
+        modalContent={
+          TestIds.REWARDED === adUnitId
+            ? `광고를 시청하면\n일기에 사진을 첨부할 수 있어요 :)`
+            : `광고를 시청하면\n일기에 사진을 첨부할 수 있어요!`
+        }
       />
       {isNavigationLoading && (
         <View

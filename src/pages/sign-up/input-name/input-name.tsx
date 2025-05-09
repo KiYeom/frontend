@@ -31,7 +31,7 @@ import {
   SubContentContainer,
 } from './input-name.styles';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { rsWidth } from '../../../utils/responsive-size';
+import { rsWidth, rsHeight } from '../../../utils/responsive-size';
 import NewCheckBox from '../../../components/v3-checkbox/NewCheckBox';
 import { switchChatTone } from '../../../apis/setting';
 
@@ -140,7 +140,9 @@ const InputName = ({ route, navigation }) => {
               <Annotation>{messages[messageStyle].annotation}</Annotation>
               <Title>{messages[messageStyle].onboardTitle}</Title>
             </TitleTextContainter>
-            <Icon name="hello-cookie" width={rsWidth * 84} height={rsWidth * 103} />
+            <View>
+              <Icon name="hello-cookie" width={rsWidth * 70} height={rsHeight * 103} />
+            </View>
           </TitleContainer>
 
           <ContentContainer>
@@ -164,6 +166,7 @@ const InputName = ({ route, navigation }) => {
                   style={{ width: '45%' }}
                   onPress={() => {
                     //console.log('존댓말 클릭');
+                    Analytics.clickFormalChatStyleButton();
                     setIsCasualMode(false);
                   }}>
                   <Button title="존댓말" disabled={isCasualMode} primary={false} />
@@ -172,6 +175,7 @@ const InputName = ({ route, navigation }) => {
                   style={{ width: '45%' }}
                   onPress={() => {
                     //console.log('반말 클릭');
+                    Analytics.clickInformalChatStyleButton();
                     setIsCasualMode(true);
                   }}>
                   <Button title="반말" disabled={!isCasualMode} primary={false} />

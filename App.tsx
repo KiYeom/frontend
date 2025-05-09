@@ -43,32 +43,24 @@ import 'react-native-gesture-handler';
 import Favorites from './src/pages/HomePage/favorites/favorites';
 import Constants from 'expo-constants';
 
-const { APP_ENV } = Constants.expoConfig?.extra || {};
+/*const { APP_ENV } = Constants.expoConfig?.extra || {};
 // 환경 확인
 const isProduction = APP_ENV === 'production';
 const isStaging = APP_ENV === 'staging';
 const isDevelopment = APP_ENV === 'development' || !APP_ENV; // APP_ENV가 없으면 개발 환경으로 간주
+*/
+const appVariant = Constants.expoConfig?.extra?.appVariant;
+const isProductionOrStaging = appVariant === 'production' || appVariant === 'staging';
 
-if (!__DEV__) {
+if (isProductionOrStaging) {
   Sentry.init({
     dsn: 'https://038362834934b1090d94fe368fdbcbf7@o4507944128020480.ingest.us.sentry.io/4507944132870145',
   });
 }
-if (!__DEV__ && isStaging && process.env.EXPO_PUBLIC_AMPLITUDE) {
-  console.log('staging');
+if (isProductionOrStaging && process.env.EXPO_PUBLIC_AMPLITUDE) {
   amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE, undefined, {
     minIdLength: 1,
   });
-}
-
-if (!__DEV__ && process.env.EXPO_PUBLIC_AMPLITUDE) {
-  amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE, undefined, {
-    minIdLength: 1,
-  });
-} else {
-  /*console.log(
-    __DEV__ ? '[Amplitude] skipped in development (__DEV__=true)' : '[Amplitude] no API key found',
-  );*/
 }
 
 SplashScreen.preventAutoHideAsync();
