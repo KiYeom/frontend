@@ -169,11 +169,11 @@ const NewChat: React.FC = ({ navigation }) => {
   // state를 변경할 때마다 ref도 업데이트
   useEffect(() => {
     bufferRef.current = buffer;
-    console.log('buffer ref 업데아트', bufferRef.current);
+    //console.log('buffer ref 업데아트', bufferRef.current);
   }, [buffer]);
   useEffect(() => {
     imageRef.current = image;
-    console.log('image ref 업데아트', imageRef.current);
+    //console.log('image ref 업데아트', imageRef.current);
   }, [image]);
   //textinput 을 가리키고 있는 ref
   const textInputRef = useRef<TextInput>(null);
@@ -187,7 +187,7 @@ const NewChat: React.FC = ({ navigation }) => {
     });
     //console.log(result);
     if (!result.canceled) {
-      console.log('setImage');
+      //console.log('setImage');
       setImage(result.assets[0].uri);
       //핸드폰에서 선택한 사진의 로컬 주소 (file://~)를 저장
     }
@@ -215,11 +215,11 @@ const NewChat: React.FC = ({ navigation }) => {
   useFocusEffect(
     useCallback(() => {
       const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
-        console.log('광고 로드');
+        //console.log('광고 로드');
         setLoaded(true);
       });
       const unsubscribeError = rewarded.addAdEventListener(AdEventType.ERROR, (error) => {
-        console.error('RewardedAd 로드/표시 중 에러:', error);
+        //console.error('RewardedAd 로드/표시 중 에러:', error);
         Analytics.watchNoEarnRewardScreenInChatting();
       });
 
@@ -233,7 +233,7 @@ const NewChat: React.FC = ({ navigation }) => {
           //console.log('광고 시청 후 사진 전송 권한 업데이트 결과', res?.canSendPhoto);
           if (res) {
             if (textInputRef.current) {
-              console.log('입력 필드 초기화');
+              //console.log('입력 필드 초기화');
               textInputRef.current.clear(); // 입력 필드 초기화
             }
             sendMessageToServer();
@@ -334,7 +334,7 @@ const NewChat: React.FC = ({ navigation }) => {
     } catch (error) {
       //console.error('Error showing ad:', error);
       Toast.show('광고 표시 중 오류가 발생했습니다');
-      console.log('광고 표시 중 오류가 발생했습니다', error);
+      //console.log('광고 표시 중 오류가 발생했습니다', error);
       setLoaded(false);
       rewarded.load(); // Try to load again
     }
@@ -451,10 +451,10 @@ const NewChat: React.FC = ({ navigation }) => {
 
     if (!isV3KeyExist) {
       //v3 키가 존재하지 않는 경우 (=로그아웃을 실행하고 채팅 화면을 다시 켰을 때)
-      console.log('🔑🔑🔑🔑🔑🔑🔑🔑🔑v3 키가 존재하지 않음🔑🔑🔑🔑🔑🔑🔑🔑', isV3KeyExist);
+      //console.log('🔑🔑🔑🔑🔑🔑🔑🔑🔑v3 키가 존재하지 않음🔑🔑🔑🔑🔑🔑🔑🔑', isV3KeyExist);
       const v3lastMessageDate = new Date(0);
       const v3ServerMessages = await v3getIMessageFromServer(v3lastMessageDate); //전체 데이터 가져오기
-      console.log('🔑🔑🔑🔑🔑🔑🔑🔑🔑v3ServerMessages', v3ServerMessages);
+      //console.log('🔑🔑🔑🔑🔑🔑🔑🔑🔑v3ServerMessages', v3ServerMessages);
       if (v3ServerMessages && v3ServerMessages.length > 0) {
         //console.log('💚💚💚💚💚💚💚💚💚💚💚이전에 썼던 사람 마이그레이션 하기💚💚💚💚💚💚💚💚');
         setNewIMessagesV3(JSON.stringify(v3ServerMessages)); //로컬 마이그레이션
@@ -526,8 +526,8 @@ const NewChat: React.FC = ({ navigation }) => {
   const sendMessageToServer = () => {
     const buf = bufferRef.current;
     const img = imageRef.current;
-    console.log('sendMessageToServer 실행', buffer, image);
-    console.log('sendMessageToServer 내에서 읽은 값', buf, img);
+    //console.log('sendMessageToServer 실행', buffer, image);
+    //console.log('sendMessageToServer 내에서 읽은 값', buf, img);
     if ((!buf && !img) || sending) return; //텍스트도, 이미지도 없는 경우에는 전송하지 않음
     setSending(true);
     setBuffer(null); // 버퍼 비우기
@@ -836,14 +836,14 @@ const NewChat: React.FC = ({ navigation }) => {
   */
 
   useEffect(() => {
-    console.log('getUserInfo 실행');
+    //console.log('getUserInfo 실행');
     getUserInfo()
       .then((res) => {
         //res.isInformal === false => 반말 모드
-        console.log('getUserInfo 결과', res, res.isInFormal);
+        //console.log('getUserInfo 결과', res, res.isInFormal);
         //res && setIsInformalMode(res.isInFormal);
         if (res) {
-          console.log(`현재 모드 : ${res.isInFormal}`);
+          //console.log(`현재 모드 : ${res.isInFormal}`);
           informalModeRef.current = res.isInFormal;
         } else {
           informalModeRef.current = false; //기본값 : 반말 모드
@@ -857,7 +857,7 @@ const NewChat: React.FC = ({ navigation }) => {
   }, []);
 
   const loadChatHistory = () => {
-    console.log('loadChatHistory 실행');
+    //console.log('loadChatHistory 실행');
     setInit(true);
     if (getRefreshChat() === 0) {
       Analytics.watchNewChatScreen();
@@ -900,7 +900,7 @@ const NewChat: React.FC = ({ navigation }) => {
   //비행기를 클릭헀을 때 실행되는 onSend 함수
   //api 로 유저 - 채팅 한 쌍을 받아오기 전에는 id 값을 임의로 설정하여 화면에 보여준다.
   const onSend = (newMessages: ExtendedIMessage[] = []) => {
-    console.log('onSend 실행', newMessages);
+    //console.log('onSend 실행', newMessages);
     if (!newMessages[0].text.trim() && !newMessages[0].image) {
       return;
     }

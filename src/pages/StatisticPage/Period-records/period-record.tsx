@@ -70,7 +70,7 @@ const PeriodRecord = (props: any) => {
         <View style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}></View>
       </View>
       {records.map((record, index) => {
-        console.log('record', record);
+        //console.log('record', record);
         const iconName = getEmotionIconName(record.keywords[0]);
         return (
           <RecordContainer

@@ -45,7 +45,7 @@ import { MAX_CHAT_IMAGE_WIDTH } from '../../../constants/Constants';
 export const reportMessages = async (messageId: string, isSaved: boolean): string | undefined => {
   //console.log('reportMessags 실행', messageId);
   if (messageId === null) return;
-  //const isSaved: boolean = true;
+  //const isSaved: boolea = true;
   const res = await saveFavoriteChatLog(messageId, !isSaved);
   //console.log('res', res);
   return messageId;

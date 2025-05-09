@@ -17,7 +17,7 @@ const AttachmentPreview: React.FC<Props> = ({ image, onDelete }) => {
       <DeleteButton
         hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
         onPress={() => {
-          console.log('Delete button pressed');
+          //console.log('Delete button pressed');
           onDelete(image);
         }}>
         <Icon name="cancel-icon" width={7} color={'white'} />

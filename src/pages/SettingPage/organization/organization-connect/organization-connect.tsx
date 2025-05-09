@@ -240,7 +240,7 @@ const OrganizationConnect: React.FC = ({ navigation }) => {
         <CTAContainer>
           <TouchableOpacity
             onLongPress={() => {
-              console.log('long press');
+              //console.log('long press');
               showDebugInfoInAlert();
             }}
             activeOpacity={1}>
