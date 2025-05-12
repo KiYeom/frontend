@@ -64,7 +64,7 @@ const HomeStackNavigator: React.FC = () => {
       <HomeStack.Screen
         name={HomeStackName.Quote}
         component={Quote}
-        options={{ headerShown: false }}
+        options={{ header: () => <Header /> }}
       />
     </HomeStack.Navigator>
   );
