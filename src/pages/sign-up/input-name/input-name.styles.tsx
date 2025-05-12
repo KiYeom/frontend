@@ -5,7 +5,19 @@ import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 export const TitleContainer = styled.View`
   height: ${rsHeight * 147 + 'px'};
   gap: ${rsHeight * 10 + 'px'};
-  padding: ${rsHeight * 40 + 'px'} ${rsWidth * 24 + 'px'} 0 ${rsWidth * 24 + 'px'};
+  padding: ${rsHeight * 20 + 'px'} ${rsWidth * 24 + 'px'} 0 ${rsWidth * 24 + 'px'};
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  //background-color: pink;
+`;
+
+export const TitleTextContainter = styled.View`
+  gap: ${rsHeight * 5 + 'px'};
+  display: flex;
+  flex-direction: column;
+  //background-color: yellow;
+  flex: 1;
 `;
 
 export const Annotation = styled.Text`
@@ -21,11 +33,16 @@ export const Description = styled.Text`
 `;
 
 export const Title = styled.Text`
-  font-size: ${rsFont * 30 + 'px'};
+  font-size: ${rsFont * 25 + 'px'};
   font-family: Pretendard-SemiBold;
   color: ${palette.neutral[900]};
 `;
 
+export const SubTitle = styled.Text`
+  font-size: ${rsFont * 18 + 'px'};
+  font-family: Pretendard-Medium;
+  color: ${palette.neutral[900]};
+`;
 export const CTAContainer = styled.View`
   height: ${rsHeight * 136 + 'px'};
   display: flex;
@@ -36,17 +53,32 @@ export const CTAContainer = styled.View`
 export const ContentContainer = styled.View`
   flex: 1;
   gap: ${rsHeight * 32 + 'px'};
+  padding: ${rsHeight * 20 + 'px'} ${rsWidth * 24 + 'px'};
+  //background-color: pink;
+`;
 
-  padding: ${rsHeight * 40 + 'px'} ${rsWidth * 24 + 'px'};
+export const SubContentContainer = styled.View`
+  flex: 1;
+  gap: ${rsHeight * 10 + 'px'};
+  //background-color: yellow;
 `;
 
 export const TermsContainer = styled.View`
-  gap: ${rsHeight * 20 + 'px'};
-  padding: ${rsHeight * 0 + 'px'} ${rsWidth * 24 + 'px'};
+  padding: ${rsHeight * 20 + 'px'} ${rsWidth * 24 + 'px'};
+  gap: ${rsHeight * 15 + 'px'};
+  //background-color: orange;
 `;
 
 export const AlertMessage = styled.Text`
   font-size: ${rsFont * 18 + 'px'};
   font-family: Pretendard-Regular;
   color: ${palette.neutral[400]};
+`;
+
+export const ButtonGroupContainer = styled.View`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  gap: ${rsWidth * 20 + 'px'};
 `;

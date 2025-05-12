@@ -1,15 +1,22 @@
 import 'dotenv/config';
+import { RotationGestureHandler } from 'react-native-gesture-handler';
 const dotenv = require('dotenv');
 dotenv.config();
 
 const environment = process.env.APP_ENV || 'development';
 //console.log('environment', environment);
 
+const IS_DEV = process.env.APP_VARIANT === 'development';
+const IS_PREVIEW = process.env.APP_VARIANT === 'preview';
+const IS_STAGING = process.env.APP_VARIANT === 'staging';
+const IS_PROD = process.env.APP_VARIANT === 'production';
+const appVariant = process.env.APP_VARIANT || 'preview';
+
 module.exports = {
   expo: {
     name: 'reMIND',
     slug: 'reMIND',
-    version: '1.6.9',
+    version: '1.7.9',
     orientation: 'portrait',
     icon: './src/assets/images/appicon.png',
     userInterfaceStyle: 'automatic',
@@ -45,6 +52,7 @@ module.exports = {
       bundler: 'metro',
     },
     extra: {
+      appVariant: appVariant,
       APP_ENV: environment,
       eas: {
         projectId: '1cd0480c-0399-4503-ae2d-ec73641ea4fd',
@@ -85,7 +93,7 @@ module.exports = {
       [
         'expo-notifications',
         {
-          icon: './src/assets/images/notification.png',
+          icon: './src/assets/images/new_new_notification.png',
           color: '#31B28E',
           mode: 'production',
         },
@@ -149,6 +157,12 @@ module.exports = {
         {
           androidAppId: 'ca-app-pub-8136917168968629~3476154076',
           iosAppId: 'ca-app-pub-8136917168968629~7618594976',
+        },
+      ],
+      [
+        'expo-image-picker',
+        {
+          photosPermission: '리마인드에서 사진을 첨부하기 위해서는 사진 선택 권한이 필요합니다.',
         },
       ],
     ],

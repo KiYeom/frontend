@@ -42,6 +42,8 @@ import ChatSearch from './svg/chat-search-icon';
 import ArrowUp from './svg/arrow-up';
 import Picture from './svg/picture';
 import MultiPic from './svg/multi-pic';
+import HelloCookie from './svg/hellocookie';
+import CloverCookie from './svg/clover-cookie';
 
 export type TIconName =
   | 'airplane'
@@ -88,7 +90,10 @@ export type TIconName =
   | 'trash-icon'
   | 'chat-search-icon'
   | 'picture-icon'
-  | 'multi-pic';
+  | 'multi-pic'
+  | 'hello-cookie'
+  | 'picture-icon'
+  | 'clover-cookie';
 
 export default function Icon({
   width,
@@ -212,5 +217,9 @@ export default function Icon({
       return <Picture width={width} height={height} color={color} />;
     case 'multi-pic':
       return <MultiPic width={width} height={height} color={color} />;
+    case 'hello-cookie':
+      return <HelloCookie width={width} height={height} color={color} />;
+    case 'clover-cookie':
+      return <CloverCookie width={width} height={height} color={color} />;
   }
 }

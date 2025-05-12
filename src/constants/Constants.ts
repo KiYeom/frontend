@@ -300,3 +300,5 @@ export const DANGER_LETTER = [
 ];
 
 export const MAX_RETRIES = 3;
+
+export const MAX_CHAT_IMAGE_WIDTH = 176;

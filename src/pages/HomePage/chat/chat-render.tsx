@@ -16,6 +16,8 @@ import {
   TimeProps,
   ComposerProps,
   Composer,
+  Actions,
+  MessageImage,
 } from 'react-native-gifted-chat';
 import CustomMultiTextInput from './CustomMultiTextInput';
 import { TextInput } from 'react-native';
@@ -26,21 +28,24 @@ import { ActivityIndicator, Alert, Image, TouchableOpacity, View, Text } from 'r
 import Icon from '../../../components/icons/icons';
 import TypingIndicator from 'react-native-gifted-chat/src/TypingIndicator';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import { reportChat } from '../../../apis/chatting';
 import { getNewIMessages } from '../../../utils/storageUtils';
 import Input from '../../../components/input/input';
 import { transparent } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 import { saveFavoriteChatLog } from '../../../apis/chatting';
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import UpDownBtn from '../../../components/up-down-button/UpDownBtn';
 import { ExtendedIMessage } from '../../../utils/chatting';
 import HighlightedMessageText from './HighlightMessageText';
 import Analytics from '../../../utils/analytics';
+import * as ImagePicker from 'expo-image-picker';
+import { useState, RefObject } from 'react';
+import ImageShow from '../../../components/image-show/ImageShow';
+import { MAX_CHAT_IMAGE_WIDTH } from '../../../constants/Constants';
 
 export const reportMessages = async (messageId: string, isSaved: boolean): string | undefined => {
   //console.log('reportMessags 실행', messageId);
   if (messageId === null) return;
-  //const isSaved: boolean = true;
+  //const isSaved: boolea = true;
   const res = await saveFavoriteChatLog(messageId, !isSaved);
   //console.log('res', res);
   return messageId;
@@ -73,6 +78,47 @@ export const RenderBubble = (
       return true;
     return false;
   };
+  const isImage = !!props?.currentMessage?.image;
+  const [scaledSize, setScaledSize] = useState({ width: 148, height: 300 });
+
+  useEffect(() => {
+    if (isImage && props?.currentMessage?.image) {
+      Image.getSize(
+        props?.currentMessage?.image,
+        (width, height) => {
+          const maxWidth = rsWidth * MAX_CHAT_IMAGE_WIDTH; // 원하는 최대 너비
+          const scaleFactor = maxWidth / width;
+
+          setScaledSize({
+            width: maxWidth,
+            height: height * scaleFactor,
+          });
+        },
+        (error) => {
+          //console.error('이미지 크기를 가져오는데 실패함:', error);
+        },
+      );
+    }
+  }, [props?.currentMessage?.image]);
+
+  if (isImage) {
+    //console.log('이미지 렌더링 진행');
+    return (
+      <View
+        style={css`
+          flex-direction: ${props.position === 'left' ? 'row' : 'row-reverse'};
+          align-items: flex-end;
+          gap: ${rsWidth * 6 + 'px'};
+          margin-bottom: ${rsHeight * 5 + 'px'};
+          //background-color: blue;
+        `}>
+        <RenderMessageImage {...props} scaledSize={scaledSize} />
+
+        {/* 시간 표시 */}
+        {props.renderTime && props.renderTime({ ...props })}
+      </View>
+    );
+  }
   const isSameSender =
     props.previousMessage &&
     props.previousMessage.user &&
@@ -114,8 +160,8 @@ export const RenderBubble = (
             )}
             textStyle={{
               left: css`
-                //color: ${palette.neutral[500]};
-                color: red;
+                color: ${palette.neutral[500]};
+                //color: red;
                 font-family: Pretendard-Regular;
                 font-size: ${rsFont * 14 + 'px'};
                 text-align: left;
@@ -147,8 +193,13 @@ export const RenderBubble = (
               right: css`
                 max-width: ${rsWidth * 200 + 'px'};
                 background-color: ${palette.primary[500]};
+                //background-color: ${props.currentMessage.image ? 'red' : palette.primary[500]};
                 padding-horizontal: ${rsWidth * 12 + 'px'};
+                /*padding-horizontal: ${props.currentMessage.image
+                  ? 0 + 'px'
+                  : rsWidth * 12 + 'px'};*/
                 padding-vertical: ${rsHeight * 8 + 'px'};
+                //padding-vertical: ${props.currentMessage.image ? 0 + 'px' : rsHeight * 8 + 'px'};
                 margin: 0px;
                 flex: 1;
               `,
@@ -176,6 +227,7 @@ export const RenderBubble = (
               //console.log('메세지', props.currentMessage);
               //reportMessages(props.currentMessage._id, props.currentMessage.isSaved);
               //console.log('icon에서의 press 함수', props.currentMessage._id);
+              //console.log('클릭');
               props.onFavoritePress(props.currentMessage._id);
               Analytics.clickChatLikeButton(props.currentMessage._id);
             }}
@@ -185,6 +237,31 @@ export const RenderBubble = (
 
       {props.renderTime && props.renderTime({ ...props })}
     </Animated.View>
+  );
+};
+
+//1.5.8 이미지 추가
+export const RenderMessageImage = (
+  props: BubbleProps<ExtendedIMessage> & { scaledSize?: { width: number; height: number } },
+) => {
+  const { scaledSize = { width: 148, height: 300 } } = props;
+  return (
+    <MessageImage
+      {...props}
+      lightboxProps={{
+        disabled: true,
+      }}
+      imageStyle={{
+        width: scaledSize.width,
+        height: scaledSize.height,
+        resizeMode: 'contain',
+      }}
+      containerStyle={{
+        margin: 0,
+        padding: 0,
+        backgroundColor: 'transparent',
+      }}
+    />
   );
 };
 
@@ -327,57 +404,158 @@ export const RenderInputToolbar = (
   setEnableDown?: React.Dispatch<React.SetStateAction<boolean>>,
   handleSearch?: (text: string, direction: null | 'up' | 'down') => Promise<string | null>,
   searchWord?: string,
+  pickImage?: () => void,
+  setInputHeight: (value: number) => void,
+  image?: string | null,
+  setImage?: (value: string | null) => void,
+  textInputRef?: RefObject<TextInput>,
 ) =>
   !isSearchMode ? (
-    <InputToolbar
-      {...props}
-      containerStyle={{
-        borderTopColor: 'transparent',
-        //backgroundColor: palette.neutral[50],
-        //backgroundColor: 'green',
-        display: 'flex',
-        flexDirection: 'row', // row로 두어야 Input과 Send 버튼이 나란히 배치됨
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingHorizontal: rsWidth * 20,
-        paddingVertical: rsHeight * 8,
-        gap: rsWidth * 20,
-      }}
-      renderComposer={(composerProps) => (
-        <CustomMultiTextInput
-          value={composerProps.text}
-          onChangeText={composerProps.onTextChanged}
-        />
+    <View>
+      {image && (
+        <View>
+          <ImageShow image={image} setImage={setImage} />
+        </View>
       )}
-      renderSend={(sendProps) => (
-        <Send
-          {...props}
-          disabled={sendingStatus}
-          containerStyle={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            alignSelf: 'center',
-            marginLeft: 20 * rsWidth,
-          }}>
-          <Icon
-            name="airplane"
-            color={sendingStatus ? palette.neutral[300] : palette.neutral[400]}
+      <InputToolbar
+        {...props}
+        containerStyle={{
+          borderTopColor: 'transparent',
+          //backgroundColor: palette.neutral[50],
+          //backgroundColor: 'green',
+          display: 'flex',
+          flexDirection: 'row', // row로 두어야 Input과 Send , 사진 버튼이 나란히 배치됨
+          justifyContent: 'center',
+          alignItems: 'center',
+          //paddingHorizontal: rsWidth * 15,
+          paddingVertical: rsHeight * 8,
+          gap: rsWidth * 20,
+          position: 'relative',
+        }}
+        renderActions={(actionProps) => (
+          <Actions
+            {...actionProps}
+            containerStyle={{
+              //backgroundColor: 'red',
+              //width: 35 * rsWidth,
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              alignSelf: 'center',
+              marginRight: 15,
+            }}
+            icon={() => (
+              <Icon
+                name="picture-icon"
+                width={rsWidth * 20}
+                height={rsHeight * 20}
+                color={palette.neutral[400]}
+              />
+            )}
+            onPressActionButton={() => {
+              //console.log('액션 버튼 클릭됨');
+              Analytics.clickAddPicButtonInChatting();
+              pickImage();
+            }}
           />
-        </Send>
-      )}
-    />
+        )}
+        renderComposer={(composerProps) => (
+          <CustomMultiTextInput
+            value={composerProps.text}
+            onChangeText={composerProps.onTextChanged}
+            setInputHeight={setInputHeight}
+            textInputRef={textInputRef}
+          />
+        )}
+        renderSend={(sendProps) => (
+          <Send
+            {...props}
+            disabled={sendingStatus}
+            containerStyle={{
+              //backgroundColor: 'yellow',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              alignSelf: 'center',
+              marginRight: 10 * rsWidth,
+              marginLeft: 15 * rsWidth,
+              //backgroundColor: 'yellow',
+            }}>
+            <TouchableOpacity
+              onPress={async () => {
+                if (sendingStatus) return;
+                const imageUrl = image;
+
+                // 텍스트와 이미지 모두 있을 때: 두 개의 메시지 전송
+                if (sendProps.text && image && image.length > 0) {
+                  sendProps.onSend(
+                    [
+                      {
+                        ...sendProps.currentMessage,
+                        text: sendProps.text,
+                        // 필요한 경우 고유 ID와 생성 시각 추가
+                        // _id: uuid(),
+                        // createdAt: new Date(),
+                      },
+                      {
+                        ...sendProps.currentMessage,
+                        image: imageUrl,
+                        text: ' ', // 텍스트 말풍선에 영향이 없도록 공백 문자 사용
+                      },
+                    ],
+                    true,
+                  );
+                  return;
+                }
+
+                // 이미지만 있는 경우: 이미지 메시지 하나 전송
+                if (image && image.length > 0) {
+                  sendProps.onSend(
+                    [
+                      {
+                        ...sendProps.currentMessage,
+                        image: imageUrl,
+                        text: ' ', // 텍스트 말풍선이 생성되지 않도록 처리
+                      },
+                    ],
+                    true,
+                  );
+                  return;
+                }
+
+                // 텍스트만 있는 경우: 텍스트 메시지 하나 전송
+                if (sendProps.text && sendProps.text.length > 0) {
+                  sendProps.onSend(
+                    [
+                      {
+                        ...sendProps.currentMessage,
+                        text: sendProps.text,
+                      },
+                    ],
+                    true,
+                  );
+                  return;
+                }
+                // 텍스트도 이미지도 없는 경우는 아무 작업도 하지 않습니다.
+              }}>
+              <Icon
+                name="airplane"
+                color={sendingStatus ? palette.neutral[300] : palette.neutral[400]}
+              />
+            </TouchableOpacity>
+          </Send>
+        )}
+      />
+    </View>
   ) : (
     <>
-      <View>
-        {/*<Text>히히헤헤</Text>*/}
-        <UpDownBtn
-          enableUp={enableUp}
-          enableDown={enableDown}
-          handleSearch={handleSearch}
-          searchWord={searchWord}></UpDownBtn>
-      </View>
+      {/*<Text>히히헤헤</Text>*/}
+      <UpDownBtn
+        enableUp={enableUp}
+        enableDown={enableDown}
+        handleSearch={handleSearch}
+        searchWord={searchWord}></UpDownBtn>
     </>
   );
 

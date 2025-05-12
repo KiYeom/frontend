@@ -5,7 +5,10 @@ import {
   TOldAnswer,
   TChatAnswerV3,
   TChatSearchResult,
+  TChatSendPhotoPermission,
 } from './chatting.types';
+import { Platform } from 'react-native';
+import { uriToBlob } from '../utils/chatting';
 import { instance } from './interceptor';
 
 const errorMessage: TChatAnswerV3 = [
@@ -16,27 +19,75 @@ const errorMessage: TChatAnswerV3 = [
   },
 ];
 
+export const updateSendPhotoPermission = async (
+  canSendPhoto: boolean,
+): Promise<TChatSendPhotoPermission | undefined> => {
+  try {
+    const res = await instance.patch('/v1/users/update-sendphoto', { canSendPhoto });
+    return res.data;
+  } catch (error) {
+    //console.log('updateSendPhotoPermission error', error);
+    return;
+  }
+};
+
 export const chatting = async (
   characterId: number,
   question: string,
   isDemo: boolean = false,
+  image?: string,
 ): Promise<TChatAnswerV3 | undefined> => {
+  const maxAttempts = 3;
   let attempts = 0;
-  while (attempts < 3) {
+
+  while (attempts < maxAttempts) {
     try {
       attempts++;
-      const res = await instance.post('/v3/chat/memory', {
-        characterId,
-        question: ' '.repeat(attempts - 1) + question,
-        isDemo,
-      });
-      return res.data; //나의 질문쌍과 ai의 대답쌍을 한 번에 리턴
+
+      if (image) {
+        const formData = new FormData();
+        formData.append('characterId', characterId.toString());
+        formData.append('question', question);
+        formData.append('isDemo', isDemo ? 'true' : 'false');
+
+        const filename = image.split('/').pop() || 'image.jpg';
+        const match = /\.(\w+)$/.exec(filename);
+        const fileExtension = match ? match[1].toLowerCase() : 'jpg';
+        const mimeType = `image/${fileExtension === 'jpg' ? 'jpeg' : fileExtension}`;
+
+        // Correct URI handling for Android
+        let correctedUri = image;
+        if (Platform.OS === 'android' && !image.startsWith('file://')) {
+          correctedUri = `file://${image}`;
+        }
+
+        const fileObj = {
+          uri: correctedUri,
+          name: filename,
+          type: mimeType,
+        };
+
+        //console.log('Processing image:', fileObj);
+        formData.append('image', fileObj as any);
+
+        // Let Axios handle content-type and boundary automatically
+        const res = await instance.post('/v3/chat/memory', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        return res.data;
+      } else {
+        const res = await instance.post('/v3/chat/memory', {
+          characterId,
+          question,
+          isDemo,
+        });
+        return res.data;
+      }
     } catch (error) {
-      //Sentry.captureMessage(`실패 : ${attempts}번째 실패`);
-      if (attempts >= 3) {
-        //Sentry.captureMessage(`최종 실패 : ${attempts}번째 실패`);
-        //Sentry.captureException(error); // Sentry에 에러 전송
-        return errorMessage;
+      //console.log(`Attempt ${attempts} failed:`, error);
+
+      if (attempts >= maxAttempts) {
+        throw error;
       }
     }
   }
