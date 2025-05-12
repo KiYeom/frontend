@@ -15,6 +15,7 @@ import DrawerNavigator from './DrawerNavigator';
 import Favorites from '../pages/HomePage/favorites/favorites';
 import StatisticMain from '../pages/StatisticPage/StatisticMain';
 import Home from '../pages/HomePage/Home';
+import Quote from '../pages/HomePage/quote/quote';
 const HomeStack = createNativeStackNavigator();
 
 const HomeStackNavigator: React.FC = () => {
@@ -57,6 +58,12 @@ const HomeStackNavigator: React.FC = () => {
       <HomeStack.Screen
         name={HomeStackName.Favorites}
         component={Favorites}
+        options={{ headerShown: false }}
+      />
+      {/* 1.8.9 quote 추가 */}
+      <HomeStack.Screen
+        name={HomeStackName.Quote}
+        component={Quote}
         options={{ headerShown: false }}
       />
     </HomeStack.Navigator>

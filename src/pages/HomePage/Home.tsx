@@ -26,6 +26,7 @@ import { getKoreanServerTodayDateString } from '../../utils/times';
 import { useRiskStoreVer2 } from '../../store/useRiskStoreVer2';
 import CustomCalendar from '../../components/customCalendar/customCalendar';
 import { dailyEmotionAnalyze } from '~/src/apis/analyze';
+import Button from '../../components/button/button';
 const defaultHomeCarousel = [
   {
     page: 1,
@@ -189,6 +190,15 @@ const Home: React.FC<any> = ({ navigation }) => {
 
           <CustomCalendar navigation={navigation} />
         </View>
+        <Button
+          title="오늘의 행복을 확인해보세요"
+          onPress={() => {
+            navigation.navigate(RootStackName.HomeStackNavigator, {
+              screen: HomeStackName.Quote,
+            });
+          }}
+          primary={true}
+        />
       </ScrollView>
     </View>
   );
