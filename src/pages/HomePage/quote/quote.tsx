@@ -132,8 +132,16 @@ const Quote: React.FC = () => {
       console.log(e);
     }
   };
+
   //사진 공유
   const onShareImageAsync = async () => {
+    const isSharingAvailable = await Sharing.isAvailableAsync();
+    console.log('isSharingAvailable', isSharingAvailable);
+    if (!isSharingAvailable) {
+      alert('이 기기에서는 공유 기능을 사용할 수 없습니다.');
+      console.log('Sharing API is not available on this device.');
+      return; // 공유 기능 사용 불가 시 함수 종료
+    }
     try {
       const localUri = await captureRef(imageRef, {
         height: 440,
