@@ -1,6 +1,7 @@
 import styled from '@emotion/native';
 import palette from '../../../assets/styles/theme';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
+import { EdgeInsets } from 'react-native-safe-area-context';
 
 export const TitleContainer = styled.View`
   height: ${rsHeight * 147 + 'px'};
@@ -29,4 +30,12 @@ export const Title = styled.Text`
   font-size: ${rsFont * 30 + 'px'};
   font-family: Pretendard-SemiBold;
   color: ${palette.neutral[900]};
+`;
+
+export const Container = styled.View<{ insets: EdgeInsets }>`
+  padding-top: ${(props) => props.insets.top + 'px'};
+  flex: 1;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: ${palette.neutral[50]};
 `;

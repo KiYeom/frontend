@@ -1,6 +1,3 @@
-/*
-quote 페이지 : 안전 영역만을 제거하고, 화면 가운데에 hellow world을 출력하는 페이지
-*/
 import React, { useRef, useEffect, useMemo, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -20,7 +17,8 @@ import {
 } from 'react-native-google-mobile-ads';
 import { getUserNickname } from '../../../utils/storageUtils';
 import Constants from 'expo-constants';
-import { Annotation, TitleContainer, TitleTextContainter, Title } from './qutoe.style';
+import { Annotation, TitleContainer, TitleTextContainter, Title, Container } from './qutoe.style';
+import { getUserCanOpenQuote, updateUserCanOpenQuote } from '../../../apis/positive-quote';
 
 const appVariant = Constants.expoConfig?.extra?.appVariant;
 const isProductionOrStaging = appVariant === 'production' || appVariant === 'staging';
@@ -41,6 +39,9 @@ const Quote: React.FC = () => {
   const animation = useRef<LottieView>(null);
 
   const [loaded, setLoaded] = React.useState<boolean>(false);
+  const [uiMode, setUiMode] = React.useState<'beforeOpenCookie' | 'showCookieResult'>(
+    'beforeOpenCookie',
+  );
 
   const rewarded = useMemo(
     () =>
@@ -61,6 +62,9 @@ const Quote: React.FC = () => {
         RewardedAdEventType.EARNED_REWARD,
         async (reward) => {
           console.log('User earned reward of ', reward);
+          //api 호출하여 오늘 열어봤음을 업데이트 하기
+          await updateUserCanOpenQuote();
+          setUiMode('showCookieResult'); //state를 변경하기 (uiMode를 showCookieResult로 변경하기)
         },
       );
       //광고가 닫힐 때 실행되는 이벤트 리스터
@@ -79,10 +83,35 @@ const Quote: React.FC = () => {
     }, [rewarded]),
   );
 
-  rewarded.load();
+  useEffect(() => {
+    getUserCanOpenQuote().then((response) => {
+      if (response && response.result) {
+        console.log('오늘 열어본 적 없음');
+        setUiMode('beforeOpenCookie');
+      } else if (response && !response.result) {
+        console.log('오늘 열어본 적 있음');
+        setUiMode('showCookieResult'); //이미 까봤음
+      } else {
+        console.log('문제가 발생함');
+        setUiMode('beforeOpenCookie');
+      }
+    });
+  }, []);
 
+  rewarded.load();
+  console.log('uiMode', uiMode);
+
+  //오늘 열어본 적이 있다면
+  if (uiMode === 'showCookieResult') {
+    return (
+      <Container insets={insets}>
+        <Text>너는 행운아입니다</Text>
+      </Container>
+    );
+  }
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
+    //오늘 열어본 적이 없다면
+    <Container insets={insets}>
       <TitleContainer>
         <TitleTextContainter>
           <Annotation>세잎클로버를 터치해보세요!</Annotation>
@@ -107,21 +136,7 @@ const Quote: React.FC = () => {
           }}
         />
       </TouchableOpacity>
-    </View>
+    </Container>
   );
 };
 export default Quote;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    backgroundColor: 'pink',
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#000',
-  },
-});

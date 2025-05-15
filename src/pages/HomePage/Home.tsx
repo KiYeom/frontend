@@ -131,7 +131,8 @@ const Home: React.FC<any> = ({ navigation }) => {
             padding-horizontal: ${rsWidth * 20 + 'px'};
             padding-bottom: ${rsWidth * 20 + 'px'};
             flex: 1;
-            gap: ${rsHeight * 20 + 'px'};
+            gap: ${rsHeight * 15 + 'px'}; //gap 20 -> 15
+            //background-color: blue;
           `}>
           <Header
             riskStatus={riskStatusV2}
@@ -153,11 +154,13 @@ const Home: React.FC<any> = ({ navigation }) => {
               navigateToDangerAlert();
             }}
           />
+
+          {/* 캐러셀 */}
           <View style={{ position: 'relative' }}>
             <Carousel
               ref={ref}
               width={width}
-              height={rsHeight * 112}
+              height={rsHeight * 100} //112 -> 100
               data={carousels}
               onProgressChange={progress}
               defaultIndex={0}
@@ -208,22 +211,49 @@ const Home: React.FC<any> = ({ navigation }) => {
             </View>
           </View>
 
-          <View style={{ backgroundColor: 'pink', height: 60, flexDirection: 'row', gap: 10 }}>
+          {/* 스트릭 */}
+          <View
+            style={{
+              //backgroundColor: 'pink',
+              height: 60,
+              flexDirection: 'row',
+              gap: 10,
+            }}>
             <StreakCard icon="fire" value={`${currentStreak}일`} label="연속 일기 기록수" />
             <StreakCard icon="twinkle-cookie" value={`${maxStreak}일`} label="최장 일기 기록수" />
           </View>
 
+          {/* 캘린더 변경 */}
           <CustomCalendar navigation={navigation} />
         </View>
-        <View style={{ backgroundColor: 'pink', justifyContent: 'center', alignItems: 'center' }}>
-          <ActionButton
-            onPress={() => {
-              navigation.navigate(RootStackName.HomeStackNavigator, {
-                screen: HomeStackName.Quote,
-              });
-            }}></ActionButton>
-        </View>
       </ScrollView>
+      {/* 행복 버튼 */}
+      <View
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'absolute',
+          bottom: 0,
+          left: 20,
+          right: 20,
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+          elevation: 5,
+          borderRadius: 50,
+          //backgroundColor: 'white',
+        }}>
+        <ActionButton
+          onPress={() => {
+            navigation.navigate(RootStackName.HomeStackNavigator, {
+              screen: HomeStackName.Quote,
+            });
+          }}></ActionButton>
+      </View>
     </View>
   );
 };
