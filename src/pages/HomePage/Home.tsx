@@ -9,6 +9,7 @@ import { useSharedValue } from 'react-native-reanimated';
 import { getCarousel } from '../../apis/carousel';
 import { TCarousel } from '../../apis/carousel.types';
 import { getRiskScore } from '../../apis/riskscore';
+import StreakCard from '../../components/streak/streak';
 import {
   DANGER_LETTER,
   DangerStackName,
@@ -27,6 +28,7 @@ import { useRiskStoreVer2 } from '../../store/useRiskStoreVer2';
 import CustomCalendar from '../../components/customCalendar/customCalendar';
 import { dailyEmotionAnalyze } from '~/src/apis/analyze';
 import Button from '../../components/button/button';
+import Streak from '../../components/streak/streak';
 const defaultHomeCarousel = [
   {
     page: 1,
@@ -186,6 +188,11 @@ const Home: React.FC<any> = ({ navigation }) => {
                 onPress={onPressPagination}
               />
             </View>
+          </View>
+
+          <View style={{ backgroundColor: 'pink', height: 60, flexDirection: 'row', gap: 10 }}>
+            <StreakCard icon="fire" value="5일" label="연속 일기 기록수" />
+            <StreakCard icon="twinkle-cookie" value="10일" label="최장 일기 기록수" />
           </View>
 
           <CustomCalendar navigation={navigation} />
