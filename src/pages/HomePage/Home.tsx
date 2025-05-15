@@ -29,6 +29,7 @@ import CustomCalendar from '../../components/customCalendar/customCalendar';
 import { dailyEmotionAnalyze } from '~/src/apis/analyze';
 import Button from '../../components/button/button';
 import Streak from '../../components/streak/streak';
+import { getUserDiaryStreak } from '../../apis/user-streak';
 const defaultHomeCarousel = [
   {
     page: 1,
@@ -49,6 +50,8 @@ const Home: React.FC<any> = ({ navigation }) => {
   //const [riskScore, setRiskScore] = React.useState<number>(0);
   //const [riskStatus, setRiskStatus] = React.useState<'safe' | 'danger' | 'danger-opened'>('safe');
   const [carousels, setCarousels] = React.useState<TCarousel[]>(defaultHomeCarousel);
+  const [currentStreak, setCurrentStreak] = React.useState<number>(0); //현재 연속 기록 일수
+  const [maxStreak, setMaxStreak] = React.useState<number>(0); //최장 연속 기록 일수
   const insets = useSafeAreaInsets();
   const { riskScoreV2, riskStatusV2, setRiskScoreV2, setRiskStatusV2, setHandleDangerPressV2 } =
     useRiskStoreVer2();
@@ -91,6 +94,20 @@ const Home: React.FC<any> = ({ navigation }) => {
     /*navigation.navigate(RootStackName.HomeStackNavigator, {
       screen: HomeStackName.NewChat,
     });*/
+  }, []);
+
+  useEffect(() => {
+    getUserDiaryStreak()
+      .then((res) => {
+        console.log('user-streak 정보', res);
+        if (res) {
+          setCurrentStreak(res.currentStreak);
+          setMaxStreak(res.maxStreak);
+        }
+      })
+      .catch((error) => {
+        console.error('user-streak 정보 가져오기 실패', error);
+      });
   }, []);
 
   //홈 화면으로 포커스 될 때마다 위험 점수를 갱신한다.
@@ -191,8 +208,8 @@ const Home: React.FC<any> = ({ navigation }) => {
           </View>
 
           <View style={{ backgroundColor: 'pink', height: 60, flexDirection: 'row', gap: 10 }}>
-            <StreakCard icon="fire" value="5일" label="연속 일기 기록수" />
-            <StreakCard icon="twinkle-cookie" value="10일" label="최장 일기 기록수" />
+            <StreakCard icon="fire" value={`${currentStreak}일`} label="연속 일기 기록수" />
+            <StreakCard icon="twinkle-cookie" value={`${maxStreak}일`} label="최장 일기 기록수" />
           </View>
 
           <CustomCalendar navigation={navigation} />
