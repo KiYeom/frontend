@@ -134,13 +134,14 @@ const Quote: React.FC = () => {
   };
   //사진 공유
   const onShareImageAsync = async () => {
-    if (image) {
-      try {
-        await Sharing.shareAsync(image);
-      } catch (error) {
-        console.error('Error sharing image:', error);
-      }
-    } else {
+    try {
+      const localUri = await captureRef(imageRef, {
+        height: 440,
+        quality: 1,
+      });
+      await Sharing.shareAsync(localUri);
+    } catch (error) {
+      console.error('Error sharing image:', error);
       alert('Please select an image first.');
     }
   };
