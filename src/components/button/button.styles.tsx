@@ -8,6 +8,7 @@ export const ButtonContainer = styled.TouchableOpacity<{
   icon?: string;
 }>`
   display: flex;
+  flex: 1; //1.7.10 추가
   flex-direction: ${(props) => (props.icon ? 'row' : 'column')};
   align-items: center;
   justify-content: center;

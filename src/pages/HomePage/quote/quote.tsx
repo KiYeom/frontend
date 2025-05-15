@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useMemo, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, Image, Alert } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { rsWidth } from '../../../utils/responsive-size';
 import { useNavigation } from '@react-navigation/native';
@@ -19,7 +19,10 @@ import { getUserNickname } from '../../../utils/storageUtils';
 import Constants from 'expo-constants';
 import { Annotation, TitleContainer, TitleTextContainter, Title, Container } from './qutoe.style';
 import { getUserCanOpenQuote, updateUserCanOpenQuote } from '../../../apis/positive-quote';
-
+import Button from '../../../components/button/button';
+import { captureRef } from 'react-native-view-shot';
+import * as MediaLibrary from 'expo-media-library';
+import * as Sharing from 'expo-sharing';
 const appVariant = Constants.expoConfig?.extra?.appVariant;
 const isProductionOrStaging = appVariant === 'production' || appVariant === 'staging';
 const userName = getUserNickname() ?? 'Test_remind_empty';
@@ -42,6 +45,15 @@ const Quote: React.FC = () => {
   const [uiMode, setUiMode] = React.useState<'beforeOpenCookie' | 'showCookieResult'>(
     'beforeOpenCookie',
   );
+  const [status, requestPermission] = MediaLibrary.usePermissions(); //사진 권한
+  const imageRef = useRef<View>(null);
+  const [image, setImage] = React.useState<string | null>(null);
+
+  if (status === null) {
+    requestPermission();
+  } else {
+    console.log('사진 권한 상태', status);
+  }
 
   const rewarded = useMemo(
     () =>
@@ -101,11 +113,76 @@ const Quote: React.FC = () => {
   rewarded.load();
   console.log('uiMode', uiMode);
 
+  //사진 저장 함수
+  const onSaveImageAsync = async () => {
+    try {
+      const localUri = await captureRef(imageRef, {
+        height: 440,
+        quality: 1,
+      });
+
+      await MediaLibrary.saveToLibraryAsync(localUri);
+      if (localUri) {
+        Alert.alert(
+          '저장 완료🎉', // 1. 짧고 굵은 제목
+          '사진이 갤러리에 저장되었습니다', // 메시지
+        );
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  //사진 공유
+  const onShareImageAsync = async () => {
+    if (image) {
+      try {
+        await Sharing.shareAsync(image);
+      } catch (error) {
+        console.error('Error sharing image:', error);
+      }
+    } else {
+      alert('Please select an image first.');
+    }
+  };
+
   //오늘 열어본 적이 있다면
   if (uiMode === 'showCookieResult') {
     return (
       <Container insets={insets}>
-        <Text>너는 행운아입니다</Text>
+        <View style={{ flex: 1 }} ref={imageRef} collapsable={false}>
+          <Text>너는 행운아입니다</Text>
+          <Image
+            source={require('../../../assets/images/blue_bubble.png')}
+            style={{ width: 200, height: 200 }}
+          />
+        </View>
+
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            gap: 20,
+            paddingHorizontal: 24,
+            paddingBottom: insets.bottom,
+          }}>
+          <Button
+            title="저장하기"
+            onPress={() => {
+              console.log('저장히기 버튼 클릭');
+              onSaveImageAsync();
+              //navigation.navigate('Home');
+            }}
+            primary={false}
+          />
+          <Button
+            title="공유하기"
+            onPress={async () => {
+              console.log('공유하기 버튼 클릭');
+              onShareImageAsync();
+            }}
+            primary={true}
+          />
+        </View>
       </Container>
     );
   }

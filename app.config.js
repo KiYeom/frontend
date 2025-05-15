@@ -165,6 +165,15 @@ module.exports = {
           photosPermission: '리마인드에서 사진을 첨부하기 위해서는 사진 선택 권한이 필요합니다.',
         },
       ],
+      [
+        'expo-media-library',
+        {
+          photosPermission: '리마인드에서 사진을 첨부하기 위해서는 사진 선택 권한이 필요합니다.',
+          savePhotosPermission:
+            '리마인드에서 사진을 저장하기 위해서는 사진 저장 권한이 필요합니다.',
+          isAccessMediaLocationEnabled: true,
+        },
+      ],
     ],
     runtimeVersion: '1.0.0',
     updates: {
