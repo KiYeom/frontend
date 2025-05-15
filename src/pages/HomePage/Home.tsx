@@ -30,6 +30,7 @@ import { dailyEmotionAnalyze } from '~/src/apis/analyze';
 import Button from '../../components/button/button';
 import Streak from '../../components/streak/streak';
 import { getUserDiaryStreak } from '../../apis/user-streak';
+import ActionButton from '../../components/action-button/action-button';
 const defaultHomeCarousel = [
   {
     page: 1,
@@ -214,15 +215,14 @@ const Home: React.FC<any> = ({ navigation }) => {
 
           <CustomCalendar navigation={navigation} />
         </View>
-        <Button
-          title="오늘의 행복을 확인해보세요"
-          onPress={() => {
-            navigation.navigate(RootStackName.HomeStackNavigator, {
-              screen: HomeStackName.Quote,
-            });
-          }}
-          primary={true}
-        />
+        <View style={{ backgroundColor: 'pink', justifyContent: 'center', alignItems: 'center' }}>
+          <ActionButton
+            onPress={() => {
+              navigation.navigate(RootStackName.HomeStackNavigator, {
+                screen: HomeStackName.Quote,
+              });
+            }}></ActionButton>
+        </View>
       </ScrollView>
     </View>
   );
