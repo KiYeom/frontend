@@ -23,7 +23,7 @@ import Button from '../../../components/button/button';
 import { captureRef } from 'react-native-view-shot';
 import * as MediaLibrary from 'expo-media-library';
 import * as Sharing from 'expo-sharing';
-import { happyLyrics } from '../../../constants/Constants';
+import { happyLyrics, happyLyricsObject } from '../../../constants/Constants';
 import PhotoCard from '../../../components/photo-card/photo-card';
 const appVariant = Constants.expoConfig?.extra?.appVariant;
 const isProductionOrStaging = appVariant === 'production' || appVariant === 'staging';
@@ -49,8 +49,10 @@ const Quote: React.FC = () => {
   );
   const [status, requestPermission] = MediaLibrary.usePermissions(); //사진 권한
   const imageRef = useRef<View>(null);
-  const [image, setImage] = React.useState<string | null>(null);
-
+  const [selectedLyricObject, setSelectedLyricObject] = React.useState<happyLyricsObject | null>(
+    null,
+  );
+  const [selectedImageSource, setSelectedImageSource] = React.useState<any | null>(null);
   if (status === null) {
     requestPermission();
   } else {
@@ -77,6 +79,11 @@ const Quote: React.FC = () => {
         async (reward) => {
           console.log('User earned reward of ', reward);
           //api 호출하여 오늘 열어봤음을 업데이트 하기
+
+          //랜덤 가사 객체 선택
+          const lyricIndex = Math.floor(Math.random() * happyLyrics.length);
+          setSelectedLyricObject(happyLyrics[lyricIndex]);
+          console.log('랜덤 가사 객체 선택 완료', lyricIndex);
           await updateUserCanOpenQuote();
           setUiMode('showCookieResult'); //state를 변경하기 (uiMode를 showCookieResult로 변경하기)
         },
@@ -97,6 +104,8 @@ const Quote: React.FC = () => {
     }, [rewarded]),
   );
 
+  //쿠키를 까 봤는지를 확인
+  /*
   useEffect(() => {
     getUserCanOpenQuote().then((response) => {
       if (response && response.result) {
@@ -104,16 +113,19 @@ const Quote: React.FC = () => {
         setUiMode('beforeOpenCookie');
       } else if (response && !response.result) {
         console.log('오늘 열어본 적 있음');
-        setUiMode('showCookieResult'); //이미 까봤음
+        //setUiMode('showCookieResult'); //잠깐 주석 처리함
+        setUiMode('beforeOpenCookie');
       } else {
         console.log('문제가 발생함');
         setUiMode('beforeOpenCookie');
       }
     });
-  }, []);
+  }, []);*/
 
   rewarded.load();
   console.log('uiMode', uiMode);
+
+  //랜덤 값 뽑기
 
   //사진 저장 함수
   const onSaveImageAsync = async () => {
@@ -158,10 +170,11 @@ const Quote: React.FC = () => {
 
   //오늘 열어본 적이 있다면
   if (uiMode === 'showCookieResult') {
+    console.log('selectdImageSource', selectedImageSource);
     return (
       <Container insets={insets}>
         <View style={{ flex: 1 }} ref={imageRef} collapsable={false}>
-          <PhotoCard />
+          {selectedLyricObject && <PhotoCard lyricObject={selectedLyricObject} />}
         </View>
 
         <View

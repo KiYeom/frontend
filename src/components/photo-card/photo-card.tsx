@@ -6,7 +6,16 @@ import {
   PhotoCardLyric,
   PhotoCardInfo,
 } from './photo-card.styles';
-const PhotoCard = () => {
+import { happyLyricsObject } from '~/src/constants/Constants';
+type PhotoCardProps = {
+  lyric?: string;
+  singer?: string;
+  title?: string;
+  lyricObject: happyLyricsObject;
+};
+
+const PhotoCard = (props: PhotoCardProps) => {
+  const { lyric, singer, title, lyricObject } = props;
   return (
     <PhotoCardContainer>
       <Image
@@ -14,8 +23,10 @@ const PhotoCard = () => {
         style={{ width: 310, height: 472 }}
       />
       <PhotoCardTextContainer>
-        <PhotoCardLyric>오늘의 행복</PhotoCardLyric>
-        <PhotoCardInfo>데이식스, 제발</PhotoCardInfo>
+        <PhotoCardLyric>{lyricObject?.lyric}</PhotoCardLyric>
+        <PhotoCardInfo>
+          {lyricObject?.singer}, {lyricObject?.title}
+        </PhotoCardInfo>
       </PhotoCardTextContainer>
     </PhotoCardContainer>
   );

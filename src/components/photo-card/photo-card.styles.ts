@@ -12,23 +12,28 @@ export const PhotoCardTextContainer = styled.View`
   background-color: rgba(255, 255, 255, 0.35);
   position: absolute;
   border-radius: 20px;
-  align-items: center;
   padding-vertical: ${rsHeight * 5 + 'px'};
   padding-horizontal: ${rsWidth * 5 + 'px'};
   top: 53px;
   justify-content: center;
+  align-self: center;
+  align-items: center;
+  align-center: center;
   padding-horizontal: ${rsWidth * 5 + 'px'};
   padding-vertical: ${rsHeight * 5 + 'px'};
+  gap: 10px;
 `;
 
 export const PhotoCardLyric = styled.Text`
   font-size: ${rsFont * 15 + 'px'};
-  font-family: Pretendard-Regular;
+  font-family: Kyobo-handwriting;
   color: ${palette.neutral[900]};
+  text-align: center;
 `;
 
 export const PhotoCardInfo = styled.Text`
   font-size: ${rsFont * 11 + 'px'};
-  font-family: Pretendard-Regular;
+  font-family: Kyobo-handwriting;
   color: ${palette.neutral[900]};
+  text-align: center;
 `;
