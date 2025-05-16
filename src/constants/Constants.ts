@@ -303,3 +303,518 @@ export const DANGER_LETTER = [
 export const MAX_RETRIES = 3;
 
 export const MAX_CHAT_IMAGE_WIDTH = 176;
+
+//행복 가사
+export const happyLyrics = [
+  {
+    title: 'Rely On Me',
+    singer: 'James Smith',
+    lyric: `언제든 기대도 좋아. 넘어지지 않게 꼭 붙잡아 줄게\n\n(You can rely on me, I won’t let you fall too far)`,
+  },
+  {
+    title: 'Keep Holding On',
+    singer: 'Avril Lavigne',
+    lyric: `희망이 사라진 것 같을 때, 내면을 바라보고 더욱 강해져\n\n(And when you feel like hope is gone, look inside you and be strong)`,
+  },
+  {
+    title: 'You Are Not Alone',
+    singer: 'Michael Jackson',
+    lyric: `너는 혼자가 아니야, 내가 항상 네 곁에 있어\n\n(You're not alone, I'm here with you)`,
+  },
+  {
+    title: 'The Light',
+    singer: 'Disturbed',
+    lyric: `가장 어두운 밤에도 꺼지지 않는 빛이 있어\n\n(Through the darkest night, there's a light that never goes out)`,
+  },
+  {
+    title: 'Light at the End of the Tunnel',
+    singer: 'Journey',
+    lyric: `계속 견뎌, 터널 끝에는 반드시 빛이 있을 거야\n\n(Just keep holding on, 'cause there's a light at the end of the tunnel)`,
+  },
+  {
+    title: 'Alright',
+    singer: 'Supergrass',
+    lyric: `괜찮아질 거야, 눈물을 닦아내\n\n(It's gonna be alright, dry your eyes)`,
+  },
+  {
+    title: 'Beautiful',
+    singer: 'Christina Aguilera',
+    lyric: `무슨 말을 들어도, 넌 정말 아름다워\n\n(You're beautiful, no matter what they say)`,
+  },
+  {
+    title: 'Lean on Me',
+    singer: 'Bill Withers',
+    lyric: `힘이 없을 때 내게 기대도 좋아\n\n(Lean on me, when you're not strong)`,
+  },
+  {
+    title: 'The Sun Will Shine Again',
+    singer: 'Freddie Mercury',
+    lyric: `태양은 반드시 다시 빛날 거야\n\n(The sun will shine again)`,
+  },
+  {
+    title: "Don't Give Up",
+    singer: 'Peter Gabriel & Kate Bush',
+    lyric: `포기하지 마, 넌 이미 멀리까지 왔어\n\n(Don't give up, you've come so far)`,
+  },
+  {
+    title: 'Three Little Birds',
+    singer: 'Bob Marley & The Wailers',
+    lyric: `모든 작은 걱정들이 다 괜찮아질 거야\n\n(Every little thing is gonna be alright)`,
+  },
+  {
+    title: "I'll Be There",
+    singer: 'The Jackson 5',
+    lyric: `세상이 무거워도, 내가 네 곁에 있을게\n\n(When the world is weighing you down, I'll be around)`,
+  },
+  {
+    title: "You've Got a Friend in Me",
+    singer: 'Randy Newman',
+    lyric: `네겐 내가 있어\n\n(You've got a friend in me)`,
+  },
+  {
+    title: 'This Too Shall Pass',
+    singer: 'OK Go',
+    lyric: `이 또한 반드시 지나갈 거야\n\n(This too shall pass)`,
+  },
+  {
+    title: 'Keep Your Head Up',
+    singer: 'Andy Grammer',
+    lyric: `고개를 들고, 마음을 굳게 지켜\n\n(Keep your head up, keep your heart strong)`,
+  },
+  {
+    title: 'Reason',
+    singer: 'Hoobastank',
+    lyric: `너의 존재는 누군가의 살아가는 이유야\n\n(You are the reason I keep holding on)`,
+  },
+  {
+    title: 'Let It Be',
+    singer: 'The Beatles',
+    lyric: `해답은 언젠가 찾아올 거야, 조금 마음을 내려놔.\n\n(There will be an answer, let it be)`,
+  },
+  {
+    title: 'Firework',
+    singer: 'Katy Perry',
+    lyric: `넌 별이야, 그 누구도 너의 빛을 흐리지 못해\n\n(You're a star, don't ever let them dim your light)`,
+  },
+  {
+    title: 'Breathe (2 AM)',
+    singer: 'Anna Nalick',
+    lyric: `숨 깊이 들이쉬어, 오늘이 유독 힘든 날일 뿐이야, 너의 삶이 나쁜 건 아니야\n\n(Take a deep breath, it's just a bad day, not a bad life)`,
+  },
+  {
+    title: 'Hold On',
+    singer: 'Wilson Phillips',
+    lyric: `좋은 것들을 꼭 붙잡아\n\n(Hold on to what is good)`,
+  },
+  {
+    title: "Stronger (What Doesn't Kill You)",
+    singer: 'Kelly Clarkson',
+    lyric: `넌 너가 알고 있는 것보다 훨씬 강해\n\n(You're stronger than you think)`,
+  },
+  {
+    title: 'Shelter',
+    singer: 'Porter Robinson & Madeon',
+    lyric: `폭풍 속에 네 피난처가 되어줄게\n\n(I will be your shelter in the storm)`,
+  },
+  {
+    title: 'Man in the Mirror',
+    singer: 'Michael Jackson',
+    lyric: `스스로를 믿어, 넌 할 수 있어\n\n(Believe in yourself, you can do it)`,
+  },
+  {
+    title: 'The Best Is Yet to Come',
+    singer: 'Frank Sinatra',
+    lyric: `가장 좋은 날은 아직 오지 않았어\n\n(The best is yet to come)`,
+  },
+  {
+    title: "You've Got a Friend",
+    singer: 'Carole King',
+    lyric: `힘들고 괴로울 때, 내가 도움의 손길이 될게\n\n(When you're down and troubled, and you need a helping hand)`,
+  },
+  {
+    title: "I'll Be There for You",
+    singer: 'The Rembrandts',
+    lyric: `내가 항상 네 곁에 있을게\n\n(I'll be there for you)`,
+  },
+  {
+    title: 'Diamonds',
+    singer: 'Rihanna',
+    lyric: `넌 다이아몬드처럼 빛나, 누구도 널 부술 수 없어\n\n(You're a diamond, they can't break you)`,
+  },
+  {
+    title: 'Hold On',
+    singer: 'Alabama Shakes',
+    lyric: `조금만 더 버텨, 생각하는 것보다 더 나아질 거야\n\n(Hold on, it gets better than you know)`,
+  },
+  {
+    title: 'Mean',
+    singer: 'Taylor Swift',
+    lyric: `예쁜 마음 걱정하지 마,\n\n빛나는 걸 시기하는 사람들이 있을 뿐이야\n\n(Don't you worry your pretty little mind, people throw rocks at things that shine)`,
+  },
+  {
+    title: "I'll Be There",
+    singer: 'Mariah Carey',
+    lyric: `작은 사랑이 필요할 때 내가 항상 있을게\n\n(When you need a little love, I'll be there)`,
+  },
+  {
+    title: 'Umbrella',
+    singer: 'Rihanna ft. Jay-Z',
+    lyric: `내 우산 아래로 들어와, 내가 지켜줄게\n\n(You can stand under my umbrella)`,
+  },
+  {
+    title: 'Through the Rain',
+    singer: 'Mariah Carey',
+    lyric: `너는 반드시 이겨낼 거야\n\n(You're gonna make it through)`,
+  },
+  {
+    title: 'The Scientist',
+    singer: 'Coldplay',
+    lyric: `우리 모두 각자의 길을 찾아가고 있어\n\n(We're all just trying to find our way)`,
+  },
+  {
+    title: 'Hold Fast',
+    singer: 'Mumford & Sons',
+    lyric: `진실된 마음을 굳게 지켜, 영원할 테니까\n\n(Let your heart hold fast, for what is true will last)`,
+  },
+  {
+    title: 'The World We Knew (Over and Over)',
+    singer: 'Frank Sinatra',
+    lyric: `눈을 떠봐, 널 기다리는 세상이 있어\n\n(Open your eyes and see, the world that waits for you)`,
+  },
+  {
+    title: 'Who You Are',
+    singer: 'Jessie J',
+    lyric: `네가 느끼는 부족함이 널 정의하지 않아\n\n(You are not defined by all the things you feel are wrong)`,
+  },
+  {
+    title: 'Compass',
+    singer: 'Zella Day',
+    lyric: `작고 길 잃었다고 느낄 때, 내가 네 나침반이 되어줄게\n\n(When you're feeling small and lost, I'll be your compass)`,
+  },
+  {
+    title: 'When You Wish Upon a Star',
+    singer: 'Cliff Edwards',
+    lyric: `꿈을 믿어, 언젠가 꼭 이루어질 거야\n\n(Just believe in dreams, someday they come true)`,
+  },
+  {
+    title: "Don't Stop Me Now",
+    singer: 'Queen',
+    lyric: `세상이 네 미소를 빼앗지 못하게 해\n\n(Don't let the world change your smile)`,
+  },
+  {
+    title: 'Hope in My Bones',
+    singer: 'OneRepublic',
+    lyric: `내 뼛속 깊이 희망이 있어\n\n(There is hope in my bones)`,
+  },
+  {
+    title: 'Roar',
+    singer: 'Katy Perry',
+    lyric: `더 이상 나는 겁쟁이가 아니라는 것을 보여줄 때야\n\n(You've got to show them that you're really not afraid)`,
+  },
+  {
+    title: 'Watching Over You',
+    singer: 'The Moody Blues',
+    lyric: `내가 늘 널 바라볼게\n\n(I'll be watching over you)`,
+  },
+  {
+    title: 'The Climb',
+    singer: 'Miley Cyrus',
+    lyric: `넌 실패한 게 아니야, 배우고 있을 뿐이야\n\n(You're not a failure, you're learning)`,
+  },
+  {
+    title: 'Keep Moving Forward',
+    singer: 'TobyMac',
+    lyric: `계속 앞으로 나아가\n\n(Just keep moving forward)`,
+  },
+  {
+    title: "I'll Be There",
+    singer: 'Mariah Carey',
+    lyric: `넘어지면 내가 꼭 잡아줄게\n\n(And if you fall, I will catch you, I'll be there)`,
+  },
+  {
+    title: 'Video',
+    singer: 'India.Arie',
+    lyric: `넌 하나의 예술 작품이야, 누가 뭐라 해도 흔들리지 마\n\n(You're a work of art, don't let nobody tell you different)`,
+  },
+  {
+    title: 'Scars to Your Beautiful',
+    singer: 'Alessia Cara',
+    lyric: `있는 그대로 넌 아름다워\n\n(You should know you're beautiful just the way you are)`,
+  },
+  {
+    title: 'Try',
+    singer: 'Colbie Caillat',
+    lyric: `그냥 네 모습 그대로 노력해봐\n\n(You don't have to try so hard)`,
+  },
+  {
+    title: 'Hall of Fame',
+    singer: 'The Script',
+    lyric: `넌 무엇이든 될 수 있어\n\n(You can be the greatest, you can be the best)`,
+  },
+  {
+    title: 'Rise Up',
+    singer: 'Andra Day',
+    lyric: `넘어져도 다시 일어설 거야\n\n(And I'll rise up, high like the waves)`,
+  },
+  {
+    title: 'Next to Me',
+    singer: 'Emeli Sandé',
+    lyric: `험한 세상, 나와 함께 이겨내자\n\n(When the storms come, we'll stand as one, next to me)`,
+  },
+  {
+    title: 'Perfect',
+    singer: 'Pink',
+    lyric: `넌 그 자체로 완벽해\n\n(You're perfect to me)`,
+  },
+  {
+    title: 'Wings',
+    singer: 'Little Mix',
+    lyric: `날개를 펴고 자유롭게 날아올라\n\n(spread your wings my little butterfly)`,
+  },
+  {
+    title: '행운을 빌어줘',
+    singer: '데이식스 (원필)',
+    lyric: `아무쪼록 행운을 빌어 줘. 내 앞길에 행복을 빌어 줘`,
+  },
+  {
+    title: '청춘만화',
+    singer: '이무진',
+    lyric: `분명한 건 지금보다 환하게 빛날 거야 아직 서막일 뿐야`,
+  },
+  {
+    title: '파이팅해야지',
+    singer: '부석순',
+    lyric: `파이팅 해야지, 파이팅 해야지\n\nDon't give it up, never give it up`,
+  },
+  {
+    title: 'maybe tomorrow',
+    singer: '데이식스',
+    lyric: `내일이 되면 오늘보단 따뜻하겠지\n\n살을 에는 이 추위가 좀 잦아들겠지\n\n내 맘을 감싸 줄 봄을 기다려`,
+  },
+  {
+    title: ' 녹아내려요',
+    singer: '데이식스',
+    lyric: `걱정 마 괜찮아 옆에 내가 있잖아\n\n너의 그 말이 날 다시 일어서게 해`,
+  },
+  {
+    title: 'dreamer',
+    singer: '비투비',
+    lyric: `다 마음대로 해 네 마음대로\n\n하고 싶은 대로 해 좋은 날에\n\n우린 아직도 꿈을 꾸고 가슴이 뜨겁게 뛰는 걸`,
+  },
+  {
+    title: '비밀정원',
+    singer: '오마이걸',
+    lyric: `아마 언젠가 말야 이 꿈들이 현실이 되면\n\n함께 나눈 순간들을 이 가능성들을\n\n꼭 다시 기억해줘`,
+  },
+  {
+    title: '비밀정원',
+    singer: '오마이걸',
+    lyric: `아직은 아무것도 안 보이지만\n\n조금만 기다리면 알게 될 거야\n\n너의 비밀정원`,
+  },
+  {
+    title: '바래',
+    singer: '데이식스',
+    lyric: `내가 더 행복해지길 바래`,
+  },
+  {
+    title: '건물 사이에 피어난 장미',
+    singer: '하이키',
+    lyric: `온몸을 덮고 있는 가시\n\n얼마나 힘이 들었으면\n\n견뎌내줘서 고마워`,
+  },
+  {
+    title: '건물 사이에 피어난 장미',
+    singer: '하이키',
+    lyric: `고갤 들고 버틸게 끝까지\n\n모두가 내 향길 맡고 취해 웃을 때까지`,
+  },
+
+  {
+    title: 'Life Goes On',
+    singer: '방탄소년단',
+    lyric: `어둠에 숨지마, 빛은 또 떠오르니까`,
+  },
+  {
+    title: 'Celebrity',
+    singer: '아이유',
+    lyric: `잊지 마, 넌 흐린 어둠 사이\n\n왼손으로 그린 별 하나`,
+  },
+  {
+    title: 'Like water',
+    singer: '웬디',
+    lyric: `네 아픔 나도 느껴져\n\n푹 패인 상처들을 감싸고 안아줄게`,
+  },
+  {
+    title: 'Beautiful',
+    singer: 'NCT 2021',
+    lyric: `모두가 바란 꿈을 쫓아봐도 안 맞는 옷처럼 자꾸 더 작아져내 탓인 거야\n\n이거뿐이라고 포기하지 말아요`,
+  },
+  {
+    title: 'Beautiful',
+    singer: 'NCT 2021',
+    lyric: `내겐 없다는 그런 허탈함에 그 누군가를 부러워했죠\n\n그대 가진 건, 그들에겐 절대 없어`,
+  },
+  {
+    title: 'Beautiful',
+    singer: 'NCT 2021',
+    lyric: `새롭게 시작해요, 두려워도 말고모든 게 잘 될 테니\n\n걱정하지 마요`,
+  },
+  {
+    title: 'Kidult',
+    singer: '세븐틴',
+    lyric: `괜찮아, 너의 세상은 지금의 너 그대로\n\n소중하고 또 소중해서`,
+  },
+  {
+    title: '낙화',
+    singer: '악동뮤지션',
+    lyric: `내 손을 잡으면 하늘을 나는 정도\n\n그 이상도 느낄 수 있을 거야`,
+  },
+  {
+    title: 'Show Your Love',
+    singer: '비투비',
+    lyric: `어둠을 밝혀 내가 너의 빛이 되어 줄게\n\n두려워하지 마. 거짓말 같은 이 밤도\n\n모든 게 꿈처럼 희미해질 거야`,
+  },
+  {
+    title: '홀로',
+    singer: '이하이',
+    lyric: `가만히 앉아 걱정하기엔 난 너무 소중해요`,
+  },
+  {
+    title: '괜찮아도 괜찮아',
+    singer: '디오',
+    lyric: `말하지 못할 고민거리, 깊게 상처 난 자리\n\n늘 같은 속도로 흘러가는 시간이\n\n언제나 그랬듯이, 씻어내줄 테니\n\n흐르듯 살아도, 그냥 괜찮아, 괜찮아도`,
+  },
+  {
+    title: '시작',
+    singer: '가호',
+    lyric: `부러진 것처럼 한 발로 뛰어도\n\n난 나의 길을 갈 테니까`,
+  },
+  {
+    title: '나의 사춘기에게',
+    singer: '볼빨간 사춘기',
+    lyric: `어쩌면 그 모든 아픔을 내딛고서라도\n\n짧게 빛을 내볼까 봐`,
+  },
+  {
+    title: '한숨',
+    singer: '이하이',
+    lyric: `가끔은 실수해도 돼\n\n누구든 그랬으니까`,
+  },
+  {
+    title: '한숨',
+    singer: '이하이',
+    lyric: `괜찮아요 내가 안아줄게요`,
+  },
+  {
+    title: 'fix you',
+    singer: '스키니브라운',
+    lyric: `넌 네 생각보다 빛이 나`,
+  },
+  {
+    title: '봄날',
+    singer: '방탄소년단',
+    lyric: `추운 겨울 끝을 지나다시 봄날이 올 때까지\n\n꽃 피울 때까지 그곳에 좀 더 머물러줘`,
+  },
+  {
+    title: '봄날',
+    singer: '방탄소년단',
+    lyric: `아침은 다시 올 거야\n\n어떤 어둠도, 어떤 계절도 영원할 순 없으니까`,
+  },
+  {
+    title: 'my pace',
+    singer: '스트레이키즈',
+    lyric: `누군가와 날 비교한다는 게 너무 우스워\n\n그러지 마 그냥 넌 지금 너의 길을 가면 돼`,
+  },
+  {
+    title: 'my pace',
+    singer: '스트레이키즈',
+    lyric: `조급할 필요 없어 비교 따윈 하지 마\n\n천천히 달려도 괜찮아`,
+  },
+  {
+    title: 'wanna be myself',
+    singer: '마마무',
+    lyric: `세상에 정해진 기준은 없어\n\n이렇게 저렇게 비교하지 마`,
+  },
+  {
+    title: 'stand up',
+    singer: '몬스타엑스',
+    lyric: `무릎 꿇고 넘어져도 다시 일어나면 돼`,
+  },
+  {
+    title: 'Answer : Love Myself',
+    singer: '방탄소년단',
+    lyric: `솔직히 인정할 건 인정하자\n\n너가 내린 잣대들은 너에게 더 엄격하단 걸`,
+  },
+  {
+    title: 'butterfly',
+    singer: '러브홀릭',
+    lyric: `빛나는 사람아 난 너를 사랑해\n\n널 세상이 볼 수 있게 날아 저 멀리`,
+  },
+  {
+    title: '도망가자',
+    singer: '선우정아',
+    lyric: `괜찮아 좀 느려도 천천히 걸어도\n\n나만은 너랑 갈 거야 어디든`,
+  },
+  {
+    title: '밤, 바다',
+    singer: '최유리',
+    lyric: `가끔은 넘어질 거야\n\n오늘은 괜찮을 거야\n\n흐트러진 마음을 쏟아내도 괜찮아`,
+  },
+  {
+    title: '밤, 바다',
+    singer: '최유리',
+    lyric: `내가 옆에 있을게\n\n넌 말없이 그냥 울어도 돼`,
+  },
+  {
+    title: 'Yours',
+    singer: '데이먼스이어',
+    lyric: `내가 손을 잡을게, 너는 힘을 빼도 돼\n\n그저 복사꽃 핀 거리를 걷자`,
+  },
+  {
+    title: '꿈과 책과 힘과 벽',
+    singer: '잔나비',
+    lyric: `자고 나면 괜찮아질 거야\n\n하루는 더 어른이 될 테니`,
+  },
+  {
+    title: '다 잘 될거라 생각해',
+    singer: '스윗소로우',
+    lyric: `그래 난 잘할 거라 생각해\n\n다 잘될 거라 생각해`,
+  },
+  {
+    title: '오늘도 응원할게',
+    singer: '마멀레이드 키친',
+    lyric: `오늘도 응원할게 내일도 응원할게`,
+  },
+  {
+    title: '너와의 모든 지금 ',
+    singer: '재쓰비',
+    lyric: `피할 수가 없는 날이면\n\n하루쯤은 그냥 구겨 던져버려`,
+  },
+  {
+    title: '너와의 모든 지금',
+    singer: '재쓰비',
+    lyric: `도무지 너를 모르겠다면\n\n네 곁에 나를 믿어`,
+  },
+  {
+    title: '너와의 모든 지금',
+    singer: '재쓰비',
+    lyric: `아무 것도 아닌 건 아무 것도 없댔어\n\n우리의 모든 순간들`,
+  },
+  {
+    title: '너와의 모든 지금',
+    singer: '재쓰비',
+    lyric: `안되면 그냥 웃어 버리고 또 하면 되지 뭐`,
+  },
+  {
+    title: '이루리',
+    singer: '우주소녀',
+    lyric: `니가 바라는 대로 느낌이 오는 대로\n\n전부 들어줄게`,
+  },
+  {
+    title: 'higher',
+    singer: '에일리',
+    lyric: `내가 바라던 순간\n\n눈부시게 빛나는 또 다른 나를 보게 될거야`,
+  },
+  {
+    title: 'live my life',
+    singer: '에스파',
+    lyric: `이제부터가 시작이야\n\n내가 선택한 삶의 주인공은 나`,
+  },
+];
