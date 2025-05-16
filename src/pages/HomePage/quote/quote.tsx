@@ -25,6 +25,18 @@ import * as MediaLibrary from 'expo-media-library';
 import * as Sharing from 'expo-sharing';
 import { happyLyrics, happyLyricsObject } from '../../../constants/Constants';
 import PhotoCard from '../../../components/photo-card/photo-card';
+const backgroundImages = [
+  {
+    id: 'bg1',
+    source: require('../../../assets/images/lucky_image_1.png'),
+    textPosition: { top: 53 }, // 기본 위치
+  },
+  {
+    id: 'bg2',
+    source: require('../../../assets/images/lucky_image_2.png'),
+    textPosition: { top: 297 }, // 기본 위치
+  },
+];
 const appVariant = Constants.expoConfig?.extra?.appVariant;
 const isProductionOrStaging = appVariant === 'production' || appVariant === 'staging';
 const userName = getUserNickname() ?? 'Test_remind_empty';
@@ -84,6 +96,13 @@ const Quote: React.FC = () => {
           const lyricIndex = Math.floor(Math.random() * happyLyrics.length);
           setSelectedLyricObject(happyLyrics[lyricIndex]);
           console.log('랜덤 가사 객체 선택 완료', lyricIndex);
+
+          //랜덤 이미지 선택
+          const imageIndex = Math.floor(Math.random() * backgroundImages.length);
+          console.log('======imageIndex', imageIndex);
+          setSelectedImageSource(backgroundImages[imageIndex]);
+          console.log('랜덤 이미지 선택 완료', imageIndex);
+          /// ==== ///
           await updateUserCanOpenQuote();
           setUiMode('showCookieResult'); //state를 변경하기 (uiMode를 showCookieResult로 변경하기)
         },
@@ -174,7 +193,9 @@ const Quote: React.FC = () => {
     return (
       <Container insets={insets}>
         <View style={{ flex: 1 }} ref={imageRef} collapsable={false}>
-          {selectedLyricObject && <PhotoCard lyricObject={selectedLyricObject} />}
+          {selectedLyricObject && (
+            <PhotoCard lyricObject={selectedLyricObject} backgroundImage={selectedImageSource} />
+          )}
         </View>
 
         <View

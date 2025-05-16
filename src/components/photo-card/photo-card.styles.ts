@@ -14,7 +14,7 @@ export const PhotoCardTextContainer = styled.View`
   border-radius: 20px;
   padding-vertical: ${rsHeight * 5 + 'px'};
   padding-horizontal: ${rsWidth * 5 + 'px'};
-  top: 53px;
+  //top: 53px;
   justify-content: center;
   align-self: center;
   align-items: center;
@@ -24,16 +24,18 @@ export const PhotoCardTextContainer = styled.View`
   gap: 10px;
 `;
 
-export const PhotoCardLyric = styled.Text`
+export const PhotoCardLyric = styled.Text<{ imageId: string }>`
   font-size: ${rsFont * 15 + 'px'};
   font-family: Kyobo-handwriting;
-  color: ${palette.neutral[900]};
+  //color: ${palette.neutral[900]};
+  color: ${(props) => (props.imageId === 'bg2' ? 'white' : palette.neutral[900])};
   text-align: center;
 `;
 
-export const PhotoCardInfo = styled.Text`
+export const PhotoCardInfo = styled.Text<{ imageId: string }>`
   font-size: ${rsFont * 11 + 'px'};
   font-family: Kyobo-handwriting;
-  color: ${palette.neutral[900]};
+  //color: ${palette.neutral[900]};
+  color: ${(props) => (props.imageId === 'bg2' ? 'white' : palette.neutral[900])};
   text-align: center;
 `;
