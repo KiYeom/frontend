@@ -41,6 +41,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useState, RefObject } from 'react';
 import ImageShow from '../../../components/image-show/ImageShow';
 import { MAX_CHAT_IMAGE_WIDTH } from '../../../constants/Constants';
+import * as Haptics from 'expo-haptics';
 
 export const reportMessages = async (messageId: string, isSaved: boolean): string | undefined => {
   //console.log('reportMessags 실행', messageId);
@@ -224,12 +225,9 @@ export const RenderBubble = (
             isSaved={props.currentMessage.isSaved}
             messageId={props.currentMessage._id}
             onFavoritePress={(id) => {
-              //console.log('메세지', props.currentMessage);
-              //reportMessages(props.currentMessage._id, props.currentMessage.isSaved);
-              //console.log('icon에서의 press 함수', props.currentMessage._id);
-              //console.log('클릭');
               props.onFavoritePress(props.currentMessage._id);
               Analytics.clickChatLikeButton(props.currentMessage._id);
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft); // 좋아요 터치 시 진동 피드백
             }}
           />
         </TouchableOpacity>

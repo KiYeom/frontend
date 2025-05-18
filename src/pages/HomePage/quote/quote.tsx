@@ -192,10 +192,18 @@ const Quote: React.FC = () => {
     console.log('selectdImageSource', selectedImageSource);
     return (
       <Container insets={insets}>
-        <View style={{ flex: 1 }} ref={imageRef} collapsable={false}>
-          {selectedLyricObject && (
-            <PhotoCard lyricObject={selectedLyricObject} backgroundImage={selectedImageSource} />
-          )}
+        <TitleContainer>
+          <TitleTextContainter>
+            <Annotation>{userName}님을 위한</Annotation>
+            <Title>오늘의 행복 한 조각</Title>
+          </TitleTextContainter>
+        </TitleContainer>
+        <View>
+          <View ref={imageRef} collapsable={false}>
+            {selectedLyricObject && (
+              <PhotoCard lyricObject={selectedLyricObject} backgroundImage={selectedImageSource} />
+            )}
+          </View>
         </View>
 
         <View
