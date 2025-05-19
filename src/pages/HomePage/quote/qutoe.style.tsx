@@ -13,7 +13,17 @@ export const TitleContainer = styled.View`
   justify-content: space-between;
   //background-color: yellow;
 `;
+export const ImageContainer = styled.View`
+  flex: 1;
+  //background-color: pink;
+  justify-content: center;
+`;
 
+export const AnimationContainer = styled.View`
+  flex: 1;
+  //background-color: pink;
+  justify-content: center;
+`;
 export const TitleTextContainter = styled.View`
   gap: ${rsHeight * 5 + 'px'};
   display: flex;

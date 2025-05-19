@@ -25,6 +25,8 @@ import {
   Title,
   Container,
   ButtonGroup,
+  ImageContainer,
+  AnimationContainer,
 } from './qutoe.style';
 import { getUserCanOpenQuote, updateUserCanOpenQuote } from '../../../apis/positive-quote';
 import Button from '../../../components/button/button';
@@ -221,13 +223,13 @@ const Quote: React.FC = () => {
             <Title>오늘의 행복 한 조각</Title>
           </TitleTextContainter>
         </TitleContainer>
-        <View>
+        <ImageContainer>
           <View ref={imageRef} collapsable={false}>
             {selectedLyricObject && (
               <PhotoCard lyricObject={selectedLyricObject} backgroundImage={selectedImageSource} />
             )}
           </View>
-        </View>
+        </ImageContainer>
 
         <ButtonGroup insets={insets}>
           <Button
@@ -252,88 +254,6 @@ const Quote: React.FC = () => {
     );
   }
 
-  /*
-  // 0) 전역 비교용 변수 선언
-  let maxLinesCount = 0;
-  let maxLinesSong = null;
-
-  let maxLineCharCount = 0;
-  let maxLineCharSong = null;
-  let maxLineCharText = '';
-
-  let maxTitleLen = 0;
-  let maxTitleSong = null;
-
-  let maxSingerLen = 0;
-  let maxSingerSong = null;
-  let totalLines = 0;
-
-  // 1) 기존 forEach에 비교 로직 추가
-  happyLyrics.forEach(({ title, singer, lyric }) => {
-    // --- 기존 계산 ---
-    const titleLen = title.length;
-    const singerLen = singer.length;
-    const lines = lyric.split('\n').filter((line) => line.trim() !== '');
-    const lineLens = lines.map((line) => line.length);
-
-    totalLines += lines.length;
-
-    // --- 1. 줄 수가 제일 많은 곡 ---
-    if (lines.length > maxLinesCount) {
-      maxLinesCount = lines.length;
-      maxLinesSong = { title, singer, linesCount: lines.length };
-    }
-
-    // --- 2. 줄 중 글자 수가 제일 많은 한 줄을 가진 곡 ---
-    lines.forEach((line) => {
-      const len = line.length;
-      if (len > maxLineCharCount) {
-        maxLineCharCount = len;
-        maxLineCharSong = { title, singer };
-        maxLineCharText = line;
-      }
-    });
-
-    // --- 3. 타이틀이 가장 긴 곡 ---
-    if (titleLen > maxTitleLen) {
-      maxTitleLen = titleLen;
-      maxTitleSong = { title, singer, titleLen };
-    }
-
-    // --- 4. 가수 이름이 가장 긴 곡 ---
-    if (singerLen > maxSingerLen) {
-      maxSingerLen = singerLen;
-      maxSingerSong = { title, singer, singerLen };
-    }
-
-    // --- (기존 콘솔 출력) ---
-    console.log(
-      `${title} : ${titleLen}자, ` +
-        `${singer} : ${singerLen}자, ` +
-        `lyric : ${lines.length}줄, ` +
-        `(줄별 글자수 → ${lineLens.map((l) => l + '자').join(', ')})`,
-    );
-  });
-
-  // 2) 반복이 끝난 뒤 한 번만 전체 결과 출력
-  console.log('\n===== 전체 비교 결과 =====');
-  console.log(
-    `1) 줄 수가 가장 많은 곡: "${maxLinesSong.title}" by ${maxLinesSong.singer} → ${maxLinesSong.linesCount}줄`,
-  );
-  console.log(
-    `2) 한 줄 글자 수가 가장 많은 곡: "${maxLineCharSong.title}" by ${maxLineCharSong.singer}`,
-  );
-  console.log(`   → 해당 줄 (${maxLineCharCount}자): "${maxLineCharText}"`);
-  console.log(
-    `3) 타이틀이 가장 긴 곡: "${maxTitleSong.title}" by ${maxTitleSong.singer} → ${maxTitleSong.titleLen}자`,
-  );
-  console.log(
-    `4) 가수 이름이 가장 긴 곡: "${maxSingerSong.title}" by ${maxSingerSong.singer} → ${maxSingerSong.singerLen}자`,
-  );
-  const avgLines = totalLines / happyLyrics.length;
-  console.log(`\n평균 줄 수: ${avgLines.toFixed(2)}줄`);
-  console.log(`총 곡 개수: ${happyLyrics.length}개`);*/
-
   return (
     //오늘 열어본 적이 없다면
     <Container insets={insets}>
@@ -343,7 +263,7 @@ const Quote: React.FC = () => {
           <Title>{`오늘은 어떤 행복이\n기다리고 있을까요?`}</Title>
         </TitleTextContainter>
       </TitleContainer>
-      <View style={{ flex: 1, backgroundColor: 'pink' }}>
+      <AnimationContainer>
         <TouchableOpacity
           onPress={async () => {
             console.log('Animation clicked!');
@@ -356,13 +276,13 @@ const Quote: React.FC = () => {
             source={require('../../../assets/motion/three-clover.json')}
             loop
             style={{
-              width: 200,
-              height: 200,
-              backgroundColor: '#eee',
+              width: 300,
+              height: 300,
+              //backgroundColor: '#eee',
             }}
           />
         </TouchableOpacity>
-      </View>
+      </AnimationContainer>
     </Container>
   );
 };

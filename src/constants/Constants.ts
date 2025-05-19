@@ -444,7 +444,7 @@ export const happyLyrics = [
   {
     title: 'Hold On',
     singer: 'Alabama Shakes',
-    lyric: `조금만 더 버텨, 생각하는 것보다 더 나아질 거야\n(Hold on, it gets better than you know)`,
+    lyric: `조금만 더 힘내, 생각하는 것보다 더 나아질 거야\n(Hold on, it gets better than you know)`,
   },
   {
     title: 'Mean',
