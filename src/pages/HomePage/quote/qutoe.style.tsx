@@ -11,7 +11,7 @@ export const TitleContainer = styled.View`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  //background-color: yellow;
+  background-color: yellow;
 `;
 export const ImageContainer = styled.View`
   flex: 1;
@@ -23,6 +23,7 @@ export const AnimationContainer = styled.View`
   flex: 1;
   //background-color: pink;
   justify-content: center;
+  width: 100%;
 `;
 export const TitleTextContainter = styled.View`
   gap: ${rsHeight * 5 + 'px'};

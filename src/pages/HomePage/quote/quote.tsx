@@ -298,8 +298,8 @@ const Quote: React.FC = () => {
             source={require('../../../assets/motion/three-clover.json')}
             loop
             style={{
-              width: 300,
-              height: 300,
+              width: '100%',
+              height: '100%',
               //backgroundColor: '#eee',
             }}
           />
