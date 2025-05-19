@@ -14,6 +14,7 @@ import {
   AdEventType,
   RewardedAd,
   RewardedAdEventType,
+  RewardedInterstitialAd,
 } from 'react-native-google-mobile-ads';
 import { getUserNickname } from '../../../utils/storageUtils';
 import Constants from 'expo-constants';
@@ -68,7 +69,7 @@ const adUnitId =
     ? Platform.OS === 'android'
       ? process.env.EXPO_PUBLIC_QUOTE_REWARD_AD_UNIT_ID_ANDROID
       : process.env.EXPO_PUBLIC_QUOTE_REWARD_AD_UNIT_ID_IOS
-    : TestIds.REWARDED;
+    : TestIds.INTERSTITIAL_VIDEO;
 
 const Quote: React.FC = () => {
   console.log('adUnitId in quote', adUnitId === TestIds.REWARDED);
@@ -93,9 +94,9 @@ const Quote: React.FC = () => {
     console.log('사진 권한 상태', status);
   }
 
-  const rewarded = useMemo(
+  const interstitial = useMemo(
     () =>
-      RewardedAd.createForAdRequest(adUnitId, {
+      InterstitialAd.createForAdRequest(adUnitId, {
         keywords: ['fashion', 'clothing'],
       }),
     [],
@@ -103,13 +104,13 @@ const Quote: React.FC = () => {
 
   useFocusEffect(
     useCallback(() => {
-      const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
+      const unsubscribeLoaded = interstitial.addAdEventListener(AdEventType.LOADED, () => {
         //console.log('광고 로드');
         setLoaded(true);
       });
       //광고를 끝까지 봐서 보상을 줄 수 있을 때 일기와 사진을 등록할 수 있는 콜백 함수를 unsubscribeEarned 이라는 이름으로 등록해둔다
-      const unsubscribeEarned = rewarded.addAdEventListener(
-        RewardedAdEventType.EARNED_REWARD,
+      const unsubscribeEarned = interstitial.addAdEventListener(
+        AdEventType.OPENED,
         async (reward) => {
           console.log('User earned reward of ', reward);
           //api 호출하여 오늘 열어봤음을 업데이트 하기
@@ -130,11 +131,11 @@ const Quote: React.FC = () => {
         },
       );
       //광고가 닫힐 때 실행되는 이벤트 리스터
-      const unsubscribeClosed = rewarded.addAdEventListener(AdEventType.CLOSED, () => {
+      const unsubscribeClosed = interstitial.addAdEventListener(AdEventType.CLOSED, () => {
         console.log('광고 종료');
       });
       //광고 로드
-      rewarded.load();
+      interstitial.load();
       // 컴포넌트 언마운트 시 이벤트 리스너 해제
       return () => {
         unsubscribeLoaded();
@@ -142,7 +143,7 @@ const Quote: React.FC = () => {
         unsubscribeClosed();
         //console.log(`리스너 해제됨 : 현재 ${listenerCount}번 등록됨`);
       };
-    }, [rewarded]),
+    }, [interstitial]),
   );
 
   //쿠키를 까 봤는지를 확인
@@ -163,7 +164,7 @@ const Quote: React.FC = () => {
     });
   }, []);*/
 
-  rewarded.load();
+  interstitial.load();
   console.log('uiMode', uiMode);
 
   //랜덤 값 뽑기
@@ -346,8 +347,8 @@ const Quote: React.FC = () => {
         <TouchableOpacity
           onPress={async () => {
             console.log('Animation clicked!');
-            rewarded.load();
-            await rewarded.show();
+            interstitial.load();
+            await interstitial.show();
           }}>
           <LottieView
             autoPlay
