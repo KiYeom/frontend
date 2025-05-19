@@ -4,7 +4,8 @@ import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { EdgeInsets } from 'react-native-safe-area-context';
 
 export const TitleContainer = styled.View`
-  height: ${rsHeight * 100 + 'px'};
+  //height: ${rsHeight * 200 + 'px'};
+  height: auto;
   gap: ${rsHeight * 10 + 'px'};
   padding: ${rsHeight * 40 + 'px'} ${rsWidth * 24 + 'px'} 0 ${rsWidth * 24 + 'px'};
   display: flex;
@@ -35,7 +36,15 @@ export const Title = styled.Text`
 export const Container = styled.View<{ insets: EdgeInsets }>`
   //padding-top: ${(props) => props.insets.top + 'px'};
   flex: 1;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   background-color: ${palette.neutral[50]};
+`;
+
+export const ButtonGroup = styled.View<{ insets: EdgeInsets }>`
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 20;
+  padding-horizontal: 24;
+  padding-bottom: ${(props) => props.insets.bottom + 'px'};
 `;

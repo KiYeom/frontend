@@ -17,7 +17,14 @@ import {
 } from 'react-native-google-mobile-ads';
 import { getUserNickname } from '../../../utils/storageUtils';
 import Constants from 'expo-constants';
-import { Annotation, TitleContainer, TitleTextContainter, Title, Container } from './qutoe.style';
+import {
+  Annotation,
+  TitleContainer,
+  TitleTextContainter,
+  Title,
+  Container,
+  ButtonGroup,
+} from './qutoe.style';
 import { getUserCanOpenQuote, updateUserCanOpenQuote } from '../../../apis/positive-quote';
 import Button from '../../../components/button/button';
 import { captureRef } from 'react-native-view-shot';
@@ -150,7 +157,7 @@ const Quote: React.FC = () => {
   const onSaveImageAsync = async () => {
     try {
       const localUri = await captureRef(imageRef, {
-        height: 440,
+        height: 472,
         quality: 1,
       });
 
@@ -206,14 +213,7 @@ const Quote: React.FC = () => {
           </View>
         </View>
 
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            gap: 20,
-            paddingHorizontal: 24,
-            paddingBottom: insets.bottom,
-          }}>
+        <ButtonGroup insets={insets}>
           <Button
             title="저장하기"
             onPress={() => {
@@ -231,7 +231,7 @@ const Quote: React.FC = () => {
             }}
             primary={true}
           />
-        </View>
+        </ButtonGroup>
       </Container>
     );
   }
@@ -327,24 +327,26 @@ const Quote: React.FC = () => {
           <Title>{`오늘은 어떤 행복이\n기다리고 있을까요?`}</Title>
         </TitleTextContainter>
       </TitleContainer>
-      <TouchableOpacity
-        onPress={async () => {
-          console.log('Animation clicked!');
-          rewarded.load();
-          await rewarded.show();
-        }}>
-        <LottieView
-          autoPlay
-          ref={animation}
-          source={require('../../../assets/motion/three-clover.json')}
-          loop
-          style={{
-            width: 200,
-            height: 200,
-            backgroundColor: '#eee',
-          }}
-        />
-      </TouchableOpacity>
+      <View style={{ flex: 1, backgroundColor: 'pink' }}>
+        <TouchableOpacity
+          onPress={async () => {
+            console.log('Animation clicked!');
+            rewarded.load();
+            await rewarded.show();
+          }}>
+          <LottieView
+            autoPlay
+            ref={animation}
+            source={require('../../../assets/motion/three-clover.json')}
+            loop
+            style={{
+              width: 200,
+              height: 200,
+              backgroundColor: '#eee',
+            }}
+          />
+        </TouchableOpacity>
+      </View>
     </Container>
   );
 };
