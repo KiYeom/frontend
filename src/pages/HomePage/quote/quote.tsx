@@ -16,6 +16,14 @@ import {
   RewardedAdEventType,
   RewardedInterstitialAd,
 } from 'react-native-google-mobile-ads';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  withDelay,
+  runOnJS,
+  Easing,
+} from 'react-native-reanimated';
 import { getUserNickname } from '../../../utils/storageUtils';
 import Constants from 'expo-constants';
 import {
@@ -215,44 +223,88 @@ const Quote: React.FC = () => {
     }
   };
 
+  const opacity = useSharedValue(0.7);
+  const lottieRef = useRef(null);
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: opacity.value,
+      flex: 1,
+      width: '100%',
+    };
+  });
+
+  useEffect(() => {
+    if (uiMode === 'showCookieResult') {
+      // 화면이 밝아지는 애니메이션
+      opacity.value = withDelay(
+        300,
+        withTiming(1, { duration: 1500, easing: Easing.bezier(0.16, 1, 0.3, 1) }),
+      );
+
+      // Confetti 애니메이션 시작
+      setTimeout(() => {
+        if (lottieRef.current) {
+          lottieRef.current.play();
+        }
+      }, 300);
+    }
+  }, [uiMode]); // uiMode가 변경될 때만 실행
   //오늘 열어본 적이 있다면
   if (uiMode === 'showCookieResult') {
     console.log('selectdImageSource', selectedImageSource);
-    return (
-      <Container insets={insets}>
-        <TitleContainer>
-          <TitleTextContainter>
-            <Annotation>{userName}님을 위한</Annotation>
-            <Title>오늘의 행복 한 조각</Title>
-          </TitleTextContainter>
-        </TitleContainer>
-        <ImageContainer>
-          <View ref={imageRef} collapsable={false}>
-            {selectedLyricObject && (
-              <PhotoCard lyricObject={selectedLyricObject} backgroundImage={selectedImageSource} />
-            )}
-          </View>
-        </ImageContainer>
 
-        <ButtonGroup insets={insets}>
-          <Button
-            title="저장하기"
-            onPress={() => {
-              console.log('저장히기 버튼 클릭');
-              onSaveImageAsync();
-              //navigation.navigate('Home');
+    return (
+      <Container insets={insets} style={{ position: 'relative' }}>
+        <Animated.View style={animatedStyle}>
+          <LottieView
+            autoPlay
+            source={require('../../../assets/motion/new-confetti.json')}
+            loop={false}
+            style={{
+              width: '100%',
+              height: '100%',
+              position: 'absolute',
+              zIndex: 1,
             }}
-            primary={false}
           />
-          <Button
-            title="공유하기"
-            onPress={async () => {
-              console.log('공유하기 버튼 클릭');
-              onShareImageAsync();
-            }}
-            primary={true}
-          />
-        </ButtonGroup>
+
+          <TitleContainer>
+            <TitleTextContainter>
+              <Annotation>{userName}님을 위한</Annotation>
+              <Title>오늘의 행복 한 조각</Title>
+            </TitleTextContainter>
+          </TitleContainer>
+          <ImageContainer>
+            <View ref={imageRef} collapsable={false}>
+              {selectedLyricObject && (
+                <PhotoCard
+                  lyricObject={selectedLyricObject}
+                  backgroundImage={selectedImageSource}
+                />
+              )}
+            </View>
+          </ImageContainer>
+
+          <ButtonGroup insets={insets}>
+            <Button
+              title="저장하기"
+              onPress={() => {
+                console.log('저장히기 버튼 클릭');
+                onSaveImageAsync();
+                //navigation.navigate('Home');
+              }}
+              primary={false}
+            />
+            <Button
+              title="공유하기"
+              onPress={async () => {
+                console.log('공유하기 버튼 클릭');
+                onShareImageAsync();
+              }}
+              primary={true}
+            />
+          </ButtonGroup>
+        </Animated.View>
       </Container>
     );
   }
@@ -260,10 +312,10 @@ const Quote: React.FC = () => {
   if (uiMode === 'loading') {
     return (
       <Container insets={insets}>
-        <AnimationContainer style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        {/*<AnimationContainer style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <LottieView
             autoPlay
-            source={require('../../../assets/motion/confetti.json')}
+            source={require('../../../assets/motion/new-confetti.json')}
             loop={false}
             style={{
               width: '100%',
@@ -271,7 +323,8 @@ const Quote: React.FC = () => {
               position: 'absolute',
             }}
           />
-        </AnimationContainer>
+        </AnimationContainer>*/}
+        <Text>로딩중..</Text>
       </Container>
     );
   }

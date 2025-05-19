@@ -11,7 +11,7 @@ export const TitleContainer = styled.View`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  background-color: yellow;
+  //background-color: yellow;
 `;
 export const ImageContainer = styled.View`
   flex: 1;
