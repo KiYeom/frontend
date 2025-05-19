@@ -6,10 +6,12 @@ export const PhotoCardContainer = styled.View`
   position: relative;
   align-items: center;
 `;
-export const PhotoCardTextContainer = styled.View`
+export const PhotoCardTextContainer = styled.View<{ imageId: string }>`
   width: 292px;
   height: 148px;
-  background-color: rgba(255, 255, 255, 0.35);
+  //background-color: rgba(255, 255, 255, 0.35);
+  background-color: ${(props) =>
+    props.imageId === 'bg4' ? 'rgba(255, 255, 255, 0.6)' : 'rgba(255, 255, 255, 0.38)'};
   position: absolute;
   border-radius: 20px;
   padding-vertical: ${rsHeight * 5 + 'px'};

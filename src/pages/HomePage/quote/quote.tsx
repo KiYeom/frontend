@@ -43,6 +43,21 @@ const backgroundImages = [
     source: require('../../../assets/images/lucky_image_2.png'),
     textPosition: { top: 297 }, // 기본 위치
   },
+  {
+    id: 'bg3',
+    source: require('../../../assets/images/lucky_image_3.png'),
+    textPosition: { top: 53 }, // 기본 위치
+  },
+  {
+    id: 'bg4',
+    source: require('../../../assets/images/lucky_image_4.png'),
+    textPosition: { top: 53 }, // 기본 위치
+  },
+  {
+    id: 'bg5',
+    source: require('../../../assets/images/lucky_image_5.png'),
+    textPosition: { top: 33 }, // 기본 위치
+  },
 ];
 const appVariant = Constants.expoConfig?.extra?.appVariant;
 const isProductionOrStaging = appVariant === 'production' || appVariant === 'staging';

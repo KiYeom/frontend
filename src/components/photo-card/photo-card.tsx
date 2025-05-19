@@ -6,7 +6,7 @@ import {
   PhotoCardLyric,
   PhotoCardInfo,
 } from './photo-card.styles';
-import { happyLyricsObject } from '~/src/constants/Constants';
+import { happyLyricsObject } from '../../constants/Constants';
 type ImageData = {
   id: string;
   source: ImageSourcePropType;
@@ -31,7 +31,9 @@ const PhotoCard = (props: PhotoCardProps) => {
   return (
     <PhotoCardContainer>
       <Image source={backgroundImage?.source} style={{ width: 310, height: 472 }} />
-      <PhotoCardTextContainer style={{ top: backgroundImage?.textPosition.top }}>
+      <PhotoCardTextContainer
+        imageId={backgroundImage?.id}
+        style={{ top: backgroundImage?.textPosition.top }}>
         <PhotoCardLyric imageId={backgroundImage?.id}>{lyricObject?.lyric}</PhotoCardLyric>
         <PhotoCardInfo imageId={backgroundImage?.id}>
           {lyricObject?.singer}, {lyricObject?.title}
