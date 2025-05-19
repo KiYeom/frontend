@@ -44,8 +44,8 @@ const isTestUser = userName === 'Test_remind';
 const adUnitId =
   isProductionOrStaging && !isTestUser
     ? Platform.OS === 'android'
-      ? process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_ANDROID
-      : process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_IOS
+      ? process.env.EXPO_PUBLIC_QUOTE_REWARD_AD_UNIT_ID_ANDROID
+      : process.env.EXPO_PUBLIC_QUOTE_REWARD_AD_UNIT_ID_IOS
     : TestIds.REWARDED;
 
 const Quote: React.FC = () => {
