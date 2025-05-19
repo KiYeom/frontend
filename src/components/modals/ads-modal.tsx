@@ -116,6 +116,8 @@ const ButtonGroup = styled.View`
   flex-direction: row;
   justify-content: space-between;
   gap: ${rsWidth * 8 + 'px'};
+  //background-color: red;
+  height: 50px;
 `;
 
 const ButtonSingleGroup = styled.View`
