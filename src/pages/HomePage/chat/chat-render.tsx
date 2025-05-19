@@ -481,6 +481,14 @@ export const RenderInputToolbar = (
               //backgroundColor: 'yellow',
             }}>
             <TouchableOpacity
+              style={{
+                width: 35,
+                height: 35,
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: 50,
+                backgroundColor: palette.neutral[50],
+              }}
               onPress={async () => {
                 if (sendingStatus) return;
                 const imageUrl = image;
