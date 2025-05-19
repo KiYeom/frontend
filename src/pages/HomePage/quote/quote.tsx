@@ -81,7 +81,7 @@ const Quote: React.FC = () => {
   const animation = useRef<LottieView>(null);
 
   const [loaded, setLoaded] = React.useState<boolean>(false);
-  const [uiMode, setUiMode] = React.useState<'beforeOpenCookie' | 'showCookieResult'>(
+  const [uiMode, setUiMode] = React.useState<'beforeOpenCookie' | 'showCookieResult' | 'loading'>(
     'beforeOpenCookie',
   );
   const [status, requestPermission] = MediaLibrary.usePermissions(); //사진 권한
@@ -111,30 +111,33 @@ const Quote: React.FC = () => {
         setLoaded(true);
       });
       //광고를 끝까지 봐서 보상을 줄 수 있을 때 일기와 사진을 등록할 수 있는 콜백 함수를 unsubscribeEarned 이라는 이름으로 등록해둔다
-      const unsubscribeEarned = interstitial.addAdEventListener(
-        AdEventType.OPENED,
-        async (reward) => {
-          console.log('User earned reward of ', reward);
-          //api 호출하여 오늘 열어봤음을 업데이트 하기
+      const unsubscribeEarned = interstitial.addAdEventListener(AdEventType.OPENED, async () => {
+        setUiMode('loading');
+        console.log('User earned reward of ');
+        //api 호출하여 오늘 열어봤음을 업데이트 하기
 
-          //랜덤 가사 객체 선택
-          const lyricIndex = Math.floor(Math.random() * happyLyrics.length);
-          setSelectedLyricObject(happyLyrics[lyricIndex]);
-          console.log('랜덤 가사 객체 선택 완료', lyricIndex);
+        //랜덤 가사 객체 선택
+        const lyricIndex = Math.floor(Math.random() * happyLyrics.length);
+        setSelectedLyricObject(happyLyrics[lyricIndex]);
+        console.log('랜덤 가사 객체 선택 완료', lyricIndex);
 
-          //랜덤 이미지 선택
-          const imageIndex = Math.floor(Math.random() * backgroundImages.length);
-          console.log('======imageIndex', imageIndex);
-          setSelectedImageSource(backgroundImages[imageIndex]);
-          console.log('랜덤 이미지 선택 완료', imageIndex);
-          /// ==== ///
-          await updateUserCanOpenQuote();
-          setUiMode('showCookieResult'); //state를 변경하기 (uiMode를 showCookieResult로 변경하기)
-        },
-      );
+        //랜덤 이미지 선택
+        const imageIndex = Math.floor(Math.random() * backgroundImages.length);
+        console.log('======imageIndex', imageIndex);
+        setSelectedImageSource(backgroundImages[imageIndex]);
+        console.log('랜덤 이미지 선택 완료', imageIndex);
+        /// ==== ///
+        await updateUserCanOpenQuote();
+        //setUiMode('showCookieResult'); //state를 변경하기 (uiMode를 showCookieResult로 변경하기)
+      });
       //광고가 닫힐 때 실행되는 이벤트 리스터
       const unsubscribeClosed = interstitial.addAdEventListener(AdEventType.CLOSED, () => {
         console.log('광고 종료');
+
+        // After 3 seconds, change to result
+        setTimeout(() => {
+          setUiMode('showCookieResult');
+        }, 1500);
       });
       //광고 로드
       interstitial.load();
@@ -250,6 +253,25 @@ const Quote: React.FC = () => {
             primary={true}
           />
         </ButtonGroup>
+      </Container>
+    );
+  }
+
+  if (uiMode === 'loading') {
+    return (
+      <Container insets={insets}>
+        <AnimationContainer style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <LottieView
+            autoPlay
+            source={require('../../../assets/motion/confetti.json')}
+            loop={false}
+            style={{
+              width: '100%',
+              height: '100%',
+              position: 'absolute',
+            }}
+          />
+        </AnimationContainer>
       </Container>
     );
   }
