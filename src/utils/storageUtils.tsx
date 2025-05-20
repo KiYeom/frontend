@@ -3,6 +3,7 @@ import { ONE_DAY_IN_MS } from '../constants/Constants';
 import { TGender, TNotice, TVender, TPLAN } from '../constants/types';
 import { getKoreanServerTodayDateString } from './times';
 import { showAppNotice } from './app-notice';
+import { happyLyricsObject } from '../constants/Constants';
 
 export const storage = new MMKV();
 
@@ -106,6 +107,7 @@ export const clearInfoWhenLogout = (): void => {
   deleteReadNotice();
   deleteUserAccountProvider();
   deleteNewIMessagesV3();
+  deletePhotoCardData();
 };
 
 //Tokens

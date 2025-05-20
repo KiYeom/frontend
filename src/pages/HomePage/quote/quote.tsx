@@ -1,11 +1,21 @@
 import React, { useRef, useEffect, useMemo, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Platform, Image, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Platform,
+  Image,
+  Alert,
+  ScrollView,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { rsWidth } from '../../../utils/responsive-size';
 import { useNavigation } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { PhotoCardSize } from '../../../constants/Constants';
+import palette from '../../../assets/styles/theme';
 import {
   BannerAd,
   BannerAdSize,
@@ -141,6 +151,9 @@ const Quote: React.FC = () => {
         setSelectedImageSource(backgroundImages[imageIndex]);
         //console.log('랜덤 이미지 선택 완료', imageIndex);
         /// ==== ///
+
+        // 선택한 데이터 mmkv에 저장
+        savePhotoCardData(happyLyrics[lyricIndex], backgroundImages[imageIndex]);
         await updateUserCanOpenQuote();
         //setUiMode('showCookieResult'); //state를 변경하기 (uiMode를 showCookieResult로 변경하기)
       });
@@ -248,7 +261,10 @@ const Quote: React.FC = () => {
         height: 440,
         quality: 1,
       });
-      await Sharing.shareAsync(localUri);
+      const options = {
+        dialogTitle: `'리마인드 - AI 강아지와 함께하는 힐링채팅, 감정일기'에서 오늘의 행복을 확인해보세요!`,
+      };
+      await Sharing.shareAsync(localUri, options);
     } catch (error) {
       console.error('Error sharing image:', error);
       alert('Please select an image first.');
@@ -283,67 +299,76 @@ const Quote: React.FC = () => {
   }, [uiMode]); // uiMode가 변경될 때만 실행
   //오늘 열어본 적이 있다면
   if (uiMode === 'showCookieResult') {
-    console.log('selectdImageSource', selectedImageSource);
-
+    //console.log('selectdImageSource', selectedImageSource);
     return (
-      <Container insets={insets} style={{ position: 'relative' }}>
-        <Animated.View style={animatedStyle}>
-          <LottieView
-            autoPlay
-            source={require('../../../assets/motion/new-confetti.json')}
-            loop={false}
-            style={{
-              width: '100%',
-              height: '100%',
-              position: 'absolute',
-              zIndex: 1,
-            }}
-          />
-          <TitleContainer>
-            <TitleTextContainter>
-              <Annotation>{userName}님을 위한</Annotation>
-              <Title>오늘의 행복 한 조각</Title>
-            </TitleTextContainter>
-          </TitleContainer>
-          <ImageContainer>
-            <View
-              ref={imageRef}
-              collapsable={false}
+      <View style={{ backgroundColor: `${palette.neutral[50]}`, flex: 1 }}>
+        <ScrollView
+          contentContainerStyle={{
+            flexGrow: 1,
+            backgroundColor: `${palette.neutral[50]}`,
+            gap: 10,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            position: 'relative',
+          }}
+          showsVerticalScrollIndicator={false}>
+          <Animated.View style={animatedStyle}>
+            <LottieView
+              autoPlay
+              source={require('../../../assets/motion/new-confetti.json')}
+              loop={false}
               style={{
-                backgroundColor: 'black',
-                width: PhotoCardSize.width,
-                height: PhotoCardSize.height,
-              }}>
-              {selectedLyricObject && (
-                <PhotoCard
-                  lyricObject={selectedLyricObject}
-                  backgroundImage={selectedImageSource}
-                />
-              )}
-            </View>
-          </ImageContainer>
-
-          <ButtonGroup insets={insets}>
-            <Button
-              title="저장하기"
-              onPress={() => {
-                console.log('저장히기 버튼 클릭');
-                onSaveImageAsync();
-                //navigation.navigate('Home');
+                width: '100%',
+                height: '100%',
+                position: 'absolute',
+                zIndex: 1,
               }}
-              primary={false}
             />
-            <Button
-              title="공유하기"
-              onPress={async () => {
-                console.log('공유하기 버튼 클릭');
-                onShareImageAsync();
-              }}
-              primary={true}
-            />
-          </ButtonGroup>
-        </Animated.View>
-      </Container>
+            <TitleContainer>
+              <TitleTextContainter>
+                <Annotation>{userName}님을 위한</Annotation>
+                <Title>오늘의 행복 한 조각</Title>
+              </TitleTextContainter>
+            </TitleContainer>
+            <ImageContainer>
+              <View
+                ref={imageRef}
+                collapsable={false}
+                style={{
+                  backgroundColor: 'black',
+                  width: PhotoCardSize.width,
+                  height: PhotoCardSize.height,
+                }}>
+                {selectedLyricObject && (
+                  <PhotoCard
+                    lyricObject={selectedLyricObject}
+                    backgroundImage={selectedImageSource}
+                  />
+                )}
+              </View>
+            </ImageContainer>
+          </Animated.View>
+        </ScrollView>
+        <ButtonGroup insets={insets}>
+          <Button
+            title="저장하기"
+            onPress={() => {
+              console.log('저장히기 버튼 클릭');
+              onSaveImageAsync();
+              //navigation.navigate('Home');
+            }}
+            primary={false}
+          />
+          <Button
+            title="공유하기"
+            onPress={async () => {
+              console.log('공유하기 버튼 클릭');
+              onShareImageAsync();
+            }}
+            primary={true}
+          />
+        </ButtonGroup>
+      </View>
     );
   }
 
@@ -351,6 +376,20 @@ const Quote: React.FC = () => {
     return (
       <Container insets={insets}>
         <AnimationContainer style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          {selectedImageSource && (
+            <Image
+              source={selectedImageSource.source}
+              style={{ width: 1, height: 1, opacity: 0, position: 'absolute' }}
+              onLoad={() => console.log('로딩 화면에서 이미지 미리 로드 완료')}
+            />
+          )}
+
+          {/* PhotoCard 컴포넌트의 숨겨진 버전을 미리 로드 */}
+          {selectedLyricObject && selectedImageSource && (
+            <View style={{ width: 1, height: 1, opacity: 0, position: 'absolute' }}>
+              <PhotoCard lyricObject={selectedLyricObject} backgroundImage={selectedImageSource} />
+            </View>
+          )}
           <LottieView
             autoPlay
             source={require('../../../assets/motion/loading.json')}
@@ -368,7 +407,6 @@ const Quote: React.FC = () => {
             }}
           />
         </AnimationContainer>
-        <Text>로딩중..</Text>
       </Container>
     );
   }
