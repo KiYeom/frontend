@@ -9,7 +9,7 @@ export const Container = styled.TouchableOpacity`
   background-color: ${palette.neutral[50]};
   border-radius: ${rsWidth * 10 + 'px'};
   border-width: 2px;
-  border-color: ${palette.primary[500]};
+  border-color: ${palette.primary[400]};
   border-style: dashed;
   justify-content: center;
   align-items: center;
