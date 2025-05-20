@@ -58,7 +58,7 @@ export const ButtonGroup = styled.View<{ insets: EdgeInsets }>`
   justify-content: space-between;
   gap: 20;
   padding-horizontal: 24;
-  padding-bottom: ${(props) => props.insets.bottom + 'px'};
+  padding-bottom: ${(props) => props.insets.bottom + 20 + 'px'};
   z-index: 2;
   background-color: ${palette.neutral[50]};
 `;

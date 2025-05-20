@@ -23,6 +23,7 @@ import ActionButton from '../../components/action-button/action-button';
 import { useFocusEffect } from '@react-navigation/native';
 import { StreakContainer, Container } from './Home.style';
 import { useQuery, useQueryClient } from '@tanstack/react-query'; // Import useQuery
+import palette from '../../assets/styles/theme';
 
 const defaultHomeCarousel = [
   {
@@ -271,9 +272,9 @@ const Home: React.FC<any> = ({ navigation }) => {
           bottom: 15,
           //left: 20,
           //right: 20,
-          backgroundColor: '#fff',
+          backgroundColor: `${palette.neutral[50]}`,
           borderRadius: 20,
-          width: rsWidth * 212,
+          width: 'auto',
           height: rsHeight * 40,
           ...Platform.select({
             ios: {
