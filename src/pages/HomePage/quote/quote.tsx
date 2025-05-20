@@ -5,6 +5,7 @@ import { rsWidth } from '../../../utils/responsive-size';
 import { useNavigation } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import { PhotoCardSize } from '../../../constants/Constants';
 import {
   BannerAd,
   BannerAdSize,
@@ -24,7 +25,12 @@ import Animated, {
   runOnJS,
   Easing,
 } from 'react-native-reanimated';
-import { getUserNickname } from '../../../utils/storageUtils';
+import {
+  getUserNickname,
+  getPhotoCardLyric,
+  getPhotoCardImage,
+  savePhotoCardData,
+} from '../../../utils/storageUtils';
 import Constants from 'expo-constants';
 import {
   Annotation,
@@ -90,7 +96,7 @@ const Quote: React.FC = () => {
 
   const [loaded, setLoaded] = React.useState<boolean>(false);
   const [uiMode, setUiMode] = React.useState<'beforeOpenCookie' | 'showCookieResult' | 'loading'>(
-    'beforeOpenCookie',
+    'loading',
   );
   const [status, requestPermission] = MediaLibrary.usePermissions(); //사진 권한
   const imageRef = useRef<View>(null);
@@ -159,23 +165,49 @@ const Quote: React.FC = () => {
     }, [interstitial]),
   );
 
-  //쿠키를 까 봤는지를 확인
-  /*
+  // 컴포넌트 초기화 시 저장된 데이터 확인
   useEffect(() => {
-    getUserCanOpenQuote().then((response) => {
+    const initializeQuote = async () => {
+      // API를 통해 오늘 열어본 적이 있는지 확인
+      const response = await getUserCanOpenQuote();
+
       if (response && response.result) {
         console.log('오늘 열어본 적 없음');
         setUiMode('beforeOpenCookie');
       } else if (response && !response.result) {
         console.log('오늘 열어본 적 있음');
-        //setUiMode('showCookieResult'); //잠깐 주석 처리함
-        setUiMode('beforeOpenCookie');
+
+        // 저장된 데이터 로드
+        const savedLyric = getPhotoCardLyric();
+        const savedImage = getPhotoCardImage(backgroundImages);
+
+        if (savedLyric && savedImage) {
+          // 저장된 데이터가 있으면 상태 업데이트 후 결과 화면으로 이동
+          setSelectedLyricObject(savedLyric);
+          setSelectedImageSource(savedImage);
+          setUiMode('showCookieResult');
+        } else {
+          // 저장된 데이터가 없다면 새로운 데이터 생성 필요
+          // 랜덤 가사 & 이미지 선택
+          const lyricIndex = Math.floor(Math.random() * happyLyrics.length);
+          const imageIndex = Math.floor(Math.random() * backgroundImages.length);
+
+          setSelectedLyricObject(happyLyrics[lyricIndex]);
+          setSelectedImageSource(backgroundImages[imageIndex]);
+
+          // 선택한 데이터 저장
+          savePhotoCardData(happyLyrics[lyricIndex], backgroundImages[imageIndex]);
+
+          setUiMode('showCookieResult');
+        }
       } else {
         console.log('문제가 발생함');
         setUiMode('beforeOpenCookie');
       }
-    });
-  }, []);*/
+    };
+
+    initializeQuote();
+  }, []);
 
   interstitial.load();
   console.log('uiMode', uiMode);
@@ -274,7 +306,14 @@ const Quote: React.FC = () => {
             </TitleTextContainter>
           </TitleContainer>
           <ImageContainer>
-            <View ref={imageRef} collapsable={false}>
+            <View
+              ref={imageRef}
+              collapsable={false}
+              style={{
+                backgroundColor: 'black',
+                width: PhotoCardSize.width,
+                height: PhotoCardSize.height,
+              }}>
               {selectedLyricObject && (
                 <PhotoCard
                   lyricObject={selectedLyricObject}

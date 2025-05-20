@@ -819,3 +819,8 @@ export type happyLyricsObject = {
   singer: string;
   lyric: string;
 };
+
+export const PhotoCardSize = {
+  width: 310,
+  height: 472,
+};

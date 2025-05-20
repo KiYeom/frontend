@@ -15,8 +15,9 @@ export const TitleContainer = styled.View`
 `;
 export const ImageContainer = styled.View`
   flex: 1;
-  //background-color: pink;
+  background-color: pink;
   justify-content: center;
+  align-items: center;
 `;
 
 export const AnimationContainer = styled.View`
@@ -58,4 +59,5 @@ export const ButtonGroup = styled.View<{ insets: EdgeInsets }>`
   gap: 20;
   padding-horizontal: 24;
   padding-bottom: ${(props) => props.insets.bottom + 'px'};
+  z-index: 2;
 `;
