@@ -95,7 +95,7 @@ const Notifications = () => {
         disabled={diaryLoading}
         onPress={() => {
           Analytics.clickNotificationSettingSwitch('diary', !diarySwitchState);
-          setCookieNotification(!diarySwitchState);
+          setDiaryNotification(!diarySwitchState);
         }}
       />
     </ScrollContainer>

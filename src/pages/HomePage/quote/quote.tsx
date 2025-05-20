@@ -59,6 +59,8 @@ import * as MediaLibrary from 'expo-media-library';
 import * as Sharing from 'expo-sharing';
 import { happyLyrics, happyLyricsObject } from '../../../constants/Constants';
 import PhotoCard from '../../../components/photo-card/photo-card';
+import * as Haptics from 'expo-haptics';
+
 const backgroundImages = [
   {
     id: 'bg1',
@@ -164,6 +166,7 @@ const Quote: React.FC = () => {
         // After 3 seconds, change to result
         setTimeout(() => {
           setUiMode('showCookieResult');
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft); // 광고 시청 후 진동 알림
         }, 1500);
       });
       //광고 로드
