@@ -6,6 +6,7 @@ import {
   Keyboard,
   TextInput,
   View,
+  Text,
   TouchableOpacity,
   ScrollView,
   Platform,
@@ -58,6 +59,7 @@ import Constants from 'expo-constants';
 import { getUserNickname } from '../../../utils/storageUtils';
 import UploadButton from '../../../components/upload-picture/UploadButton';
 import { ImageContainer } from './DailyDairy.style';
+import Button from '../../../components/button/button';
 
 const userName = getUserNickname() ?? 'Test_remind_empty';
 const appVariant = Constants.expoConfig?.extra?.appVariant;
@@ -281,7 +283,7 @@ const DailyDairy = ({ navigation, route }) => {
   // 일기 저장 로직
   const saveDiary = async () => {
     Analytics.clickDiaryWriteButton();
-    //console.log('클릭');
+    console.log('클릭');
 
     if (images.length > 1) {
       //console.log('사진은 최대 1장까지 선택할 수 있습니다. error');
@@ -457,16 +459,17 @@ const DailyDairy = ({ navigation, route }) => {
               placeholder="이 감정을 강하게 느낀 순간을 기록해보세요"
               placeholderTextColor="#B6BDC6"
               style={{
-                //backgroundColor: 'red',
+                backgroundColor: `${palette.neutral[50]}`,
                 flex: 1,
                 fontSize: rsFont * 16,
                 lineHeight: rsFont * 16 * 1.5,
                 padding: rsHeight * 12,
-                paddingHorizontal: 0,
                 textAlignVertical: 'top',
                 fontFamily: 'Kyobo-handwriting',
                 width: '100%',
                 borderRadius: 10,
+                paddingVertical: rsHeight * 12,
+                paddingHorizontal: rsWidth * 16,
               }}
               onContentSizeChange={handleContentSizeChange}
             />
@@ -474,7 +477,7 @@ const DailyDairy = ({ navigation, route }) => {
         </KeyboardAwareScrollView>
 
         <KeyboardStickyView offset={{ closed: 0, opened: insets.bottom }}>
-          <View
+          {/*<View
             style={css`
               flex-direction: row;
               justify-content: space-between;
@@ -495,6 +498,15 @@ const DailyDairy = ({ navigation, route }) => {
               hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}>
               <Icon name="check-icon" width={24} color={palette.neutral[400]} />
             </TouchableOpacity>
+          </View>*/}
+          <View
+            style={{
+              height: rsHeight * 80,
+              paddingVertical: rsHeight * 10,
+              //backgroundColor: 'black',
+              paddingHorizontal: rsWidth * 20,
+            }}>
+            <Button title="일기 저장하기" onPress={saveDiary} primary={true} disabled={false} />
           </View>
         </KeyboardStickyView>
       </View>
