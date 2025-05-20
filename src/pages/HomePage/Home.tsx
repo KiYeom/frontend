@@ -2,7 +2,7 @@ import { css } from '@emotion/native';
 import { Image } from 'expo-image';
 import * as WebBrowser from 'expo-web-browser';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { ScrollView, TouchableOpacity, View, Dimensions } from 'react-native';
+import { ScrollView, TouchableOpacity, View, Dimensions, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Carousel, { ICarouselInstance, Pagination } from 'react-native-reanimated-carousel';
 import { useSharedValue } from 'react-native-reanimated';
@@ -266,19 +266,26 @@ const Home: React.FC<any> = ({ navigation }) => {
         style={{
           justifyContent: 'center',
           alignItems: 'center',
+          alignSelf: 'center',
           position: 'absolute',
-          bottom: 0,
-          left: 20,
-          right: 20,
-          shadowColor: '#000',
-          shadowOffset: {
-            width: 0,
-            height: 2,
-          },
-          shadowOpacity: 0.25,
-          shadowRadius: 3.84,
-          elevation: 5,
-          borderRadius: 50,
+          bottom: 15,
+          //left: 20,
+          //right: 20,
+          backgroundColor: '#fff',
+          borderRadius: 20,
+          width: rsWidth * 212,
+          height: rsHeight * 40,
+          ...Platform.select({
+            ios: {
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+            },
+            android: {
+              elevation: 5,
+            },
+          }),
         }}>
         <ActionButton
           onPress={() => {
