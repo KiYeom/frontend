@@ -168,6 +168,7 @@ const Home: React.FC<any> = ({ navigation }) => {
             padding-bottom: ${rsWidth * 20 + 'px'};
             flex: 1;
             gap: ${rsHeight * 15 + 'px'}; //gap 20 -> 15
+            padding-bottom: ${rsHeight * 65 + 'px'}; //행복 버튼 패딩 추가
             //background-color: blue;
           `}>
           <Header
