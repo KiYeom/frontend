@@ -121,19 +121,19 @@ const Quote: React.FC = () => {
       //광고를 끝까지 봐서 보상을 줄 수 있을 때 일기와 사진을 등록할 수 있는 콜백 함수를 unsubscribeEarned 이라는 이름으로 등록해둔다
       const unsubscribeEarned = interstitial.addAdEventListener(AdEventType.OPENED, async () => {
         setUiMode('loading');
-        console.log('User earned reward of ');
+        //console.log('User earned reward of ');
         //api 호출하여 오늘 열어봤음을 업데이트 하기
 
         //랜덤 가사 객체 선택
         const lyricIndex = Math.floor(Math.random() * happyLyrics.length);
         setSelectedLyricObject(happyLyrics[lyricIndex]);
-        console.log('랜덤 가사 객체 선택 완료', lyricIndex);
+        //console.log('랜덤 가사 객체 선택 완료', lyricIndex);
 
         //랜덤 이미지 선택
         const imageIndex = Math.floor(Math.random() * backgroundImages.length);
-        console.log('======imageIndex', imageIndex);
+        //console.log('======imageIndex', imageIndex);
         setSelectedImageSource(backgroundImages[imageIndex]);
-        console.log('랜덤 이미지 선택 완료', imageIndex);
+        //console.log('랜덤 이미지 선택 완료', imageIndex);
         /// ==== ///
         await updateUserCanOpenQuote();
         //setUiMode('showCookieResult'); //state를 변경하기 (uiMode를 showCookieResult로 변경하기)
@@ -267,7 +267,6 @@ const Quote: React.FC = () => {
               zIndex: 1,
             }}
           />
-
           <TitleContainer>
             <TitleTextContainter>
               <Annotation>{userName}님을 위한</Annotation>
@@ -312,18 +311,24 @@ const Quote: React.FC = () => {
   if (uiMode === 'loading') {
     return (
       <Container insets={insets}>
-        {/*<AnimationContainer style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <AnimationContainer style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <LottieView
             autoPlay
-            source={require('../../../assets/motion/new-confetti.json')}
+            source={require('../../../assets/motion/loading.json')}
             loop={false}
+            speed={1.0}
+            onAnimationFinish={() => {
+              console.log('로딩 애니메이션 완료');
+              // 애니메이션이 끝나면 showCookieResult로 전환 (백업 메커니즘)
+              setUiMode('showCookieResult');
+            }}
             style={{
-              width: '100%',
-              height: '100%',
+              width: '150',
+              height: '150',
               position: 'absolute',
             }}
           />
-        </AnimationContainer>*/}
+        </AnimationContainer>
         <Text>로딩중..</Text>
       </Container>
     );
