@@ -1,10 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { View, Text, Keyboard, KeyboardEvent } from 'react-native';
-import BottomSheet, { BottomSheetTextInput, BottomSheetView } from '@gorhom/bottom-sheet';
+import { Keyboard, KeyboardEvent } from 'react-native';
+import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { css } from '@emotion/native';
 import { rsWidth } from '../../utils/responsive-size';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { EmotionIcon } from '../../components/emotionIcon/emotionIcon';
 import { Emotion } from '../../store/emotion-status';
 import Button from '../../components/button/button';

@@ -7,8 +7,10 @@ import { ScrollContainer } from './notifications.styles';
 const Notifications = () => {
   const [systemSwitchState, setSystemSwitchState] = React.useState(false);
   const [cookieSwitchState, setCookieSwitchState] = React.useState(false);
+  const [diarySwitchState, setDiarySwitchState] = React.useState(false);
   const [systemLoading, setSystemLoading] = React.useState(true);
   const [cookieLoading, setCookieLoading] = React.useState(true);
+  const [diaryLoading, setDiaryLoading] = React.useState(true);
 
   const setSystemNotification = async (isAllow: boolean) => {
     setSystemLoading(true);
@@ -28,6 +30,15 @@ const Notifications = () => {
     }
   };
 
+  const setDiaryNotification = async (isAllow: boolean) => {
+    setDiaryLoading(true);
+    const res = await setNotificationStatus('diary', isAllow);
+    if (res) {
+      setDiarySwitchState(isAllow);
+      setDiaryLoading(false);
+    }
+  };
+
   useEffect(() => {
     Analytics.watchNotificationSettingScreen();
     getNotificationStatus()
@@ -39,8 +50,12 @@ const Notifications = () => {
           if (res.allowedNotifications.includes('chat_cookie')) {
             setCookieSwitchState(true);
           }
+          if (res.allowedNotifications.includes('diary')) {
+            setDiarySwitchState(true);
+          }
           setSystemLoading(false);
           setCookieLoading(false);
+          setDiaryLoading(false);
         } else {
           alert('알림 상태 가져올 수 없습니다. 잠시 후 다시 시도해주시기 바랍니다.');
         }
@@ -65,12 +80,22 @@ const Notifications = () => {
       />
       <SwitchRow
         title="쿠키 채팅 알림"
-        desc="쿠기가 사용자에게 메시지를 보낼 때 알림을 드립니다. "
+        desc="쿠키가 사용자에게 메시지를 보낼 때 알림을 드립니다. "
         isEnabled={cookieSwitchState}
         disabled={cookieLoading}
         onPress={() => {
           Analytics.clickNotificationSettingSwitch('cookie', !cookieSwitchState);
           setCookieNotification(!cookieSwitchState);
+        }}
+      />
+      <SwitchRow
+        title="일기 작성 알림"
+        desc="오늘 하루 감정과 생각을 기록할 수 있도록 일기 작성 알림을 전해드립니다."
+        isEnabled={diarySwitchState}
+        disabled={diaryLoading}
+        onPress={() => {
+          Analytics.clickNotificationSettingSwitch('diary', !diarySwitchState);
+          setCookieNotification(!diarySwitchState);
         }}
       />
     </ScrollContainer>
