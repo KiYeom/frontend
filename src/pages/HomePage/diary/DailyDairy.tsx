@@ -56,6 +56,8 @@ import {
 import Constants from 'expo-constants';
 //import adUnitId from '../../../utils/advertise';
 import { getUserNickname } from '../../../utils/storageUtils';
+import UploadButton from '../../../components/upload-picture/UploadButton';
+import { ImageContainer } from './DailyDairy.style';
 
 const userName = getUserNickname() ?? 'Test_remind_empty';
 const appVariant = Constants.expoConfig?.extra?.appVariant;
@@ -399,8 +401,8 @@ const DailyDairy = ({ navigation, route }) => {
               ))}
             </View>
           )}
-          {images.length > 0 && (
-            <View
+          {images.length > 0 ? (
+            <ImageContainer
               style={{
                 height: 120,
                 //backgroundColor: 'gray',
@@ -409,11 +411,15 @@ const DailyDairy = ({ navigation, route }) => {
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                style={{ height: rsHeight * 100 }}
-                contentContainerStyle={{
+                //style={{ height: rsHeight * 100 }}
+                style={{ flex: 1 }}
+                /*contentContainerStyle={{
                   paddingHorizontal: rsWidth * 24,
                   gap: rsWidth * 12,
                   marginTop: rsHeight * 10,
+                }}*/
+                contentContainerStyle={{
+                  gap: rsWidth * 12,
                 }}>
                 {images.map((img, idx) => (
                   <AttachmentPreview
@@ -425,7 +431,11 @@ const DailyDairy = ({ navigation, route }) => {
                   />
                 ))}
               </ScrollView>
-            </View>
+            </ImageContainer>
+          ) : (
+            <ImageContainer>
+              <UploadButton onPress={pickImage}></UploadButton>
+            </ImageContainer>
           )}
 
           {/* 풀스크린 멀티라인 입력창 */}
