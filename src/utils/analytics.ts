@@ -104,6 +104,10 @@ export default class Analytics {
       direction,
     });
   };
+  //탭 - 홈 화면 - 행복 열기 버튼 클릭
+  public static clickTabHomeHappyLyricsButton = (): void => {
+    this.sendEvent('탭-홈 화면 - 행복 열기 버튼 클릭', 'clickTabHomeHappyLyricsButton');
+  };
   //상담 기관 정보 버튼 클릭
   public static clickClinicInfoButton = (score: number | undefined = undefined): void => {
     this.sendEvent('탭-홈->상담 기관 정보 버튼 클릭', 'tabHomeClinicInfoButton', {
@@ -135,6 +139,24 @@ export default class Analytics {
     this.sendEvent('탭-홈->감정 기록 전 버튼 클릭', 'tabHomeEmotionRecordButton', {
       isRecord,
     });
+  };
+
+  //행복 세잎클로버 화면 진입
+  public static watchBeforeOpenHappyLyricsImageScreen = (): void => {
+    this.sendEvent('행복 세잎클로버 화면 진입', 'happyLyricsScreen');
+  };
+  //행복 포토카드 화면 진입
+  public static watchHappyLyricsImageScreen = (): void => {
+    this.sendEvent('행복 이미지 화면 진입', 'happyLyricsImageScreen');
+  };
+
+  //행복 이미지 페이지 저장 버튼 클릭
+  public static clickHappyLyricsImageSaveButton = (): void => {
+    this.sendEvent('행복 이미지 페이지 저장 버튼 클릭', 'happyLyricsImageSaveButton');
+  };
+  //행복 이미지 페이지 공유 버튼 클릭
+  public static clickHappyLyricsImageShareButton = (): void => {
+    this.sendEvent('행복 이미지 페이지 공유 버튼 클릭', 'happyLyricsImageShareButton');
   };
 
   //탭 - 설정 화면

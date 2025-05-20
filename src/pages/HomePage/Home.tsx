@@ -293,6 +293,7 @@ const Home: React.FC<any> = ({ navigation }) => {
             navigation.navigate(RootStackName.HomeStackNavigator, {
               screen: HomeStackName.Quote,
             });
+            Analytics.clickTabHomeHappyLyricsButton();
           }}></ActionButton>
       </View>
     </Container>

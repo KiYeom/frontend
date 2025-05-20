@@ -60,6 +60,7 @@ import * as Sharing from 'expo-sharing';
 import { happyLyrics, happyLyricsObject } from '../../../constants/Constants';
 import PhotoCard from '../../../components/photo-card/photo-card';
 import * as Haptics from 'expo-haptics';
+import Analytics from '../../../utils/analytics';
 
 const backgroundImages = [
   {
@@ -161,11 +162,12 @@ const Quote: React.FC = () => {
       });
       //광고가 닫힐 때 실행되는 이벤트 리스터
       const unsubscribeClosed = interstitial.addAdEventListener(AdEventType.CLOSED, () => {
-        console.log('광고 종료');
+        //console.log('광고 종료');
 
         // After 3 seconds, change to result
         setTimeout(() => {
           setUiMode('showCookieResult');
+          Analytics.watchHappyLyricsImageScreen();
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft); // 광고 시청 후 진동 알림
         }, 1500);
       });
@@ -188,10 +190,11 @@ const Quote: React.FC = () => {
       const response = await getUserCanOpenQuote();
 
       if (response && response.result) {
-        console.log('오늘 열어본 적 없음');
+        //console.log('오늘 열어본 적 없음');
         setUiMode('beforeOpenCookie');
+        Analytics.watchBeforeOpenHappyLyricsImageScreen();
       } else if (response && !response.result) {
-        console.log('오늘 열어본 적 있음');
+        //console.log('오늘 열어본 적 있음');
 
         // 저장된 데이터 로드
         const savedLyric = getPhotoCardLyric();
@@ -202,6 +205,7 @@ const Quote: React.FC = () => {
           setSelectedLyricObject(savedLyric);
           setSelectedImageSource(savedImage);
           setUiMode('showCookieResult');
+          Analytics.watchHappyLyricsImageScreen();
         } else {
           // 저장된 데이터가 없다면 새로운 데이터 생성 필요
           // 랜덤 가사 & 이미지 선택
@@ -215,10 +219,12 @@ const Quote: React.FC = () => {
           savePhotoCardData(happyLyrics[lyricIndex], backgroundImages[imageIndex]);
 
           setUiMode('showCookieResult');
+          Analytics.watchHappyLyricsImageScreen();
         }
       } else {
-        console.log('문제가 발생함');
+        //console.log('문제가 발생함');
         setUiMode('beforeOpenCookie');
+        Analytics.watchBeforeOpenHappyLyricsImageScreen();
       }
     };
 
@@ -338,7 +344,7 @@ const Quote: React.FC = () => {
                 ref={imageRef}
                 collapsable={false}
                 style={{
-                  backgroundColor: 'black',
+                  //backgroundColor: 'black',
                   width: PhotoCardSize.width,
                   height: PhotoCardSize.height,
                 }}>
@@ -356,7 +362,8 @@ const Quote: React.FC = () => {
           <Button
             title="저장하기"
             onPress={() => {
-              console.log('저장히기 버튼 클릭');
+              //console.log('저장히기 버튼 클릭');
+              Analytics.clickHappyLyricsImageSaveButton();
               onSaveImageAsync();
               //navigation.navigate('Home');
             }}
@@ -365,8 +372,9 @@ const Quote: React.FC = () => {
           <Button
             title="공유하기"
             onPress={async () => {
-              console.log('공유하기 버튼 클릭');
+              //console.log('공유하기 버튼 클릭');
               onShareImageAsync();
+              Analytics.clickHappyLyricsImageShareButton();
             }}
             primary={true}
           />
