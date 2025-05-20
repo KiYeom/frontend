@@ -208,6 +208,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
               flex-direction: column;
               gap: ${rsWidth * 10 + 'px'};
               justify-content: center;
+              height: ${rsHeight * 152 + 'px'};
             `}>
             <Button
               title="원하는 감정이 없어요"
