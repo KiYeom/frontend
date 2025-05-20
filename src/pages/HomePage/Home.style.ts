@@ -5,7 +5,6 @@ import styled from '@emotion/native';
 import { EdgeInsets } from 'react-native-safe-area-context';
 
 export const StreakContainer = styled.View`
-  height: ${rsHeight * 60 + 'px'};
   flex-direction: row;
   gap: ${rsHeight * 10 + 'px'};
 `;

@@ -13,6 +13,7 @@ export const Card = styled.View`
   border: 1px solid ${palette.neutral[200]};
   background-color: white;
   gap: 6px;
+  //background-color: pink;
 `;
 
 export const IconContainer = styled.View`
@@ -31,12 +32,12 @@ export const TextContainer = styled.View`
 export const ValueText = styled.Text`
   font-size: 20px;
   font-family: Pretendard-SemiBold;
-  color : ${palette.neutral[500]}
+  color: ${palette.neutral[500]};
   margin-bottom: 4px;
 `;
 
 export const LabelText = styled.Text`
-  font-size: 14px;
+  font-size: 13px;
   color: ${palette.neutral[300]};
   font-family: Pretendard-SemiBold;
 `;

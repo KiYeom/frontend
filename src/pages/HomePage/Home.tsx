@@ -18,9 +18,12 @@ import Header from './Homeheader';
 import { useRiskStoreVer2 } from '../../store/useRiskStoreVer2';
 import CustomCalendar from '../../components/customCalendar/customCalendar';
 import { getUserDiaryStreak } from '../../apis/user-streak';
+import { TUserDiaryStreak } from '../../apis/user-streak.types';
 import ActionButton from '../../components/action-button/action-button';
 import { useFocusEffect } from '@react-navigation/native';
 import { StreakContainer, Container } from './Home.style';
+import { useQuery, useQueryClient } from '@tanstack/react-query'; // Import useQuery
+
 const defaultHomeCarousel = [
   {
     page: 1,
@@ -36,12 +39,15 @@ const defaultHomeCarousel = [
   },
 ];
 
+const streakQueryKey = ['userStreak']; //쿼리를 식별하는 고유한 키
+
 const Home: React.FC<any> = ({ navigation }) => {
   const [carousels, setCarousels] = useState<TCarousel[]>(defaultHomeCarousel);
-  const [currentStreak, setCurrentStreak] = useState<number>(0); //현재 연속 기록 일수
-  const [maxStreak, setMaxStreak] = useState<number>(0); //최장 연속 기록 일수
+  //const [currentStreak, setCurrentStreak] = useState<number>(0); //현재 연속 기록 일수
+  //const [maxStreak, setMaxStreak] = useState<number>(0); //최장 연속 기록 일수
   const isInitialSreakLoad = useRef<boolean>(true); //초기 로드 확인용
   const [playStreakLottieTrigger, setPlayStreakLottieTrigger] = useState<number>(0); //lottie 애니메이션 재생 트리거
+  const previousCurrentStreakRef = useRef<number | undefined>(); // To track previous streak for animation
   const insets = useSafeAreaInsets();
   const { riskScoreV2, riskStatusV2, setRiskScoreV2, setRiskStatusV2, setHandleDangerPressV2 } =
     useRiskStoreVer2();
@@ -53,6 +59,7 @@ const Home: React.FC<any> = ({ navigation }) => {
   //캐러셀 추가 (페이지네이션)
   const ref = useRef<ICarouselInstance>(null);
   const progress = useSharedValue<number>(0);
+  const queryClient = useQueryClient(); // Get query client instance
 
   const onPressPagination = (index: number) => {
     ref.current?.scrollTo({
@@ -60,6 +67,23 @@ const Home: React.FC<any> = ({ navigation }) => {
       animated: true,
     });
   };
+
+  const {
+    data: streakData, //API로부터 성공적으로 받아온 데이터
+    isLoading: isLoadingStreak, // 데이터 로딩 중인지 여부
+    error: streakError, // 데이터 로딩 중 에러 발생 시 에러 객체
+    refetch: refetchStreakData, //데이터를 수동으로 다시 가져오는 함수
+  } = useQuery<TUserDiaryStreak | undefined, Error>({
+    //데이터 타입과 에러
+    queryKey: streakQueryKey, //쿼리 키
+    queryFn: getUserDiaryStreak, //데이터를 가지고 올 비동기 함수
+    // staleTime: 1000 * 60 * 5, // 데이터가 'stale' 상태로 간주되기까지의 시간
+    // refetchOnWindowFocus: true, // 창이 포커스될 떄마다 데이터를 다시 가져올 지 여부 (기본값 : true)
+  });
+
+  //streackData에서 실제 값을 추출 (데이터가 없거나 로딩 중일 때는 기본값 사용)
+  const currentStreak = streakData?.currentStreak ?? 0;
+  const maxStreak = streakData?.maxStreak ?? 0;
 
   //위험 상태에 따른 클릭 이벤트 처리 (쿠키 편지로 이동)
   const navigateToDangerAlert = () => {
@@ -83,69 +107,55 @@ const Home: React.FC<any> = ({ navigation }) => {
       });
   }, []);
 
+  //로티 애니메이션 트리거 로직 변경
+  useEffect(() => {
+    if (streakData?.currentStreak !== undefined) {
+      //streakData가 로드되었는지 확인
+      const newCurrent = streakData.currentStreak;
+      const prevCurrent = previousCurrentStreakRef.current;
+
+      // Log for debugging animation trigger
+      console.log(`스트릭 데이터 업데이트됨. 이전 값: ${prevCurrent}, 새 값: ${newCurrent}`);
+
+      if (prevCurrent === undefined && newCurrent > 0) {
+        // 초기 로드이고, 스트릭이 0보다 클 때, 애니메이션 실행
+        console.log(`Initial load animation trigger: ${newCurrent}`);
+        setPlayStreakLottieTrigger((prev) => prev + 1);
+      } else if (prevCurrent !== undefined && newCurrent > prevCurrent) {
+        // 이전값보다 현재 서버에서 가져온 값이 더 클 때 애니메이션 실행
+        console.log(`Streak increased animation trigger: from ${prevCurrent} to ${newCurrent}`);
+        setPlayStreakLottieTrigger((prev) => prev + 1);
+      }
+      //현재 currentStreack 값을 ref에 저장
+      previousCurrentStreakRef.current = newCurrent; // Update ref for next comparison
+    }
+  }, [streakData]); // streakData가 변경될 때마다 useEffect 실행
+
   useFocusEffect(
     useCallback(() => {
-      // API 호출 직전의 currentStreak 상태 값을 저장합니다.
-      // 컴포넌트 첫 로드 시 currentStreak의 초기값은 0입니다.
-      const streakBeforeFetch = currentStreak;
-      console.log(
-        `홈 화면 포커스됨, 연속 기록 정보 가져오는 중... (API 호출 전 streak: ${streakBeforeFetch})`,
-      );
+      console.log('홈 화면 포커스됨. 애널리틱스 및 스트릭 데이터 리페칭.');
+      Analytics.watchTabHomeScreen(); // Also watch tab on focus (if behavior is per-focus)
 
-      getUserDiaryStreak()
-        .then((res) => {
-          console.log('user-streak 정보', res);
-          if (res) {
-            const newCurrentStreak = res.currentStreak;
-            setMaxStreak(res.maxStreak);
-
-            if (isInitialSreakLoad.current) {
-              console.log(
-                `초기 로드 처리 시작. API 값: ${newCurrentStreak}, API 호출 전 streak 상태: ${streakBeforeFetch}`,
-              );
-              // 먼저 현재 API 값으로 상태를 업데이트합니다.
-              setCurrentStreak(newCurrentStreak);
-              isInitialSreakLoad.current = false; // 초기 로드 플래그를 false로 변경합니다.
-
-              // 초기 로드 상황이라도, API 호출 전 상태(주로 0)보다 API에서 가져온 값이 크다면,
-              // 이는 실제 "증가"로 간주하여 애니메이션을 실행합니다.
-              if (newCurrentStreak > streakBeforeFetch) {
-                console.log(
-                  `초기 로드지만 실제 증가로 판단: from ${streakBeforeFetch} to ${newCurrentStreak}`,
-                );
-                setPlayStreakLottieTrigger((prev) => prev + 1);
-              } else {
-                console.log(
-                  `초기 로드, 실제 증가 아님 (또는 동일 값). API 값: ${newCurrentStreak}`,
-                );
-              }
-            } else {
-              // 초기 로드가 아닐 때 (즉, 화면에 재포커스 되었을 때 등)
-              if (newCurrentStreak > currentStreak) {
-                // 여기서 currentStreak는 이전 API 호출로 설정된 값
-                console.log(`연속 기록 증가: from ${currentStreak} to ${newCurrentStreak}`);
-                setCurrentStreak(newCurrentStreak);
-                setPlayStreakLottieTrigger((prev) => prev + 1);
-              } else if (newCurrentStreak !== currentStreak) {
-                console.log(`연속 기록 변경 (증가 아님): ${newCurrentStreak}`);
-                setCurrentStreak(newCurrentStreak);
-              } else {
-                console.log(`연속 기록 변경 없음: ${newCurrentStreak}`);
-              }
-            }
-          }
-        })
-        .catch((error) => {
-          console.error('user-streak 정보 가져오기 실패', error);
-          // 에러 발생 시, 다음 포커스 때 다시 초기 로드로 시도하게 하려면 아래 주석 해제 (선택적)
-          // isInitialSreakLoad.current = true;
-        });
-
+      //화면이 포커스될 때 스트릭 데이터를 무효화하여 다시 가져오도록 함
+      refetchStreakData();
       return () => {
-        // console.log('홈 화면 포커스 벗어남');
+        // console.log('Home screen focus lost.');
+        console.log('홈 화면 포커스 해제됨.');
       };
-    }, [currentStreak]), // currentStreak 의존성은 콜백 내에서 항상 최신의 currentStreak 값을 참조하기 위해 유지합니다.
+    }, [queryClient, refetchStreakData]),
   );
+
+  if (isLoadingStreak && !streakData) {
+    // Show a loader only on initial load if desired
+    // Optional: return a loading indicator
+    // return <View><Text>Loading streaks...</Text></View>;
+  }
+
+  if (streakError) {
+    // Optional: handle error display
+    console.error('Failed to load streak data:', streakError.message);
+    // return <View><Text>Error loading streaks.</Text></View>;
+  }
 
   return (
     <Container insets={insets}>
@@ -240,11 +250,11 @@ const Home: React.FC<any> = ({ navigation }) => {
           <StreakContainer>
             <StreakCard
               icon="fire"
-              value={`${currentStreak}일`}
+              value={currentStreak}
               label="연속 일기 기록수"
               lottieTrigger={playStreakLottieTrigger}
             />
-            <StreakCard icon="twinkle-cookie" value={`${maxStreak}일`} label="최장 일기 기록수" />
+            <StreakCard icon="twinkle-cookie" value={maxStreak} label="최장 일기 기록수" />
           </StreakContainer>
 
           {/* 캘린더 */}

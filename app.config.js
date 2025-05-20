@@ -43,6 +43,7 @@ module.exports = {
       googleServicesFile: process.env.GOOGLE_SERVICES_JSON,
       userInterfaceStyle: 'automatic',
     },
+
     androidStatusBar: {
       translucent: true,
     },
@@ -51,6 +52,7 @@ module.exports = {
       favicon: './assets/favicon.png',
       bundler: 'metro',
     },
+
     extra: {
       appVariant: appVariant,
       APP_ENV: environment,
@@ -93,8 +95,8 @@ module.exports = {
       [
         'expo-notifications',
         {
-          icon: './src/assets/images/new_new_notification.png',
-          color: '#31B28E',
+          //icon: './src/assets/images/new_new_notification.png',
+          //color: '#31B28E',
           mode: 'production',
         },
       ],
@@ -178,6 +180,13 @@ module.exports = {
     runtimeVersion: '1.0.0',
     updates: {
       url: 'https://u.expo.dev/1cd0480c-0399-4503-ae2d-ec73641ea4fd',
+    },
+    notification: {
+      icon: './src/assets/images/new_new_notification.png',
+      color: '#31B28E',
+      iosDisplayInForeground: true,
+      androidMode: 'default',
+      androidCollapsedTitle: 'reMIND',
     },
   },
 };

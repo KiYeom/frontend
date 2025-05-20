@@ -6,7 +6,7 @@ import { TIconName } from '../icons/icons';
 import LottieView from 'lottie-react-native';
 type StreakProps = {
   icon?: TIconName;
-  value?: string;
+  value?: number;
   label?: string;
   lottieTrigger?: number;
 };
@@ -29,6 +29,8 @@ const StreakCard = (props: StreakProps) => {
     console.log(`StreakCard (${label}): Lottie 애니메이션 종료.`);
     setIsLottieVisible(false); // Lottie 뷰를 다시 숨김
   };
+
+  console.log('isLottieVisible', isLottieVisible);
 
   return (
     <Card>
@@ -59,7 +61,7 @@ const StreakCard = (props: StreakProps) => {
       )}
 
       <TextContainer>
-        <ValueText>{value}</ValueText>
+        <ValueText>{value}일</ValueText>
         <LabelText>{label}</LabelText>
       </TextContainer>
     </Card>
