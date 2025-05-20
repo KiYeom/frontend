@@ -104,7 +104,7 @@ const Home: React.FC<any> = ({ navigation }) => {
         setCarousels(res);
       })
       .catch((error: any) => {
-        console.error('[ERROR] homeCarousel: ', error);
+        //console.error('[ERROR] homeCarousel: ', error);
       });
   }, []);
 
@@ -116,15 +116,15 @@ const Home: React.FC<any> = ({ navigation }) => {
       const prevCurrent = previousCurrentStreakRef.current;
 
       // Log for debugging animation trigger
-      console.log(`스트릭 데이터 업데이트됨. 이전 값: ${prevCurrent}, 새 값: ${newCurrent}`);
+      //console.log(`스트릭 데이터 업데이트됨. 이전 값: ${prevCurrent}, 새 값: ${newCurrent}`);
 
       if (prevCurrent === undefined && newCurrent > 0) {
         // 초기 로드이고, 스트릭이 0보다 클 때, 애니메이션 실행
-        console.log(`Initial load animation trigger: ${newCurrent}`);
+        //console.log(`Initial load animation trigger: ${newCurrent}`);
         setPlayStreakLottieTrigger((prev) => prev + 1);
       } else if (prevCurrent !== undefined && newCurrent > prevCurrent) {
         // 이전값보다 현재 서버에서 가져온 값이 더 클 때 애니메이션 실행
-        console.log(`Streak increased animation trigger: from ${prevCurrent} to ${newCurrent}`);
+        //console.log(`Streak increased animation trigger: from ${prevCurrent} to ${newCurrent}`);
         setPlayStreakLottieTrigger((prev) => prev + 1);
       }
       //현재 currentStreack 값을 ref에 저장
@@ -134,14 +134,14 @@ const Home: React.FC<any> = ({ navigation }) => {
 
   useFocusEffect(
     useCallback(() => {
-      console.log('홈 화면 포커스됨. 애널리틱스 및 스트릭 데이터 리페칭.');
+      //console.log('홈 화면 포커스됨. 애널리틱스 및 스트릭 데이터 리페칭.');
       Analytics.watchTabHomeScreen(); // Also watch tab on focus (if behavior is per-focus)
 
       //화면이 포커스될 때 스트릭 데이터를 무효화하여 다시 가져오도록 함
       refetchStreakData();
       return () => {
         // console.log('Home screen focus lost.');
-        console.log('홈 화면 포커스 해제됨.');
+        //console.log('홈 화면 포커스 해제됨.');
       };
     }, [queryClient, refetchStreakData]),
   );
@@ -154,7 +154,7 @@ const Home: React.FC<any> = ({ navigation }) => {
 
   if (streakError) {
     // Optional: handle error display
-    console.error('Failed to load streak data:', streakError.message);
+    //console.error('Failed to load streak data:', streakError.message);
     // return <View><Text>Error loading streaks.</Text></View>;
   }
 

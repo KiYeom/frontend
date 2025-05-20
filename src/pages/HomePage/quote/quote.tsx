@@ -101,8 +101,8 @@ const adUnitId =
     : TestIds.INTERSTITIAL_VIDEO;
 
 const Quote: React.FC = () => {
-  console.log('adUnitId in quote', adUnitId === TestIds.REWARDED);
-  console.log('appVariant in quote', appVariant);
+  //console.log('adUnitId in quote', adUnitId === TestIds.REWARDED);
+  //console.log('appVariant in quote', appVariant);
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const animation = useRef<LottieView>(null);
@@ -120,7 +120,7 @@ const Quote: React.FC = () => {
   if (status === null) {
     requestPermission();
   } else {
-    console.log('사진 권한 상태', status);
+    //console.log('사진 권한 상태', status);
   }
 
   const interstitial = useMemo(
@@ -232,7 +232,7 @@ const Quote: React.FC = () => {
   }, []);
 
   interstitial.load();
-  console.log('uiMode', uiMode);
+  //console.log('uiMode', uiMode);
 
   //랜덤 값 뽑기
 
@@ -252,17 +252,17 @@ const Quote: React.FC = () => {
         );
       }
     } catch (e) {
-      console.log(e);
+      //console.log(e);
     }
   };
 
   //사진 공유
   const onShareImageAsync = async () => {
     const isSharingAvailable = await Sharing.isAvailableAsync();
-    console.log('isSharingAvailable', isSharingAvailable);
+    //console.log('isSharingAvailable', isSharingAvailable);
     if (!isSharingAvailable) {
       alert('이 기기에서는 공유 기능을 사용할 수 없습니다.');
-      console.log('Sharing API is not available on this device.');
+      //console.log('Sharing API is not available on this device.');
       return; // 공유 기능 사용 불가 시 함수 종료
     }
     try {
@@ -275,7 +275,7 @@ const Quote: React.FC = () => {
       };
       await Sharing.shareAsync(localUri, options);
     } catch (error) {
-      console.error('Error sharing image:', error);
+      //console.error('Error sharing image:', error);
       alert('Please select an image first.');
     }
   };
@@ -391,7 +391,7 @@ const Quote: React.FC = () => {
             <Image
               source={selectedImageSource.source}
               style={{ width: 1, height: 1, opacity: 0, position: 'absolute' }}
-              onLoad={() => console.log('로딩 화면에서 이미지 미리 로드 완료')}
+              //onLoad={() => console.log('로딩 화면에서 이미지 미리 로드 완료')}
             />
           )}
 
@@ -407,7 +407,7 @@ const Quote: React.FC = () => {
             loop={false}
             speed={1.0}
             onAnimationFinish={() => {
-              console.log('로딩 애니메이션 완료');
+              //console.log('로딩 애니메이션 완료');
               // 애니메이션이 끝나면 showCookieResult로 전환 (백업 메커니즘)
               setUiMode('showCookieResult');
             }}
@@ -434,7 +434,7 @@ const Quote: React.FC = () => {
       <AnimationContainer>
         <TouchableOpacity
           onPress={async () => {
-            console.log('Animation clicked!');
+            //console.log('Animation clicked!');
             interstitial.load();
             await interstitial.show();
           }}>
