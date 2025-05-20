@@ -1,4 +1,3 @@
-import { EmotionIconContainer } from './emotion.styles';
 import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { css } from '@emotion/native';

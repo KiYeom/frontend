@@ -19,7 +19,7 @@ import RangeDatePickerModal from '../../components/rangeCal/range-date-picker-mo
 import PeriodRecord from './Period-records/period-record';
 import PeriodFlowChart from './Period_FlowChart/PeriodFlowChartArea';
 import PeriodKeywordArea from './Period_keyword/PeriodKeywordArea';
-import ReportType from './ReportType';
+//import ReportType from './ReportType';
 import { DateLineContainer, DateLineText, StatisticTitle } from './StatisticMain.style';
 import Icon from '../../components/icons/icons';
 import PeriodEmotionArea from './Period_Emotion/PeriodEmotionArea';

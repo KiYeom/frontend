@@ -71,15 +71,17 @@ const SingleDatePickerModal = (props: SingleDatePickerModalProps) => {
                   }}
                 />
               </View>
-              <Button
-                title="입력 완료"
-                primary={true}
-                disabled={false}
-                onPress={() => {
-                  onChange?.(date);
-                  onClose?.();
-                }}
-              />
+              <View style={{ height: 50 }}>
+                <Button
+                  title="입력 완료"
+                  primary={true}
+                  disabled={false}
+                  onPress={() => {
+                    onChange?.(date);
+                    onClose?.();
+                  }}
+                />
+              </View>
             </ModalInner>
           </TouchableWithoutFeedback>
         </ModalContainer>

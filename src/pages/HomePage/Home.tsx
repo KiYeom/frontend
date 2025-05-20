@@ -1,36 +1,26 @@
 import { css } from '@emotion/native';
 import { Image } from 'expo-image';
 import * as WebBrowser from 'expo-web-browser';
-import React, { useEffect, useRef } from 'react';
-import { ScrollView, Text, TouchableOpacity, View, Dimensions } from 'react-native';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { ScrollView, TouchableOpacity, View, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Carousel, { ICarouselInstance, Pagination } from 'react-native-reanimated-carousel';
 import { useSharedValue } from 'react-native-reanimated';
 import { getCarousel } from '../../apis/carousel';
 import { TCarousel } from '../../apis/carousel.types';
-import { getRiskScore } from '../../apis/riskscore';
 import StreakCard from '../../components/streak/streak';
-import {
-  DANGER_LETTER,
-  DangerStackName,
-  HomeStackName,
-  ONE_DAY_IN_MS,
-  RISK_SCORE_THRESHOLD,
-  RootStackName,
-} from '../../constants/Constants';
+import { DangerStackName, HomeStackName, RootStackName } from '../../constants/Constants';
 import Analytics from '../../utils/analytics';
 import requestNotificationPermission from '../../utils/NotificationToken';
 import { ratio, rsHeight, rsWidth } from '../../utils/responsive-size';
 import { getRiskData, getUserAccountProvider, setRiskData } from '../../utils/storageUtils';
 import Header from './Homeheader';
-import { getKoreanServerTodayDateString } from '../../utils/times';
 import { useRiskStoreVer2 } from '../../store/useRiskStoreVer2';
 import CustomCalendar from '../../components/customCalendar/customCalendar';
-import { dailyEmotionAnalyze } from '~/src/apis/analyze';
-import Button from '../../components/button/button';
-import Streak from '../../components/streak/streak';
 import { getUserDiaryStreak } from '../../apis/user-streak';
 import ActionButton from '../../components/action-button/action-button';
+import { useFocusEffect } from '@react-navigation/native';
+import { StreakContainer, Container } from './Home.style';
 const defaultHomeCarousel = [
   {
     page: 1,
@@ -47,12 +37,11 @@ const defaultHomeCarousel = [
 ];
 
 const Home: React.FC<any> = ({ navigation }) => {
-  //console.log('홈 화면 렌더링 🏠');
-  //const [riskScore, setRiskScore] = React.useState<number>(0);
-  //const [riskStatus, setRiskStatus] = React.useState<'safe' | 'danger' | 'danger-opened'>('safe');
-  const [carousels, setCarousels] = React.useState<TCarousel[]>(defaultHomeCarousel);
-  const [currentStreak, setCurrentStreak] = React.useState<number>(0); //현재 연속 기록 일수
-  const [maxStreak, setMaxStreak] = React.useState<number>(0); //최장 연속 기록 일수
+  const [carousels, setCarousels] = useState<TCarousel[]>(defaultHomeCarousel);
+  const [currentStreak, setCurrentStreak] = useState<number>(0); //현재 연속 기록 일수
+  const [maxStreak, setMaxStreak] = useState<number>(0); //최장 연속 기록 일수
+  const isInitialSreakLoad = useRef<boolean>(true); //초기 로드 확인용
+  const [playStreakLottieTrigger, setPlayStreakLottieTrigger] = useState<number>(0); //lottie 애니메이션 재생 트리거
   const insets = useSafeAreaInsets();
   const { riskScoreV2, riskStatusV2, setRiskScoreV2, setRiskStatusV2, setHandleDangerPressV2 } =
     useRiskStoreVer2();
@@ -92,39 +81,75 @@ const Home: React.FC<any> = ({ navigation }) => {
       .catch((error: any) => {
         console.error('[ERROR] homeCarousel: ', error);
       });
-    /*navigation.navigate(RootStackName.HomeStackNavigator, {
-      screen: HomeStackName.NewChat,
-    });*/
   }, []);
 
-  useEffect(() => {
-    getUserDiaryStreak()
-      .then((res) => {
-        console.log('user-streak 정보', res);
-        if (res) {
-          setCurrentStreak(res.currentStreak);
-          setMaxStreak(res.maxStreak);
-        }
-      })
-      .catch((error) => {
-        console.error('user-streak 정보 가져오기 실패', error);
-      });
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      // API 호출 직전의 currentStreak 상태 값을 저장합니다.
+      // 컴포넌트 첫 로드 시 currentStreak의 초기값은 0입니다.
+      const streakBeforeFetch = currentStreak;
+      console.log(
+        `홈 화면 포커스됨, 연속 기록 정보 가져오는 중... (API 호출 전 streak: ${streakBeforeFetch})`,
+      );
 
-  //홈 화면으로 포커스 될 때마다 위험 점수를 갱신한다.
-  /*useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', setRiskScoreV2);
-    return () => {
-      unsubscribe();
-    };
-  }, [navigation]);*/
+      getUserDiaryStreak()
+        .then((res) => {
+          console.log('user-streak 정보', res);
+          if (res) {
+            const newCurrentStreak = res.currentStreak;
+            setMaxStreak(res.maxStreak);
+
+            if (isInitialSreakLoad.current) {
+              console.log(
+                `초기 로드 처리 시작. API 값: ${newCurrentStreak}, API 호출 전 streak 상태: ${streakBeforeFetch}`,
+              );
+              // 먼저 현재 API 값으로 상태를 업데이트합니다.
+              setCurrentStreak(newCurrentStreak);
+              isInitialSreakLoad.current = false; // 초기 로드 플래그를 false로 변경합니다.
+
+              // 초기 로드 상황이라도, API 호출 전 상태(주로 0)보다 API에서 가져온 값이 크다면,
+              // 이는 실제 "증가"로 간주하여 애니메이션을 실행합니다.
+              if (newCurrentStreak > streakBeforeFetch) {
+                console.log(
+                  `초기 로드지만 실제 증가로 판단: from ${streakBeforeFetch} to ${newCurrentStreak}`,
+                );
+                setPlayStreakLottieTrigger((prev) => prev + 1);
+              } else {
+                console.log(
+                  `초기 로드, 실제 증가 아님 (또는 동일 값). API 값: ${newCurrentStreak}`,
+                );
+              }
+            } else {
+              // 초기 로드가 아닐 때 (즉, 화면에 재포커스 되었을 때 등)
+              if (newCurrentStreak > currentStreak) {
+                // 여기서 currentStreak는 이전 API 호출로 설정된 값
+                console.log(`연속 기록 증가: from ${currentStreak} to ${newCurrentStreak}`);
+                setCurrentStreak(newCurrentStreak);
+                setPlayStreakLottieTrigger((prev) => prev + 1);
+              } else if (newCurrentStreak !== currentStreak) {
+                console.log(`연속 기록 변경 (증가 아님): ${newCurrentStreak}`);
+                setCurrentStreak(newCurrentStreak);
+              } else {
+                console.log(`연속 기록 변경 없음: ${newCurrentStreak}`);
+              }
+            }
+          }
+        })
+        .catch((error) => {
+          console.error('user-streak 정보 가져오기 실패', error);
+          // 에러 발생 시, 다음 포커스 때 다시 초기 로드로 시도하게 하려면 아래 주석 해제 (선택적)
+          // isInitialSreakLoad.current = true;
+        });
+
+      return () => {
+        // console.log('홈 화면 포커스 벗어남');
+      };
+    }, [currentStreak]), // currentStreak 의존성은 콜백 내에서 항상 최신의 currentStreak 값을 참조하기 위해 유지합니다.
+  );
 
   return (
-    <View
-      style={{
-        flex: 1,
-        paddingTop: insets.top,
-      }}>
+    <Container insets={insets}>
+      {/* 스크롤 영역 */}
       <ScrollView showsVerticalScrollIndicator={false}>
         <View
           style={css`
@@ -212,18 +237,17 @@ const Home: React.FC<any> = ({ navigation }) => {
           </View>
 
           {/* 스트릭 */}
-          <View
-            style={{
-              //backgroundColor: 'pink',
-              height: 60,
-              flexDirection: 'row',
-              gap: 10,
-            }}>
-            <StreakCard icon="fire" value={`${currentStreak}일`} label="연속 일기 기록수" />
+          <StreakContainer>
+            <StreakCard
+              icon="fire"
+              value={`${currentStreak}일`}
+              label="연속 일기 기록수"
+              lottieTrigger={playStreakLottieTrigger}
+            />
             <StreakCard icon="twinkle-cookie" value={`${maxStreak}일`} label="최장 일기 기록수" />
-          </View>
+          </StreakContainer>
 
-          {/* 캘린더 변경 */}
+          {/* 캘린더 */}
           <CustomCalendar navigation={navigation} />
         </View>
       </ScrollView>
@@ -245,7 +269,6 @@ const Home: React.FC<any> = ({ navigation }) => {
           shadowRadius: 3.84,
           elevation: 5,
           borderRadius: 50,
-          //backgroundColor: 'white',
         }}>
         <ActionButton
           onPress={() => {
@@ -254,7 +277,7 @@ const Home: React.FC<any> = ({ navigation }) => {
             });
           }}></ActionButton>
       </View>
-    </View>
+    </Container>
   );
 };
 

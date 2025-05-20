@@ -102,7 +102,7 @@ export enum StatisticStackName {
 export enum AuthStackName {
   Login = 'Login',
   InputName = 'InputName',
-  InputProfile = 'InputProfile',
+  //InputProfile = 'InputProfile',
 }
 
 /*서비스 로그인 및 회원가입 경로를 저장하는 AuthProvider

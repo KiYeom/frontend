@@ -20,7 +20,6 @@ import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanima
 import Icon from '../../../components/icons/icons';
 import Toast from 'react-native-root-toast';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import Carousel from 'react-native-reanimated-carousel';
 import { dailyAnalyze, todayEmotion, todayEmotionCheck } from '../../../apis/analyze';
 import CustomBottomSheet from '../../../components/custom-bottomsheet/custom-bottomsheet';
 import {

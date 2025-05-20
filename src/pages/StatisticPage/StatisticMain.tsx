@@ -11,12 +11,12 @@ import { HomeStackName, RootStackName, TabScreenName } from '../../constants/Con
 import Analytics from '../../utils/analytics';
 import { rsFont, rsHeight, rsWidth } from '../../utils/responsive-size';
 import SingleDatePickerModal from '../../components/rangeCal/single-date-picker-modal';
-import BlurredButton from './BlurredButton';
+//import BlurredButton from './BlurredButton';
 import DailyEmotionClassification from './Daily_EmotionClassification/DailyEmotionClassification';
 import EmotionArea from './Daily_Keyword/EmotionArea';
 import EmotionDairy from './Daily_Keyword/EmotionDairy';
 import KeywordArea from './Daily_Keyword/KeywordArea';
-import ReportType from './ReportType';
+//import ReportType from './ReportType';
 import { formatDateKorean } from '../../utils/times';
 import {
   Container,
@@ -36,7 +36,6 @@ import Header from '../../components/header/header';
 import BottomTabNavigator from '~/src/navigators/BottomTabNavigator';
 import Carousel, { Pagination, ICarouselInstance } from 'react-native-reanimated-carousel';
 import { useSharedValue } from 'react-native-reanimated';
-
 const START_HOUR_OF_DAY = 6;
 
 const HINT_NAME = 'main';
@@ -251,6 +250,7 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
                   }}>
                   그 때 내가 기록한 순간을 담았어요!
                 </Text>
+
                 <Carousel
                   ref={ref}
                   width={rsWidth * 350}

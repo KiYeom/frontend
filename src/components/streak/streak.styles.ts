@@ -28,14 +28,14 @@ export const TextContainer = styled.View`
   flex: 1;
 `;
 
-export const ValueText = styled.Text<StyledProps>`
+export const ValueText = styled.Text`
   font-size: 20px;
   font-family: Pretendard-SemiBold;
   color : ${palette.neutral[500]}
   margin-bottom: 4px;
 `;
 
-export const LabelText = styled.Text<StyledProps>`
+export const LabelText = styled.Text`
   font-size: 14px;
   color: ${palette.neutral[300]};
   font-family: Pretendard-SemiBold;
