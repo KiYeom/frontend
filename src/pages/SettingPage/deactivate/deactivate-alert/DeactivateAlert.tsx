@@ -66,6 +66,7 @@ const DeactivateAlert: React.FC = ({ navigation }) => {
             justify-content: center;
             padding: 0 0 ${rsWidth * 24 + 'px'} 0;
             gap: ${rsHeight * 12 + 'px'};
+            //background-color: pink;
           `}>
           <AlertText>탈퇴 후, 모든 데이터는 복구가 불가능합니다.</AlertText>
 

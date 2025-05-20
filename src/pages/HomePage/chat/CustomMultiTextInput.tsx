@@ -36,10 +36,11 @@ const CustomMultiTextInput = (props: CustomMultiTextInputProps) => {
         lineHeight: rsFont * 16 * 1.5,
         minHeight: rsFont * 16 * 1.5 + 15 * 2,
         maxHeight: rsFont * 16 * 1.5 * MaximizedTextLine + 15 * 2,
-        borderRadius: 10,
+        borderRadius: 20,
         paddingHorizontal: 15,
         paddingVertical: 15,
         backgroundColor: palette.neutral[50],
+        marginHorizontal: 10,
       }}
       multiline
       ref={textInputRef}

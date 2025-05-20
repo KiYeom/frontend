@@ -128,6 +128,8 @@ const DeactivateReason: React.FC = () => {
                 justify-content: center;
                 padding: 0 0 ${rsWidth * 24 + 'px'} 0;
                 gap: ${rsHeight * 12 + 'px'};
+                //background-color: pink;
+                height: ${rsHeight * 80 + 'px'};
               `}>
               <Button
                 title="탈퇴하기"

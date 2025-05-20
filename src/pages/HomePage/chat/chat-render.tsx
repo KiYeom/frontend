@@ -41,6 +41,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useState, RefObject } from 'react';
 import ImageShow from '../../../components/image-show/ImageShow';
 import { MAX_CHAT_IMAGE_WIDTH } from '../../../constants/Constants';
+import * as Haptics from 'expo-haptics';
 
 export const reportMessages = async (messageId: string, isSaved: boolean): string | undefined => {
   //console.log('reportMessags 실행', messageId);
@@ -224,12 +225,9 @@ export const RenderBubble = (
             isSaved={props.currentMessage.isSaved}
             messageId={props.currentMessage._id}
             onFavoritePress={(id) => {
-              //console.log('메세지', props.currentMessage);
-              //reportMessages(props.currentMessage._id, props.currentMessage.isSaved);
-              //console.log('icon에서의 press 함수', props.currentMessage._id);
-              //console.log('클릭');
               props.onFavoritePress(props.currentMessage._id);
               Analytics.clickChatLikeButton(props.currentMessage._id);
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft); // 좋아요 터치 시 진동 피드백
             }}
           />
         </TouchableOpacity>
@@ -429,35 +427,35 @@ export const RenderInputToolbar = (
           alignItems: 'center',
           //paddingHorizontal: rsWidth * 15,
           paddingVertical: rsHeight * 8,
-          gap: rsWidth * 20,
           position: 'relative',
         }}
         renderActions={(actionProps) => (
-          <Actions
-            {...actionProps}
-            containerStyle={{
-              //backgroundColor: 'red',
-              //width: 35 * rsWidth,
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              alignSelf: 'center',
-              marginRight: 15,
-            }}
-            icon={() => (
-              <Icon
-                name="picture-icon"
-                width={rsWidth * 20}
-                height={rsHeight * 20}
-                color={palette.neutral[400]}
-              />
-            )}
-            onPressActionButton={() => {
-              //console.log('액션 버튼 클릭됨');
+          <TouchableOpacity
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            onPress={() => {
+              console.log('액션 버튼 클릭됨');
               Analytics.clickAddPicButtonInChatting();
               pickImage();
             }}
-          />
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              alignSelf: 'center',
+              padding: 0,
+              margin: 0,
+              width: 35,
+              height: 35,
+              borderRadius: 50,
+              backgroundColor: palette.neutral[100],
+              marginLeft: 10,
+            }}>
+            <Icon
+              name="picture-icon"
+              width={rsWidth * 20}
+              height={rsHeight * 20}
+              color={palette.neutral[400]}
+            />
+          </TouchableOpacity>
         )}
         renderComposer={(composerProps) => (
           <CustomMultiTextInput
@@ -478,11 +476,21 @@ export const RenderInputToolbar = (
               justifyContent: 'center',
               alignItems: 'center',
               alignSelf: 'center',
-              marginRight: 10 * rsWidth,
-              marginLeft: 15 * rsWidth,
+              marginRight: 10,
+              //marginLeft: 15 * rsWidth,
               //backgroundColor: 'yellow',
             }}>
             <TouchableOpacity
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              style={{
+                width: 35,
+                height: 35,
+                justifyContent: 'center',
+                alignItems: 'center',
+                alignSelf: 'center',
+                borderRadius: 50,
+                backgroundColor: palette.neutral[100],
+              }}
               onPress={async () => {
                 if (sendingStatus) return;
                 const imageUrl = image;

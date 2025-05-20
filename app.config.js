@@ -16,7 +16,7 @@ module.exports = {
   expo: {
     name: 'reMIND',
     slug: 'reMIND',
-    version: '1.7.9',
+    version: '1.7.10',
     orientation: 'portrait',
     icon: './src/assets/images/appicon.png',
     userInterfaceStyle: 'automatic',
@@ -43,6 +43,7 @@ module.exports = {
       googleServicesFile: process.env.GOOGLE_SERVICES_JSON,
       userInterfaceStyle: 'automatic',
     },
+
     androidStatusBar: {
       translucent: true,
     },
@@ -51,6 +52,7 @@ module.exports = {
       favicon: './assets/favicon.png',
       bundler: 'metro',
     },
+
     extra: {
       appVariant: appVariant,
       APP_ENV: environment,
@@ -93,8 +95,8 @@ module.exports = {
       [
         'expo-notifications',
         {
-          icon: './src/assets/images/new_new_notification.png',
-          color: '#31B28E',
+          //icon: './src/assets/images/new_new_notification.png',
+          //color: '#31B28E',
           mode: 'production',
         },
       ],
@@ -165,10 +167,26 @@ module.exports = {
           photosPermission: '리마인드에서 사진을 첨부하기 위해서는 사진 선택 권한이 필요합니다.',
         },
       ],
+      [
+        'expo-media-library',
+        {
+          photosPermission: '리마인드에서 사진을 첨부하기 위해서는 사진 선택 권한이 필요합니다.',
+          savePhotosPermission:
+            '리마인드에서 사진을 저장하기 위해서는 사진 저장 권한이 필요합니다.',
+          isAccessMediaLocationEnabled: true,
+        },
+      ],
     ],
-    runtimeVersion: '1.0.0',
+    runtimeVersion: '1.0.1',
     updates: {
       url: 'https://u.expo.dev/1cd0480c-0399-4503-ae2d-ec73641ea4fd',
+    },
+    notification: {
+      icon: './src/assets/images/new_new_notification.png',
+      color: '#31B28E',
+      iosDisplayInForeground: true,
+      androidMode: 'default',
+      androidCollapsedTitle: 'reMIND',
     },
   },
 };
