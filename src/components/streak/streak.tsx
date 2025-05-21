@@ -30,7 +30,7 @@ const StreakCard = (props: StreakProps) => {
     setIsLottieVisible(false); // Lottie 뷰를 다시 숨김
   };
 
-  console.log('isLottieVisible', isLottieVisible);
+  //console.log('isLottieVisible', isLottieVisible);
 
   return (
     <Card>

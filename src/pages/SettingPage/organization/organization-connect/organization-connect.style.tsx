@@ -30,6 +30,7 @@ export const CTAContainer = styled.View`
   display: flex;
   justify-content: center;
   padding: 0 ${rsWidth * 24 + 'px'};
+  //background-color: pink;
 `;
 
 export const ContentContainer = styled.View`
