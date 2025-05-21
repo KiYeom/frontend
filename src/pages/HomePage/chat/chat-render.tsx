@@ -59,7 +59,7 @@ export const RenderBubble = (
   //console.log('renderBubble', props.currentMessage);
   const showReport = (): boolean => {
     const nowMessageUserId = props.currentMessage.user._id;
-    if (props.currentMessage._id === 'welcomeMessage') return false;
+    //if (props.currentMessage._id === 'welcomeMessage') return false;
     if (nowMessageUserId === null || isNaN(nowMessageUserId) || Number(nowMessageUserId) <= 0)
       return false;
 
@@ -233,6 +233,8 @@ export const RenderBubble = (
               isSaved={props.currentMessage.isSaved}
               messageId={props.currentMessage._id}
               onFavoritePress={(id) => {
+                //console.log('id', id);
+                if (id === 'welcomeMessage') return;
                 props.onFavoritePress(props.currentMessage._id);
                 Analytics.clickChatLikeButton(props.currentMessage._id);
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft); // 좋아요 터치 시 진동 피드백
