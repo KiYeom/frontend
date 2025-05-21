@@ -237,6 +237,7 @@ export const RenderBubble = (
           <TouchableOpacity
             onPress={() => {
               console.log('신고하기 클릭됨');
+              Analytics.clickChatReportButton();
               Alert.alert(
                 '쿠키 답변 보고서', // 첫번째 text: 타이틀 큰 제목
                 '쿠키의 답변을 신고하시겠습니까?', // 두번째 text: 작은 제목
@@ -247,12 +248,14 @@ export const RenderBubble = (
                     style: 'cancel',
                     onPress: () => {
                       console.log('신고하기 취소됨');
+                      Analytics.clickChatReportCancelButton();
                     },
                   },
                   {
                     text: '네',
                     onPress: () => {
                       console.log('신고하기 누름');
+                      Analytics.clickChatReportConfirmButton();
                       Toast.show(`쿠키의 답변이 신고되었습니다`, {
                         duration: Toast.durations.SHORT,
                         position: Toast.positions.BOTTOM,
@@ -263,7 +266,7 @@ export const RenderBubble = (
                 { cancelable: false }, //alert 밖에 눌렀을 때 alert 안 없어지도록
               );
             }}
-            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}>
+            hitSlop={{ top: 5, bottom: 5, left: 0, right: 10 }}>
             <Icon name="dislike" width={rsWidth * 14 + 'px'} height={rsHeight * 14 + 'px'} />
           </TouchableOpacity>
         </>

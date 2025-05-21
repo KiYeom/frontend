@@ -345,6 +345,18 @@ export default class Analytics {
   public static clickChatLikeButton = (messageId: string): void => {
     this.sendEvent('채팅 - 대화 좋아요 클릭', 'chatLikeButton', { messageId });
   };
+  //채팅 - 대화 신고하기 클릭
+  public static clickChatReportButton = (): void => {
+    this.sendEvent('채팅 - 대화 신고하기 클릭', 'chatReportButton');
+  };
+  //채팅 - 대화 신고하기 - 모달 - 취소 클릭
+  public static clickChatReportCancelButton = (): void => {
+    this.sendEvent('채팅 - 대화 신고하기 - 모달 - 취소 클릭', 'chatReportCancelButton');
+  };
+  //채팅 - 대화 신고하기 - 모달 - 신고하기 클릭
+  public static clickChatReportConfirmButton = (): void => {
+    this.sendEvent('채팅 - 대화 신고하기 - 모달 - 신고하기 클릭', 'chatReportConfirmButton');
+  };
   //채팅 - 헤더 좌측 뒤로가기 버튼 클릭
   public static clickHeaderBackButton = (): void => {
     this.sendEvent('채팅 - 헤더의 좌측 뒤로가기 버튼 클릭', 'headerBackButton');
