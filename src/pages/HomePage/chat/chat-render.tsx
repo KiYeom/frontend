@@ -20,6 +20,7 @@ import {
   MessageImage,
 } from 'react-native-gifted-chat';
 import CustomMultiTextInput from './CustomMultiTextInput';
+import Toast from 'react-native-root-toast';
 import { TextInput } from 'react-native';
 import palette from '../../../assets/styles/theme';
 import { css } from '@emotion/native';
@@ -236,6 +237,31 @@ export const RenderBubble = (
           <TouchableOpacity
             onPress={() => {
               console.log('신고하기 클릭됨');
+              Alert.alert(
+                '쿠키 답변 보고서', // 첫번째 text: 타이틀 큰 제목
+                '쿠키의 답변을 신고하시겠습니까?', // 두번째 text: 작은 제목
+                [
+                  // 버튼 배열
+                  {
+                    text: '아니오', // 버튼 제목
+                    style: 'cancel',
+                    onPress: () => {
+                      console.log('신고하기 취소됨');
+                    },
+                  },
+                  {
+                    text: '네',
+                    onPress: () => {
+                      console.log('신고하기 누름');
+                      Toast.show(`쿠키의 답변이 신고되었습니다`, {
+                        duration: Toast.durations.SHORT,
+                        position: Toast.positions.BOTTOM,
+                      });
+                    },
+                  },
+                ],
+                { cancelable: false }, //alert 밖에 눌렀을 때 alert 안 없어지도록
+              );
             }}
             hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}>
             <Icon name="dislike" width={rsWidth * 14 + 'px'} height={rsHeight * 14 + 'px'} />
