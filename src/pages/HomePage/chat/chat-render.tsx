@@ -210,27 +210,37 @@ export const RenderBubble = (
       </TouchableOpacity>
 
       {showReport() && (
-        <TouchableOpacity
-          style={css`
-            justify-content: flex-end;
-            //background-color: yellow;
-            //padding: 10px;
-          `}
-          hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}>
-          <Icon
-            name="favorite-icon"
-            width={rsWidth * 14 + 'px'}
-            height={rsHeight * 14 + 'px'}
-            toggleable
-            isSaved={props.currentMessage.isSaved}
-            messageId={props.currentMessage._id}
-            onFavoritePress={(id) => {
-              props.onFavoritePress(props.currentMessage._id);
-              Analytics.clickChatLikeButton(props.currentMessage._id);
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft); // 좋아요 터치 시 진동 피드백
+        <>
+          <TouchableOpacity
+            style={css`
+              justify-content: flex-end;
+              flex-direction: row;
+              //background-color: yellow;
+              //padding: 10px;
+            `}
+            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}>
+            <Icon
+              name="favorite-icon"
+              width={rsWidth * 14 + 'px'}
+              height={rsHeight * 14 + 'px'}
+              toggleable
+              isSaved={props.currentMessage.isSaved}
+              messageId={props.currentMessage._id}
+              onFavoritePress={(id) => {
+                props.onFavoritePress(props.currentMessage._id);
+                Analytics.clickChatLikeButton(props.currentMessage._id);
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft); // 좋아요 터치 시 진동 피드백
+              }}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              console.log('신고하기 클릭됨');
             }}
-          />
-        </TouchableOpacity>
+            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}>
+            <Icon name="dislike" width={rsWidth * 14 + 'px'} height={rsHeight * 14 + 'px'} />
+          </TouchableOpacity>
+        </>
       )}
 
       {props.renderTime && props.renderTime({ ...props })}
