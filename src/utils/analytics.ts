@@ -700,4 +700,9 @@ export default class Analytics {
   public static clickAppNoticeButton = (link: string): void => {
     this.sendEvent('앱 공지 클릭', 'clickAppNoticeButton', { link });
   };
+
+  //이미지 미리보기 취소 버튼 클릭
+  public static clickImagePreviewCancelButton = (): void => {
+    this.sendEvent('이미지 미리보기 취소 버튼 클릭', 'imagePreviewCancelButton');
+  };
 }

@@ -178,6 +178,7 @@ const NewChat: React.FC = ({ navigation }) => {
   //textinput 을 가리키고 있는 ref
   const textInputRef = useRef<TextInput>(null);
 
+  /*
   const pickImage = async () => {
     //console.log('pickImage 클릭함');
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -192,6 +193,37 @@ const NewChat: React.FC = ({ navigation }) => {
       //핸드폰에서 선택한 사진의 로컬 주소 (file://~)를 저장
     }
     return;
+  };*/
+
+  //사진 첨부 로직 수정
+  const pickImage = async () => {
+    if (image) {
+      //이미 이미지가 선택된 상황에서 이미지를 다시 선택하는 경우
+      console.log('이미지가 이미 선택됐어요');
+      Toast.show('이미지는 한 장만 보낼 수 있어요', {
+        duration: Toast.durations.SHORT,
+        position: Toast.positions.CENTER,
+      });
+      return;
+    }
+    try {
+      //이미지를 고른 적이 없다면, 앨범 내에서 이미지 선택하게
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsEditing: false,
+        quality: 1,
+      });
+      if (!result.canceled) {
+        //image picker에서 취소하지 않은 경우
+        console.log('이미지를 선택합니다');
+        setImage(result.assets[0].uri); //이미지 설정
+      } else {
+        //image picker에서 취소한 경우
+        console.log('이미지 선택을 취소했어요');
+      }
+    } finally {
+      //setImage(null);
+    }
   };
 
   //입력 필드 높이
@@ -226,6 +258,7 @@ const NewChat: React.FC = ({ navigation }) => {
       //광고를 끝까지 봐서 보상을 줄 수 있을 때 일기와 사진을 등록할 수 있는 콜백 함수를 unsubscribeEarned 이라는 이름으로 등록해둔다
       const unsubscribeEarned = rewarded.addAdEventListener(
         RewardedAdEventType.EARNED_REWARD,
+        //보상 처리
         async (reward) => {
           Analytics.watchEarnRewardScreenInChatting();
           //.log('User earned reward of ', reward);
@@ -238,12 +271,16 @@ const NewChat: React.FC = ({ navigation }) => {
             }
             sendMessageToServer();
           }
+          rewarded.load(); //광고가 끝나면 바로 로드
+          //setLoaded(false);
         },
       );
       //광고가 닫힐 때 실행되는 이벤트 리스터
       const unsubscribeClosed = rewarded.addAdEventListener(AdEventType.CLOSED, () => {
         //console.log('Ad was cloesed');
         setModalVisible(false);
+        rewarded.load(); // 광고가 닫히면 다시 로드
+        //setLoaded(false);
       });
       //광고 로드
       rewarded.load();
