@@ -20,6 +20,7 @@ import {
   MessageImage,
 } from 'react-native-gifted-chat';
 import CustomMultiTextInput from './CustomMultiTextInput';
+import Toast from 'react-native-root-toast';
 import { TextInput } from 'react-native';
 import palette from '../../../assets/styles/theme';
 import { css } from '@emotion/native';
@@ -58,7 +59,7 @@ export const RenderBubble = (
   //console.log('renderBubble', props.currentMessage);
   const showReport = (): boolean => {
     const nowMessageUserId = props.currentMessage.user._id;
-    if (props.currentMessage._id === 'welcomeMessage') return false;
+    //if (props.currentMessage._id === 'welcomeMessage') return false;
     if (nowMessageUserId === null || isNaN(nowMessageUserId) || Number(nowMessageUserId) <= 0)
       return false;
 
@@ -128,112 +129,155 @@ export const RenderBubble = (
   // 간격 설정: 동일 그룹이면 5px, 다르면 10px (반응형 값 사용)
   const bubbleSpacing = isSameSender ? rsHeight * 5 : rsHeight * 10;
   return (
-    <Animated.View
-      //onLayout={handleMessageLayout(props.currentMessage._id)}
-      key={props.currentMessage._id}
-      entering={FadeInDown}
-      style={css`
-        flex-direction: ${props.position === 'left' ? 'row' : 'row-reverse'};
-        align-items: flex-end;
-        justify-content: flex-start;
-        gap: ${rsWidth * 6 + 'px'}; //말풍선과 시간 사이의 간격
-        /* 아래쪽 margin으로 메세지 간 간격 적용 */
-        margin-bottom: ${rsHeight * 5 + 'px'};
-      `}>
-      <TouchableOpacity activeOpacity={1} onLongPress={props.onLongPress}>
-        <View
-          style={css`
-            //margin-bottom: ${rsHeight * 5 + 'px'};
-            //background-color: black;
-            margin-bottom: 0;
-            flex-direction: column;
-            flex: 1;
-          `}>
-          <Bubble
-            {...props}
-            renderTime={() => null}
-            renderMessageText={() => (
-              <HighlightedMessageText
-                text={props.currentMessage.text}
-                highlight={props.currentMessage.hightlightKeyword}
-                checkUserOrBot={props.currentMessage.user.name} //name : 쿠키, 나
-              />
-            )}
-            textStyle={{
-              left: css`
-                color: ${palette.neutral[500]};
-                //color: red;
-                font-family: Pretendard-Regular;
-                font-size: ${rsFont * 14 + 'px'};
-                text-align: left;
-                margin-top: 0;
-                margin-bottom: 0;
-                margin-left: 0;
-                margin-right: 0;
-              `,
-              right: css`
-                color: #fff;
-                font-family: Pretendard-Regular;
-                font-size: ${rsFont * 14 + 'px'};
-                text-align: left;
-                margin-top: 0;
-                margin-bottom: 0;
-                margin-left: 0;
-                margin-right: 0;
-              `,
-            }}
-            wrapperStyle={{
-              left: css`
-                max-width: ${rsWidth * 200 + 'px'};
-                background-color: ${palette.neutral[100]};
-                padding-horizontal: ${rsWidth * 12 + 'px'};
-                padding-vertical: ${rsHeight * 8 + 'px'};
-                margin: 0px;
-                flex: 1;
-              `,
-              right: css`
-                max-width: ${rsWidth * 200 + 'px'};
-                background-color: ${palette.primary[500]};
-                //background-color: ${props.currentMessage.image ? 'red' : palette.primary[500]};
-                padding-horizontal: ${rsWidth * 12 + 'px'};
-                /*padding-horizontal: ${props.currentMessage.image
-                  ? 0 + 'px'
-                  : rsWidth * 12 + 'px'};*/
-                padding-vertical: ${rsHeight * 8 + 'px'};
-                //padding-vertical: ${props.currentMessage.image ? 0 + 'px' : rsHeight * 8 + 'px'};
-                margin: 0px;
-                flex: 1;
-              `,
-            }}
-          />
-        </View>
-      </TouchableOpacity>
-
-      {showReport() && (
-        <TouchableOpacity
-          style={css`
-            justify-content: flex-end;
-            //background-color: yellow;
-            //padding: 10px;
-          `}
-          hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}>
-          <Icon
-            name="favorite-icon"
-            width={rsWidth * 14 + 'px'}
-            height={rsHeight * 14 + 'px'}
-            toggleable
-            isSaved={props.currentMessage.isSaved}
-            messageId={props.currentMessage._id}
-            onFavoritePress={(id) => {
-              props.onFavoritePress(props.currentMessage._id);
-              Analytics.clickChatLikeButton(props.currentMessage._id);
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft); // 좋아요 터치 시 진동 피드백
-            }}
-          />
+    <Animated.View entering={FadeInDown}>
+      <Animated.View
+        //onLayout={handleMessageLayout(props.currentMessage._id)}
+        key={props.currentMessage._id}
+        entering={FadeInDown}
+        style={css`
+          flex-direction: ${props.position === 'left' ? 'row' : 'row-reverse'};
+          align-items: flex-end;
+          justify-content: flex-start;
+          gap: ${rsWidth * 6 + 'px'}; //말풍선과 시간 사이의 간격
+          /* 아래쪽 margin으로 메세지 간 간격 적용 */
+          margin-bottom: ${rsHeight * 5 + 'px'};
+        `}>
+        <TouchableOpacity activeOpacity={1} onLongPress={props.onLongPress}>
+          <View
+            style={css`
+              //margin-bottom: ${rsHeight * 5 + 'px'};
+              //background-color: black;
+              margin-bottom: 0;
+              flex-direction: column;
+              flex: 1;
+            `}>
+            <Bubble
+              {...props}
+              renderTime={() => null}
+              renderMessageText={() => (
+                <HighlightedMessageText
+                  text={props.currentMessage.text}
+                  highlight={props.currentMessage.hightlightKeyword}
+                  checkUserOrBot={props.currentMessage.user.name} //name : 쿠키, 나
+                />
+              )}
+              textStyle={{
+                left: css`
+                  color: ${palette.neutral[500]};
+                  //color: red;
+                  font-family: Pretendard-Regular;
+                  font-size: ${rsFont * 14 + 'px'};
+                  text-align: left;
+                  margin-top: 0;
+                  margin-bottom: 0;
+                  margin-left: 0;
+                  margin-right: 0;
+                `,
+                right: css`
+                  color: #fff;
+                  font-family: Pretendard-Regular;
+                  font-size: ${rsFont * 14 + 'px'};
+                  text-align: left;
+                  margin-top: 0;
+                  margin-bottom: 0;
+                  margin-left: 0;
+                  margin-right: 0;
+                `,
+              }}
+              wrapperStyle={{
+                left: css`
+                  max-width: ${rsWidth * 200 + 'px'};
+                  background-color: ${palette.neutral[100]};
+                  padding-horizontal: ${rsWidth * 12 + 'px'};
+                  padding-vertical: ${rsHeight * 8 + 'px'};
+                  margin: 0px;
+                  flex: 1;
+                `,
+                right: css`
+                  max-width: ${rsWidth * 200 + 'px'};
+                  background-color: ${palette.primary[500]};
+                  //background-color: ${props.currentMessage.image ? 'red' : palette.primary[500]};
+                  padding-horizontal: ${rsWidth * 12 + 'px'};
+                  /*padding-horizontal: ${props.currentMessage.image
+                    ? 0 + 'px'
+                    : rsWidth * 12 + 'px'};*/
+                  padding-vertical: ${rsHeight * 8 + 'px'};
+                  //padding-vertical: ${props.currentMessage.image
+                    ? 0 + 'px'
+                    : rsHeight * 8 + 'px'};
+                  margin: 0px;
+                  flex: 1;
+                `,
+              }}
+            />
+          </View>
         </TouchableOpacity>
-      )}
 
-      {props.renderTime && props.renderTime({ ...props })}
+        {props.renderTime && props.renderTime({ ...props })}
+      </Animated.View>
+      {showReport() && (
+        <View style={{ flexDirection: 'row', gap: rsWidth * 10 }}>
+          <TouchableOpacity
+            style={css`
+              justify-content: flex-end;
+              flex-direction: row;
+              //background-color: yellow;
+              //padding: 10px;
+            `}
+            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}>
+            <Icon
+              name="favorite-icon"
+              width={rsWidth * 14 + 'px'}
+              height={rsHeight * 14 + 'px'}
+              toggleable
+              isSaved={props.currentMessage.isSaved}
+              messageId={props.currentMessage._id}
+              onFavoritePress={(id) => {
+                //console.log('id', id);
+                if (id === 'welcomeMessage') return;
+                props.onFavoritePress(props.currentMessage._id);
+                Analytics.clickChatLikeButton(props.currentMessage._id);
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft); // 좋아요 터치 시 진동 피드백
+              }}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              console.log('신고하기 클릭됨');
+              Analytics.clickChatReportButton();
+              Alert.alert(
+                '쿠키의 답변을 신고할까요?', // 첫번째 text: 타이틀 큰 제목
+                '신고된 답변은 내부 정책에 따라 검토됩니다.', // 두번째 text: 작은 제목
+                [
+                  // 버튼 배열
+                  {
+                    text: '아니오', // 버튼 제목
+                    style: 'cancel',
+                    onPress: () => {
+                      console.log('신고하기 취소됨');
+                      Analytics.clickChatReportCancelButton();
+                    },
+                  },
+                  {
+                    text: '네',
+                    onPress: () => {
+                      console.log('신고하기 누름');
+                      Analytics.clickChatReportConfirmButton();
+                      Toast.show(`해당 답변은 관리자에게 전달되었어요.`, {
+                        duration: Toast.durations.SHORT,
+                        position: Toast.positions.BOTTOM,
+                      });
+                    },
+                  },
+                ],
+                { cancelable: false }, //alert 밖에 눌렀을 때 alert 안 없어지도록
+              );
+            }}
+            hitSlop={{ top: 5, bottom: 5, left: 0, right: 10 }}>
+            <Icon name="dislike" width={rsWidth * 14 + 'px'} height={rsHeight * 14 + 'px'} />
+          </TouchableOpacity>
+        </View>
+      )}
     </Animated.View>
   );
 };
