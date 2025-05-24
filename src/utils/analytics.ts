@@ -293,17 +293,17 @@ export default class Analytics {
     this.sendEvent('업데이트된 채팅 화면 진입', 'newChatScreen');
   };
 
-  //채팅 - 사진 전송 버튼 클릭
+  //채팅 - 사진 전송 버튼 클릭 (확인함)
   public static clickAddPicButtonInChatting = (): void => {
     this.sendEvent('채팅 - <사진 첨부하기> 버튼 클릭', 'clickAddPicButtonInChatting');
   };
 
-  //채팅 - <사진첨부> - <광고> - 네 버튼 클릭
+  //채팅 - <사진첨부> - <광고> - 네 버튼 클릭 (확인함)
   public static clickWatchAdsButtonInChatting = (): void => {
     this.sendEvent('채팅 - <광고 모달> - <광고보기> 버튼 클릭', 'save');
   };
 
-  //채팅 - <사진 첨부> - <광고 모달> - 저장하기 클릭 후 광고 송출
+  //채팅 - <사진 첨부> - <광고 모달> - 저장하기 클릭 후 광고 송출 (확인완 : 안씀)
   public static watchAdsScreenInChatting = (): void => {
     this.sendEvent(
       '채팅 - <사진첨부하기> - <광고 모달> - <광고보기> 버튼 클릭 후 광고 송출',
@@ -311,22 +311,98 @@ export default class Analytics {
     );
   };
 
-  //채팅 - <사진 첨부> - <광고 모달> - 저장하기 클릭 후 광고 송출 - 리워드 지급
+  //채팅 - <사진 첨부> - <광고 모달> - 저장하기 클릭 후 광고 송출 - 리워드 지급 (확인완)
   public static watchEarnRewardScreenInChatting = (): void => {
     this.sendEvent('채팅 사진 첨부 광고 송출 후, 리워드 지급', 'watchEarnRewardScreenInChatting');
   };
 
-  //채팅 - <사진 첨부> - <광고 모달> - 저장하기 클릭 후 광고 송출 - 리워드 미지급
-  public static watchNoEarnRewardScreenInChatting = (): void => {
-    this.sendEvent(
-      '채팅 사진 첨부 광고 송출 후, 채팅 저장에 오류 발생',
-      'watchNoEarnRewardScreenInChatting',
-    );
+  // 채팅 - <사진 첨부> - <광고 모달> - 광고 에러 발생 (애널리틱스에 들어간거 확인 완료)
+  public static watchNoEarnRewardScreenInChatting = (errorDetails?: {
+    errorCode?: number | string;
+    errorMessage?: string;
+    errorDomain?: string;
+    adUnitId?: string;
+    isTestMode?: boolean;
+    retryCount?: number;
+    timestamp?: string;
+  }): void => {
+    // 기본 이벤트 로깅
+    this.sendEvent('채팅 사진 첨부 광고 에러', 'chat_photo_ad_error', {
+      error_code: errorDetails?.errorCode || 'unknown',
+      error_message: errorDetails?.errorMessage || 'unknown',
+      error_domain: errorDetails?.errorDomain || 'unknown',
+      ad_unit_id: errorDetails?.adUnitId || 'unknown',
+      is_test_mode: errorDetails?.isTestMode || false,
+      retry_count: errorDetails?.retryCount || 0,
+      timestamp: errorDetails?.timestamp || new Date().toISOString(),
+    });
+
+    // 에러 타입별 추가 이벤트 로깅
+    if (errorDetails?.errorCode) {
+      switch (errorDetails.errorCode) {
+        case 0: // 내부 에러
+          this.sendEvent('채팅 광고 내부 에러', 'chat_ad_internal_error');
+          break;
+        case 2: // 네트워크 에러
+          this.sendEvent('채팅 광고 네트워크 에러', 'chat_ad_network_error');
+          break;
+        case 3: // No Fill
+          this.sendEvent('채팅 광고 No Fill', 'chat_ad_no_fill');
+          break;
+        default:
+          this.sendEvent('채팅 광고 기타 에러', 'chat_ad_other_error', {
+            error_code: errorDetails.errorCode,
+          });
+      }
+    }
   };
 
-  //채팅 - <사진첨부> - <광고모달> - 취소 버튼 클릭
+  // 광고 표시 시 에러 (watchAds 함수에서 사용, 확인완료)
+  public static clickWatchAdsErrorInChatting = (errorDetails: {
+    errorCode?: string;
+    errorMessage?: string;
+    stage: 'load' | 'show';
+  }): void => {
+    this.sendEvent('채팅 광고 표시 에러', 'chat_ad_display_error', {
+      error_code: errorDetails.errorCode || 'unknown',
+      error_message: errorDetails.errorMessage || 'unknown',
+      stage: errorDetails.stage,
+      timestamp: new Date().toISOString(),
+    });
+  };
+
+  // 광고 로드 재시도 : 안씀
+  public static retryAdLoadInChatting = (attemptNumber: number, maxAttempts: number): void => {
+    this.sendEvent('채팅 광고 재시도', 'chat_ad_retry', {
+      attempt_number: attemptNumber,
+      max_attempts: maxAttempts,
+      timestamp: new Date().toISOString(),
+    });
+  };
+
+  // 광고 로드 타임아웃 (확인함)
+  public static adLoadTimeoutInChatting = (): void => {
+    this.sendEvent('채팅 광고 로드 타임아웃', 'chat_ad_load_timeout', {
+      timestamp: new Date().toISOString(),
+    });
+  };
+
+  //채팅 - <사진첨부> - <광고모달> - 취소 버튼 클릭 (확인함)
   public static clickNoWatchAdsButtonInChatting = (): void => {
     this.sendEvent('채팅 - <사진첨부하기> - <광고 모달> - <취소> 버튼 클릭', 'cancel');
+  };
+
+  //채팅 - 사진첨부 - 사진 권한 에러 (확인함)
+  public static photoPermissionError = (errorDetails: {
+    errorCode?: string;
+    errorMessage?: string;
+    timestamp?: string;
+  }): void => {
+    this.sendEvent('채팅 - 사진 첨부 - 사진 권한 에러', 'photoPermissionError', {
+      error_code: errorDetails.errorCode || 'unknown',
+      error_message: errorDetails.errorMessage || 'unknown',
+      timestamp: errorDetails.timestamp || new Date().toISOString(),
+    });
   };
 
   //채팅 - 채팅 전송 버튼 클릭
@@ -707,7 +783,10 @@ export default class Analytics {
   };
   //이미지 한 장 첨부하고 다시 첨부할 때
   public static clickIamgePreviewAddButton = (): void => {
-    this.sendEvent('이미지 미리보기 - 다시 첨부하기 버튼 클릭', 'imagePreviewAddButton');
+    this.sendEvent(
+      '이미지 미리보기 있는 상태에서 - 다시 첨부하기 버튼 클릭',
+      'imagePreviewAddButton',
+    );
   };
   //앨범에서 이미지를 선택하지 않고 취소를 누른 경우
   public static clickImagePickerCancelButton = (): void => {
@@ -715,7 +794,10 @@ export default class Analytics {
   };
   //앨범에서 이미지를 선택함
   public static clickImagePickerConfirmButton = (): void => {
-    this.sendEvent('이미지 선택 - 확인 버튼 클릭', 'imagePickerConfirmButton');
+    this.sendEvent(
+      '이미지 선택 (앨범) - 확인 버튼 클릭하여 이미지 고름',
+      'imagePickerConfirmButton',
+    );
   };
   //이미지 첨부 에러 발생
   public static clickImagePickerErrorButton = (errorMessage: any, errorCode: any): void => {

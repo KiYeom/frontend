@@ -63,6 +63,9 @@ if (isProductionOrStaging && process.env.EXPO_PUBLIC_AMPLITUDE) {
     minIdLength: 1,
   });
 }
+amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE, undefined, {
+  minIdLength: 1,
+});
 
 SplashScreen.preventAutoHideAsync();
 const RootStack = createNativeStackNavigator();
