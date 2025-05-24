@@ -705,4 +705,20 @@ export default class Analytics {
   public static clickImagePreviewCancelButton = (): void => {
     this.sendEvent('이미지 미리보기 취소 버튼 클릭', 'imagePreviewCancelButton');
   };
+  //이미지 한 장 첨부하고 다시 첨부할 때
+  public static clickIamgePreviewAddButton = (): void => {
+    this.sendEvent('이미지 미리보기 - 다시 첨부하기 버튼 클릭', 'imagePreviewAddButton');
+  };
+  //앨범에서 이미지를 선택하지 않고 취소를 누른 경우
+  public static clickImagePickerCancelButton = (): void => {
+    this.sendEvent('이미지 선택 - 취소 버튼 클릭', 'imagePickerCancelButton');
+  };
+  //앨범에서 이미지를 선택함
+  public static clickImagePickerConfirmButton = (): void => {
+    this.sendEvent('이미지 선택 - 확인 버튼 클릭', 'imagePickerConfirmButton');
+  };
+  //이미지 첨부 에러 발생
+  public static clickImagePickerErrorButton = (errorMessage: any, errorCode: any): void => {
+    this.sendEvent('이미지 첨부 에러 발생', 'imagePickerErrorButton', { errorMessage, errorCode });
+  };
 }

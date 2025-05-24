@@ -200,6 +200,7 @@ const NewChat: React.FC = ({ navigation }) => {
     if (image) {
       //이미 이미지가 선택된 상황에서 이미지를 다시 선택하는 경우
       console.log('이미지가 이미 선택됐어요');
+      Analytics.clickIamgePreviewAddButton();
       Toast.show('이미지는 한 장만 보낼 수 있어요', {
         duration: Toast.durations.SHORT,
         position: Toast.positions.CENTER,
@@ -207,6 +208,18 @@ const NewChat: React.FC = ({ navigation }) => {
       return;
     }
     try {
+      //[1] 권한 체크하기
+      const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        const { status: newStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (newStatus !== 'granted') {
+          Toast.show('사진 접근 권한이 필요합니다', {
+            duration: Toast.durations.LONG,
+            position: Toast.positions.CENTER,
+          });
+          return;
+        }
+      }
       //이미지를 고른 적이 없다면, 앨범 내에서 이미지 선택하게
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ['images'],
@@ -215,14 +228,21 @@ const NewChat: React.FC = ({ navigation }) => {
       });
       if (!result.canceled) {
         //image picker에서 취소하지 않은 경우
-        console.log('이미지를 선택합니다');
+        console.log('이미지를 선택합니다', result.assets[0].uri.length);
         setImage(result.assets[0].uri); //이미지 설정
+        Analytics.clickImagePickerConfirmButton();
       } else {
         //image picker에서 취소한 경우
         console.log('이미지 선택을 취소했어요');
+        Analytics.clickImagePickerCancelButton();
       }
-    } finally {
-      //setImage(null);
+    } catch (error) {
+      console.log('이미지 선택 중 오류 발생');
+      Toast.show('이미지 선택 중 오류가 발생했습니다', {
+        duration: Toast.durations.SHORT,
+        position: Toast.positions.CENTER,
+      });
+      Analytics.clickImagePickerErrorButton(error.message, error.code);
     }
   };
 
