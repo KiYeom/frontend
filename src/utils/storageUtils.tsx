@@ -3,6 +3,7 @@ import { ONE_DAY_IN_MS } from '../constants/Constants';
 import { TGender, TNotice, TVender, TPLAN } from '../constants/types';
 import { getKoreanServerTodayDateString } from './times';
 import { showAppNotice } from './app-notice';
+import { happyLyricsObject } from '../constants/Constants';
 
 export const storage = new MMKV();
 
@@ -43,6 +44,10 @@ const IS_DEMO = 'is_demo';
 
 //isScoreDemo
 const IS_SCORE_DEMO = 'is_score_demo';
+
+//photocard
+const PHOTO_CARD_LYRIC_ID = 'PHOTO_CARD_LYRIC_ID';
+const PHOTO_CARD_IMAGE_ID = 'PHOTO_CARD_IMAGE_ID';
 
 //setTokenInfo
 export const setTokenInfo = (accessToken: string, refreshToken: string): void => {
@@ -102,6 +107,7 @@ export const clearInfoWhenLogout = (): void => {
   deleteReadNotice();
   deleteUserAccountProvider();
   deleteNewIMessagesV3();
+  deletePhotoCardData();
 };
 
 //Tokens
@@ -394,4 +400,59 @@ export const setRiskData = (riskData: TRiskData): void => {
 // 위험 데이터 삭제
 export const deleteRiskData = (): void => {
   storage.delete(RISK_WITH_LETTER_ID);
+};
+
+// 포토카드 가사 및 이미지 저장
+export const savePhotoCardData = (lyricObject: happyLyricsObject, imageSource: any): void => {
+  try {
+    // 가사 객체 저장
+    const lyricData = JSON.stringify(lyricObject);
+    storage.set(PHOTO_CARD_LYRIC_ID, lyricData);
+
+    // 이미지는 id와 위치 정보만 저장 (source는 require()로 불러오는 객체라 직렬화 불가)
+    const imageData = JSON.stringify({
+      id: imageSource.id,
+      textPosition: imageSource.textPosition,
+    });
+    storage.set(PHOTO_CARD_IMAGE_ID, imageData);
+
+    console.log('포토카드 데이터 저장 완료');
+  } catch (e) {
+    console.error('포토카드 데이터 저장 실패:', e);
+  }
+};
+
+// 저장된 포토카드 가사 로드
+export const getPhotoCardLyric = (): happyLyricsObject | null => {
+  const lyricData = storage.getString(PHOTO_CARD_LYRIC_ID);
+  if (!lyricData) return null;
+
+  try {
+    return JSON.parse(lyricData);
+  } catch (e) {
+    console.error('포토카드 가사 파싱 오류:', e);
+    return null;
+  }
+};
+
+// 저장된 포토카드 이미지 로드 (backgroundImages 배열 필요)
+export const getPhotoCardImage = (backgroundImages: any[]): any | null => {
+  const imageData = storage.getString(PHOTO_CARD_IMAGE_ID);
+  if (!imageData) return null;
+
+  try {
+    const parsedData = JSON.parse(imageData);
+    // ID를 기반으로 원본 이미지 객체 찾기
+    return backgroundImages.find((img) => img.id === parsedData.id) || null;
+  } catch (e) {
+    console.error('포토카드 이미지 파싱 오류:', e);
+    return null;
+  }
+};
+
+// 포토카드 데이터 삭제
+export const deletePhotoCardData = (): void => {
+  storage.delete(PHOTO_CARD_LYRIC_ID);
+  storage.delete(PHOTO_CARD_IMAGE_ID);
+  console.log('포토카드 데이터 삭제 완료');
 };

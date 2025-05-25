@@ -64,15 +64,17 @@ const RangeDatePickerModal = ({
                 {!validateDate(localRange.startDate, localRange.endDate) &&
                   '날짜를 올바르게 입력해주세요.'}
               </DescText>
-              <Button
-                title="입력 완료"
-                primary={true}
-                disabled={!validateDate(localRange.startDate, localRange.endDate)}
-                onPress={() => {
-                  onChange?.(localRange);
-                  onClose?.();
-                }}
-              />
+              <View style={{ height: 50 }}>
+                <Button
+                  title="입력 완료"
+                  primary={true}
+                  disabled={!validateDate(localRange.startDate, localRange.endDate)}
+                  onPress={() => {
+                    onChange?.(localRange);
+                    onClose?.();
+                  }}
+                />
+              </View>
             </ModalInner>
           </TouchableWithoutFeedback>
         </ModalContainer>

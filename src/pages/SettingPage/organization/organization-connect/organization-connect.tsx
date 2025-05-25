@@ -243,7 +243,8 @@ const OrganizationConnect: React.FC = ({ navigation }) => {
               //console.log('long press');
               showDebugInfoInAlert();
             }}
-            activeOpacity={1}>
+            activeOpacity={1}
+            style={{ height: rsHeight * 56 }}>
             <Button
               title={loading ? '연결 중...' : '연결하기'}
               disabled={

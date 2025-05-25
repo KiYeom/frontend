@@ -105,8 +105,8 @@ const isTestUser = userName === 'Test_remind';
 const adUnitId =
   isProductionOrStaging && !isTestUser
     ? Platform.OS === 'android'
-      ? process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_ANDROID
-      : process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_IOS
+      ? process.env.EXPO_PUBLIC_CHATTING_REWARD_AD_UNIT_ID_ANDROID
+      : process.env.EXPO_PUBLIC_CHATTING_REWARD_AD_UNIT_ID_IOS
     : TestIds.REWARDED;
 
 //유저와 챗봇 오브젝트 정의

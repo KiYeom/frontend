@@ -60,4 +60,5 @@ export const ButtonContainer = styled.View`
   width: 100%;
   padding-horizontal: ${rsWidth * 20 + 'px'};
   //background-color: blue;
+  flex: 1;
 `;

@@ -44,6 +44,9 @@ import Picture from './svg/picture';
 import MultiPic from './svg/multi-pic';
 import HelloCookie from './svg/hellocookie';
 import CloverCookie from './svg/clover-cookie';
+import Fire from './svg/fire';
+import TwinkleCookie from './svg/twinkle-cookie';
+import Dislike from './svg/dislike';
 
 export type TIconName =
   | 'airplane'
@@ -93,7 +96,10 @@ export type TIconName =
   | 'multi-pic'
   | 'hello-cookie'
   | 'picture-icon'
-  | 'clover-cookie';
+  | 'clover-cookie'
+  | 'fire'
+  | 'twinkle-cookie'
+  | 'dislike';
 
 export default function Icon({
   width,
@@ -221,5 +227,11 @@ export default function Icon({
       return <HelloCookie width={width} height={height} color={color} />;
     case 'clover-cookie':
       return <CloverCookie width={width} height={height} color={color} />;
+    case 'fire':
+      return <Fire width={width} height={height} color={color} />;
+    case 'twinkle-cookie':
+      return <TwinkleCookie width={width} height={height} color={color} />;
+    case 'dislike':
+      return <Dislike width={width} height={height} color={color} />;
   }
 }

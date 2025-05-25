@@ -4,7 +4,7 @@ import React from 'react';
 import Header from '../components/header/header';
 import Login from '../pages/sign-in/sign-in';
 import InputName from '../pages/sign-up/input-name/input-name';
-import InputProfile from '../pages/sign-up/input-profile/input-profile';
+//import InputProfile from '../pages/sign-up/input-profile/input-profile';
 import { AuthStackName } from '../constants/Constants';
 import { UseRightStatus } from '../utils/right-status';
 
@@ -32,13 +32,13 @@ const AuthStackNavigator: React.FC<any> = ({ navigation }) => {
           header: () => <Header />,
         }}
       />
-      <AuthStack.Screen
+      {/*<AuthStack.Screen
         name={AuthStackName.InputProfile}
         component={InputProfile}
         options={{
           header: () => <Header isRight={true} rightText="Skip" rightFunction={clickRight} />,
         }}
-      />
+      />*/}
     </AuthStack.Navigator>
   );
 };

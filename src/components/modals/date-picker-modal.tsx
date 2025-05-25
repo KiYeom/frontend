@@ -1,6 +1,7 @@
 import styled from '@emotion/native';
 import React, { useState } from 'react';
 import { Modal, TouchableWithoutFeedback } from 'react-native';
+import { View } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import Button from '../button/button';
@@ -29,14 +30,16 @@ const DatePickerModal = ({
                 theme="light"
                 onDateChange={(new_date) => setDate(new_date)}
               />
-              <Button
-                title="입력 완료"
-                primary={true}
-                onPress={() => {
-                  onChange?.(date);
-                  onClose?.();
-                }}
-              />
+              <View style={{ height: 50 }}>
+                <Button
+                  title="입력 완료"
+                  primary={true}
+                  onPress={() => {
+                    onChange?.(date);
+                    onClose?.();
+                  }}
+                />
+              </View>
             </ModalInner>
           </TouchableWithoutFeedback>
         </ModalContainer>

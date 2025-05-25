@@ -1,9 +1,5 @@
-import { StyleProp, TextStyle, Text, Image } from 'react-native';
-import palette from '../../assets/styles/theme';
-import { rsHeight, rsWidth } from '../../utils/responsive-size';
-import Icon, { TIconName } from '../icons/icons';
-import { IconContainer, InputContainer, InputField, WithMessage } from './input.styles';
-import { ImageShowContainer, CancelButton } from './ImageShow.styles';
+import { Image } from 'react-native';
+import { ImageShowContainer } from './ImageShow.styles';
 import { useEffect, useState } from 'react';
 import AttachmentPreview from '../image-container/AttachmentPreview';
 

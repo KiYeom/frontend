@@ -106,6 +106,7 @@ const CustomCalendar = ({ navigation }) => {
         //borderColor: 'gray',
         height: 'auto',
         width: rsWidth * 350,
+        //backgroundColor: 'yellow',
       }}
       //캘린더에 미리 정의된 내부 스타일을 override하여 변경
       theme={{
@@ -121,7 +122,7 @@ const CustomCalendar = ({ navigation }) => {
           container: {
             //backgroundColor: 'blue',
             paddingHorizontal: rsWidth * 14,
-            paddingVertical: rsHeight * 20,
+            //paddingVertical: rsHeight * 20,
           },
         },
         arrowColor: `${palette.neutral[300]}`,
