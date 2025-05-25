@@ -218,32 +218,82 @@ const NewChat: React.FC = ({ navigation }) => {
         //console.log('광고 로드');
         setLoaded(true);
       });
+      //0525 수정 (PM 15:04)
       const unsubscribeError = rewarded.addAdEventListener(AdEventType.ERROR, (error) => {
-        //console.error('RewardedAd 로드/표시 중 에러:', error);
-        Analytics.watchNoEarnRewardScreenInChatting();
+        console.error('RewardedAd 에러 상세:', error);
+        Analytics.watchNoEarnRewardScreenInChatting(error);
+
+        // 광고 상태 초기화
+        setLoaded(false);
+
+        // 잠시 대기 후 재로드
+        setTimeout(() => {
+          rewarded.load();
+        }, 1500);
       });
 
       //광고를 끝까지 봐서 보상을 줄 수 있을 때 일기와 사진을 등록할 수 있는 콜백 함수를 unsubscribeEarned 이라는 이름으로 등록해둔다
       const unsubscribeEarned = rewarded.addAdEventListener(
         RewardedAdEventType.EARNED_REWARD,
         async (reward) => {
-          Analytics.watchEarnRewardScreenInChatting();
-          //.log('User earned reward of ', reward);
-          const res = await updateSendPhotoPermission(true);
-          //console.log('광고 시청 후 사진 전송 권한 업데이트 결과', res?.canSendPhoto);
-          if (res) {
-            if (textInputRef.current) {
-              //console.log('입력 필드 초기화');
-              textInputRef.current.clear(); // 입력 필드 초기화
+          try {
+            //console.log('try 실행문');
+            Analytics.watchEarnRewardScreenInChatting();
+            console.log('User earned reward of ', reward);
+            const res = await updateSendPhotoPermission(true);
+            //console.log('광고 시청 후 사진 전송 권한 업데이트 결과', res?.canSendPhoto);
+            if (res && res.canSendPhoto) {
+              if (textInputRef.current) {
+                textInputRef.current.clear();
+              }
+
+              // sendMessageToServer를 동기적으로 처리
+              await sendMessageToServer();
+
+              // 광고 재로드 전 약간의 지연
+              /*setTimeout(() => {
+                rewarded.load();
+              }, 1000);*/
+            } else {
+              throw new Error('사진 전송 권한 업데이트 실패');
             }
-            sendMessageToServer();
+          } catch (error) {
+            console.log('보상 받기 중 에러');
+            Analytics.watchNoEarnRewardScreenInChatting({
+              message: error.message,
+              stage: 'EARNED_REWARD_HANDLER',
+            });
+            // 모달 닫기
+            setModalVisible(false);
+
+            // 에러 토스트 표시
+            Toast.show('사진 전송 중 오류가 발생했습니다. 다시 시도해주세요.', {
+              duration: Toast.durations.LONG,
+              position: Toast.positions.CENTER,
+            });
           }
+          //Analytics.watchEarnRewardScreenInChatting();
+          //.log('User earned reward of ', reward);
+          //const res = await updateSendPhotoPermission(true);
+          //console.log('광고 시청 후 사진 전송 권한 업데이트 결과', res?.canSendPhoto);
+          //if (res) {
+          //if (textInputRef.current) {
+          //console.log('입력 필드 초기화');
+          //textInputRef.current.clear(); // 입력 필드 초기화
+          //}
+          //sendMessageToServer();
+          //rewarded.load();
+          //}
         },
       );
       //광고가 닫힐 때 실행되는 이벤트 리스터
       const unsubscribeClosed = rewarded.addAdEventListener(AdEventType.CLOSED, () => {
         //console.log('Ad was cloesed');
         setModalVisible(false);
+        // 핵심 수정: 여기도 3초로
+        setTimeout(() => {
+          rewarded.load();
+        }, 1500);
       });
       //광고 로드
       rewarded.load();

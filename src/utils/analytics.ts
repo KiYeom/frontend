@@ -316,11 +316,19 @@ export default class Analytics {
     this.sendEvent('채팅 사진 첨부 광고 송출 후, 리워드 지급', 'watchEarnRewardScreenInChatting');
   };
 
-  //채팅 - <사진 첨부> - <광고 모달> - 저장하기 클릭 후 광고 송출 - 리워드 미지급
-  public static watchNoEarnRewardScreenInChatting = (): void => {
+  //채팅 - <사진 첨부> - <광고 모달> - 저장하기 클릭 후 광고 송출 - 리워드 미지급 (0525 PM 15:03 수정)
+  public static watchNoEarnRewardScreenInChatting = (errorDetails?: any): void => {
+    const errorData = {
+      errorMessage: errorDetails?.message || '알 수 없는 오류',
+      errorCode: errorDetails?.code || 'UNKNOWN',
+      errorStack: errorDetails?.stack || '',
+      timestamp: new Date().toISOString(),
+    };
+
     this.sendEvent(
       '채팅 사진 첨부 광고 송출 후, 채팅 저장에 오류 발생',
       'watchNoEarnRewardScreenInChatting',
+      errorData,
     );
   };
 
