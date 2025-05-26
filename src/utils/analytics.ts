@@ -315,6 +315,10 @@ export default class Analytics {
   public static watchEarnRewardScreenInChatting = (): void => {
     this.sendEvent('채팅 사진 첨부 광고 송출 후, 리워드 지급', 'watchEarnRewardScreenInChatting');
   };
+  //채팅 - <사진 첨부> - <광고 모달> - 광고 종료
+  public static watchAdClosedScreenInChatting = (): void => {
+    this.sendEvent('채팅 사진 첨부 광고 종료', 'watchAdClosedScreenInChatting');
+  };
 
   // 채팅 - <사진 첨부> - <광고 모달> - 광고 에러 발생 (애널리틱스에 들어간거 확인 완료)
   public static watchNoEarnRewardScreenInChatting = (errorDetails?: {
