@@ -108,6 +108,7 @@ const adUnitId =
       ? process.env.EXPO_PUBLIC_CHATTING_REWARD_AD_UNIT_ID_ANDROID
       : process.env.EXPO_PUBLIC_CHATTING_REWARD_AD_UNIT_ID_IOS
     : TestIds.REWARDED;
+//const adUnitId = 'ca-app-pub-test/invalid-id'; // 잘못된 ID
 
 //유저와 챗봇 오브젝트 정의
 const userObject = {
@@ -157,6 +158,19 @@ const NewChat: React.FC = ({ navigation }) => {
   const [image, setImage] = useState<string | null>(null);
   //광고 모달 추가
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const handleModalClose = (type: 'cancel' | 'submit') => {
+    if (type === 'cancel') {
+      console.log('취소 버튼을 눌렀어요');
+      Analytics.clickNoWatchAdsButtonInChatting();
+      //Analytics.log('채팅 - <광고 모달> - <취소> 버튼 클릭');
+    } else if (type === 'submit') {
+      console.log('전송버튼을 눌렀어요');
+      // 필요하면 다른 Analytics 로그 추가
+      Analytics.clickWatchAdsButtonInChatting();
+    }
+
+    setModalVisible(false);
+  };
 
   //반말 정보 불러오기
   const [isInFormalMode, setIsInformalMode] = useState<boolean>(true);
@@ -178,6 +192,7 @@ const NewChat: React.FC = ({ navigation }) => {
   //textinput 을 가리키고 있는 ref
   const textInputRef = useRef<TextInput>(null);
 
+  /*
   const pickImage = async () => {
     //console.log('pickImage 클릭함');
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -192,6 +207,58 @@ const NewChat: React.FC = ({ navigation }) => {
       //핸드폰에서 선택한 사진의 로컬 주소 (file://~)를 저장
     }
     return;
+  };*/
+
+  //사진 첨부 로직 수정
+  const pickImage = async () => {
+    if (image) {
+      //이미 이미지가 선택된 상황에서 이미지를 다시 선택하는 경우
+      console.log('이미지가 이미 선택됐어요');
+      Analytics.clickIamgePreviewAddButton();
+      Toast.show('이미지는 한 장만 보낼 수 있어요', {
+        duration: Toast.durations.SHORT,
+        position: Toast.positions.CENTER,
+      });
+      return;
+    }
+    try {
+      //[1] 권한 체크하기
+      const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        const { status: newStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (newStatus !== 'granted') {
+          Toast.show('사진 접근 권한이 필요합니다', {
+            duration: Toast.durations.LONG,
+            position: Toast.positions.CENTER,
+          });
+          return;
+        }
+      }
+      //이미지를 고른 적이 없다면, 앨범 내에서 이미지 선택하게
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsEditing: false,
+        quality: 1,
+      });
+      if (!result.canceled) {
+        //image picker에서 취소하지 않은 경우
+        //console.log('이미지를 선택합니다', result.assets[0].uri.length);
+        setImage(result.assets[0].uri); //이미지 설정
+        Analytics.clickImagePickerConfirmButton();
+        console.log('이미지 선택 완료');
+      } else {
+        //image picker에서 취소한 경우
+        console.log('이미지 선택을 취소했어요');
+        Analytics.clickImagePickerCancelButton();
+      }
+    } catch (error) {
+      console.log('이미지 선택 중 오류 발생');
+      Toast.show('이미지 선택 중 오류가 발생했습니다', {
+        duration: Toast.durations.SHORT,
+        position: Toast.positions.CENTER,
+      });
+      Analytics.clickImagePickerErrorButton(error.message, error.code);
+    }
   };
 
   //입력 필드 높이
@@ -219,39 +286,54 @@ const NewChat: React.FC = ({ navigation }) => {
         setLoaded(true);
       });
       const unsubscribeError = rewarded.addAdEventListener(AdEventType.ERROR, (error) => {
-        //console.error('RewardedAd 로드/표시 중 에러:', error);
+        console.error('RewardedAd 로드/표시 중 에러:', error);
         Analytics.watchNoEarnRewardScreenInChatting({
           errorCode: error.code,
           errorMessage: error.message,
-          errorDomain: error.domain, // iOS에서 주로 사용
-          adUnitId: rewarded.adUnitId, // 광고 유닛 ID
-          isTestMode: __DEV__, // 개발 모드인지 확인
-          retryCount: 0, // 재시도 횟수는 별도로 관리해야 함
-          timestamp: new Date().toISOString(),
+          errorDomain: error.domain,
+          adUnitId: adUnitId,
+          isTestMode: adUnitId === TestIds.REWARDED,
         });
       });
 
       //광고를 끝까지 봐서 보상을 줄 수 있을 때 일기와 사진을 등록할 수 있는 콜백 함수를 unsubscribeEarned 이라는 이름으로 등록해둔다
       const unsubscribeEarned = rewarded.addAdEventListener(
         RewardedAdEventType.EARNED_REWARD,
+        //보상 처리
         async (reward) => {
+          //console.log('광고를 끝까지 봤어요! 보상:', reward);
           Analytics.watchEarnRewardScreenInChatting();
-          //.log('User earned reward of ', reward);
-          const res = await updateSendPhotoPermission(true);
-          //console.log('광고 시청 후 사진 전송 권한 업데이트 결과', res?.canSendPhoto);
-          if (res) {
-            if (textInputRef.current) {
-              //console.log('입력 필드 초기화');
-              textInputRef.current.clear(); // 입력 필드 초기화
+          try {
+            console.log('try 문 : 사진 전송 권한 업데이트');
+            const res = await updateSendPhotoPermission(true);
+            console.log('사진 전송 권한 업데이트', res);
+            if (res?.canSendPhoto) {
+              console.log('사진을 보낼 수 있는 권한입니다');
+              setModalVisible(false); // 광고 모달 닫기
+              if (textInputRef.current) {
+                console.log('입력 필드 초기화');
+                textInputRef.current.clear(); // 입력 필드 초기화
+              }
+              console.log('서버로 메세지를 전송합니다');
+              sendMessageToServer(); // 서버로 메시지 전송
             }
-            sendMessageToServer();
+          } catch (error) {
+            console.log('권한 업데이트 실패 : ', error);
+            Analytics.photoPermissionError(error);
+            Toast.show('오류가 발생했습니다. 다시 시도해주세요', {
+              duration: Toast.durations.SHORT,
+              position: Toast.positions.CENTER,
+            });
           }
+          rewarded.load(); //다음 광고 미리 로드
         },
       );
       //광고가 닫힐 때 실행되는 이벤트 리스터
       const unsubscribeClosed = rewarded.addAdEventListener(AdEventType.CLOSED, () => {
-        //console.log('Ad was cloesed');
-        setModalVisible(false);
+        console.log('Ad was cloesed');
+        //setModalVisible(false);
+        rewarded.load(); // 다음 광고 미리 로드
+        //setLoaded(false);
       });
       //광고 로드
       rewarded.load();
@@ -331,20 +413,57 @@ const NewChat: React.FC = ({ navigation }) => {
   //광고 시청 함수
   const watchAds = async () => {
     try {
+      //console.log('watchAds~~~~~~');
       if (!loaded) {
+        //!loaded
         Toast.show('광고 로딩중입니다. 잠시 기다려주세요');
         rewarded.load();
-        return;
+
+        // 광고 로딩 상태를 추적
+        const loadSuccess = await new Promise((resolve) => {
+          let attempts = 0;
+          const checkInterval = setInterval(() => {
+            attempts++;
+            if (loaded) {
+              //loaded
+              clearInterval(checkInterval);
+              resolve(true);
+            } else if (attempts > 10) {
+              //attempts > 10
+              // 5초 대기
+              //console.log('5초 대기');
+              clearInterval(checkInterval);
+              Analytics.adLoadTimeoutInChatting();
+              resolve(false);
+            }
+          }, 500);
+        });
+
+        if (!loadSuccess) {
+          Toast.show('광고를 불러올 수 없습니다. 잠시 후에 다시 시도해주세요😢');
+          return false; // 실패 상태 반환
+        }
       }
-      //console.log('전면 광고 시청');
-      //setAdsModalVisible(false);
-      await rewarded.show(); // 광고 표시
+
+      // 광고 표시
+      await rewarded.show();
+      return true; // 성공 상태 반환
     } catch (error) {
-      //console.error('Error showing ad:', error);
-      Toast.show('광고 표시 중 오류가 발생했습니다');
-      //console.log('광고 표시 중 오류가 발생했습니다', error);
+      Toast.show('광고 표시 중 오류가 발생했습니다', {
+        duration: Toast.durations.SHORT,
+        position: Toast.positions.CENTER,
+      });
+      //console.log('!!!!!광고 표시 오류:', error);
+
+      Analytics.clickWatchAdsErrorInChatting({
+        errorCode: error.code,
+        errorMessage: error.message,
+        stage: 'show',
+      });
+
       setLoaded(false);
-      rewarded.load(); // Try to load again
+      rewarded.load();
+      return false; // 실패 상태 반환
     }
   };
 
@@ -585,7 +704,7 @@ const NewChat: React.FC = ({ navigation }) => {
     }
     const question = buf ?? '';
     const isDemo = getIsDemo();
-    console.log('iamge ', img, question);
+    //console.log('iamge ', img, question);
     const imageToSend = img ?? '';
     //setImage(null);
 
@@ -909,6 +1028,7 @@ const NewChat: React.FC = ({ navigation }) => {
   //api 로 유저 - 채팅 한 쌍을 받아오기 전에는 id 값을 임의로 설정하여 화면에 보여준다.
   const onSend = (newMessages: ExtendedIMessage[] = []) => {
     //console.log('onSend 실행', newMessages);
+    //testAdError();
     if (!newMessages[0].text.trim() && !newMessages[0].image) {
       return;
     }
@@ -918,6 +1038,7 @@ const NewChat: React.FC = ({ navigation }) => {
       //setIMessagesV3(previousMessages, newMessages.reverse());
       return GiftedChat.append(previousMessages, newMessages);
     });*/
+    Analytics.clickChatSendButton(); // 전송 버튼 클릭
     if (image) {
       //console.log('이미지 전송');
       // 이미지를 보낸 경우
@@ -1142,13 +1263,18 @@ const NewChat: React.FC = ({ navigation }) => {
         pointerEvents="box-none"></Animated.View>
       <AdsModal
         modalVisible={modalVisible}
-        onClose={() => {
-          Analytics.clickNoWatchAdsButtonInChatting();
-          setModalVisible(false);
-        }}
-        onSubmit={() => {
-          Analytics.clickWatchAdsButtonInChatting();
-          watchAds(); //1. 광고 시청하기
+        onClose={handleModalClose}
+        onSubmit={async () => {
+          //console.log('광고 시청하기');
+          Analytics.clickWatchAdsButtonInChatting(); // 광고 시청 시도
+          const adSuccess = await watchAds();
+
+          // 광고 시청에 실패한 경우 모달을 닫지 않음
+          if (!adSuccess) {
+            //!adSuccess
+            console.log('광고 시청 실패 - 모달 유지');
+            return;
+          }
           //2. 광고 시청을 성공적으로 하여 보상을 받은 경우, api 를 호출하여 사용자의 사진 추가 권한을 true 로 변경한다. (O)
           //3. 변경 후, 홈 화면으로 가서 사용자의 질문을 보낸다 (화면과 서버에, sendMessageToServer())
           //4. 사용자의 질문과 쿠키의 답변을 화면에 나타낸다.

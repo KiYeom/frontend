@@ -14,6 +14,7 @@ import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import Button from '../button/button';
 import NewCheckBox from '../v3-checkbox/NewCheckBox';
 import { Image } from 'react-native';
+import { useState } from 'react';
 
 const TierModal = ({
   modalVisible,
@@ -21,26 +22,55 @@ const TierModal = ({
   onSubmit,
   imageSource,
   modalContent,
+  isButtonDisabled = false, // 외부에서 제어 가능
 }: {
   modalVisible?: boolean;
-  onClose?: () => void;
+  onClose?: (type: 'cancel' | 'submit') => void;
   onSubmit?: () => void;
   imageSource?: ImageSourcePropType;
   modalContent?: string;
+  isButtonDisabled?: boolean; // 버튼 비활성화 여부
 }) => {
+  // 버튼 비활성화를 위한 상태 추가
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const isDisabled = isSubmitting || isButtonDisabled;
+  const handleSubmit = async () => {
+    console.log('저장하기 버튼을 누름');
+    if (isSubmitting) return; // 이미 처리 중이면 무시
+
+    try {
+      setIsSubmitting(true);
+      await onSubmit?.();
+      //handleClose(); // 성공 시에만 모달 닫기
+      onClose?.('submit');
+    } catch (error) {
+      console.error('Submit error:', error);
+      // 에러 토스트 메시지 표시
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleCancel = () => {
+    onClose?.('cancel'); //취소 버튼을 누름
+    // 모달 닫을 때 상태 초기화
+    setIsSubmitting(false);
+    //console.log('취소 버튼을 눌렀어요');
+  };
+
   return (
     <View>
       <Modal visible={modalVisible} animationType="fade" transparent>
         <TouchableOpacity
+          activeOpacity={1}
           style={{
             backgroundColor: 'rgba(0,0,0,0.5)',
             flex: 1,
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-          }}
-          onPress={onClose}>
-          <ModalInner>
+          }}>
+          <ModalInner onStartShouldSetResponder={() => true}>
             <Image source={imageSource} style={{ width: 140, height: 140 }} />
 
             <ModalContent>{modalContent}</ModalContent>
@@ -50,18 +80,16 @@ const TierModal = ({
                 <Button
                   title={'취소'}
                   primary={false}
-                  onPress={() => {
-                    onClose?.();
-                  }}
+                  disabled={isSubmitting} // 제출 중일 때 취소 버튼도 비활성화
+                  onPress={handleCancel}
                 />
               </View>
               <View style={{ width: '50%' }}>
                 <Button
                   title={'저장하기'}
                   primary={true}
-                  onPress={() => {
-                    onSubmit?.();
-                  }}
+                  disabled={isSubmitting} // 중복 실행 방지
+                  onPress={handleSubmit}
                 />
               </View>
             </ButtonGroup>
