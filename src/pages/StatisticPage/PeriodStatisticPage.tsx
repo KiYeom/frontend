@@ -18,7 +18,6 @@ import { rsFont, rsHeight, rsWidth } from '../../utils/responsive-size';
 import RangeDatePickerModal from '../../components/rangeCal/range-date-picker-modal';
 import PeriodRecord from './Period-records/period-record';
 import PeriodFlowChart from './Period_FlowChart/PeriodFlowChartArea';
-import PeriodKeywordArea from './Period_keyword/PeriodKeywordArea';
 import NewPeriodKeywordArea from './Period_keyword/NewPeriodKeywordArea';
 import NewPeriodEmotionArea from './Period_Emotion/NewPeriodEmotionArea';
 //import ReportType from './ReportType';
@@ -165,14 +164,6 @@ const PeriodStatisticPage: React.FC<any> = ({ navigation }) => {
               </StatisticTitle>
             </View>
           </View>
-          {/*<View style={{ backgroundColor: 'pink' }}>
-            <Text>민수의 키워드 자리</Text>
-            <NewKeywordArea
-              summaryList={['쿠키', '감정', '대화', '마음']}
-              hintStatus={null}
-              setHintStatus={null}
-            />
-          </View>*/}
           {periodKeywordList && periodKeywordList.length > 0 && (
             <>
               <PeriodFlowChart
@@ -184,13 +175,7 @@ const PeriodStatisticPage: React.FC<any> = ({ navigation }) => {
                   setHintStatus(hint);
                 }}
               />
-              <NewPeriodEmotionArea
-                periodEmotionList={totalEmotions}
-                hintStatus={hintStatus}
-                setHintStatus={(hint: 'period-emotion' | undefined) => {
-                  setHintStatus(hint);
-                }}
-              />
+              <NewPeriodEmotionArea periodEmotionList={totalEmotions} />
               <NewPeriodKeywordArea periodKeywordList={periodKeywordList} />
             </>
           )}

@@ -1,29 +1,22 @@
 diff --git a/node_modules/react-native-word-cloud/index.js b/node_modules/react-native-word-cloud/index.js
-index c62bb41..662049e 100644
+index c62bb41..3fd51e4 100644
 --- a/node_modules/react-native-word-cloud/index.js
 +++ b/node_modules/react-native-word-cloud/index.js
-@@ -13,8 +13,8 @@ class KeywordsCloud extends React.Component {
+@@ -13,9 +13,9 @@ class KeywordsCloud extends React.Component {
    handleCanvas = (canvas) => {
      const { keywords,scale, largestAtCenter, drawContainerCircle,containerCircleColor } = this.props;
      if (canvas) {
 -      canvas.width = 300 
 -      canvas.height = 300 
-+      canvas.width = 400 //300 -> 400 
+-      const center = { x: canvas.width / 2, y: canvas.height / 2 };
++      canvas.width = 350 //300 -> 400 
 +      canvas.height = 400 //300 -> 400
-       const center = { x: canvas.width / 2, y: canvas.height / 2 };
++      const center = { x: canvas.width / 2, y: (canvas.height / 2)+20 };
        const circles = generateCircles(
            keywords, center, scale, largestAtCenter);
-@@ -25,7 +25,7 @@ class KeywordsCloud extends React.Component {
- 
-   render() {
-     return (
--      <View style={{justifyContent:'center',alignItems:'center'}}>
-+      <View style={{justifyContent:'center',alignItems:'center', backgroundColor : 'blue'}}>
-         <Canvas ref={canvas => this.handleCanvas(canvas)} />
-       </View>
-     );
+       calcPositions(circles);
 diff --git a/node_modules/react-native-word-cloud/utils.js b/node_modules/react-native-word-cloud/utils.js
-index bb226c8..27a7402 100644
+index bb226c8..142dd0e 100644
 --- a/node_modules/react-native-word-cloud/utils.js
 +++ b/node_modules/react-native-word-cloud/utils.js
 @@ -25,7 +25,7 @@ return keywords.sort((a,b)=>a.frequency<b.frequency?-1:1)
@@ -79,42 +72,15 @@ index bb226c8..27a7402 100644
            const d = (dx * dx) + (dy * dy);
            if (d < (r * r) - 0.01) {
              const v = { x: dx, y: dy, z: 0 };
-@@ -88,6 +109,34 @@ export const calcPositions = (circles) => {
+@@ -88,6 +109,7 @@ export const calcPositions = (circles) => {
        c.y -= vScaled.y;
      }
    }
-+  // 👇 경계 측정 코드 추가
-+  if (circles.length > 0) {
-+    let minX = Infinity, maxX = -Infinity;
-+    let minY = Infinity, maxY = -Infinity;
-+    
-+    circles.forEach(circle => {
-+      const leftEdge = circle.x - circle.size;
-+      const rightEdge = circle.x + circle.size;
-+      const topEdge = circle.y - circle.size;
-+      const bottomEdge = circle.y + circle.size;
-+      
-+      minX = Math.min(minX, leftEdge);
-+      maxX = Math.max(maxX, rightEdge);
-+      minY = Math.min(minY, topEdge);
-+      maxY = Math.max(maxY, bottomEdge);
-+    });
-+    
-+    const boundingWidth = maxX - minX;
-+    const boundingHeight = maxY - minY;
-+    
-+    console.log('=== 버블 영역 측정 ===');
-+    console.log(`경계 박스: ${minX.toFixed(1)}, ${minY.toFixed(1)} → ${maxX.toFixed(1)}, ${maxY.toFixed(1)}`);
-+    console.log(`실제 차지 영역: ${boundingWidth.toFixed(1)} x ${boundingHeight.toFixed(1)}`);
-+    console.log(`캔버스 크기: 400 x 400`);
-+    console.log(`여유 공간: 좌측 ${minX.toFixed(1)}px, 우측 ${(400-maxX).toFixed(1)}px`);
-+    console.log(`여유 공간: 상단 ${minY.toFixed(1)}px, 하단 ${(400-maxY).toFixed(1)}px`);
-+    console.log('==================');
-+  }
++
  };
  
  export const drawCirclesOnCanvas = (circles, canvas, drawContainerCircle, containerCircleColor) => {
-@@ -108,7 +157,8 @@ export const drawCirclesOnCanvas = (circles, canvas, drawContainerCircle, contai
+@@ -108,7 +130,8 @@ export const drawCirclesOnCanvas = (circles, canvas, drawContainerCircle, contai
      ctx.fill();
      ctx.textAlign = 'center';
      ctx.textBaseline = 'middle';
