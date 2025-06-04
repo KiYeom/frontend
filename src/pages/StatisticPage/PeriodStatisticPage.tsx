@@ -10,6 +10,7 @@ import {
   periodKeyword,
   periodRecordEmotions,
   periodTotalEmotion,
+  newPeriodChart,
 } from '../../apis/analyze';
 import { TPeriodRecordEmotions } from '../../apis/analyze.type';
 import palette from '../../assets/styles/theme';
@@ -20,6 +21,7 @@ import PeriodRecord from './Period-records/period-record';
 import PeriodFlowChart from './Period_FlowChart/PeriodFlowChartArea';
 import NewPeriodKeywordArea from './Period_keyword/NewPeriodKeywordArea';
 import NewPeriodEmotionArea from './Period_Emotion/NewPeriodEmotionArea';
+import NewPeriodFlowChartArea from './Period_FlowChart/NewPeriodFlowChartArea';
 //import ReportType from './ReportType';
 import { DateLineContainer, DateLineText, StatisticTitle } from './StatisticMain.style';
 import Icon from '../../components/icons/icons';
@@ -56,7 +58,7 @@ const PeriodStatisticPage: React.FC<any> = ({ navigation }) => {
     startDate: dayjs().subtract(7, 'day').startOf('day'), // 일주일 전 날짜
     endDate: dayjs().startOf('day'), // 현재 날짜
   });
-  const [emotionsData, setEmotionsData] = useState([]);
+  const [emotionsData, setEmotionsData] = useState<string[]>([]);
   const [openModal, setOpenModal] = React.useState(false);
 
   //const navigation = useNavigation();
@@ -75,14 +77,14 @@ const PeriodStatisticPage: React.FC<any> = ({ navigation }) => {
         const endDateFormatted = dayjs(range.endDate).format('YYYY-MM-DD');
 
         const [res, res2, res3, res4] = await Promise.all([
-          periodChart(startDateFormatted, endDateFormatted), //기간 감정 차트
+          newPeriodChart(startDateFormatted, endDateFormatted), //기간 감정 차트
           periodKeyword(startDateFormatted, endDateFormatted), //기간 키워드 리스트
           periodRecordEmotions(startDateFormatted, endDateFormatted), //기간 기록한 감정들
           periodTotalEmotion(startDateFormatted, endDateFormatted), //기간 기록한 감정들
         ]);
-        console.log('sibel', res4.emotions);
-        if (res && res.charts) {
-          setEmotionsData(res.charts);
+        if (res) {
+          console.log('res.charts', res);
+          setEmotionsData(res);
         }
         if (res2 && res2.keywords) {
           setPeriodKeywordList(res2.keywords);
@@ -166,7 +168,7 @@ const PeriodStatisticPage: React.FC<any> = ({ navigation }) => {
           </View>
           {periodKeywordList && periodKeywordList.length > 0 && (
             <>
-              <PeriodFlowChart
+              {/*<PeriodFlowChart
                 emotionsData={emotionsData}
                 startDate={dayjs(range.startDate).format('YYYY-MM-DD')}
                 endDate={dayjs(range.endDate).format('YYYY-MM-DD')}
@@ -174,7 +176,8 @@ const PeriodStatisticPage: React.FC<any> = ({ navigation }) => {
                 setHintStatus={(hint: 'period-flow' | undefined) => {
                   setHintStatus(hint);
                 }}
-              />
+              />*/}
+              <NewPeriodFlowChartArea emotionsData={emotionsData} />
               <NewPeriodEmotionArea periodEmotionList={totalEmotions} />
               <NewPeriodKeywordArea periodKeywordList={periodKeywordList} />
             </>
