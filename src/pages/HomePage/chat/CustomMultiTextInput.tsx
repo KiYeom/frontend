@@ -10,8 +10,10 @@ type CustomMultiTextInputProps = {
   inputHeight?: number;
   setInputHeight?: (value: number) => void;
   textInputRef?: React.RefObject<TextInput>;
-  iconName?: string; // 아이콘 이름 추가
-  iconPosition?: 'left' | 'right'; // 아이콘 위치 추가
+  iconName?: string;
+  iconPosition?: 'left' | 'right';
+  onEmojiPress?: () => void; // 이모티콘 버튼 클릭 핸들러 추가
+  isEmojiPanelVisible?: boolean; // 이모티콘 패널 표시 상태
 };
 
 const MaximizedTextLine = 5;
@@ -24,7 +26,9 @@ const CustomMultiTextInput = (props: CustomMultiTextInputProps) => {
     setInputHeight = () => {},
     textInputRef,
     iconName,
-    iconPosition = 'right', // 기본값: 오른쪽
+    iconPosition = 'right',
+    onEmojiPress,
+    isEmojiPanelVisible = false,
   } = props;
 
   const handleContentSizeChange = (event) => {
@@ -32,13 +36,11 @@ const CustomMultiTextInput = (props: CustomMultiTextInputProps) => {
     setInputHeight(height < rsFont * 16 * 1.5 + 15 * 2 ? rsFont * 16 * 1.5 + 15 * 2 : height);
   };
 
-  const iconSize = rsFont * 20; // 아이콘 크기
-
   return (
     <View
       style={{
         flexDirection: 'row',
-        alignItems: 'flex-end', // 하단 정렬로 변경
+        alignItems: 'flex-end',
         marginHorizontal: 10,
         backgroundColor: palette.neutral[50],
         borderRadius: 20,
@@ -49,13 +51,13 @@ const CustomMultiTextInput = (props: CustomMultiTextInputProps) => {
       }}>
       <TextInput
         style={{
-          flex: 1, // flex 추가하여 남은 공간 차지
+          flex: 1,
           fontSize: rsFont * 16,
           lineHeight: rsFont * 16 * 1.5,
           maxHeight: rsFont * 16 * 1.5 * MaximizedTextLine,
-          padding: 0, // 기본 패딩 제거
-          margin: 0, // 기본 마진 제거
-          textAlignVertical: 'top', // 안드로이드에서 텍스트 상단 정렬
+          padding: 0,
+          margin: 0,
+          textAlignVertical: 'top',
         }}
         multiline
         ref={textInputRef}
@@ -69,13 +71,17 @@ const CustomMultiTextInput = (props: CustomMultiTextInputProps) => {
         style={{
           paddingLeft: 10,
           marginRight: 0,
-          //backgroundColor: 'pink',
-          // alignSelf 제거하여 부모의 alignItems를 따름
           justifyContent: 'center',
           minWidth: 24,
-          height: 24, // 고정 높이 설정
-        }}>
-        <Icon name={'emojiIcon'} width={24} color={palette.neutral[400]} />
+          height: 24,
+        }}
+        onPress={onEmojiPress}
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+        <Icon
+          name={'emojiIcon'}
+          width={24}
+          color={isEmojiPanelVisible ? palette.primary[500] : palette.neutral[400]}
+        />
       </TouchableOpacity>
     </View>
   );

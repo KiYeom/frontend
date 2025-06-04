@@ -434,8 +434,8 @@ export const RenderSystemMessage = (props: Props<ExtendedIMessage>) => {
   );
 };
 
-//props: SendProps<IMessage>, sendingStatus: boolean
-//커스텀 인풋 툴 바
+// 기존 chat-render.tsx에서 RenderInputToolbar 함수만 수정
+
 export const RenderInputToolbar = (
   props: InputToolbarProps<ExtendedIMessage>,
   sendingStatus: boolean,
@@ -452,6 +452,9 @@ export const RenderInputToolbar = (
   setImage?: (value: string | null) => void,
   textInputRef?: RefObject<TextInput>,
   showAdsModal?: (visible: boolean) => void,
+  // 이모티콘 관련 props 추가
+  onEmojiPress?: () => void,
+  isEmojiPanelVisible?: boolean,
 ) =>
   !isSearchMode ? (
     <View>
@@ -464,14 +467,12 @@ export const RenderInputToolbar = (
         {...props}
         containerStyle={{
           borderTopColor: 'transparent',
-          backgroundColor: 'red',
           //backgroundColor: palette.neutral[50],
-          //backgroundColor: 'green',
+          backgroundColor: 'red',
           display: 'flex',
-          flexDirection: 'row', // row로 두어야 Input과 Send , 사진 버튼이 나란히 배치됨
+          flexDirection: 'row',
           justifyContent: 'center',
           alignItems: 'center',
-          //paddingHorizontal: rsWidth * 15,
           paddingVertical: rsHeight * 8,
           position: 'relative',
         }}
@@ -509,6 +510,8 @@ export const RenderInputToolbar = (
             onChangeText={composerProps.onTextChanged}
             setInputHeight={setInputHeight}
             textInputRef={textInputRef}
+            onEmojiPress={onEmojiPress} // 이모티콘 버튼 핸들러 전달
+            isEmojiPanelVisible={isEmojiPanelVisible} // 이모티콘 패널 상태 전달
           />
         )}
         renderSend={(sendProps) => (
@@ -516,15 +519,12 @@ export const RenderInputToolbar = (
             {...props}
             disabled={sendingStatus}
             containerStyle={{
-              //backgroundColor: 'yellow',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
               alignItems: 'center',
               alignSelf: 'center',
               marginRight: 10,
-              //marginLeft: 15 * rsWidth,
-              //backgroundColor: 'yellow',
             }}>
             <TouchableOpacity
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
@@ -545,8 +545,8 @@ export const RenderInputToolbar = (
                 // 이미지가 있는 경우: 광고 모달을 표시
                 if (image && image.length > 0) {
                   if (showAdsModal) {
-                    showAdsModal(); // 광고 모달 표시
-                    return; // 실제 전송은 광고 시청 후 useImageAndAdManagement 훅에서 처리
+                    showAdsModal();
+                    return;
                   }
                 }
 
@@ -563,7 +563,6 @@ export const RenderInputToolbar = (
                   );
                   return;
                 }
-                // 텍스트도 이미지도 없는 경우는 아무 작업도 하지 않습니다.
               }}>
               <Icon
                 name="airplane"
@@ -576,7 +575,6 @@ export const RenderInputToolbar = (
     </View>
   ) : (
     <>
-      {/*<Text>히히헤헤</Text>*/}
       <UpDownBtn
         enableUp={enableUp}
         enableDown={enableDown}

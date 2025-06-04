@@ -8,11 +8,12 @@ import {
   Animated,
   ImageSourcePropType,
   TextInput,
+  Text,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GiftedChat, IMessage, SendProps } from 'react-native-gifted-chat';
 import { useFocusEffect } from '@react-navigation/native';
-
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 // Constants에서 필요한 것만 임포트
 import { HomeStackName, RootStackName, TabScreenName } from '../../../constants/Constants';
 import * as NavigationBar from 'expo-navigation-bar';
@@ -28,7 +29,8 @@ import { rsFont, rsWidth } from '../../../utils/responsive-size';
 import { searchChatWord } from '../../../apis/chatting';
 import * as Clipboard from 'expo-clipboard';
 import Toast from 'react-native-root-toast';
-
+import { useEmojiPanel } from '../../../hooks/useEmojiPanel';
+import EmojiPanel from '../../../components/emoji-panel/EmojiPanel';
 // 기존 chat-render 파일에서 필요한 것만 임포트 (RenderInputToolbar의 prop 변경에 따라 수정 필요)
 import {
   RenderAvatar,
@@ -63,6 +65,16 @@ const NewChat: React.FC<{ navigation: any }> = ({ navigation }) => {
 
   // 반말 모드 정보를 useChatMessages 훅에 전달하기 위한 ref
   const informalModeRef = useRef<boolean>(true);
+
+  const {
+    isEmojiPanelVisible,
+    emojiPanelHeight,
+    translateY,
+    opacity,
+    toggleEmojiPanel,
+    hideEmojiPanel,
+    onEmojiSelect,
+  } = useEmojiPanel();
 
   // useChatMessages 훅에서 필요한 상태와 함수들을 가져옵니다.
   const {
@@ -142,6 +154,8 @@ const NewChat: React.FC<{ navigation: any }> = ({ navigation }) => {
 
   // Risk Store v2 사용
   const { riskStatusV2, setRiskScoreV2 } = useRiskStoreVer2();
+
+  const insets = useSafeAreaInsets();
 
   const decideRefreshScreen = useCallback((viewHeight: number) => {
     NavigationBar.getVisibilityAsync().then((navBarStatus) => {
@@ -338,18 +352,7 @@ const NewChat: React.FC<{ navigation: any }> = ({ navigation }) => {
 
   /* 채팅 화면 전체 구성 */
   return (
-    <SafeAreaView
-      style={{ flex: 1 }}
-      edges={['bottom']}
-      onLayout={(event) => {
-        if (Platform.OS === 'android') {
-          const { height } = event.nativeEvent.layout;
-          //resetRefreshTimer(height, refreshTimerMS);
-          setRefreshTimerMS(refreshTimerMS / 2);
-        } else {
-          setScreenLoading(false);
-        }
-      }}>
+    <SafeAreaView style={{ flex: 1 }} edges={['bottom']}>
       {(screenLoading || init) && (
         <View
           style={css`
@@ -398,6 +401,8 @@ const NewChat: React.FC<{ navigation: any }> = ({ navigation }) => {
       />
 
       <GiftedChat
+        wrapInSafeArea={false}
+        //bottomOffset={insets.bottom}
         listViewProps={{
           onScrollToIndexFailed: scrollToIndexFailed,
           onMomentumScrollEnd: () => {
@@ -447,6 +452,8 @@ const NewChat: React.FC<{ navigation: any }> = ({ navigation }) => {
             clearImageForPreview, // <-- 추가: 이미지 미리보기 지우는 함수 전달
             textInputRef,
             showAdsModal,
+            toggleEmojiPanel, // 이모티콘 버튼 클릭 핸들러
+            isEmojiPanelVisible, // 이모티콘 패널 표시 상태
           )
         }
         lightboxProps={undefined}
@@ -456,6 +463,12 @@ const NewChat: React.FC<{ navigation: any }> = ({ navigation }) => {
         }}
         keyboardShouldPersistTaps={'never'}
         alwaysShowSend
+        onPressIn={() => {
+          if (isEmojiPanelVisible) {
+            console.log('이모티콘 패널이 열려있습니다. 닫습니다.');
+            hideEmojiPanel();
+          }
+        }}
       />
       {searchLoading && (
         <View
@@ -509,6 +522,22 @@ const NewChat: React.FC<{ navigation: any }> = ({ navigation }) => {
             : `광고를 시청하면\n쿠키에게 사진을 보여줄 수 있어요  ${adUnitId}`
         }
       />
+      {/*<EmojiPanel
+        isVisible={isEmojiPanelVisible}
+        height={emojiPanelHeight}
+        translateY={translateY}
+        opacity={opacity}
+        onEmojiSelect={onEmojiSelect}
+      />*/}
+      {isEmojiPanelVisible && (
+        <EmojiPanel
+          isVisible={isEmojiPanelVisible}
+          height={emojiPanelHeight}
+          translateY={translateY}
+          opacity={opacity}
+          onEmojiSelect={onEmojiSelect}
+        />
+      )}
     </SafeAreaView>
   );
 };
