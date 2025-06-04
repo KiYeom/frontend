@@ -1,0 +1,126 @@
+diff --git a/node_modules/react-native-word-cloud/index.js b/node_modules/react-native-word-cloud/index.js
+index c62bb41..662049e 100644
+--- a/node_modules/react-native-word-cloud/index.js
++++ b/node_modules/react-native-word-cloud/index.js
+@@ -13,8 +13,8 @@ class KeywordsCloud extends React.Component {
+   handleCanvas = (canvas) => {
+     const { keywords,scale, largestAtCenter, drawContainerCircle,containerCircleColor } = this.props;
+     if (canvas) {
+-      canvas.width = 300 
+-      canvas.height = 300 
++      canvas.width = 400 //300 -> 400 
++      canvas.height = 400 //300 -> 400
+       const center = { x: canvas.width / 2, y: canvas.height / 2 };
+       const circles = generateCircles(
+           keywords, center, scale, largestAtCenter);
+@@ -25,7 +25,7 @@ class KeywordsCloud extends React.Component {
+ 
+   render() {
+     return (
+-      <View style={{justifyContent:'center',alignItems:'center'}}>
++      <View style={{justifyContent:'center',alignItems:'center', backgroundColor : 'blue'}}>
+         <Canvas ref={canvas => this.handleCanvas(canvas)} />
+       </View>
+     );
+diff --git a/node_modules/react-native-word-cloud/utils.js b/node_modules/react-native-word-cloud/utils.js
+index bb226c8..27a7402 100644
+--- a/node_modules/react-native-word-cloud/utils.js
++++ b/node_modules/react-native-word-cloud/utils.js
+@@ -25,7 +25,7 @@ return keywords.sort((a,b)=>a.frequency<b.frequency?-1:1)
+ 
+ export const generateCircles = (keywordData, center, scale, largestAtCenter) => {
+   const sortedKeywords = sortByFrequency(keywordData,largestAtCenter);
+-  const sum = sortedKeywords.reduce((acc, current) => acc + current.frequency, 0);
++  /*const sum = sortedKeywords.reduce((acc, current) => acc + current.frequency, 0);
+   const circles = sortedKeywords.map((keyword, index, arr) => ({
+     center,
+     size: (keyword.frequency / (sum)) * scale,
+@@ -33,6 +33,26 @@ export const generateCircles = (keywordData, center, scale, largestAtCenter) =>
+     label: keyword.keyword,
+     ...spiralGenerator(index),
+   }));
++  return circles;*/
++  const circles = sortedKeywords.map((keyword, index, arr) => {
++    // 👇 기존 코드 제거
++    // const sum = sortedKeywords.reduce((acc, current) => acc + current.frequency, 0);
++    // size: (keyword.frequency / (sum)) * scale,
++    
++    // 👇 새로운 고정 크기 로직
++    const baseRadius = 60; // 가장 큰 원의 반지름
++    const radiusDecrement = 5; // 10px씩 감소
++    const radius = Math.max(baseRadius - (index * radiusDecrement), 20); // 최소 20px 보장
++    
++    return {
++      center,
++      size: radius, // 👈 고정 크기 사용
++      color: keyword.color,
++      label: keyword.keyword,
++      ...spiralGenerator(index),
++    };
++  });
++  
+   return circles;
+ };
+ 
+@@ -54,6 +74,7 @@ const sortOnDistanceToCenter = (a, b) => {
+ export const calcPositions = (circles) => {
+   const sortedCircles = circles.sort(sortOnDistanceToCenter);
+   const damping = 0.005;
++  const spacingFactor = 1.1; //추가
+   for (let pr = 0; pr < 5000; pr += 1) {
+     // Push them away from each other
+     for (let i = sortedCircles.length - 1; i >= 0; i -= 1) {
+@@ -64,7 +85,7 @@ export const calcPositions = (circles) => {
+         if (i !== j) {
+           const dx = cj.x - ci.x;
+           const dy = cj.y - ci.y;
+-          const r = ci.size + cj.size;
++          const r = (ci.size + cj.size) * spacingFactor; // Adjusted for spacing
+           const d = (dx * dx) + (dy * dy);
+           if (d < (r * r) - 0.01) {
+             const v = { x: dx, y: dy, z: 0 };
+@@ -88,6 +109,34 @@ export const calcPositions = (circles) => {
+       c.y -= vScaled.y;
+     }
+   }
++  // 👇 경계 측정 코드 추가
++  if (circles.length > 0) {
++    let minX = Infinity, maxX = -Infinity;
++    let minY = Infinity, maxY = -Infinity;
++    
++    circles.forEach(circle => {
++      const leftEdge = circle.x - circle.size;
++      const rightEdge = circle.x + circle.size;
++      const topEdge = circle.y - circle.size;
++      const bottomEdge = circle.y + circle.size;
++      
++      minX = Math.min(minX, leftEdge);
++      maxX = Math.max(maxX, rightEdge);
++      minY = Math.min(minY, topEdge);
++      maxY = Math.max(maxY, bottomEdge);
++    });
++    
++    const boundingWidth = maxX - minX;
++    const boundingHeight = maxY - minY;
++    
++    console.log('=== 버블 영역 측정 ===');
++    console.log(`경계 박스: ${minX.toFixed(1)}, ${minY.toFixed(1)} → ${maxX.toFixed(1)}, ${maxY.toFixed(1)}`);
++    console.log(`실제 차지 영역: ${boundingWidth.toFixed(1)} x ${boundingHeight.toFixed(1)}`);
++    console.log(`캔버스 크기: 400 x 400`);
++    console.log(`여유 공간: 좌측 ${minX.toFixed(1)}px, 우측 ${(400-maxX).toFixed(1)}px`);
++    console.log(`여유 공간: 상단 ${minY.toFixed(1)}px, 하단 ${(400-maxY).toFixed(1)}px`);
++    console.log('==================');
++  }
+ };
+ 
+ export const drawCirclesOnCanvas = (circles, canvas, drawContainerCircle, containerCircleColor) => {
+@@ -108,7 +157,8 @@ export const drawCirclesOnCanvas = (circles, canvas, drawContainerCircle, contai
+     ctx.fill();
+     ctx.textAlign = 'center';
+     ctx.textBaseline = 'middle';
+-    ctx.font = `lighter ${Math.floor(circle.size / 4)}px sans-serif`;
++    //ctx.font = `lighter ${Math.floor(circle.size / 4)}px sans-serif`;
++    ctx.font = `18px Pretendard-SemiBold`;
+     ctx.fillStyle = '#000000';
+     ctx.fillText(circle.label, circle.x, circle.y);
+   });

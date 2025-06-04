@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import dayjs from 'dayjs';
 import { Image } from 'expo-image';
 import React, { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, ScrollView, TouchableOpacity, View, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   periodChart,
@@ -19,6 +19,8 @@ import RangeDatePickerModal from '../../components/rangeCal/range-date-picker-mo
 import PeriodRecord from './Period-records/period-record';
 import PeriodFlowChart from './Period_FlowChart/PeriodFlowChartArea';
 import PeriodKeywordArea from './Period_keyword/PeriodKeywordArea';
+import NewPeriodKeywordArea from './Period_keyword/NewPeriodKeywordArea';
+import NewPeriodEmotionArea from './Period_Emotion/NewPeriodEmotionArea';
 //import ReportType from './ReportType';
 import { DateLineContainer, DateLineText, StatisticTitle } from './StatisticMain.style';
 import Icon from '../../components/icons/icons';
@@ -79,6 +81,7 @@ const PeriodStatisticPage: React.FC<any> = ({ navigation }) => {
           periodRecordEmotions(startDateFormatted, endDateFormatted), //기간 기록한 감정들
           periodTotalEmotion(startDateFormatted, endDateFormatted), //기간 기록한 감정들
         ]);
+        console.log('sibel', res4.emotions);
         if (res && res.charts) {
           setEmotionsData(res.charts);
         }
@@ -162,6 +165,14 @@ const PeriodStatisticPage: React.FC<any> = ({ navigation }) => {
               </StatisticTitle>
             </View>
           </View>
+          {/*<View style={{ backgroundColor: 'pink' }}>
+            <Text>민수의 키워드 자리</Text>
+            <NewKeywordArea
+              summaryList={['쿠키', '감정', '대화', '마음']}
+              hintStatus={null}
+              setHintStatus={null}
+            />
+          </View>*/}
           {periodKeywordList && periodKeywordList.length > 0 && (
             <>
               <PeriodFlowChart
@@ -173,7 +184,7 @@ const PeriodStatisticPage: React.FC<any> = ({ navigation }) => {
                   setHintStatus(hint);
                 }}
               />
-              <PeriodEmotionArea
+              <NewPeriodEmotionArea
                 periodEmotionList={totalEmotions}
                 hintStatus={hintStatus}
                 setHintStatus={(hint: 'period-emotion' | undefined) => {

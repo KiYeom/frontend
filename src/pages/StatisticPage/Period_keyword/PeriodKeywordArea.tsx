@@ -13,6 +13,7 @@ const HINT_MESSAGE = '그 동안 쿠키와 나눴던 이야기를 키워드로 �
 
 const PeriodKeywordArea: React.FC<any> = (props: any) => {
   const { periodKeywordList, hintStatus, setHintStatus } = props;
+  console.log('PeriodKeywordArea props:', periodKeywordList);
 
   return (
     <View
