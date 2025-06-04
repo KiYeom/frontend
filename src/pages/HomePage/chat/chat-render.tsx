@@ -233,7 +233,7 @@ export const RenderBubble = (
               isSaved={props.currentMessage.isSaved}
               messageId={props.currentMessage._id}
               onFavoritePress={(id) => {
-                //console.log('id', id);
+                console.log('id', id);
                 if (id === 'welcomeMessage') return;
                 props.onFavoritePress(props.currentMessage._id);
                 Analytics.clickChatLikeButton(props.currentMessage._id);
