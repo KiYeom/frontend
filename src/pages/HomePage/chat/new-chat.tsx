@@ -344,7 +344,7 @@ const NewChat: React.FC<{ navigation: any }> = ({ navigation }) => {
       onLayout={(event) => {
         if (Platform.OS === 'android') {
           const { height } = event.nativeEvent.layout;
-          resetRefreshTimer(height, refreshTimerMS);
+          //resetRefreshTimer(height, refreshTimerMS);
           setRefreshTimerMS(refreshTimerMS / 2);
         } else {
           setScreenLoading(false);

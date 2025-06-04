@@ -464,6 +464,7 @@ export const RenderInputToolbar = (
         {...props}
         containerStyle={{
           borderTopColor: 'transparent',
+          backgroundColor: 'red',
           //backgroundColor: palette.neutral[50],
           //backgroundColor: 'green',
           display: 'flex',
