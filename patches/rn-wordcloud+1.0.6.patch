@@ -1,5 +1,5 @@
 diff --git a/node_modules/rn-wordcloud/src/index.js b/node_modules/rn-wordcloud/src/index.js
-index f45ffd8..c77fb55 100644
+index f45ffd8..e53953d 100644
 --- a/node_modules/rn-wordcloud/src/index.js
 +++ b/node_modules/rn-wordcloud/src/index.js
 @@ -1,5 +1,5 @@
@@ -37,7 +37,7 @@ index f45ffd8..c77fb55 100644
      const distance = Math.sqrt(
        (this.target.xOffset - x) * (this.target.xOffset - x) +
          (this.target.yOffset - y) * (this.target.yOffset - y)
-@@ -106,24 +111,27 @@ class WordCloud extends React.Component {
+@@ -106,24 +111,29 @@ class WordCloud extends React.Component {
  
      const distanceS = `${distance}_${this.distanceCounter++}`;
  
@@ -58,6 +58,7 @@ index f45ffd8..c77fb55 100644
        position: "absolute",
 -      left,
 -      top,
++      //backgroundColor : 'red',
 +      left: left + offset,   // 왼쪽으로 gap/2만큼 밀기
 +      top: top + offset,     // 위쪽으로 gap/2만큼 밀기
        transform: [{ rotate: transform ? "270deg" : "0deg" }],
@@ -65,12 +66,13 @@ index f45ffd8..c77fb55 100644
      const textStyle = {
        fontSize: word.font,
        lineHeight: word.font,
++      padding : 10,
 +      // 예시라서 배경을 빨간으로 해두었습니다. 실제로는 원하시는 스타일로 조정하세요.
 +      backgroundColor: "transparent",
      };
      if (word.color && word.color !== null && word.color !== "") {
        textStyle.color = word.color;
-@@ -159,98 +167,161 @@ class WordCloud extends React.Component {
+@@ -159,98 +169,161 @@ class WordCloud extends React.Component {
    }
  
    _placeFirstWord(word) {
@@ -280,7 +282,7 @@ index f45ffd8..c77fb55 100644
          let xMulS = 1;
          let yMulS = 1;
  
-@@ -283,147 +354,118 @@ class WordCloud extends React.Component {
+@@ -283,147 +356,118 @@ class WordCloud extends React.Component {
              break;
          }
  
@@ -491,7 +493,7 @@ index f45ffd8..c77fb55 100644
              }
              break;
  
-@@ -431,6 +473,7 @@ class WordCloud extends React.Component {
+@@ -431,6 +475,7 @@ class WordCloud extends React.Component {
              break;
          }
  
