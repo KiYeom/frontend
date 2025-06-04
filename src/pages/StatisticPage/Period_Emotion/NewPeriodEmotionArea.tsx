@@ -124,30 +124,6 @@ const NewPeriodEmotionArea: React.FC<PeriodEmotionAreaProps> = ({ periodEmotionL
         ) : (
           <Empty type="채팅기록" />
         )}
-
-        {/* 범례 */}
-        <LegendWrapper>
-          {/* 분노 */}
-          <LegendItem>
-            <LegendColorDot color={EMOTION_COLORS.anger} />
-            <LegendLabel>분노</LegendLabel>
-          </LegendItem>
-          {/* 슬픔 */}
-          <LegendItem>
-            <LegendColorDot color={EMOTION_COLORS.sadness} />
-            <LegendLabel>슬픔</LegendLabel>
-          </LegendItem>
-          {/* 평온 */}
-          <LegendItem>
-            <LegendColorDot color={EMOTION_COLORS.calm} />
-            <LegendLabel>평온</LegendLabel>
-          </LegendItem>
-          {/* 행복 */}
-          <LegendItem>
-            <LegendColorDot color={EMOTION_COLORS.happiness} />
-            <LegendLabel>행복</LegendLabel>
-          </LegendItem>
-        </LegendWrapper>
       </Container>
     </View>
   );
