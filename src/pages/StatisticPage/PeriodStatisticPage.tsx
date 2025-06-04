@@ -191,7 +191,7 @@ const PeriodStatisticPage: React.FC<any> = ({ navigation }) => {
                   setHintStatus(hint);
                 }}
               />
-              <PeriodKeywordArea
+              <NewPeriodKeywordArea
                 periodKeywordList={periodKeywordList}
                 hintStatus={hintStatus}
                 setHintStatus={(hint: 'period-keyword' | undefined) => {
