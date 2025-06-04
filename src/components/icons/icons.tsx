@@ -47,6 +47,7 @@ import CloverCookie from './svg/clover-cookie';
 import Fire from './svg/fire';
 import TwinkleCookie from './svg/twinkle-cookie';
 import Dislike from './svg/dislike';
+import EmojiIcon from './svg/emoji';
 
 export type TIconName =
   | 'airplane'
@@ -99,7 +100,8 @@ export type TIconName =
   | 'clover-cookie'
   | 'fire'
   | 'twinkle-cookie'
-  | 'dislike';
+  | 'dislike'
+  | 'emojiIcon';
 
 export default function Icon({
   width,
@@ -233,5 +235,7 @@ export default function Icon({
       return <TwinkleCookie width={width} height={height} color={color} />;
     case 'dislike':
       return <Dislike width={width} height={height} color={color} />;
+    case 'emojiIcon':
+      return <EmojiIcon width={width} height={height} color={color} />;
   }
 }
