@@ -4,7 +4,6 @@ import {
   Platform,
   View,
   ActivityIndicator,
-  Text, // Text는 현재 사용되지 않으므로 제거 고려
   Keyboard,
   Animated,
   ImageSourcePropType,
@@ -26,12 +25,11 @@ import {
 } from '../../../utils/storageUtils';
 import Analytics from '../../../utils/analytics';
 import { rsFont, rsWidth } from '../../../utils/responsive-size';
-import { updateSendPhotoPermission, searchChatWord } from '../../../apis/chatting';
-import * as ImagePicker from 'expo-image-picker';
+import { searchChatWord } from '../../../apis/chatting';
 import * as Clipboard from 'expo-clipboard';
 import Toast from 'react-native-root-toast';
 
-// 기존 chat-render 파일에서 필요한 것만 임포트
+// 기존 chat-render 파일에서 필요한 것만 임포트 (RenderInputToolbar의 prop 변경에 따라 수정 필요)
 import {
   RenderAvatar,
   RenderBubble,
@@ -45,32 +43,16 @@ import {
 import { css } from '@emotion/native';
 import { useRiskStoreVer2 } from '../../../store/useRiskStoreVer2';
 import ChatHeader from '../../../components/chatHeader/chatHeader';
-import { ExtendedIMessage } from '../../../utils/chatting';
+import { ExtendedIMessage } from '../../../utils/chatting'; // IMessage 확장 타입
 import AdsModal from '../../../components/modals/ads-modal';
-import {
-  RewardedAd,
-  AdEventType,
-  RewardedAdEventType,
-  TestIds,
-} from 'react-native-google-mobile-ads';
-import Constants from 'expo-constants';
+import { TestIds } from 'react-native-google-mobile-ads'; // TestIds는 광고 로직에서만 사용될 것
 import { getUserInfo } from '../../../apis/setting';
 
-// 새로 만든 useChatMessages 훅 임포트
+// 새로 만든 훅 임포트
 import { useChatMessages } from '../../../hooks/useChatMessages';
+import { useImageAndAdManagement } from '../../../hooks/useImageAndAdManagement';
 
-// 광고 ID 관련 설정 (기존과 동일하게 유지)
-const userName = getUserNickname() ?? 'Test_remind_empty';
-const appVariant = Constants.expoConfig?.extra?.appVariant;
-const isProductionOrStaging = appVariant === 'production' || appVariant === 'staging';
-const isTestUser = userName === 'Test_remind';
-const adUnitId =
-  isProductionOrStaging && !isTestUser
-    ? Platform.OS === 'android'
-      ? process.env.EXPO_PUBLIC_CHATTING_REWARD_AD_UNIT_ID_ANDROID
-      : process.env.EXPO_PUBLIC_CHATTING_REWARD_AD_UNIT_ID_IOS
-    : TestIds.REWARDED;
-
+// adsImage만 NewChat.tsx에 남겨둠 (Modal 컴포넌트 prop으로 전달)
 const adsImage: ImageSourcePropType = require('../../../assets/images/ads_cookie.png');
 
 // NewChat 컴포넌트 시작
@@ -85,18 +67,41 @@ const NewChat: React.FC<{ navigation: any }> = ({ navigation }) => {
   // useChatMessages 훅에서 필요한 상태와 함수들을 가져옵니다.
   const {
     messages,
-    setMessages, // 검색 하이라이트를 위해 필요한 setMessages
+    setMessages, // 검색 하이라이트를 위해 필요
     sending,
-    buffer,
-    image,
-    setBuffer,
-    setImage,
+    buffer, // useImageAndAdManagement 훅으로 전달할 현재 버퍼 상태
+    image, // useImageAndAdManagement 훅으로 전달할 현재 이미지 상태
+    setBuffer, // useImageAndAdManagement 훅에서 호출될 setBuffer 함수
+    setImage, // useImageAndAdManagement 훅에서 호출될 setImage 함수
     onSend,
     loadInitialMessages,
     toggleFavorite,
   } = useChatMessages({
     informalMode: informalModeRef.current,
-    onShowAdsModal: () => setModalVisible(true), // 광고 모달을 띄우는 함수 전달
+    // onShowAdsModal은 useImageAndAdManagement 훅에서 제공하는 `modalVisible` 상태를 설정하는 함수를 직접 전달해야 함.
+    // 여기서는 useImageAndAdManagement 훅의 `setModalVisible`을 직접 호출합니다.
+    onShowAdsModal: () => {
+      /* useImageAndAdManagement 훅에서 자체적으로 처리 */
+    }, // 더 이상 필요 없음
+  });
+
+  // useImageAndAdManagement 훅에서 필요한 상태와 함수들을 가져옵니다.
+  const {
+    imageForPreview, // 이 훅에서 관리하는 이미지 미리보기 상태 (NewChat.tsx의 UI에 표시)
+    modalVisible, // 광고 모달 가시성 (NewChat.tsx의 AdsModal에 전달)
+    loadedAd, // 광고 로드 완료 여부
+    loadingAd, // 광고 로드 중 여부
+    showImageSourceSelection, // 이미지 원본 선택 함수 (앨범/카메라)
+    handleModalClose, // 모달 닫기 핸들러 (AdsModal에 전달)
+    watchAds, // 광고 시청 함수 (AdsModal에 전달)
+    clearImageForPreview, // 이미지 미리보기 상태 지우는 함수
+    showAdsModal,
+    adUnitId, // 광고 ID (AdsModal의 `modalContent` prop에서 사용)
+  } = useImageAndAdManagement({
+    setChatImage: setImage, // useChatMessages 훅의 setImage 함수를 전달 (광고 시청 후 메시지 전송 트리거용)
+    setChatBuffer: setBuffer, // useChatMessages 훅의 setBuffer 함수를 전달 (광고 시청 후 메시지 전송 트리거용)
+    currentChatImage: image, // useChatMessages 훅의 현재 이미지 상태 전달 (전송용 이미지)
+    currentChatBuffer: buffer, // useChatMessages 훅의 현재 버퍼 상태 전달 (전송용 버퍼)
   });
 
   const refreshTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -110,54 +115,8 @@ const NewChat: React.FC<{ navigation: any }> = ({ navigation }) => {
   const [enableDown, setEnableDown] = useState<boolean>(false);
   const [searchLoading, setSearchLoading] = useState<boolean>(false);
 
-  // 광고 모달 상태
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const handleModalClose = useCallback((type: 'cancel' | 'submit') => {
-    if (type === 'cancel') {
-      Analytics.clickNoWatchAdsButtonInChatting();
-    } else if (type === 'submit') {
-      Analytics.clickWatchAdsButtonInChatting();
-    }
-    setModalVisible(false);
-  }, []);
-
   // TextInput을 가리키는 ref
   const textInputRef = useRef<TextInput>(null);
-
-  // 사진 첨부 로직 (다음 단계에서 useImagePicker 훅으로 분리 예정)
-  const pickImage = useCallback(async () => {
-    if (image) {
-      // image는 useChatMessages 훅에서 가져온 상태 변수
-      Toast.show('이미지는 한 장만 보낼 수 있어요', { duration: Toast.durations.SHORT });
-      Analytics.clickIamgePreviewAddButton();
-      return;
-    }
-    try {
-      const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
-      if (status !== 'granted') {
-        const { status: newStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (newStatus !== 'granted') {
-          Toast.show('사진 접근 권한이 필요합니다', { duration: Toast.durations.LONG });
-          return;
-        }
-      }
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: false,
-        quality: 1,
-      });
-      if (!result.canceled) {
-        setImage(result.assets[0].uri); // setImage는 useChatMessages 훅에서 가져온 함수
-        Analytics.clickImagePickerConfirmButton();
-      } else {
-        Analytics.clickImagePickerCancelButton();
-      }
-    } catch (error: any) {
-      console.error('이미지 선택 중 오류 발생:', error);
-      Toast.show('이미지 선택 중 오류가 발생했습니다', { duration: Toast.durations.SHORT });
-      Analytics.clickImagePickerErrorButton(error.message, error.code);
-    }
-  }, [image, setImage]);
 
   // 입력 필드 높이 (InputToolbar에서 사용)
   const [inputHeight, setInputHeight] = useState(rsFont * 16 * 1.5 + 15 * 2);
@@ -180,199 +139,6 @@ const NewChat: React.FC<{ navigation: any }> = ({ navigation }) => {
   const onKeyboardDidHide = useCallback(() => {
     setKeyboardHeight(0);
   }, []);
-
-  // Google Mobile Ads 관련 로직 (다음 단계에서 useRewardedAd 훅으로 분리 예정)
-  const rewarded = useMemo(
-    () =>
-      RewardedAd.createForAdRequest(adUnitId, {
-        keywords: ['fashion', 'clothing'],
-      }),
-    [],
-  );
-
-  const [loaded, setLoaded] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<any>(null);
-
-  const loadAd = useCallback(() => {
-    if (loading || loaded) {
-      return;
-    }
-    setLoading(true);
-    setError(null);
-    try {
-      rewarded.load();
-    } catch (err: any) {
-      console.error('광고 로드 호출 실패:', err);
-      setLoading(false);
-      setError(err);
-    }
-  }, [loading, loaded, rewarded]);
-
-  useEffect(() => {
-    let mounted = true;
-
-    const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
-      if (mounted) {
-        setLoaded(true);
-        setLoading(false);
-        setError(null);
-      }
-    });
-
-    const unsubscribeFailedToLoad = rewarded.addAdEventListener(AdEventType.ERROR, (err) => {
-      if (mounted) {
-        console.error('❌ 광고 로드 실패:', err);
-        setLoaded(false);
-        setLoading(false);
-        setError(err);
-        Analytics.watchNoEarnRewardScreenInChatting({
-          errorCode: err.code,
-          errorMessage: err.message,
-          errorDomain: err.domain,
-          adUnitId: adUnitId,
-          isTestMode: adUnitId === TestIds.REWARDED,
-        });
-        setTimeout(() => {
-          if (mounted) {
-            loadAd();
-          }
-        }, 5000);
-      }
-    });
-
-    const unsubscribeEarned = rewarded.addAdEventListener(
-      RewardedAdEventType.EARNED_REWARD,
-      async (reward) => {
-        if (mounted) {
-          Analytics.watchEarnRewardScreenInChatting();
-          try {
-            const res = await updateSendPhotoPermission(true);
-            if (res?.canSendPhoto) {
-              setModalVisible(false);
-              if (textInputRef.current) {
-                textInputRef.current.clear();
-              }
-              // 광고 시청 성공 후, setBuffer와 setImage를 null로 설정하여
-              // useChatMessages 훅 내부에서 메시지 전송 로직이 트리거되도록 유도
-              setBuffer(null);
-              setImage(null);
-            }
-          } catch (err: any) {
-            console.error('권한 업데이트 실패:', err);
-            Analytics.photoPermissionError(err);
-            Toast.show('오류가 발생했습니다. 다시 시도해주세요', {
-              duration: Toast.durations.SHORT,
-              position: Toast.positions.CENTER,
-            });
-          }
-          loadAd();
-          setModalVisible(false);
-        }
-      },
-    );
-
-    const unsubscribeClosed = rewarded.addAdEventListener(AdEventType.CLOSED, () => {
-      if (mounted) {
-        loadAd();
-      }
-    });
-
-    loadAd();
-    return () => {
-      mounted = false;
-      unsubscribeLoaded();
-      unsubscribeFailedToLoad();
-      unsubscribeEarned();
-      unsubscribeClosed();
-    };
-  }, [rewarded, loadAd, setBuffer, setImage]);
-
-  const watchAds = useCallback(async () => {
-    try {
-      if (!loaded) {
-        if (!loading) {
-          Toast.show('광고를 불러오는 중입니다...', { duration: Toast.durations.SHORT });
-          loadAd();
-        }
-        const loadSuccess = await new Promise<boolean>((resolve) => {
-          let attempts = 0;
-          const maxAttempts = 20;
-          const checkInterval = setInterval(() => {
-            attempts++;
-            if (loaded) {
-              clearInterval(checkInterval);
-              resolve(true);
-            } else if (attempts >= maxAttempts || error) {
-              clearInterval(checkInterval);
-              resolve(false);
-            }
-          }, 500);
-        });
-
-        if (!loadSuccess) {
-          Toast.show('광고를 불러올 수 없습니다. 잠시 후에 다시 시도해주세요😢', {
-            duration: Toast.durations.LONG,
-          });
-          Analytics.adLoadTimeoutInChatting();
-          return false;
-        }
-      }
-
-      return new Promise<boolean>((resolve) => {
-        let adClosed = false;
-        let rewardEarned = false;
-
-        const tempClosedListener = rewarded.addAdEventListener(AdEventType.CLOSED, () => {
-          adClosed = true;
-          if (!rewardEarned) {
-            Toast.show('광고를 끝까지 시청해야 보상을 받을 수 있습니다', {
-              duration: Toast.durations.LONG,
-            });
-            setLoaded(false);
-            loadAd();
-            resolve(false);
-          }
-          tempClosedListener();
-          tempEarnedListener();
-        });
-
-        const tempEarnedListener = rewarded.addAdEventListener(
-          RewardedAdEventType.EARNED_REWARD,
-          (reward) => {
-            rewardEarned = true;
-            setLoaded(false);
-            resolve(true);
-            tempClosedListener();
-            tempEarnedListener();
-          },
-        );
-
-        rewarded.show().catch((showError: any) => {
-          console.error('❌ 광고 표시 실패:', showError);
-          Analytics.clickWatchAdsErrorInChatting({
-            errorCode: showError.code || 'unknown',
-            errorMessage: showError.message || '광고 표시 실패',
-            stage: 'show',
-          });
-          setLoaded(false);
-          loadAd();
-          resolve(false);
-        });
-      });
-    } catch (err: any) {
-      console.error('❌ 광고 시청 오류:', err);
-      Toast.show('광고 표시 중 오류가 발생했습니다', { duration: Toast.durations.SHORT });
-      Analytics.clickWatchAdsErrorInChatting({
-        errorCode: err.code || 'unknown',
-        errorMessage: err.message || '알 수 없는 오류',
-        stage: 'show',
-      });
-      setLoaded(false);
-      loadAd();
-      return false;
-    }
-  }, [loaded, loading, error, rewarded, loadAd]);
 
   // Risk Store v2 사용
   const { riskStatusV2, setRiskScoreV2 } = useRiskStoreVer2();
@@ -560,8 +326,7 @@ const NewChat: React.FC<{ navigation: any }> = ({ navigation }) => {
   // navigation focus 시 risk score 업데이트 로직
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      // setRiskScoreV2가 함수라면 호출 형태가 되어야 함
-      // setRiskScoreV2(); // 이전에 어떤 로직을 수행했는지 확인 필요
+      // setRiskScoreV2가 함수라면 호출 형태가 되어야 함 (setRiskScoreV2())
       // 현재는 단순히 `setRiskScoreV2`를 참조하고 있으므로, 목적에 맞게 수정해야 합니다.
     });
     return () => {
@@ -676,11 +441,12 @@ const NewChat: React.FC<{ navigation: any }> = ({ navigation }) => {
             setEnableDown,
             handleSearch,
             searchWord,
-            pickImage, // NewChat.tsx에 남아있는 함수
+            showImageSourceSelection, // <-- 변경: pickImage 대신 showImageSourceSelection 호출
             setInputHeight,
-            image, // useChatMessages 훅의 image 상태 사용
-            setImage, // useChatMessages 훅의 setImage 함수 사용
+            imageForPreview, // <-- 변경: image 대신 imageForPreview 사용 (미리보기용)
+            clearImageForPreview, // <-- 추가: 이미지 미리보기 지우는 함수 전달
             textInputRef,
+            showAdsModal,
           )
         }
         lightboxProps={undefined}
@@ -719,24 +485,28 @@ const NewChat: React.FC<{ navigation: any }> = ({ navigation }) => {
         `}
         pointerEvents="box-none"></Animated.View>
       <AdsModal
-        modalVisible={modalVisible}
-        onClose={handleModalClose}
+        modalVisible={modalVisible} // useImageAndAdManagement 훅의 modalVisible 사용
+        onClose={handleModalClose} // useImageAndAdManagement 훅의 handleModalClose 사용
         onSubmit={async () => {
-          Analytics.clickWatchAdsButtonInChatting();
-          const adSuccess = await watchAds();
+          console.log('광고 시청하기 클릭');
+          Analytics.clickWatchAdsButtonInChatting(); // `handleModalClose`의 `onSubmit` 타입에서 이미 처리
+          const adSuccess = await watchAds(); // useImageAndAdManagement 훅의 watchAds 사용
           if (!adSuccess) {
+            console.log('광고 시청 실패');
             return;
           }
-          // 광고 시청 성공 후, setBuffer와 setImage를 null로 설정하여
-          // useChatMessages 훅 내부에서 메시지 전송 로직이 트리거되도록 유도
-          setBuffer(null);
-          setImage(null);
+          console.log('광고 시청 성공??', adSuccess);
+          // 광고 시청 성공 후, useImageAndAdManagement 훅 내부에서 setChatBuffer/setChatImage가 호출됩니다.
+          // 여기서는 textInputRef.current.clear()만 직접 실행합니다.
+          if (textInputRef.current) {
+            textInputRef.current.clear();
+          }
         }}
         imageSource={adsImage}
         modalContent={
-          TestIds.REWARDED === adUnitId
-            ? `광고를 시청하면\n쿠키에게 사진을 보여줄 수 있어요 :)`
-            : `광고를 시청하면\n쿠키에게 사진을 보여줄 수 있어요`
+          TestIds.REWARDED === adUnitId // adUnitId는 이제 useImageAndAdManagement 훅에서 가져온 것을 사용
+            ? `광고를 시청하면\n쿠키에게 사진을 보여줄 수 있어요 :), ${adUnitId === TestIds.REWARDED ? '테스트용' : '찐'}`
+            : `광고를 시청하면\n쿠키에게 사진을 보여줄 수 있어요  ${adUnitId}`
         }
       />
     </SafeAreaView>

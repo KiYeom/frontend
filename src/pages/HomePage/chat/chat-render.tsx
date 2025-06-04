@@ -446,11 +446,12 @@ export const RenderInputToolbar = (
   setEnableDown?: React.Dispatch<React.SetStateAction<boolean>>,
   handleSearch?: (text: string, direction: null | 'up' | 'down') => Promise<string | null>,
   searchWord?: string,
-  pickImage?: () => void,
+  showImageSourceSelection?: () => void,
   setInputHeight: (value: number) => void,
   image?: string | null,
   setImage?: (value: string | null) => void,
   textInputRef?: RefObject<TextInput>,
+  showAdsModal?: (visible: boolean) => void,
 ) =>
   !isSearchMode ? (
     <View>
@@ -479,7 +480,7 @@ export const RenderInputToolbar = (
             onPress={() => {
               console.log('액션 버튼 클릭됨');
               Analytics.clickAddPicButtonInChatting();
-              pickImage();
+              showImageSourceSelection();
             }}
             style={{
               justifyContent: 'center',
@@ -537,46 +538,18 @@ export const RenderInputToolbar = (
               }}
               onPress={async () => {
                 if (sendingStatus) return;
-                const imageUrl = image;
 
-                // 텍스트와 이미지 모두 있을 때: 두 개의 메시지 전송
-                if (sendProps.text && image && image.length > 0) {
-                  sendProps.onSend(
-                    [
-                      {
-                        ...sendProps.currentMessage,
-                        text: sendProps.text,
-                        // 필요한 경우 고유 ID와 생성 시각 추가
-                        // _id: uuid(),
-                        // createdAt: new Date(),
-                      },
-                      {
-                        ...sendProps.currentMessage,
-                        image: imageUrl,
-                        text: ' ', // 텍스트 말풍선에 영향이 없도록 공백 문자 사용
-                      },
-                    ],
-                    true,
-                  );
-                  return;
-                }
+                console.log('보내기 버튼 클릭됨', image);
 
-                // 이미지만 있는 경우: 이미지 메시지 하나 전송
+                // 이미지가 있는 경우: 광고 모달을 표시
                 if (image && image.length > 0) {
-                  sendProps.onSend(
-                    [
-                      {
-                        ...sendProps.currentMessage,
-                        image: imageUrl,
-                        text: ' ', // 텍스트 말풍선이 생성되지 않도록 처리
-                      },
-                    ],
-                    true,
-                  );
-                  return;
+                  if (showAdsModal) {
+                    showAdsModal(); // 광고 모달 표시
+                    return; // 실제 전송은 광고 시청 후 useImageAndAdManagement 훅에서 처리
+                  }
                 }
 
-                // 텍스트만 있는 경우: 텍스트 메시지 하나 전송
+                // 텍스트만 있는 경우: 바로 전송
                 if (sendProps.text && sendProps.text.length > 0) {
                   sendProps.onSend(
                     [
