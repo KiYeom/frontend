@@ -23,31 +23,35 @@ const NewPeriodKeywordArea: React.FC<any> = (props: any) => {
       return [];
     }
 
-    // 색상 팔레트
-    const colors = [
-      palette.primary?.[500] || '#3B82F6',
-      palette.secondary?.[500] || '#8B5CF6',
-      '#EF4444',
-      '#10B981',
-      '#F59E0B',
-      '#EC4899',
-      '#6366F1',
-      '#14B8A6',
-      '#F97316',
-      '#84CC16',
+    // 순위별 색상과 폰트 크기 설정
+    const rankingSettings = [
+      { color: '#6F9AE9', fontSize: 30 }, // 1순위
+      { color: '#58C3A5', fontSize: 26 }, // 2순위
+      { color: '#9C7AB9', fontSize: 22 }, // 3순위
+      { color: '#003856', fontSize: 18 }, // 4순위
+      { color: '#EB6548', fontSize: 14 }, // 5순위
+      { color: '#70AABD', fontSize: 12 }, // 6순위
+      { color: '#4D766E', fontSize: 12 }, // 7순위
+      { color: '#84869B', fontSize: 12 }, // 8순위
+      { color: '#E6798F', fontSize: 12 }, // 9순위
+      { color: '#FCB31E', fontSize: 12 }, // 10순위
     ];
 
     return periodKeywordList.map((keyword, index) => {
-      // 랭킹에 따른 가중치 (상위일수록 높은 값)
-      const ranking = index + 1;
-      const maxValue = 10;
-      const minValue = 3;
-      const value = Math.max(minValue, maxValue - (ranking - 1) * 0.5);
+      // 순위 (0-based index를 1-based로 변환)
+      const ranking = index;
+
+      // 순위에 따른 설정 가져오기 (10순위를 넘어가면 마지막 설정 사용)
+      const setting = rankingSettings[ranking] || rankingSettings[rankingSettings.length - 1];
+
+      // WordCloud에서 사용할 value는 폰트 크기를 기준으로 설정
+      // rsFont 적용을 위해 fontSize를 그대로 사용
+      const value = setting.fontSize;
 
       return {
         text: keyword,
-        value: Math.round(value),
-        color: colors[index % colors.length],
+        value: value,
+        color: setting.color,
       };
     });
   }, [periodKeywordList]);
@@ -92,8 +96,8 @@ const NewPeriodKeywordArea: React.FC<any> = (props: any) => {
             options={{
               words: wordCloudData,
               verticalEnabled: false,
-              minFont: 12 * rsFont,
-              maxFont: 24 * rsFont,
+              minFont: 12 * rsFont, // 최소 폰트는 12px로 유지
+              maxFont: 30 * rsFont, // 최대 폰트는 30px로 설정
               fontOffset: 8,
               width: containerWidth,
               height: 300 * rsHeight,
