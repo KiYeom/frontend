@@ -87,6 +87,7 @@ export enum SettingStackName {
   LicenseDetailPage = 'LicenseDetailPage',
   OrganizationConnect = 'OrganizationConnect',
   OrganizationStatus = 'OrganizationStatus',
+  InAppTest = 'InAppTest',
 }
 
 export enum DangerStackName {
