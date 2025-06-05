@@ -8,6 +8,9 @@
       "distribution": "internal",
       "channel": "development",
       "autoIncrement": true,
+      "android": {
+        "buildType": "apk"
+      },
       "env": {
         "APP_ENV": "development",
         "APP_VARIANT": "development",
