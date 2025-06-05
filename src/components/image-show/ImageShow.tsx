@@ -2,6 +2,7 @@ import { Image } from 'react-native';
 import { ImageShowContainer } from './ImageShow.styles';
 import { useEffect, useState } from 'react';
 import AttachmentPreview from '../image-container/AttachmentPreview';
+import Analytics from '../../utils/analytics';
 
 type ImageShowProps = {
   image?: string | null;
@@ -38,6 +39,7 @@ const ImageShow = ({ image, setImage }: ImageShowProps) => {
           image={image}
           onDelete={(image) => {
             //console.log('삭제 버튼 클릭');
+            Analytics.clickImagePreviewCancelButton();
             if (setImage) {
               setImage(null);
             }
