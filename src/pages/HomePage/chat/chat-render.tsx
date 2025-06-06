@@ -44,7 +44,7 @@ import ImageShow from '../../../components/image-show/ImageShow';
 import { MAX_CHAT_IMAGE_WIDTH } from '../../../constants/Constants';
 import * as Haptics from 'expo-haptics';
 import EmojiPanel from '../../../components/emoji-panel/EmojiPanel';
-
+import { useSelectedEmoji } from '../../../hooks/useSelectedEmoji';
 export const reportMessages = async (messageId: string, isSaved: boolean): string | undefined => {
   //console.log('reportMessags 실행', messageId);
   if (messageId === null) return;
@@ -462,13 +462,20 @@ export const RenderInputToolbar = (
   opacity?: Animated.SharedValue<number>,
   handleEmojiToggle?: () => void,
   hideEmoijiPanel?: () => void,
-  onEmojiSelect?: (emoji: string) => void,
+  //onEmojiSelect?: (emoji: string) => void,
+  selectedEmoji?: string | null,
+  onSelectEmoji?: (emoji: string) => void,
 ) =>
   !isSearchMode ? (
     <View>
       {image && (
         <View>
           <ImageShow image={image} setImage={setImage} />
+        </View>
+      )}
+      {selectedEmoji && (
+        <View>
+          <ImageShow image={selectedEmoji} setImage={onSelectEmoji} />
         </View>
       )}
       <InputToolbar
@@ -581,15 +588,6 @@ export const RenderInputToolbar = (
           </Send>
         )}
       />
-      {/*isEmojiPanelVisible && (
-        <EmojiPanel
-          isVisible={isEmojiPanelVisible}
-          height={emojiPanelHeight}
-          translateY={translateY}
-          opacity={opacity}
-          onEmojiSelect={onEmojiSelect}
-        />
-      )*/}
     </View>
   ) : (
     <>

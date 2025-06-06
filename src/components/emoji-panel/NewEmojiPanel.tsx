@@ -10,13 +10,20 @@ import {
 } from 'react-native';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import palette from '../../assets/styles/theme';
+import { useSelectedEmoji } from '../../hooks/useSelectedEmoji';
 
 type NewEmojiPanelProps = {
   height: number;
+  // 부모 컴포넌트가 관리하는 '현재 선택된 이모지' 객체
+  //selectedEmoji?: EmojiData | null;
+  // 이모지 클릭 시 호출될 콜백 (부모에서 상태를 갱신하도록)
+  //onEmojiSelect?: (emoji: EmojiData) => void;
+  selectedEmoji?: EmojiData | null;
+  onSelectEmoji?: (emoji: EmojiData) => void;
 };
 
 // 이모지 데이터 타입 정의
-type EmojiData = {
+export type EmojiData = {
   source: ImageSourcePropType;
   name: string;
 };
@@ -25,51 +32,51 @@ type EmojiData = {
 const emojiData: EmojiData[] = [
   {
     source: require('../../assets/images/emoji/ver1_item1_goodmorning.png'),
-    name: 'ver1 goodmorning',
+    name: 'goodmorning',
   },
   {
     source: require('../../assets/images/emoji/ver1_item2_goodnight.png'),
-    name: 'ver1 goodnight',
+    name: 'goodnight',
   },
   {
     source: require('../../assets/images/emoji/ver1_item3_gratitude.png'),
-    name: 'ver1 gratitude',
+    name: 'gratitude',
   },
   {
     source: require('../../assets/images/emoji/ver1_item4_love.png'),
-    name: 'ver1 love',
+    name: 'love',
   },
   {
     source: require('../../assets/images/emoji/ver1_item5_hungry.png'),
-    name: 'ver1 hungry',
+    name: 'hungry',
   },
   {
     source: require('../../assets/images/emoji/ver1_item6_sleepy.png'),
-    name: 'ver1 sleepy',
+    name: 'sleepy',
   },
   {
     source: require('../../assets/images/emoji/ver1_item7_congratulation.png'),
-    name: 'ver1 congratulation',
+    name: 'congratulation',
   },
   {
     source: require('../../assets/images/emoji/ver1_item8_fighting.png'),
-    name: 'ver1 fighting',
+    name: 'fighting',
   },
   {
     source: require('../../assets/images/emoji/ver1_item9_play.png'),
-    name: 'ver1 play',
+    name: 'play',
   },
   {
     source: require('../../assets/images/emoji/ver1_item10_secret.png'),
-    name: 'ver1 secret',
+    name: 'secret',
   },
   {
     source: require('../../assets/images/emoji/ver1_item11_wondering.png'),
-    name: 'ver1 wondering',
+    name: 'wondering',
   },
   {
     source: require('../../assets/images/emoji/ver1_item12_dugundugun.png'),
-    name: 'ver1 dugundugun',
+    name: 'dugundugun',
   },
   {
     source: require('../../assets/images/emoji/ver1_item13_upset.png'),
@@ -121,9 +128,9 @@ const emojiData: EmojiData[] = [
   },
 ];
 
-const { width: screenWidth } = Dimensions.get('window');
+const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({ height, selectedEmoji, onSelectEmoji }) => {
+  //const { selectedEmoji, onSelectEmoji } = useSelectedEmoji();
 
-const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({ height }) => {
   const COLUMNS = 4;
   const ROWS = 6;
   const TOTAL_ITEMS = COLUMNS * ROWS; // 24개
@@ -135,12 +142,10 @@ const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({ height }) => {
   const SCROLLVIEW_HORIZONTAL_PADDING = rsWidth * 10; //스크롤뷰 좌우 패딩값
   const ITEM_GAP = {
     //아이템간 가로 세로 간격 설정
-    horizontal: rsWidth * 10, // 예시로 rsWidth * 0.05 정도로 설정
-    vertical: rsHeight * 10, // 예시로 rsHeight * 0.02 정도로 설정
+    horizontal: rsWidth * 10,
+    vertical: rsHeight * 10,
   };
-  const CONTAINERVERTICALPADDING = rsHeight * 20;
   const SCROLLVIEW_VERTICAL_PADDING = rsHeight * 20;
-  const ITEM_GAP_VERTICAL = rsHeight * 0.02; // 예시로 rsHeight * 0.02 정도로 설정
 
   // 이모지 데이터 배열을 4개씩 잘라서 6개의 행으로 묶어주는 유틸 함수
   const groupItemsByRows = (arr: EmojiData[], columns: number) => {
@@ -168,6 +173,8 @@ const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({ height }) => {
       activeOpacity={1} // 터치 시 투명도 변경 방지
       onPress={() => {
         console.log(`'${emojiItem.name}' 아이콘 클릭됨`);
+        console.log(`'${emojiItem.source}' 아이콘 클릭됨`);
+        onSelectEmoji(emojiItem.source);
       }}>
       <Image
         source={emojiItem.source}

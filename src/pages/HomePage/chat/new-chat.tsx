@@ -54,7 +54,7 @@ import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
 
 import { useChatMessages } from '../../../hooks/useChatMessages';
 import { useImageAndAdManagement } from '../../../hooks/useImageAndAdManagement';
-
+import { useSelectedEmoji } from '../../../hooks/useSelectedEmoji';
 // adsImage만 NewChat.tsx에 남겨둠 (Modal 컴포넌트 prop으로 전달)
 const adsImage: ImageSourcePropType = require('../../../assets/images/ads_cookie.png');
 
@@ -131,6 +131,7 @@ const NewChat: React.FC<{ navigation: any }> = ({ navigation }) => {
   const [enableUp, setEnableUp] = useState<boolean>(false);
   const [enableDown, setEnableDown] = useState<boolean>(false);
   const [searchLoading, setSearchLoading] = useState<boolean>(false);
+  const { selectedEmoji, onSelectEmoji } = useSelectedEmoji();
 
   // TextInput을 가리키는 ref
   const textInputRef = useRef<TextInput>(null);
@@ -506,7 +507,8 @@ const NewChat: React.FC<{ navigation: any }> = ({ navigation }) => {
               opacity,
               handleEmojiToggle, // 이모티콘 패널 토글 함수
               hideEmojiPanel,
-              onEmojiSelect,
+              selectedEmoji,
+              onSelectEmoji,
             )
           }
           lightboxProps={undefined}
@@ -603,7 +605,11 @@ const NewChat: React.FC<{ navigation: any }> = ({ navigation }) => {
             `,
             emojiPanelAnimatedStyle,
           ]}>
-          <NewEmojiPanel height={emojiPanelHeight} />
+          <NewEmojiPanel
+            height={emojiPanelHeight}
+            selectedEmoji={selectedEmoji}
+            onSelectEmoji={onSelectEmoji}
+          />
         </Animated.View>
       )}
     </SafeAreaView>

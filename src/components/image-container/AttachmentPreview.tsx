@@ -14,7 +14,11 @@ interface Props {
 const AttachmentPreview: React.FC<Props> = ({ image, onDelete }) => {
   return (
     <Container>
-      <Image source={{ uri: image }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
+      <Image
+        source={typeof image === 'string' ? { uri: image } : image}
+        style={{ width: '100%', height: '100%' }}
+        resizeMode="contain"
+      />
       <DeleteButton
         hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
         onPress={() => {
