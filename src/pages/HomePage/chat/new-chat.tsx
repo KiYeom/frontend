@@ -30,6 +30,7 @@ import * as Clipboard from 'expo-clipboard';
 import Toast from 'react-native-root-toast';
 import { useEmojiPanel } from '../../../hooks/useEmojiPanel';
 import EmojiPanel from '../../../components/emoji-panel/EmojiPanel';
+import NewEmojiPanel from '../../../components/emoji-panel/NewEmojiPanel';
 // 기존 chat-render 파일에서 필요한 것만 임포트 (RenderInputToolbar의 prop 변경에 따라 수정 필요)
 import {
   RenderAvatar,
@@ -166,6 +167,12 @@ const NewChat: React.FC<{ navigation: any }> = ({ navigation }) => {
       },
     ],
     opacity: 1,
+  }));
+
+  //이모지 패널에 적용할 애니메이션 스타일
+  const emojiPanelAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value }],
+    opacity: opacity.value,
   }));
 
   const insets = useSafeAreaInsets();
@@ -578,6 +585,20 @@ const NewChat: React.FC<{ navigation: any }> = ({ navigation }) => {
           onEmojiSelect={onEmojiSelect}
         />
       )*/}
+      {isEmojiPanelVisible && (
+        <Animated.View
+          style={[
+            css`
+              position: absolute;
+              bottom: 0;
+              left: 0;
+              right: 0;
+            `,
+            emojiPanelAnimatedStyle,
+          ]}>
+          <NewEmojiPanel height={emojiPanelHeight} />
+        </Animated.View>
+      )}
     </SafeAreaView>
   );
 };
