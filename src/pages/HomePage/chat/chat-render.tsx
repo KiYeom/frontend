@@ -28,7 +28,7 @@ import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { ActivityIndicator, Alert, Image, TouchableOpacity, View, Text } from 'react-native';
 import Icon from '../../../components/icons/icons';
 import TypingIndicator from 'react-native-gifted-chat/src/TypingIndicator';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import Animated, { FadeInDown, useAnimatedStyle } from 'react-native-reanimated';
 import { getNewIMessages } from '../../../utils/storageUtils';
 import Input from '../../../components/input/input';
 import { transparent } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
@@ -43,6 +43,7 @@ import { useState, RefObject } from 'react';
 import ImageShow from '../../../components/image-show/ImageShow';
 import { MAX_CHAT_IMAGE_WIDTH } from '../../../constants/Constants';
 import * as Haptics from 'expo-haptics';
+import EmojiPanel from '../../../components/emoji-panel/EmojiPanel';
 
 export const reportMessages = async (messageId: string, isSaved: boolean): string | undefined => {
   //console.log('reportMessags 실행', messageId);
@@ -453,8 +454,15 @@ export const RenderInputToolbar = (
   textInputRef?: RefObject<TextInput>,
   showAdsModal?: (visible: boolean) => void,
   // 이모티콘 관련 props 추가
-  onEmojiPress?: () => void,
+  //onEmojiPress?: () => void,
+  //isEmojiPanelVisible?: boolean,
   isEmojiPanelVisible?: boolean,
+  emojiPanelHeight?: number,
+  translateY?: Animated.SharedValue<number>,
+  opacity?: Animated.SharedValue<number>,
+  handleEmojiToggle?: () => void,
+  hideEmoijiPanel?: () => void,
+  onEmojiSelect?: (emoji: string) => void,
 ) =>
   !isSearchMode ? (
     <View>
@@ -510,7 +518,8 @@ export const RenderInputToolbar = (
             onChangeText={composerProps.onTextChanged}
             setInputHeight={setInputHeight}
             textInputRef={textInputRef}
-            onEmojiPress={onEmojiPress} // 이모티콘 버튼 핸들러 전달
+            hideEmojiPanel={hideEmoijiPanel} // 이모티콘 패널 숨기기 함수 전달
+            onEmojiPress={handleEmojiToggle} // 이모티콘 버튼 핸들러 전달
             isEmojiPanelVisible={isEmojiPanelVisible} // 이모티콘 패널 상태 전달
           />
         )}
@@ -572,6 +581,15 @@ export const RenderInputToolbar = (
           </Send>
         )}
       />
+      {/*isEmojiPanelVisible && (
+        <EmojiPanel
+          isVisible={isEmojiPanelVisible}
+          height={emojiPanelHeight}
+          translateY={translateY}
+          opacity={opacity}
+          onEmojiSelect={onEmojiSelect}
+        />
+      )*/}
     </View>
   ) : (
     <>

@@ -12,6 +12,7 @@ type CustomMultiTextInputProps = {
   textInputRef?: React.RefObject<TextInput>;
   iconName?: string;
   iconPosition?: 'left' | 'right';
+  hideEmojiPanel?: () => void; // 이모티콘 패널 숨기기 함수
   onEmojiPress?: () => void; // 이모티콘 버튼 클릭 핸들러 추가
   isEmojiPanelVisible?: boolean; // 이모티콘 패널 표시 상태
 };
@@ -27,6 +28,7 @@ const CustomMultiTextInput = (props: CustomMultiTextInputProps) => {
     textInputRef,
     iconName,
     iconPosition = 'right',
+    hideEmojiPanel = () => {},
     onEmojiPress,
     isEmojiPanelVisible = false,
   } = props;
@@ -66,6 +68,16 @@ const CustomMultiTextInput = (props: CustomMultiTextInputProps) => {
         placeholder="메시지 입력"
         placeholderTextColor={palette.neutral[300]}
         onContentSizeChange={handleContentSizeChange}
+        onPressIn={() => {
+          console.log('TextInput Pressed');
+          if (isEmojiPanelVisible) {
+            console.log('이모티콘 열려있음');
+            hideEmojiPanel();
+            setTimeout(() => {
+              textInputRef?.current?.focus();
+            }, 500);
+          }
+        }}
       />
       <TouchableOpacity
         style={{

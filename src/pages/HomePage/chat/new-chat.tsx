@@ -5,7 +5,6 @@ import {
   View,
   ActivityIndicator,
   Keyboard,
-  Animated,
   ImageSourcePropType,
   TextInput,
   Text,
@@ -49,8 +48,9 @@ import { ExtendedIMessage } from '../../../utils/chatting'; // IMessage 확장 �
 import AdsModal from '../../../components/modals/ads-modal';
 import { TestIds } from 'react-native-google-mobile-ads'; // TestIds는 광고 로직에서만 사용될 것
 import { getUserInfo } from '../../../apis/setting';
-
+import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 // 새로 만든 훅 임포트
+
 import { useChatMessages } from '../../../hooks/useChatMessages';
 import { useImageAndAdManagement } from '../../../hooks/useImageAndAdManagement';
 
@@ -154,6 +154,19 @@ const NewChat: React.FC<{ navigation: any }> = ({ navigation }) => {
 
   // Risk Store v2 사용
   const { riskStatusV2, setRiskScoreV2 } = useRiskStoreVer2();
+
+  // 채팅 화면 전체에 적용할 애니메이션 스타일
+  const screenAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        translateY: withTiming(isEmojiPanelVisible ? -emojiPanelHeight : 0, {
+          duration: 300, // 300ms 동안 애니메이션
+          // easing: Easing.out(Easing.quad), // 필요시 easing 추가
+        }),
+      },
+    ],
+    opacity: 1,
+  }));
 
   const insets = useSafeAreaInsets();
 
@@ -350,6 +363,21 @@ const NewChat: React.FC<{ navigation: any }> = ({ navigation }) => {
 
   const messageContainerRef = useRef<React.ElementRef<typeof GiftedChat>>(null);
 
+  // GiftedChat의 renderInputToolbar에서 toggleEmojiPanel 대신 새로운 함수 사용
+  const handleEmojiToggle = useCallback(() => {
+    // 키보드가 열려 있으면 키보드를 닫고 이모티콘 패널을 연다
+    if (keyboardHeight > 0) {
+      Keyboard.dismiss();
+      // 키보드가 닫힌 후 이모티콘 패널을 연다
+      setTimeout(() => {
+        toggleEmojiPanel();
+      }, 500); // 약간의 딜레이를 주어 부드럽게 동작
+      return;
+    }
+    // 키보드가 닫혀 있으면 이모티콘 패널만 토글
+    toggleEmojiPanel();
+  }, [keyboardHeight, toggleEmojiPanel]);
+
   /* 채팅 화면 전체 구성 */
   return (
     <SafeAreaView style={{ flex: 1 }} edges={['bottom']}>
@@ -400,76 +428,88 @@ const NewChat: React.FC<{ navigation: any }> = ({ navigation }) => {
         updateMessageHighlights={updateMessageHighlights}
       />
 
-      <GiftedChat
-        wrapInSafeArea={false}
-        //bottomOffset={insets.bottom}
-        listViewProps={{
-          onScrollToIndexFailed: scrollToIndexFailed,
-          onMomentumScrollEnd: () => {
-            setSearchLoading(false);
-          },
-        }}
-        messageContainerRef={messageContainerRef}
-        messages={messages}
-        onSend={onSend} // useChatMessages 훅의 onSend 함수 사용
-        user={{ _id: 0, name: '나' }} // useChatMessages 훅의 userObject와 동일
-        onInputTextChanged={(text) => {
-          setBuffer(text); // useChatMessages 훅의 setBuffer 함수 사용
-        }}
-        renderAvatar={RenderAvatar}
-        showAvatarForEveryMessage
-        renderAvatarOnTop
-        onPressAvatar={() => {
-          navigation.navigate(HomeStackName.Profile);
-        }}
-        onLongPressAvatar={() => {
-          if (getIsDemo()) setIsScoreDemo(true);
-        }}
-        renderBubble={(props) => <RenderBubble {...props} onFavoritePress={toggleFavorite} />} // useChatMessages 훅의 toggleFavorite 함수 사용
-        onLongPress={(context, message: IMessage) => {
-          Clipboard.setStringAsync(message.text).then(() => {
-            showToast();
-          });
-        }}
-        renderFooter={() => RenderFooter(sending)} // useChatMessages 훅의 sending 상태 사용
-        renderTime={RenderTime}
-        renderDay={RenderDay}
-        renderSystemMessage={RenderSystemMessage}
-        renderInputToolbar={(sendProps: SendProps<ExtendedIMessage>) =>
-          RenderInputToolbar(
-            sendProps,
-            sending, // useChatMessages 훅의 sending 상태 사용
-            isSearchMode,
-            enableUp,
-            enableDown,
-            setEnableUp,
-            setEnableDown,
-            handleSearch,
-            searchWord,
-            showImageSourceSelection, // <-- 변경: pickImage 대신 showImageSourceSelection 호출
-            setInputHeight,
-            imageForPreview, // <-- 변경: image 대신 imageForPreview 사용 (미리보기용)
-            clearImageForPreview, // <-- 추가: 이미지 미리보기 지우는 함수 전달
-            textInputRef,
-            showAdsModal,
-            toggleEmojiPanel, // 이모티콘 버튼 클릭 핸들러
-            isEmojiPanelVisible, // 이모티콘 패널 표시 상태
-          )
-        }
-        lightboxProps={undefined}
-        textInputProps={{
-          placeholder: getIsDemo() ? '메시지 입력.' : '메시지 입력',
-          marginLeft: rsWidth * 15,
-        }}
-        keyboardShouldPersistTaps={'never'}
-        alwaysShowSend
-        onPressIn={() => {
-          if (isEmojiPanelVisible) {
-            console.log('이모티콘 패널이 열려있습니다. 닫습니다.');
-            hideEmojiPanel();
+      <Animated.View style={[screenAnimatedStyle, { flex: 1 }]}>
+        <GiftedChat
+          emojiPanelHeight={emojiPanelHeight}
+          isEmojiPanelVisible={isEmojiPanelVisible}
+          wrapInSafeArea={false}
+          //bottomOffset={insets.bottom}
+          listViewProps={{
+            onScrollToIndexFailed: scrollToIndexFailed,
+            onMomentumScrollEnd: () => {
+              setSearchLoading(false);
+            },
+          }}
+          messageContainerRef={messageContainerRef}
+          messages={messages}
+          onSend={onSend} // useChatMessages 훅의 onSend 함수 사용
+          user={{ _id: 0, name: '나' }} // useChatMessages 훅의 userObject와 동일
+          onInputTextChanged={(text) => {
+            setBuffer(text); // useChatMessages 훅의 setBuffer 함수 사용
+          }}
+          renderAvatar={RenderAvatar}
+          showAvatarForEveryMessage
+          renderAvatarOnTop
+          onPressAvatar={() => {
+            navigation.navigate(HomeStackName.Profile);
+          }}
+          onLongPressAvatar={() => {
+            if (getIsDemo()) setIsScoreDemo(true);
+          }}
+          renderBubble={(props) => <RenderBubble {...props} onFavoritePress={toggleFavorite} />} // useChatMessages 훅의 toggleFavorite 함수 사용
+          onLongPress={(context, message: IMessage) => {
+            Clipboard.setStringAsync(message.text).then(() => {
+              showToast();
+            });
+          }}
+          renderFooter={() => RenderFooter(sending)} // useChatMessages 훅의 sending 상태 사용
+          renderTime={RenderTime}
+          renderDay={RenderDay}
+          renderSystemMessage={RenderSystemMessage}
+          renderInputToolbar={(sendProps: SendProps<ExtendedIMessage>) =>
+            RenderInputToolbar(
+              sendProps,
+              sending, // useChatMessages 훅의 sending 상태 사용
+              isSearchMode,
+              enableUp,
+              enableDown,
+              setEnableUp,
+              setEnableDown,
+              handleSearch,
+              searchWord,
+              showImageSourceSelection, // <-- 변경: pickImage 대신 showImageSourceSelection 호출
+              setInputHeight,
+              imageForPreview, // <-- 변경: image 대신 imageForPreview 사용 (미리보기용)
+              clearImageForPreview, // <-- 추가: 이미지 미리보기 지우는 함수 전달
+              textInputRef,
+              showAdsModal,
+              //toggleEmojiPanel, // 이모티콘 버튼 클릭 핸들러
+              //isEmojiPanelVisible, // 이모티콘 패널 표시 상태
+              //추가
+              isEmojiPanelVisible,
+              emojiPanelHeight,
+              translateY,
+              opacity,
+              handleEmojiToggle, // 이모티콘 패널 토글 함수
+              hideEmojiPanel,
+              onEmojiSelect,
+            )
           }
-        }}
-      />
+          lightboxProps={undefined}
+          textInputProps={{
+            placeholder: getIsDemo() ? '메시지 입력.' : '메시지 입력',
+            marginLeft: rsWidth * 15,
+          }}
+          keyboardShouldPersistTaps={'never'}
+          alwaysShowSend
+          onPressIn={() => {
+            if (isEmojiPanelVisible) {
+              console.log('이모티콘 패널이 열려있습니다. 닫습니다.');
+              hideEmojiPanel();
+            }
+          }}
+        />
+      </Animated.View>
       {searchLoading && (
         <View
           style={css`
@@ -529,7 +569,7 @@ const NewChat: React.FC<{ navigation: any }> = ({ navigation }) => {
         opacity={opacity}
         onEmojiSelect={onEmojiSelect}
       />*/}
-      {isEmojiPanelVisible && (
+      {/*isEmojiPanelVisible && (
         <EmojiPanel
           isVisible={isEmojiPanelVisible}
           height={emojiPanelHeight}
@@ -537,7 +577,7 @@ const NewChat: React.FC<{ navigation: any }> = ({ navigation }) => {
           opacity={opacity}
           onEmojiSelect={onEmojiSelect}
         />
-      )}
+      )*/}
     </SafeAreaView>
   );
 };
