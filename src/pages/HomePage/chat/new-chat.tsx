@@ -391,7 +391,10 @@ const NewChat: React.FC<{ navigation: any }> = ({ navigation }) => {
 
   /* 채팅 화면 전체 구성 */
   return (
-    <SafeAreaView style={{ flex: 1 }} edges={['bottom']}>
+    <SafeAreaView
+      style={{ flex: 1 }}
+      //edges={['bottom']}
+    >
       {(screenLoading || init) && (
         <View
           style={css`
