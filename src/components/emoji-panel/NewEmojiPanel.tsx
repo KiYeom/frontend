@@ -7,10 +7,20 @@ import {
   Dimensions,
   ImageSourcePropType,
   Image,
+  Platform,
 } from 'react-native';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';
+import { useState, useEffect } from 'react';
 import palette from '../../assets/styles/theme';
 import { useSelectedEmoji } from '../../hooks/useSelectedEmoji';
+
+import {
+  initializeInApp,
+  getCurrentOffering,
+  updatePurchaseStatus,
+  purchasePackage,
+} from '../../services/inappService';
+import Purchases, { PurchasesOffering } from 'react-native-purchases';
 
 type NewEmojiPanelProps = {
   height: number;
@@ -130,6 +140,26 @@ const emojiData: EmojiData[] = [
 
 const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({ height, selectedEmoji, onSelectEmoji }) => {
   //const { selectedEmoji, onSelectEmoji } = useSelectedEmoji();
+  const [hasPurchased, setHasPurchased] = useState<boolean>(false);
+  const [currentOffering, setCurrentOffering] = useState<PurchasesOffering | null>(null);
+  useEffect(() => {
+    const setup = async () => {
+      await initializeInApp();
+      const offering = await getCurrentOffering();
+      setCurrentOffering(offering);
+      const purchased = await updatePurchaseStatus();
+      setHasPurchased(purchased);
+    };
+    setup().catch(console.log);
+  }, []);
+
+  const handlePurchase = async (pkg) => {
+    const success = await purchasePackage(pkg, hasPurchased);
+    if (success) {
+      const purchased = await updatePurchaseStatus();
+      setHasPurchased(purchased);
+    }
+  };
 
   const COLUMNS = 4;
   const ROWS = 6;
@@ -224,9 +254,13 @@ const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({ height, selectedEmoji, on
             fontWeight: 'bold',
             color: palette.neutral[900],
           }}>
-          하잉
+          {hasPurchased ? '이모지 샀음' : '이모지 안샀음'}
         </Text>
-        <Text style={{ fontSize: 13, color: 'blue' }}>구매하기</Text>
+        {currentOffering?.availablePackages?.length > 0 && (
+          <TouchableOpacity onPress={() => handlePurchase(currentOffering.availablePackages[0])}>
+            <Text style={{ color: 'blue' }}>구매하기</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* 스크롤 가능한 아이템 그리드 */}

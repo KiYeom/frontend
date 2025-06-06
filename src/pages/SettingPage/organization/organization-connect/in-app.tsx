@@ -10,17 +10,17 @@ import Purchases, {
 } from 'react-native-purchases'; // RevenueCat Purchases 모듈과 타입을 불러옵니다.
 
 // Apple과 Google 각각에 사용할 RevenueCat 공개 API 키를 설정합니다.
-const APIKeys = {
+/*const APIKeys = {
   apple: 'appl_fPMYhWqdXgEZtsFvoDpuZlklJSV', // iOS용 Public API Key
   google: 'your_revenuecat_google_api_key', // Android용 Public API Key
-};
+};*/
 
 const InAppTest: React.FC<{ navigation: any }> = ({ navigation }) => {
   const [hasPurchased, setHasPurchased] = useState<boolean>(false);
   const [currentOffering, setCurrentOffering] = useState<PurchasesOffering | null>(null);
 
   // 구매 상태 갱신 함수 (재사용 가능)
-  const updatePurchaseStatus = async () => {
+  /*const updatePurchaseStatus = async () => {
     try {
       const customerInfo = await Purchases.getCustomerInfo();
       const hasActive = Object.keys(customerInfo.entitlements.active).length > 0;
@@ -29,7 +29,7 @@ const InAppTest: React.FC<{ navigation: any }> = ({ navigation }) => {
       console.warn('고객 정보 조회 오류:', e);
       setHasPurchased(false);
     }
-  };
+  };*/
 
   useEffect(() => {
     const setup = async () => {
@@ -48,7 +48,7 @@ const InAppTest: React.FC<{ navigation: any }> = ({ navigation }) => {
     setup().catch(console.log);
   }, []);
 
-  const purchasePackage = async (pkg: PurchasesPackage) => {
+  /*const purchasePackage = async (pkg: PurchasesPackage) => {
     console.log('구매 시도:', pkg.product.identifier);
     if (hasPurchased) {
       Alert.alert('알림', '이미 구매한 상품입니다.');
@@ -66,7 +66,7 @@ const InAppTest: React.FC<{ navigation: any }> = ({ navigation }) => {
         Alert.alert('구매 실패', '오류가 발생했습니다. 다시 시도해주세요.');
       }
     }
-  };
+  };*/
 
   if (!currentOffering) {
     return (
