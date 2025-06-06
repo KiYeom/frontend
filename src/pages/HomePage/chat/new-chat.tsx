@@ -58,6 +58,10 @@ import { useImageAndAdManagement } from '../../../hooks/useImageAndAdManagement'
 // adsImage만 NewChat.tsx에 남겨둠 (Modal 컴포넌트 prop으로 전달)
 const adsImage: ImageSourcePropType = require('../../../assets/images/ads_cookie.png');
 
+const emojiPanelIcons: ImageSourcePropType[] = [
+  require('../../../assets/images/emoji/ver1_item1_goodmorning.png'),
+];
+
 // NewChat 컴포넌트 시작
 const NewChat: React.FC<{ navigation: any }> = ({ navigation }) => {
   const [init, setInit] = useState<boolean>(false);
