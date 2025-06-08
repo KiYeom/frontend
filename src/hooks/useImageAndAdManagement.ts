@@ -13,6 +13,7 @@ import { Platform, Alert } from 'react-native'; // Alert 임포트 추가
 import Analytics from '../utils/analytics';
 import { updateSendPhotoPermission } from '../apis/chatting';
 import { getUserNickname } from '../utils/storageUtils'; // getUserNickname 임포트 추가
+import { useChatMessages } from './useChatMessages';
 
 interface UseImageAndAdManagementProps {
   // useChatMessages 훅의 setImage와 setBuffer를 받아서 이미지 전송을 트리거합니다.
@@ -20,6 +21,7 @@ interface UseImageAndAdManagementProps {
   setChatBuffer: React.Dispatch<React.SetStateAction<string | null>>;
   currentChatImage: string | null; // 현재 ChatMessages 훅에 설정된 이미지 상태
   currentChatBuffer: string | null; // 현재 ChatMessages 훅에 설정된 버퍼 상태
+  sendMessageToServer?: () => void; // 메시지를 서버로 전송하는 함수 (선택적)
 }
 
 interface UseImageAndAdManagementResult {
@@ -54,6 +56,7 @@ export const useImageAndAdManagement = ({
   setChatBuffer,
   currentChatImage,
   currentChatBuffer,
+  sendMessageToServer = () => {}, // 기본값으로 빈 함수 설정
 }: UseImageAndAdManagementProps): UseImageAndAdManagementResult => {
   // 이 훅 내부에서 관리하는 이미지 상태 (UI 미리보기 및 선택된 이미지 URI 저장용)
   const [imageForPreview, setImageForPreview] = useState<string | null>(null);
@@ -141,6 +144,7 @@ export const useImageAndAdManagement = ({
               // 이 훅 내부의 imageForPreview에 저장된 이미지를 useChatMessages 훅으로 전달
               setChatImage(imageForPreview);
               setChatBuffer(currentChatBuffer); // 기존 버퍼 텍스트 유지
+              await sendMessageToServer();
               setImageForPreview(null); // 미리보기 이미지 초기화 (전송 완료 후)
             }
           } catch (error: any) {

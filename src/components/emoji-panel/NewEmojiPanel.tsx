@@ -36,6 +36,7 @@ type NewEmojiPanelProps = {
 export type EmojiData = {
   source: ImageSourcePropType;
   name: string;
+  path?: string;
 };
 
 // 실제 이미지 소스 배열과 이름 매핑 (24개)
@@ -43,98 +44,122 @@ const emojiData: EmojiData[] = [
   {
     source: require('../../assets/images/emoji/ver1_item1_goodmorning.png'),
     name: 'goodmorning',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item1_goodmorning.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item2_goodnight.png'),
     name: 'goodnight',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item2_goodnight.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item3_gratitude.png'),
     name: 'gratitude',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item3_gratitude.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item4_love.png'),
     name: 'love',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item4_love.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item5_hungry.png'),
     name: 'hungry',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item5_hungry.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item6_sleepy.png'),
     name: 'sleepy',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item6_sleepy.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item7_congratulation.png'),
     name: 'congratulation',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item7_congratulation.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item8_fighting.png'),
     name: 'fighting',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item8_fighting.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item9_play.png'),
     name: 'play',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item9_play.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item10_secret.png'),
     name: 'secret',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item10_secret.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item11_wondering.png'),
     name: 'wondering',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item11_wondering.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item12_dugundugun.png'),
     name: 'dugundugun',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item12_dugundugun.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item13_upset.png'),
     name: 'ver1 upset',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item13_upset.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item14_stress.png'),
     name: 'ver1 stress',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item14_stress.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item15_impressed.png'),
     name: 'ver1 impressed',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item15_impressed.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item16_badresult.png'),
     name: 'ver1 badresult',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item16_badresult.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item17_aha.png'),
     name: 'ver1 aha',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item17_aha.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item18_firefriday.png'),
     name: 'ver1 firefriday',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item18_firefriday.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item19_cookiehi.png'),
     name: 'ver1 cookiehi',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item19_cookiehi.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item20_music.png'),
     name: 'ver1 music',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item20_music.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item21_netflix.png'),
     name: 'ver1 netflix',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item21_netflix.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item22_book.png'),
     name: 'ver1 book',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item22_book.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item23_exercise.png'),
     name: 'ver1 exercise',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item23_exercise.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item24_lucky.png'),
     name: 'ver1 lucky',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item24_lucky.png',
   },
 ];
 
@@ -204,7 +229,7 @@ const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({ height, selectedEmoji, on
       onPress={() => {
         console.log(`'${emojiItem.name}' 아이콘 클릭됨`);
         console.log(`'${emojiItem.source}' 아이콘 클릭됨`);
-        onSelectEmoji(emojiItem.source);
+        onSelectEmoji(emojiItem.path);
       }}>
       <Image
         source={emojiItem.source}

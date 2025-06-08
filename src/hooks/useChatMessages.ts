@@ -19,6 +19,7 @@ import {
 import Toast from 'react-native-root-toast';
 import Analytics from '../utils/analytics';
 import { ERRORMESSAGE } from '../constants/Constants';
+import { useSelectedEmoji } from './useSelectedEmoji';
 
 interface UseChatMessagesProps {
   informalMode: boolean; // 반말 모드 여부
@@ -35,6 +36,7 @@ interface ChatMessageState {
   onSend: (newMessages: IMessage[]) => void;
   loadInitialMessages: () => Promise<void>;
   toggleFavorite: (messageId: string) => void;
+  sendMessageToServer: () => Promise<void>;
 }
 
 // 유저와 챗봇 오브젝트 정의 (NewChat.tsx에서 가져옴)
@@ -67,6 +69,8 @@ export const useChatMessages = ({
   const messageQueueRef = useRef<string[]>([]); // To store all pending text messages
   const imageRef = useRef<string | null>(null); // 최신 image 값을 참조하기 위한 ref
 
+  const { selectedEmoji, onSelectEmoji } = useSelectedEmoji();
+
   // buffer와 image 상태가 변경될 때마다 ref 업데이트
   // NOTE: bufferRef.current = buffer; was causing issues by being too tightly coupled with the state
   // We'll manage text messages via messageQueueRef directly.
@@ -85,6 +89,7 @@ export const useChatMessages = ({
 
   // 서버로 메시지를 전송하고 응답을 처리하는 함수 (NewChat.tsx에서 가져옴)
   const sendMessageToServer = useCallback(async () => {
+    console.log('sendMessageToServer 실행됨');
     // Only send if there are messages in the queue or an image
     if (messageQueueRef.current.length === 0 && !imageRef.current) {
       return;
@@ -228,6 +233,7 @@ export const useChatMessages = ({
         }
         onShowAdsModal(); // Request to show the ad modal
         // sendMessageToServer will be called after ad success
+        //sendMessageToServer();
       } else {
         // Only text message
         messageQueueRef.current.push(messageToSend.text || ''); // Add text to the queue
@@ -331,7 +337,8 @@ export const useChatMessages = ({
       }
       setMessages(loadedMessages); // 메시지 상태 업데이트
     } catch (error) {
-      console.error('채팅 기록 로드 실패:', error);
+      //console.error('채팅 기록 로드 실패:', error);
+      console.log('채팅 기록 실패', error);
       Toast.show('대화 내역을 불러오는 중 오류가 발생했어요. 다시 시도해주세요.', {
         duration: Toast.durations.LONG,
       });
@@ -370,5 +377,6 @@ export const useChatMessages = ({
     onSend,
     loadInitialMessages,
     toggleFavorite,
+    sendMessageToServer,
   };
 };

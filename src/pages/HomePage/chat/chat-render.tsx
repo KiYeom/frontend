@@ -28,7 +28,7 @@ import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { ActivityIndicator, Alert, Image, TouchableOpacity, View, Text } from 'react-native';
 import Icon from '../../../components/icons/icons';
 import TypingIndicator from 'react-native-gifted-chat/src/TypingIndicator';
-import Animated, { FadeInDown, useAnimatedStyle } from 'react-native-reanimated';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 import { getNewIMessages } from '../../../utils/storageUtils';
 import Input from '../../../components/input/input';
 import { transparent } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
@@ -43,8 +43,7 @@ import { useState, RefObject } from 'react';
 import ImageShow from '../../../components/image-show/ImageShow';
 import { MAX_CHAT_IMAGE_WIDTH } from '../../../constants/Constants';
 import * as Haptics from 'expo-haptics';
-import EmojiPanel from '../../../components/emoji-panel/EmojiPanel';
-import { useSelectedEmoji } from '../../../hooks/useSelectedEmoji';
+
 export const reportMessages = async (messageId: string, isSaved: boolean): string | undefined => {
   //console.log('reportMessags 실행', messageId);
   if (messageId === null) return;
@@ -105,7 +104,7 @@ export const RenderBubble = (
   }, [props?.currentMessage?.image]);
 
   if (isImage) {
-    //console.log('이미지 렌더링 진행');
+    console.log('이미지 렌더링 진행');
     return (
       <View
         style={css`
@@ -234,7 +233,7 @@ export const RenderBubble = (
               isSaved={props.currentMessage.isSaved}
               messageId={props.currentMessage._id}
               onFavoritePress={(id) => {
-                console.log('id', id);
+                //console.log('id', id);
                 if (id === 'welcomeMessage') return;
                 props.onFavoritePress(props.currentMessage._id);
                 Analytics.clickChatLikeButton(props.currentMessage._id);
@@ -435,8 +434,8 @@ export const RenderSystemMessage = (props: Props<ExtendedIMessage>) => {
   );
 };
 
-// 기존 chat-render.tsx에서 RenderInputToolbar 함수만 수정
-
+//props: SendProps<IMessage>, sendingStatus: boolean
+//커스텀 인풋 툴 바
 export const RenderInputToolbar = (
   props: InputToolbarProps<ExtendedIMessage>,
   sendingStatus: boolean,
@@ -447,15 +446,11 @@ export const RenderInputToolbar = (
   setEnableDown?: React.Dispatch<React.SetStateAction<boolean>>,
   handleSearch?: (text: string, direction: null | 'up' | 'down') => Promise<string | null>,
   searchWord?: string,
-  showImageSourceSelection?: () => void,
+  pickImage?: () => void,
   setInputHeight: (value: number) => void,
   image?: string | null,
   setImage?: (value: string | null) => void,
   textInputRef?: RefObject<TextInput>,
-  showAdsModal?: (visible: boolean) => void,
-  // 이모티콘 관련 props 추가
-  //onEmojiPress?: () => void,
-  //isEmojiPanelVisible?: boolean,
   isEmojiPanelVisible?: boolean,
   emojiPanelHeight?: number,
   translateY?: Animated.SharedValue<number>,
@@ -473,21 +468,17 @@ export const RenderInputToolbar = (
           <ImageShow image={image} setImage={setImage} />
         </View>
       )}
-      {selectedEmoji && (
-        <View>
-          <ImageShow image={selectedEmoji} setImage={onSelectEmoji} />
-        </View>
-      )}
       <InputToolbar
         {...props}
         containerStyle={{
           borderTopColor: 'transparent',
           //backgroundColor: palette.neutral[50],
-          backgroundColor: 'red',
+          //backgroundColor: 'green',
           display: 'flex',
-          flexDirection: 'row',
+          flexDirection: 'row', // row로 두어야 Input과 Send , 사진 버튼이 나란히 배치됨
           justifyContent: 'center',
           alignItems: 'center',
+          //paddingHorizontal: rsWidth * 15,
           paddingVertical: rsHeight * 8,
           position: 'relative',
         }}
@@ -497,7 +488,7 @@ export const RenderInputToolbar = (
             onPress={() => {
               console.log('액션 버튼 클릭됨');
               Analytics.clickAddPicButtonInChatting();
-              showImageSourceSelection();
+              pickImage();
             }}
             style={{
               justifyContent: 'center',
@@ -535,12 +526,15 @@ export const RenderInputToolbar = (
             {...props}
             disabled={sendingStatus}
             containerStyle={{
+              //backgroundColor: 'yellow',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
               alignItems: 'center',
               alignSelf: 'center',
               marginRight: 10,
+              //marginLeft: 15 * rsWidth,
+              //backgroundColor: 'yellow',
             }}>
             <TouchableOpacity
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
@@ -555,18 +549,46 @@ export const RenderInputToolbar = (
               }}
               onPress={async () => {
                 if (sendingStatus) return;
+                const imageUrl = image;
 
-                console.log('보내기 버튼 클릭됨', image);
-
-                // 이미지가 있는 경우: 광고 모달을 표시
-                if (image && image.length > 0) {
-                  if (showAdsModal) {
-                    showAdsModal();
-                    return;
-                  }
+                // 텍스트와 이미지 모두 있을 때: 두 개의 메시지 전송
+                if (sendProps.text && image && image.length > 0) {
+                  sendProps.onSend(
+                    [
+                      {
+                        ...sendProps.currentMessage,
+                        text: sendProps.text,
+                        // 필요한 경우 고유 ID와 생성 시각 추가
+                        // _id: uuid(),
+                        // createdAt: new Date(),
+                      },
+                      {
+                        ...sendProps.currentMessage,
+                        image: imageUrl,
+                        text: ' ', // 텍스트 말풍선에 영향이 없도록 공백 문자 사용
+                      },
+                    ],
+                    true,
+                  );
+                  return;
                 }
 
-                // 텍스트만 있는 경우: 바로 전송
+                // 이미지만 있는 경우: 이미지 메시지 하나 전송
+                if (image && image.length > 0) {
+                  sendProps.onSend(
+                    [
+                      {
+                        ...sendProps.currentMessage,
+                        image: imageUrl,
+                        text: ' ', // 텍스트 말풍선이 생성되지 않도록 처리
+                      },
+                    ],
+                    true,
+                  );
+                  return;
+                }
+
+                // 텍스트만 있는 경우: 텍스트 메시지 하나 전송
                 if (sendProps.text && sendProps.text.length > 0) {
                   sendProps.onSend(
                     [
@@ -579,6 +601,7 @@ export const RenderInputToolbar = (
                   );
                   return;
                 }
+                // 텍스트도 이미지도 없는 경우는 아무 작업도 하지 않습니다.
               }}>
               <Icon
                 name="airplane"
@@ -591,6 +614,7 @@ export const RenderInputToolbar = (
     </View>
   ) : (
     <>
+      {/*<Text>히히헤헤</Text>*/}
       <UpDownBtn
         enableUp={enableUp}
         enableDown={enableDown}

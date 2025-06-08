@@ -19,6 +19,7 @@ export const HeaderContainer = styled.View<{
   border-color: ${palette.neutral[100]};
   border-bottom-width: ${(props) => (props.isTitle ? `${rsHeight * 1 + 'px'} ` : `0px`)};
   background-color: ${(props) => props.bgcolor};
+  z-index: 1000;
 `;
 
 export const HeaderLeft = styled.TouchableOpacity<{ isTitle: boolean }>`

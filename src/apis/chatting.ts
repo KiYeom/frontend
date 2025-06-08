@@ -36,7 +36,9 @@ export const chatting = async (
   question: string,
   isDemo: boolean = false,
   image?: string,
+  isSticker: boolean = false,
 ): Promise<TChatAnswerV3 | undefined> => {
+  console.log('chatting', characterId, question, isDemo, image, isSticker);
   const maxAttempts = 3;
   let attempts = 0;
 
@@ -80,6 +82,7 @@ export const chatting = async (
           characterId,
           question,
           isDemo,
+          isSticker,
         });
         return res.data;
       }
