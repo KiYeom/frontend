@@ -13,10 +13,8 @@ const ICON_COLUMN_WIDTH = 30; // 왼쪽 아이콘 열 너비
 const ICON_CHART_GAP = 0; // 아이콘 열과 차트 사이 간격
 const YAXIS_LABEL_AREA = 30; // y축 숫자 레이블 영역 확보
 
-// 실제 차트가 그려질 폭
-export const CHART_WIDTH =
-  SCREEN_WIDTH - HORIZONTAL_PADDING - ICON_COLUMN_WIDTH - ICON_CHART_GAP - YAXIS_LABEL_AREA;
-
+// 수정된 계산
+export const CHART_WIDTH = SCREEN_WIDTH - HORIZONTAL_PADDING - ICON_COLUMN_WIDTH - ICON_CHART_GAP;
 // 차트 높이 및 밴드 높이
 export const CHART_HEIGHT = 280;
 export const STRIPE_HEIGHT = CHART_HEIGHT / 5; // 280 / 5 = 56
@@ -27,8 +25,10 @@ export const STRIPE_HEIGHT = CHART_HEIGHT / 5; // 280 / 5 = 56
 export const Container = styled.View`
   padding-horizontal: 16px;
   padding-vertical: 16px;
-  background-color: ${palette.neutral[50]}; // 필요에 따라 컬러 조정
+  //background-color: ${palette.neutral[50]}; // 필요에 따라 컬러 조정
   align-items: center;
+  gap: 12px;
+  //background-color: red;
 `;
 
 // ───────────────────────────────────────────────────────────
@@ -37,6 +37,7 @@ export const Container = styled.View`
 export const ChartAreaWrapper = styled.View`
   flex-direction: row;
   align-items: stretch;
+  //background-color: pink;
 `;
 
 // ───────────────────────────────────────────────────────────
@@ -45,10 +46,11 @@ export const ChartAreaWrapper = styled.View`
 //   - 아이콘들을 세로로 5등분하여 space-between으로 배치
 // ───────────────────────────────────────────────────────────
 export const IconsColumn = styled.View`
-  width: ${ICON_COLUMN_WIDTH}px;
-  justify-content: space-between;
+  width: ${ICON_COLUMN_WIDTH + 'px'};
+  height: ${CHART_HEIGHT + 'px'}; // 추가
+  position: relative; // 추가
   align-items: center;
-  padding-vertical: ${rsHeight * 30 + 'px'};
+  //background-color: purple;
 `;
 
 // ───────────────────────────────────────────────────────────
@@ -78,6 +80,7 @@ export const ChartWrapper = styled.View`
   width: ${CHART_WIDTH}px;
   height: ${CHART_HEIGHT}px;
   position: relative;
+  //background-color: blue;
 `;
 
 // ───────────────────────────────────────────────────────────
@@ -90,8 +93,8 @@ export const StripeBand = styled.View<{
 }>(({ top, bgColor }) => ({
   position: 'absolute',
   top: top,
-  left: 0,
-  width: CHART_WIDTH,
+  left: 0, // initialSpacing 보정
+  width: CHART_WIDTH + 5, // 양쪽 spacing 포함
   height: STRIPE_HEIGHT,
   backgroundColor: bgColor,
 }));
