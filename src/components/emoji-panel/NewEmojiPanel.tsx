@@ -261,7 +261,7 @@ const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({ height, selectedEmoji, on
   );
 
   return (
-    <View style={{ backgroundColor: 'pink', height: height, borderColor: 'black' }}>
+    <View style={{ backgroundColor: 'pink', height: height, borderColor: 'black', borderWidth: 1 }}>
       {/* 이모티콘 소개 및 구매하기 버튼*/}
       <View
         style={{

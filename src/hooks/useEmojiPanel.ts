@@ -5,7 +5,7 @@ import { useSharedValue, withSpring, withTiming } from 'react-native-reanimated'
 export const useEmojiPanel = () => {
   const [isEmojiPanelVisible, setIsEmojiPanelVisible] = useState(false);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
-  const [emojiPanelHeight, setEmojiPanelHeight] = useState(300); // 기본 이모티콘 패널 높이
+  const [emojiPanelHeight, setEmojiPanelHeight] = useState(350); // 기본 이모티콘 패널 높이
 
   // 애니메이션 값
   const translateY = useSharedValue(0);

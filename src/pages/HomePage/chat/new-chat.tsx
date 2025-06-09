@@ -260,6 +260,7 @@ const NewChat: React.FC = ({ navigation }) => {
 
   //광고 로드 상태
   const [loaded, setLoaded] = useState(false);
+  console.log('이모지 패널', emojiPanelHeight);
   //console.log('rewarded', rewarded);
   useFocusEffect(
     useCallback(() => {
@@ -1044,6 +1045,9 @@ const NewChat: React.FC = ({ navigation }) => {
 
   const messageContainerRef = useRef<React.ElementRef<typeof GiftedChat>>(null);
 
+  const insets = useSafeAreaInsets();
+  console.log('insets', insets);
+
   /* 채팅 화면 전체 구성 */
   return (
     <SafeAreaView
@@ -1209,6 +1213,27 @@ const NewChat: React.FC = ({ navigation }) => {
           pointerEvents: 'box-none',
         }}
         pointerEvents="box-none"></Animated.View>
+
+      {isEmojiPanelVisible && (
+        <Animated.View
+          style={[
+            css`
+              position: absolute;
+              bottom: 0;
+              left: 0;
+              right: 0;
+            `,
+            emojiPanelAnimatedStyle,
+          ]}>
+          <View style={{ borderColor: 'black', borderWidth: 1, backgroundColor: 'white' }}>
+            <NewEmojiPanel
+              height={emojiPanelHeight + insets.bottom}
+              selectedEmoji={selectedEmoji}
+              onSelectEmoji={handleEmojiSelectAsImage}
+            />
+          </View>
+        </Animated.View>
+      )}
       <AdsModal
         modalVisible={modalVisible}
         onClose={() => {
@@ -1229,24 +1254,6 @@ const NewChat: React.FC = ({ navigation }) => {
             : `광고를 시청하면\n쿠키에게 사진을 보여줄 수 있어요`
         }
       />
-      {isEmojiPanelVisible && (
-        <Animated.View
-          style={[
-            css`
-              position: absolute;
-              bottom: 0;
-              left: 0;
-              right: 0;
-            `,
-            emojiPanelAnimatedStyle,
-          ]}>
-          <NewEmojiPanel
-            height={emojiPanelHeight}
-            selectedEmoji={selectedEmoji}
-            onSelectEmoji={handleEmojiSelectAsImage}
-          />
-        </Animated.View>
-      )}
     </SafeAreaView>
   );
 };

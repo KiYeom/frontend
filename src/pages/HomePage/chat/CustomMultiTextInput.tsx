@@ -50,6 +50,7 @@ const CustomMultiTextInput = (props: CustomMultiTextInputProps) => {
         paddingVertical: 15,
         minHeight: rsFont * 16 * 1.5 + 15 * 2,
         flex: 1,
+        marginVertical: 0,
       }}>
       <TextInput
         style={{
