@@ -6,9 +6,10 @@ import {
   ScrollView,
   Dimensions,
   ImageSourcePropType,
-  Image,
   Platform,
+  Image,
 } from 'react-native';
+//import { Image } from 'expo-image';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import { useState, useEffect } from 'react';
 import palette from '../../assets/styles/theme';
@@ -31,6 +32,12 @@ type NewEmojiPanelProps = {
   //onEmojiSelect?: (emoji: EmojiData) => void;
   selectedEmoji?: EmojiData | null;
   onSelectEmoji?: (emoji: EmojiData) => void;
+  insets?: {
+    top: number;
+    bottom: number;
+    left: number;
+    right: number;
+  };
 };
 
 // 이모지 데이터 타입 정의
@@ -38,6 +45,7 @@ export type EmojiData = {
   source: ImageSourcePropType;
   name: string;
   path?: string;
+  localUri?: string;
 };
 
 // 실제 이미지 소스 배열과 이름 매핑 (24개)
@@ -163,12 +171,22 @@ const emojiData: EmojiData[] = [
     path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item24_lucky.png',
   },
 ];
-
-const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({ height, selectedEmoji, onSelectEmoji }) => {
+// 런타임에 localUri 프로퍼티를 붙여 주기
+/*const emojiData: EmojiData[] = baseEmojiData.map((item) => {
+  const { uri } = Image.resolveAssetSource(item.source);
+  return { ...item, localUri: uri };
+});*/
+const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({
+  height,
+  selectedEmoji,
+  onSelectEmoji,
+  insets,
+}) => {
   //const { selectedEmoji, onSelectEmoji } = useSelectedEmoji();
   const [hasPurchased, setHasPurchased] = useState<boolean>(false);
   const [currentOffering, setCurrentOffering] = useState<PurchasesOffering | null>(null);
   useEffect(() => {
+    console.log('😀useEffect 실행됨😀');
     const setup = async () => {
       await initializeInApp();
       const offering = await getCurrentOffering();
@@ -230,10 +248,14 @@ const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({ height, selectedEmoji, on
       onPress={() => {
         console.log(`'${emojiItem.name}' 아이콘 클릭됨`);
         console.log(`'${emojiItem.source}' 아이콘 클릭됨`);
+        console.log(`'${emojiItem.path}' 아이콘 클릭됨!!!!!`);
         onSelectEmoji(emojiItem.path);
       }}>
       <Image
-        source={{ uri: emojiItem.path }}
+        //source={{ uri: emojiItem.path }}
+        source={emojiItem.source}
+        cachePolicy="memory-disk"
+        transition={100}
         style={{
           width: '100%',
           height: '100%',
@@ -262,7 +284,14 @@ const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({ height, selectedEmoji, on
   );
 
   return (
-    <View style={{ backgroundColor: 'pink', height: height, borderColor: 'black', borderWidth: 1 }}>
+    <View
+      style={{
+        backgroundColor: 'pink',
+        height: height,
+        borderColor: 'black',
+        borderWidth: 1,
+        paddingBottom: insets?.bottom || 0,
+      }}>
       {/* 이모티콘 소개 및 구매하기 버튼*/}
       <View
         style={{
@@ -283,7 +312,6 @@ const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({ height, selectedEmoji, on
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          {hasPurchased ? '이모지 샀음' : '이모지 안샀음'}
           <Icon name={hasPurchased ? `emoji-thumbnail` : `emoji-thumbnail-off`} width={24} />
           {!hasPurchased && (
             <View
@@ -300,8 +328,11 @@ const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({ height, selectedEmoji, on
         </View>
 
         {currentOffering?.availablePackages?.length > 0 && (
-          <TouchableOpacity onPress={() => handlePurchase(currentOffering.availablePackages[0])}>
+          <TouchableOpacity
+            style={{ flexDirection: 'row' }}
+            onPress={() => handlePurchase(currentOffering.availablePackages[0])}>
             <Text style={{ color: 'blue' }}>구매하기</Text>
+            <Icon name={'arrow-right'} width={16} color={'blue'} />
           </TouchableOpacity>
         )}
       </View>

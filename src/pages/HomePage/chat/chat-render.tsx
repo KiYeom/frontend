@@ -298,11 +298,14 @@ export const RenderMessageImage = (
         width: scaledSize.width,
         height: scaledSize.height,
         resizeMode: 'contain',
+        backgroundColor: 'transparent',
       }}
       containerStyle={{
         margin: 0,
         padding: 0,
         backgroundColor: 'transparent',
+        borderColor: 'red',
+        borderWidth: 4,
       }}
     />
   );

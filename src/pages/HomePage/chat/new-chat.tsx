@@ -158,7 +158,7 @@ const NewChat: React.FC = ({ navigation }) => {
 
   //1.5.8 사진 추가
   const [image, setImage] = useState<string | null>(null);
-  const [isEmoji, setIsEmoji] = useState<boolean>(false);
+  const [isSticker, setIsSticker] = useState<boolean>(false);
   //광고 모달 추가
   const [modalVisible, setModalVisible] = useState<boolean>(false);
 
@@ -186,7 +186,7 @@ const NewChat: React.FC = ({ navigation }) => {
 
   const pickImage = async () => {
     //console.log('pickImage 클릭함');
-    setIsEmoji(false); //이모지 패널 닫기
+    setIsSticker(false); //이모지 패널 닫기
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       allowsEditing: false,
@@ -572,12 +572,147 @@ const NewChat: React.FC = ({ navigation }) => {
     setNewIMessagesV3(messagesString);
   };
 
+  const sendMessageToServerWithText = (text: string) => {
+    console.log('sendMessageToServerWithText 실행', text, image);
+
+    const buf = text || ''; // 전달받은 텍스트 직접 사용
+    const img = imageRef.current;
+
+    if ((!buf && !img) || sending) return;
+
+    setSending(true);
+    setBuffer(null);
+    setImage(null);
+    bufferRef.current = null;
+    imageRef.current = null;
+
+    // 나머지 로직은 기존 sendMessageToServer와 동일
+    if (img) {
+      console.log('이미지 전송 시작', img);
+      const pendingMsg: ExtendedIMessage = {
+        _id: uuid.v4().toString(),
+        text: buf,
+        image: img,
+        createdAt: new Date(),
+        user: userObject,
+        isSaved: false,
+      };
+
+      setMessages((prev) => {
+        const updated = GiftedChat.append(prev, [pendingMsg]);
+        return updated;
+      });
+
+      if (buf?.trim() !== '') {
+        console.log('버퍼에 텍스트가 존재함', buf);
+        const textMsg: ExtendedIMessage = {
+          _id: uuid.v4().toString(),
+          text: buf,
+          createdAt: new Date(),
+          user: userObject,
+          isSaved: false,
+        };
+        setMessages((prev) => {
+          const updated = GiftedChat.append(prev, [textMsg]);
+          return updated;
+        });
+      }
+    }
+
+    const question = buf;
+    const isDemo = getIsDemo();
+    console.log('전송할 텍스트:', question, '이미지:', img);
+    const imageToSend = img ?? '';
+
+    chatting(1, question, isDemo, imageToSend, isSticker)
+      .then((res) => {
+        // 기존 then 로직과 동일
+        if (res) {
+          const sortedMessages: ApiChatResponse = res?.reverse();
+          const apiQuestions: ApiQuestions = sortedMessages.filter(
+            (item): item is ApiQuestionMessage =>
+              item.question !== null && item.question !== '' && item.answer === null,
+          );
+          const apiAnswers: ApiAnswers = sortedMessages.filter(
+            (item): item is ApiAnswerMessage => item.answer !== null && item.question === null,
+          );
+
+          setMessages((previousMessages) => {
+            const updatedMessages = [...previousMessages];
+            const imageUrlPattern = /https:\/\/bucket\.remind4u\.co\.kr\/gemini\/[a-f0-9]+\.jpg/;
+
+            for (let i = 0; i < apiQuestions.length; i++) {
+              const questionIndex = previousMessages.findIndex((msg, idx) => {
+                if (msg.text === apiQuestions[i].question) {
+                  return true;
+                }
+                if (imageUrlPattern.test(apiQuestions[i].question)) {
+                  if (
+                    msg.text &&
+                    msg.text.includes(imageUrlPattern.exec(apiQuestions[i].question)?.[0] || '')
+                  ) {
+                    return true;
+                  }
+                  if (msg.image && apiQuestions[i].question.includes(msg.image)) {
+                    return true;
+                  }
+                }
+                return false;
+              });
+
+              if (questionIndex !== -1) {
+                updatedMessages[questionIndex] = {
+                  ...updatedMessages[questionIndex],
+                  _id: apiQuestions[i].id,
+                };
+              }
+            }
+
+            const newBotMessages: ExtendedIMessage[] = apiAnswers.map((item, idx) => ({
+              _id: item.id,
+              text: item.answer ?? '',
+              createdAt: new Date(),
+              user: botObject,
+              isSaved: false,
+            }));
+
+            setIMessagesV3(updatedMessages, newBotMessages);
+            return GiftedChat.append(updatedMessages, newBotMessages);
+          });
+        }
+      })
+      .catch((err) => {
+        console.log('error 발생', err);
+        const newMessages: ExtendedIMessage[] = [
+          {
+            _id: uuid.v4().toString(),
+            text: ERRORMESSAGE,
+            createdAt: new Date(),
+            user: botObject,
+            isSaved: false,
+          },
+        ];
+        setMessages((previousMessages) => {
+          setIMessagesV3(previousMessages, newMessages);
+          return GiftedChat.append(previousMessages, newMessages);
+        });
+      })
+      .finally(() => {
+        setBuffer(null);
+        setImage(null);
+        setSending(false);
+        bufferRef.current = null;
+        imageRef.current = null;
+      });
+  };
+
   //버퍼에 저장된 메시지를 서버로 전송하는 sendMessageToServer 함수
   const sendMessageToServer = () => {
+    console.log('sendMessageToServer 실행');
     const buf = bufferRef.current;
     const img = imageRef.current;
-    //console.log('sendMessageToServer 실행', buffer, image);
-    //console.log('sendMessageToServer 내에서 읽은 값', buf, img);
+    console.log('sendMessageToServer 실행', buffer, image);
+    console.log('sendMessageToServer 내에서 읽은 값', buf, img);
     if ((!buf && !img) || sending) return; //텍스트도, 이미지도 없는 경우에는 전송하지 않음
     setSending(true);
     setBuffer(null); // 버퍼 비우기
@@ -590,7 +725,8 @@ const NewChat: React.FC = ({ navigation }) => {
       // 1) 화면에 보여줄 임시 메시지 객체 생성
       const pendingMsg: ExtendedIMessage = {
         _id: uuid.v4().toString(), // 랜덤 ID
-        text: img, // 텍스트 있어도 그냥 이미지만 나오게 return 걸어둠
+        //text: img, // 텍스트 있어도 그냥 이미지만 나오게 return 걸어둠
+        text: buf ?? '',
         image: img, // 이미지가 있으면 URI
         createdAt: new Date(),
         user: userObject, // '나' 유저
@@ -631,9 +767,9 @@ const NewChat: React.FC = ({ navigation }) => {
     console.log('iamge ', img, question);
     const imageToSend = img ?? '';
     //setImage(null);
-    console.log('이모티콘?', isEmoji);
+    console.log('이모티콘?', isSticker);
 
-    chatting(1, question, isDemo, imageToSend, isEmoji) //버퍼에 저장된 메세지를 서버로 전송하여 질문 & 대화 전체 쌍을 받아옴
+    chatting(1, question, isDemo, imageToSend, isSticker) //버퍼에 저장된 메세지를 서버로 전송하여 질문 & 대화 전체 쌍을 받아옴
       .then((res) => {
         if (res) {
           //const newMessages: IMessage[] = [];
@@ -669,16 +805,19 @@ const NewChat: React.FC = ({ navigation }) => {
                 // 이미지가 포함되어 전송된 경우
                 if (imageUrlPattern.test(apiQuestions[i].question)) {
                   // 1. 텍스트에 이미지 URL이 포함된 경우
+                  //console.log('이미지 URL이 포함된 경우', apiQuestions[i].question);
+                  //console.log('이미지 URL 패턴', imageUrlPattern);
+                  //console.log('메세지', msg, msg.text);
                   if (
                     msg.text &&
                     msg.text.includes(imageUrlPattern.exec(apiQuestions[i].question)?.[0] || '')
                   ) {
-                    //console.log('이 버블은 텍스트와 이미지가 존재함', msg.text);
+                    console.log('이 버블은 텍스트와 이미지가 존재함', msg.text);
                     return true;
                   }
                   // 2. image 필드가 있는 경우
                   if (msg.image && apiQuestions[i].question.includes(msg.image)) {
-                    //console.log('이 버블은 이미지만 존재함', msg.image);
+                    console.log('이 버블은 이미지만 존재함', msg.image);
                     return true;
                   }
                 }
@@ -711,6 +850,9 @@ const NewChat: React.FC = ({ navigation }) => {
         }
       })
       .catch((err) => {
+        console.log('error 발생', err);
+        console.log(isSticker, 'isSticker');
+        console.log(imageToSend, 'imageToSend');
         const newMessages: ExtendedIMessage[] = [
           {
             _id: uuid.v4().toString(),
@@ -742,6 +884,7 @@ const NewChat: React.FC = ({ navigation }) => {
       clearTimeout(typingTimeoutRef.current);
     }
     if (!image) {
+      //이미지가 없는 경우에만 디바운싱
       typingTimeoutRef.current = setTimeout(() => {
         sendMessageToServer();
       }, 2 * 1000);
@@ -963,11 +1106,11 @@ const NewChat: React.FC = ({ navigation }) => {
       return GiftedChat.append(previousMessages, newMessages);
     });*/
     if (image) {
-      if (isEmoji) {
+      if (isSticker) {
         //이모티콘은 바로 전송
-        console.log('😀이모티콘 전송');
+        console.log('😀이모티콘 전송 같이 보내는 글자 : ', newMessages[0].text);
         setBuffer(newMessages[0].text);
-        sendMessageToServer();
+        sendMessageToServerWithText(newMessages[0].text);
         return;
       }
       console.log('🧞‍♂️이미지 전송');
@@ -1030,7 +1173,7 @@ const NewChat: React.FC = ({ navigation }) => {
 
     // 이모티콘을 이미지 상태에 설정
     setImage(emoji);
-    setIsEmoji(true);
+    setIsSticker(true);
   }, []);
 
   useEffect(() => {
@@ -1227,9 +1370,11 @@ const NewChat: React.FC = ({ navigation }) => {
           ]}>
           <View style={{ borderColor: 'black', borderWidth: 1, backgroundColor: 'white' }}>
             <NewEmojiPanel
+              key="uniqueEmojiPanelKey"
               height={emojiPanelHeight + insets.bottom}
               selectedEmoji={selectedEmoji}
               onSelectEmoji={handleEmojiSelectAsImage}
+              insets={insets}
             />
           </View>
         </Animated.View>

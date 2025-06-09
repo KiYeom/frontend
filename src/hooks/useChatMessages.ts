@@ -164,7 +164,8 @@ export const useChatMessages = ({
         });
       }
     } catch (err) {
-      console.error('채팅 API 오류:', err);
+      //console.error('채팅 API 오류:', err);
+      console.log('채팅 API 오류', err);
       // 오류 메시지 UI에 표시
       const newErrorMessage: ExtendedIMessage = {
         _id: uuid.v4().toString(),

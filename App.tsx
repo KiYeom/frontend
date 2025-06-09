@@ -43,6 +43,7 @@ import 'react-native-gesture-handler';
 import Favorites from './src/pages/HomePage/favorites/favorites';
 import Constants from 'expo-constants';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { preloadEmojiImages } from './src/services/imagePreloader';
 
 /*const { APP_ENV } = Constants.expoConfig?.extra || {};
 // 환경 확인
@@ -91,6 +92,25 @@ const App: React.FC = () => {
     'Pretendard-Medium': require('./src/assets/fonts/Pretendard-Medium.ttf'),
     'Kyobo-handwriting': require('./src/assets/fonts/KyoboHandwriting2019.ttf'),
   });
+
+  const [isAppReady, setIsAppReady] = useState(false);
+
+  useEffect(() => {
+    async function prepare() {
+      try {
+        // 이미지 프리로딩
+        await preloadEmojiImages();
+
+        // 다른 초기화 작업들...
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setIsAppReady(true);
+      }
+    }
+
+    prepare();
+  }, []);
 
   const checkSignIn = async (): Promise<boolean> => {
     //자동 로그인 판단
@@ -172,7 +192,8 @@ const App: React.FC = () => {
 
   //앱 처음 실행 시 폰트 로드 진행. 완료되면 로그인 여부를 판단한 뒤에 로딩 화면을 숨김
   useEffect(() => {
-    if (loaded || error) {
+    if (loaded || error || isAppReady) {
+      //로딩중
       SplashScreen.hideAsync();
     }
     if (loaded) {
@@ -181,7 +202,7 @@ const App: React.FC = () => {
         checkAppVersion();
       });
     }
-  }, [loaded, error]);
+  }, [loaded, error, isAppReady]);
 
   // 처음 앱을 실행할 때 amplitude에 로그인 화면에 진입했음을 알려준다.
   useEffect(() => {
