@@ -1368,15 +1368,13 @@ const NewChat: React.FC = ({ navigation }) => {
             `,
             emojiPanelAnimatedStyle,
           ]}>
-          <View style={{ borderColor: 'black', borderWidth: 1, backgroundColor: 'white' }}>
-            <NewEmojiPanel
-              key="uniqueEmojiPanelKey"
-              height={emojiPanelHeight + insets.bottom}
-              selectedEmoji={selectedEmoji}
-              onSelectEmoji={handleEmojiSelectAsImage}
-              insets={insets}
-            />
-          </View>
+          <NewEmojiPanel
+            key="uniqueEmojiPanelKey"
+            height={emojiPanelHeight + insets.bottom}
+            selectedEmoji={selectedEmoji}
+            onSelectEmoji={handleEmojiSelectAsImage}
+            insets={insets}
+          />
         </Animated.View>
       )}
       <AdsModal

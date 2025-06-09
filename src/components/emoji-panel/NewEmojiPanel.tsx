@@ -53,122 +53,122 @@ const emojiData: EmojiData[] = [
   {
     source: require('../../assets/images/emoji/ver1_item1_goodmorning.png'),
     name: 'goodmorning',
-    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item1_goodmorning.png',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item1_new_goodmorning.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item2_goodnight.png'),
     name: 'goodnight',
-    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item2_goodnight.png',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item2_new_goodnight.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item3_gratitude.png'),
     name: 'gratitude',
-    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item3_gratitude.png',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item3_new_gratitude.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item4_love.png'),
     name: 'love',
-    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item4_love.png',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item4_new_love.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item5_hungry.png'),
     name: 'hungry',
-    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item5_hungry.png',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item5_new_hungry.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item6_sleepy.png'),
     name: 'sleepy',
-    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item6_sleepy.png',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item6_new_sleepy.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item7_congratulation.png'),
     name: 'congratulation',
-    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item7_congratulation.png',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item7_new_congratulation.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item8_fighting.png'),
     name: 'fighting',
-    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item8_fighting.png',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item8_new_fighting.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item9_play.png'),
     name: 'play',
-    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item9_play.png',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item9_new_play.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item10_secret.png'),
     name: 'secret',
-    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item10_secret.png',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item10_new_secret.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item11_wondering.png'),
     name: 'wondering',
-    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item11_wondering.png',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item11_new_wondering.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item12_dugundugun.png'),
     name: 'dugundugun',
-    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item12_dugundugun.png',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item12_new_dugundugun.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item13_upset.png'),
     name: 'ver1 upset',
-    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item13_upset.png',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item13_new_upset.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item14_stress.png'),
     name: 'ver1 stress',
-    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item14_stress.png',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item14_new_stress.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item15_impressed.png'),
     name: 'ver1 impressed',
-    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item15_impressed.png',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item15_new_impressed.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item16_badresult.png'),
     name: 'ver1 badresult',
-    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item16_newbadresult.png',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item16_new_badResult.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item17_aha.png'),
     name: 'ver1 aha',
-    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item17_aha.png',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item17_new_aha.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item18_firefriday.png'),
     name: 'ver1 firefriday',
-    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item18_fireFriday.png',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item18_new_fireFriday.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item19_cookiehi.png'),
     name: 'ver1 cookiehi',
-    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item19_cookieHi.png',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item19_new_cookieHi.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item20_music.png'),
     name: 'ver1 music',
-    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item20_music.png',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item20_new_music.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item21_netflix.png'),
     name: 'ver1 netflix',
-    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item21_netflix.png',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item21_new_netflix.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item22_book.png'),
     name: 'ver1 book',
-    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item22_book.png',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item22_new_book.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item23_exercise.png'),
     name: 'ver1 exercise',
-    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item23_exercise.png',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item23_new_exercise.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item24_lucky.png'),
     name: 'ver1 lucky',
-    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item24_lucky.png',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item24_new_lucky.png',
   },
 ];
 // 런타임에 localUri 프로퍼티를 붙여 주기
@@ -238,7 +238,7 @@ const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({
     <TouchableOpacity
       key={globalIndex}
       style={{
-        backgroundColor: 'green',
+        backgroundColor: 'white',
         justifyContent: 'center',
         alignItems: 'center',
         flex: 1,
@@ -252,8 +252,8 @@ const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({
         onSelectEmoji(emojiItem.path);
       }}>
       <Image
-        //source={{ uri: emojiItem.path }}
-        source={emojiItem.source}
+        source={{ uri: emojiItem.path }}
+        //source={emojiItem.source}
         cachePolicy="memory-disk"
         transition={100}
         style={{
@@ -270,7 +270,7 @@ const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({
     <View
       key={rowIndex}
       style={{
-        backgroundColor: 'pink',
+        backgroundColor: 'white',
         flexDirection: 'row',
         justifyContent: 'space-between',
         gap: ITEM_GAP.horizontal, //개별 아이템마다의 가로 간격
@@ -286,16 +286,16 @@ const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({
   return (
     <View
       style={{
-        backgroundColor: 'pink',
+        backgroundColor: 'white',
         height: height,
-        borderColor: 'black',
-        borderWidth: 1,
-        paddingBottom: insets?.bottom || 0,
+        //borderColor: 'black',
+        //borderWidth: 1,
+        //paddingBottom: insets?.bottom || 0,
       }}>
       {/* 이모티콘 소개 및 구매하기 버튼*/}
       <View
         style={{
-          backgroundColor: 'orange',
+          backgroundColor: 'white',
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
@@ -329,10 +329,21 @@ const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({
 
         {currentOffering?.availablePackages?.length > 0 && (
           <TouchableOpacity
-            style={{ flexDirection: 'row' }}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}
             onPress={() => handlePurchase(currentOffering.availablePackages[0])}>
-            <Text style={{ color: 'blue' }}>구매하기</Text>
-            <Icon name={'arrow-right'} width={16} color={'blue'} />
+            <Text
+              style={{
+                //color: 'blue',
+                fontFamily: 'Pretendard-Regular',
+                fontSize: 14,
+                color: palette.neutral[900],
+              }}>
+              구매하기
+            </Text>
+            <Icon name={'arrow-right'} height={11} color={palette.neutral[900]} />
           </TouchableOpacity>
         )}
       </View>
@@ -342,8 +353,9 @@ const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({
         style={{ flex: 1 }}
         contentContainerStyle={{
           paddingHorizontal: SCROLLVIEW_HORIZONTAL_PADDING,
-          paddingVertical: SCROLLVIEW_VERTICAL_PADDING, //스크롤뷰의 상하 패딩 값
-          backgroundColor: 'yellow',
+          paddingTop: SCROLLVIEW_VERTICAL_PADDING, //스크롤뷰의 상하 패딩 값
+          paddingBottom: insets?.bottom || SCROLLVIEW_VERTICAL_PADDING,
+          backgroundColor: 'white',
           flexGrow: 1,
         }}
         showsVerticalScrollIndicator={false}>

@@ -304,8 +304,8 @@ export const RenderMessageImage = (
         margin: 0,
         padding: 0,
         backgroundColor: 'transparent',
-        borderColor: 'red',
-        borderWidth: 4,
+        //borderColor: 'red',
+        //borderWidth: 4,
       }}
     />
   );
