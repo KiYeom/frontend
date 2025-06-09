@@ -29,6 +29,7 @@ const EMOTION_TO_CENTER = {
 };
 
 const STRIPE_COLORS = ['#FDEA9B', '#C3EFD5', '#E2E2E2', '#CFC7FD', '#F6B8B8'];
+const STRIPE_NEW_COLORS = ['#F6B8B8', '#CFC7FD', '#E2E2E2', '#C3EFD5', '#FDEA9B'];
 
 const NewPeriodFlowChartArea = ({ emotionsData }) => {
   const { dates, groups } = emotionsData;
@@ -61,7 +62,7 @@ const NewPeriodFlowChartArea = ({ emotionsData }) => {
               key={emo}
               style={{
                 position: 'absolute',
-                top: index * STRIPE_HEIGHT + (STRIPE_HEIGHT - 24) / 2,
+                top: index * STRIPE_HEIGHT + STRIPE_HEIGHT / 2,
               }}>
               <Icon name={`${emo}-emotion`} width={24} height={24} />
             </IconWrapper>
@@ -71,28 +72,28 @@ const NewPeriodFlowChartArea = ({ emotionsData }) => {
         {/* 그래프 본문 */}
         <ChartWrapper>
           {/* 배경 스트라이프 */}
-          {STRIPE_COLORS.map((bgColor, idx) => (
-            <StripeBand key={idx} top={idx * STRIPE_HEIGHT} bgColor={bgColor} />
+          {STRIPE_NEW_COLORS.map((bgColor, idx) => (
+            <StripeBand key={idx} bottom={22 + idx * STRIPE_HEIGHT} bgColor={bgColor} />
           ))}
 
           {/* Gifted LineChart */}
           <LineChart
             style={{ position: 'absolute', top: 0, left: 0 }}
             disableScroll={true}
-            contentInset={{ left: 0, right: 0 }}
+            contentInset={{ top: 0, bottom: 0, left: 0, right: 0 }}
             data={dataPoints}
             width={CHART_WIDTH}
             height={CHART_HEIGHT}
             spacing={spacing}
-            initialSpacing={5}
-            endSpacing={5}
+            initialSpacing={20}
+            endSpacing={20}
             stepValue={1}
             noOfSections={5}
-            hideYAxisText={true}
+            hideYAxisText={false}
             hideRules={true}
             xAxisLabelTextStyle={{
-              fontSize: 12,
               color: 'transparent',
+              height: 15,
             }}
             color={'#6E6E6E'}
             thickness={3}
@@ -103,12 +104,14 @@ const NewPeriodFlowChartArea = ({ emotionsData }) => {
             hideDataPoints={false}
             curved={false}
             showVerticalLines={false}
-            showHorizontalLines={false}
+            showHorizontalLines={true}
             yAxisColor="transparent"
             xAxisColor="transparent"
             maxValue={5}
             minValue={0}
             yAxisOffset={0}
+            yAxisThickness={0}
+            yAxisLabelWidth={0}
           />
         </ChartWrapper>
       </ChartAreaWrapper>
