@@ -24,6 +24,7 @@ export const getCurrentOffering = async () => {
 export const updatePurchaseStatus = async () => {
   try {
     const customerInfo = await Purchases.getCustomerInfo();
+    console.log('고객 정보', customerInfo.entitlements.active['emoji_v1_unlock']);
     return Object.keys(customerInfo.entitlements.active).length > 0;
   } catch (e) {
     console.warn('고객 정보 조회 오류:', e);

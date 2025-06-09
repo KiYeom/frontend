@@ -13,6 +13,7 @@ import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import { useState, useEffect } from 'react';
 import palette from '../../assets/styles/theme';
 import { useSelectedEmoji } from '../../hooks/useSelectedEmoji';
+import Icon from '../icons/icons';
 
 import {
   initializeInApp,
@@ -119,7 +120,7 @@ const emojiData: EmojiData[] = [
   {
     source: require('../../assets/images/emoji/ver1_item16_badresult.png'),
     name: 'ver1 badresult',
-    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item16_badresult.png',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item16_newbadresult.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item17_aha.png'),
@@ -129,12 +130,12 @@ const emojiData: EmojiData[] = [
   {
     source: require('../../assets/images/emoji/ver1_item18_firefriday.png'),
     name: 'ver1 firefriday',
-    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item18_firefriday.png',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item18_fireFriday.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item19_cookiehi.png'),
     name: 'ver1 cookiehi',
-    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item19_cookiehi.png',
+    path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item19_cookieHi.png',
   },
   {
     source: require('../../assets/images/emoji/ver1_item20_music.png'),
@@ -232,7 +233,7 @@ const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({ height, selectedEmoji, on
         onSelectEmoji(emojiItem.path);
       }}>
       <Image
-        source={emojiItem.source}
+        source={{ uri: emojiItem.path }}
         style={{
           width: '100%',
           height: '100%',
@@ -269,18 +270,35 @@ const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({ height, selectedEmoji, on
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
-          paddingHorizontal: rsWidth * 0.05,
-          paddingVertical: rsHeight * 0.01,
-          height: 30,
+          paddingHorizontal: rsWidth * 15,
+          paddingVertical: rsHeight * 10,
         }}>
-        <Text
+        <View
           style={{
-            fontSize: 13,
-            fontWeight: 'bold',
-            color: palette.neutral[900],
+            position: 'relative', // 오버레이를 위해 부모를 상대 위치로 설정
+            width: 30,
+            height: 30,
+            borderRadius: 5,
+            backgroundColor: hasPurchased ? palette.primary[500] : palette.neutral[100],
+            justifyContent: 'center',
+            alignItems: 'center',
           }}>
           {hasPurchased ? '이모지 샀음' : '이모지 안샀음'}
-        </Text>
+          <Icon name={hasPurchased ? `emoji-thumbnail` : `emoji-thumbnail-off`} width={24} />
+          {!hasPurchased && (
+            <View
+              style={{
+                position: 'absolute',
+                top: -15,
+                right: -5,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Icon name="lock" width={16} color={palette.neutral[50]} />
+            </View>
+          )}
+        </View>
+
         {currentOffering?.availablePackages?.length > 0 && (
           <TouchableOpacity onPress={() => handlePurchase(currentOffering.availablePackages[0])}>
             <Text style={{ color: 'blue' }}>구매하기</Text>
