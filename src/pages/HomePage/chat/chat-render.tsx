@@ -553,6 +553,7 @@ export const RenderInputToolbar = (
               }}
               onPress={async () => {
                 if (sendingStatus) return;
+
                 const imageUrl = image;
 
                 // 텍스트와 이미지 모두 있을 때: 두 개의 메시지 전송

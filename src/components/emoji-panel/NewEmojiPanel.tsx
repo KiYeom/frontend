@@ -22,6 +22,7 @@ import {
   purchasePackage,
 } from '../../services/inappService';
 import Purchases, { PurchasesOffering } from 'react-native-purchases';
+import Analytics from '../../utils/analytics';
 
 type NewEmojiPanelProps = {
   height: number;
@@ -246,11 +247,13 @@ const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({
       activeOpacity={1} // 터치 시 투명도 변경 방지
       onPress={() => {
         console.log(`'${emojiItem.name}' 아이콘 클릭됨`);
+        Analytics.clickEmojiPanelIcon(emojiItem.name);
         //console.log(`'${emojiItem.source}' 아이콘 클릭됨`);
         //console.log(`'${emojiItem.path}' 아이콘 클릭됨!!!!!`);
         //구매하지 않은 경우에는 onSelectEmoji 호출 안함
         if (!hasPurchased) {
           console.log('이모티콘 구매가 필요합니다.');
+          Analytics.watchEmojiPanelNoPurchaseClick(emojiItem.name);
           Toast.show(`이모티콘 구매 후 이용해주세요🐶`, {
             duration: Toast.durations.SHORT,
             position: Toast.positions.CENTER,
@@ -341,7 +344,11 @@ const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({
               flexDirection: 'row',
               alignItems: 'center',
             }}
-            onPress={() => handlePurchase(currentOffering.availablePackages[0])}>
+            onPress={() => {
+              console.log('구매하기 버튼 클릭됨');
+              Analytics.clickEmojiPanelPurchaseButton();
+              handlePurchase(currentOffering.availablePackages[0]);
+            }}>
             <Text
               style={{
                 //color: 'blue',

@@ -405,9 +405,20 @@ export default class Analytics {
     });
   };
 
-  //채팅 - 채팅 전송 버튼 클릭
-  public static clickChatSendButton = (): void => {
+  //채팅 - 채팅 전송 버튼 클릭 (텍스트 전송 여부, 사진 전송 여부, 이모티콘 전송 여부)
+  /*public static clickChatSendButton = (): void => {
     this.sendEvent('채팅 - 채팅 전송 버튼 클릭', 'chatSendButton');
+  };*/
+  public static clickChatSendButton = (
+    isText: boolean = false,
+    isPhoto: boolean = false,
+    isEmoji: boolean = false,
+  ): void => {
+    this.sendEvent('채팅 - 채팅 전송 버튼 클릭', 'chatSendButton', {
+      isText,
+      isPhoto,
+      isEmoji,
+    });
   };
   //채팅 - AI답변 전송 시작 상태
   public static aiRequestSentStatus = (): void => {
@@ -456,6 +467,56 @@ export default class Analytics {
   //채팅 - 헤더 우측 선물 상자 버튼 클릭
   public static clickHeaderGiftBoxButton = (eventUrl: string): void => {
     this.sendEvent('채팅 - 헤더의 우측 선물 상자 버튼 클릭', 'headerGiftBoxButton', { eventUrl });
+  };
+
+  //채팅 - 이모티콘 버튼 클릭 (열거나 닫는 것을 구분)
+  public static clickHeaderEmojiButton = (panelStatus: string): void => {
+    this.sendEvent('채팅 - 입력창 우측의 이모티콘 버튼 클릭', 'headerEmojiButton', { panelStatus });
+  };
+
+  //채팅 - 이모티콘 패널의 아이콘 클릭
+  public static clickEmojiPanelIcon = (emojiName: string): void => {
+    this.sendEvent('채팅 - 이모티콘 패널의 아이콘 클릭', 'emojiPanelIcon', { emojiName });
+  };
+
+  //채팅 - 이모티콘 패널의 구매하기 버튼 클릭
+  public static clickEmojiPanelPurchaseButton = (): void => {
+    this.sendEvent('채팅 - 이모티콘 패널의 구매하기 버튼 클릭', 'emojiPanelPurchaseButton');
+  };
+
+  //채팅 - 이모티콘 패널 - 구매하기 버튼 클릭 - 이미 구매한 이모티콘 알림창 관찰
+  public static watchEmojiPanelAlreadyPurchasedAlert = (): void => {
+    this.sendEvent(
+      '채팅 - 이모티콘 패널 - 구매하기 버튼 클릭 - 이미 구매한 이모티콘 알림창 관찰',
+      'emojiPanelAlreadyPurchasedAlert',
+    );
+  };
+
+  //채팅 - 이모티콘 패널 - 구매하기 버튼 클릭 - 구매 완료 알림창 관찰
+  public static watchEmojiPanelPurchaseCompleteAlert = (): void => {
+    this.sendEvent(
+      '채팅 - 이모티콘 패널 - 구매하기 버튼 클릭 - 구매 완료 알림창 관찰',
+      'emojiPanelPurchaseCompleteAlert',
+    );
+  };
+
+  //채팅 - 이모티콘 패널 - 구매하기 버튼 클릭 - 구매 실패 알림창 관찰
+  public static watchEmojiPanelPurchaseFailedAlert = (): void => {
+    this.sendEvent(
+      '채팅 - 이모티콘 패널 - 구매하기 버튼 클릭 - 구매 실패 알림창 관찰',
+      'emojiPanelPurchaseFailedAlert',
+    );
+  };
+
+  //채팅 - 이모티콘 패널 - 구매 안하고 이모티콘을 클릭 시 토스트 나온 상황 관찰
+  public static watchEmojiPanelNoPurchaseClick = (emojiName: string): void => {
+    this.sendEvent(
+      '채팅 - 이모티콘 패널 - 구매 안하고 이모티콘 클릭',
+      'emojiPanelNoPurchaseClick',
+      {
+        emojiName,
+      },
+    );
   };
 
   //채팅 - 사이드바 버튼 클릭

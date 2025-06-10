@@ -246,6 +246,7 @@ const NewChat: React.FC = ({ navigation }) => {
   const [keyboardHeight, setKeyboardHeight] = useState<number>(0);
   const handleEmojiToggle = useCallback(() => {
     console.log('이모티콘 패널 토글');
+    Analytics.clickHeaderEmojiButton(isEmojiPanelVisible ? 'close' : 'open');
     // 키보드가 열려 있으면 키보드를 닫고 이모티콘 패널을 연다
     if (keyboardHeight > 0) {
       Keyboard.dismiss();
@@ -1115,6 +1116,11 @@ const NewChat: React.FC = ({ navigation }) => {
       //setIMessagesV3(previousMessages, newMessages.reverse());
       return GiftedChat.append(previousMessages, newMessages);
     });*/
+    Analytics.clickChatSendButton(
+      !!newMessages[0].text,
+      image ? true : false,
+      image && isSticker ? true : false,
+    );
     if (image) {
       if (isSticker) {
         //이모티콘은 바로 전송

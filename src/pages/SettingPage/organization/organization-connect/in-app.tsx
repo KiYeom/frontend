@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react'; // React와 훅 기능을 불러옵니다.
 import { Platform, Text, View, TouchableOpacity, StyleSheet, Alert } from 'react-native'; // RN 컴포넌트와 스타일, 알림 등을 불러옵니다.
-
 import Purchases, {
   PurchasesOffering,
   PurchasesPackage,

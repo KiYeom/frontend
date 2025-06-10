@@ -1,5 +1,6 @@
 import Purchases, { PurchasesPackage, PurchasesOffering } from 'react-native-purchases';
 import { Alert, Platform } from 'react-native';
+import Analytics from '../utils/analytics';
 
 const APIKeys = {
   apple: 'appl_fPMYhWqdXgEZtsFvoDpuZlklJSV',
@@ -12,7 +13,7 @@ export const initializeInApp = async () => {
   } else {
     await Purchases.configure({ apiKey: APIKeys.apple });
   }
-  Purchases.setDebugLogsEnabled(true);
+  //Purchases.setDebugLogsEnabled(true);
 };
 
 export const getCurrentOffering = async () => {
@@ -37,17 +38,20 @@ export const purchasePackage = async (pkg: PurchasesPackage, hasPurchased: boole
   console.log('구매 시도:', pkg.product.identifier);
   if (hasPurchased) {
     Alert.alert('알림', '이미 구매한 상품입니다.');
+    Analytics.watchEmojiPanelAlreadyPurchasedAlert();
     return false;
   }
   try {
     const purchaseResult = await Purchases.purchasePackage(pkg);
     console.log('구매 성공:', purchaseResult);
     Alert.alert('구매 성공', `${pkg.product.identifier} 상품이 구매되었습니다.`);
+    Analytics.watchEmojiPanelPurchaseCompleteAlert();
     return true;
   } catch (e: any) {
     console.warn('구매 중 오류 발생:', e);
     if (!e.userCancelled) {
       Alert.alert('구매 실패', '오류가 발생했습니다. 다시 시도해주세요.');
+      Analytics.watchEmojiPanelPurchaseFailedAlert();
     }
     return false;
   }
