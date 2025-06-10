@@ -76,7 +76,12 @@ const CustomMultiTextInput = (props: CustomMultiTextInputProps) => {
             hideEmojiPanel();
             setTimeout(() => {
               textInputRef?.current?.focus();
-            }, 500);
+            }, 350);
+          }
+        }}
+        onFocus={() => {
+          if (isEmojiPanelVisible) {
+            hideEmojiPanel();
           }
         }}
       />
