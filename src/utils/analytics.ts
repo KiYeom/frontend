@@ -141,6 +141,7 @@ export default class Analytics {
     });
   };
 
+  //quote.tsx 화면
   //행복 세잎클로버 화면 진입
   public static watchBeforeOpenHappyLyricsImageScreen = (): void => {
     this.sendEvent('행복 세잎클로버 화면 진입', 'happyLyricsScreen');
@@ -157,6 +158,51 @@ export default class Analytics {
   //행복 이미지 페이지 공유 버튼 클릭
   public static clickHappyLyricsImageShareButton = (): void => {
     this.sendEvent('행복 이미지 페이지 공유 버튼 클릭', 'happyLyricsImageShareButton');
+  };
+
+  // 광고 로드 시작
+  public static startHappyLyricsAdLoad = (): void => {
+    this.sendEvent('행복 세잎클로버 광고 로드 시작', 'happyLyricsAdLoadStart');
+  };
+
+  // 광고 로드 성공
+  public static successHappyLyricsAdLoad = (): void => {
+    this.sendEvent('행복 세잎클로버 광고 로드 성공', 'happyLyricsAdLoadSuccess');
+  };
+
+  // 광고 로드 실패
+  public static failHappyLyricsAdLoad = (error: string): void => {
+    this.sendEvent('행복 세잎클로버 광고 로드 실패', 'happyLyricsAdLoadFail', { error });
+  };
+
+  // 광고 표시 시작 (클릭 시)
+  public static clickHappyLyricsAdShow = (): void => {
+    this.sendEvent('행복 세잎클로버 광고 표시 클릭', 'happyLyricsAdShowClick');
+  };
+
+  // 광고 표시 성공
+  public static successHappyLyricsAdShow = (): void => {
+    this.sendEvent('행복 세잎클로버 광고 표시 성공', 'happyLyricsAdShowSuccess');
+  };
+
+  // 광고 표시 실패
+  public static failHappyLyricsAdShow = (error: string): void => {
+    this.sendEvent('행복 세잎클로버 광고 표시 실패', 'happyLyricsAdShowFail', { error });
+  };
+
+  // 광고 시청 완료 (보상 획득)
+  public static earnHappyLyricsAdReward = (): void => {
+    this.sendEvent('행복 세잎클로버 광고 시청 완료', 'happyLyricsAdRewardEarned');
+  };
+
+  // 광고 닫기 (중간에 닫은 경우)
+  public static closeHappyLyricsAd = (): void => {
+    this.sendEvent('행복 세잎클로버 광고 닫기', 'happyLyricsAdClosed');
+  };
+
+  // 광고 시청 후 결과 화면 표시
+  public static showHappyLyricsResult = (): void => {
+    this.sendEvent('행복 세잎클로버 광고 시청 후 결과 표시', 'happyLyricsAdResultShown');
   };
 
   //탭 - 설정 화면
