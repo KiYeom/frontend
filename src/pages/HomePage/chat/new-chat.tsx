@@ -1357,7 +1357,7 @@ const NewChat: React.FC = ({ navigation }) => {
         }}
         pointerEvents="box-none"></Animated.View>
 
-      {isEmojiPanelVisible && (
+      {/*isEmojiPanelVisible && (
         <Animated.View
           style={[
             css`
@@ -1376,7 +1376,28 @@ const NewChat: React.FC = ({ navigation }) => {
             insets={insets}
           />
         </Animated.View>
-      )}
+      )*/}
+      <Animated.View
+        // 항상 렌더링은 하지만, 애니메이션 값으로 위치와 불투명도를 제어합니다
+        style={[
+          {
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            zIndex: 100,
+          },
+          emojiPanelAnimatedStyle, // ← 이렇게 배열로 넣어야 Reanimated가 읽습니다
+        ]}
+        pointerEvents={isEmojiPanelVisible ? 'auto' : 'none'}>
+        <NewEmojiPanel
+          key="uniqueEmojiPanelKey"
+          height={emojiPanelHeight + insets.bottom}
+          selectedEmoji={selectedEmoji}
+          onSelectEmoji={handleEmojiSelectAsImage}
+          insets={insets}
+        />
+      </Animated.View>
       <AdsModal
         modalVisible={modalVisible}
         onClose={() => {

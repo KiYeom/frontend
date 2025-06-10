@@ -70,3 +70,14 @@ export const LegendLabel = styled.Text`
   font-size: ${constants.LEGEND_LABEL_FONT * rsFont}px;
   color: ${palette.neutral[500]};
 `;
+// 카드 모양 배경 (워드 클라우드 또는 빈 상태 컨테이너)
+export const CardContainer = styled.View`
+  width: 100%;
+  background-color: white;
+  border-radius: 10px;
+  border-color: ${palette.neutral[100]};
+  border-width: 1px;
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
+`;

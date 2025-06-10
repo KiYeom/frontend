@@ -12,6 +12,7 @@ import {
   LegendColorDot,
   LegendLabel,
   constants,
+  CardContainer,
 } from './NewPeriodEmotionArea.style';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 
@@ -114,16 +115,21 @@ const NewPeriodEmotionArea: React.FC<PeriodEmotionAreaProps> = ({ periodEmotionL
         </HeaderWrapper>
 
         {/* 워드 클라우드 */}
-        {isValidEmotionList && wordCloudData.length > 0 ? (
-          <Cloud
-            keywords={wordCloudData}
-            scale={constants.CLOUD_SCALE}
-            largestAtCenter={true}
-            drawContainerCircle={false}
-          />
-        ) : (
-          <Empty type="채팅기록" />
-        )}
+        <CardContainer>
+          {isValidEmotionList && wordCloudData.length > 0 ? (
+            <Cloud
+              keywords={wordCloudData}
+              scale={constants.CLOUD_SCALE}
+              largestAtCenter={true}
+              drawContainerCircle={false}
+              textStyle={{
+                fontFamily: 'Kyobo-handwriting',
+              }}
+            />
+          ) : (
+            <Empty type="채팅기록" />
+          )}
+        </CardContainer>
       </Container>
     </View>
   );

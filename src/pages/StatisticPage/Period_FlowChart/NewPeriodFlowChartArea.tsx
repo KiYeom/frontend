@@ -96,11 +96,12 @@ const NewPeriodFlowChartArea = ({ emotionsData }) => {
               height: 15,
             }}
             color={'#6E6E6E'}
-            thickness={3}
+            thickness={2}
             dataPointsColor={'#6E6E6E'}
             lineGradient={false}
-            dataPointsHeight={8}
-            dataPointsWidth={8}
+            dataPointsHeight={6}
+            dataPointsWidth={6}
+            dataPointsRadius1={3}
             hideDataPoints={false}
             curved={false}
             showVerticalLines={false}
