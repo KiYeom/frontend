@@ -8,6 +8,7 @@ import {
   Keyboard,
   ImageSourcePropType,
   TextInput,
+  TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -1253,82 +1254,84 @@ const NewChat: React.FC = ({ navigation }) => {
         handleSearch={handleSearch}
         updateMessageHighlights={updateMessageHighlights}
       />
-      <Animated.View style={[screenAnimatedStyle, { flexGrow: 1 }]}>
-        <GiftedChat
-          listViewProps={{
-            onScrollToIndexFailed: scrollToIndexFailed,
-            onMomentumScrollEnd: () => {
-              // 스크롤 애니메이션이 종료되면 재귀 호출이 더 이상 발생하지 않는다고 가정하고 로딩 스피너를 숨김
-              setSearchLoading(false);
-            },
-          }}
-          as
-          any
-          messageContainerRef={messageContainerRef}
-          messages={messages}
-          onSend={(messages) => onSend(messages)}
-          user={userObject}
-          onInputTextChanged={(text) => {
-            if (typingTimeoutRef.current) {
-              resetTimer();
+      <TouchableOpacity style={{ flex: 1 }} activeOpacity={1} onPress={hideEmojiPanel}>
+        <Animated.View style={[screenAnimatedStyle, { flexGrow: 1 }]}>
+          <GiftedChat
+            listViewProps={{
+              onScrollToIndexFailed: scrollToIndexFailed,
+              onMomentumScrollEnd: () => {
+                // 스크롤 애니메이션이 종료되면 재귀 호출이 더 이상 발생하지 않는다고 가정하고 로딩 스피너를 숨김
+                setSearchLoading(false);
+              },
+            }}
+            as
+            any
+            messageContainerRef={messageContainerRef}
+            messages={messages}
+            onSend={(messages) => onSend(messages)}
+            user={userObject}
+            onInputTextChanged={(text) => {
+              if (typingTimeoutRef.current) {
+                resetTimer();
+              }
+            }}
+            renderAvatar={RenderAvatar}
+            showAvatarForEveryMessage
+            renderAvatarOnTop
+            onPressAvatar={() => {
+              navigation.navigate(HomeStackName.Profile);
+            }}
+            onLongPressAvatar={() => {
+              if (getIsDemo()) setIsScoreDemo(true);
+            }}
+            renderBubble={(props) => <RenderBubble {...props} onFavoritePress={toggleFavorite} />}
+            onLongPress={(context, message: IMessage) => {
+              Clipboard.setStringAsync(message.text).then(() => {
+                showToast();
+              });
+            }}
+            renderFooter={() => RenderFooter(sending)}
+            renderTime={RenderTime}
+            renderDay={RenderDay}
+            renderSystemMessage={RenderSystemMessage}
+            renderInputToolbar={(sendProps: SendProps<ExtendedIMessage>) =>
+              RenderInputToolbar(
+                sendProps,
+                sending,
+                isSearchMode,
+                enableUp,
+                enableDown,
+                setEnableUp,
+                setEnableDown,
+                handleSearch,
+                searchWord,
+                pickImage,
+                setInputHeight,
+                image,
+                setImage,
+                textInputRef,
+                //추가
+                isEmojiPanelVisible,
+                emojiPanelHeight,
+                translateY,
+                opacity,
+                handleEmojiToggle, // 이모티콘 패널 토글 함수
+                hideEmojiPanel,
+                selectedEmoji,
+                onSelectEmoji,
+              )
             }
-          }}
-          renderAvatar={RenderAvatar}
-          showAvatarForEveryMessage
-          renderAvatarOnTop
-          onPressAvatar={() => {
-            navigation.navigate(HomeStackName.Profile);
-          }}
-          onLongPressAvatar={() => {
-            if (getIsDemo()) setIsScoreDemo(true);
-          }}
-          renderBubble={(props) => <RenderBubble {...props} onFavoritePress={toggleFavorite} />}
-          onLongPress={(context, message: IMessage) => {
-            Clipboard.setStringAsync(message.text).then(() => {
-              showToast();
-            });
-          }}
-          renderFooter={() => RenderFooter(sending)}
-          renderTime={RenderTime}
-          renderDay={RenderDay}
-          renderSystemMessage={RenderSystemMessage}
-          renderInputToolbar={(sendProps: SendProps<ExtendedIMessage>) =>
-            RenderInputToolbar(
-              sendProps,
-              sending,
-              isSearchMode,
-              enableUp,
-              enableDown,
-              setEnableUp,
-              setEnableDown,
-              handleSearch,
-              searchWord,
-              pickImage,
-              setInputHeight,
-              image,
-              setImage,
-              textInputRef,
-              //추가
-              isEmojiPanelVisible,
-              emojiPanelHeight,
-              translateY,
-              opacity,
-              handleEmojiToggle, // 이모티콘 패널 토글 함수
-              hideEmojiPanel,
-              selectedEmoji,
-              onSelectEmoji,
-            )
-          }
-          lightboxProps={undefined}
-          textInputProps={{
-            placeholder: getIsDemo() ? '메시지 입력.' : '메시지 입력',
-            marginLeft: rsWidth * 15,
-          }}
-          //renderMessageImage={RenderMessageImage}
-          keyboardShouldPersistTaps={'never'}
-          alwaysShowSend
-        />
-      </Animated.View>
+            lightboxProps={undefined}
+            textInputProps={{
+              placeholder: getIsDemo() ? '메시지 입력.' : '메시지 입력',
+              marginLeft: rsWidth * 15,
+            }}
+            //renderMessageImage={RenderMessageImage}
+            keyboardShouldPersistTaps={'never'}
+            alwaysShowSend
+          />
+        </Animated.View>
+      </TouchableOpacity>
       {searchLoading && (
         <View
           style={{
