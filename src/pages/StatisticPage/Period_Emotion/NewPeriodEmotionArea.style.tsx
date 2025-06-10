@@ -33,7 +33,7 @@ export const constants = {
 export const Container = styled.View`
   /* 아이템 간 세로 간격 */
   gap: 12px;
-  padding-right: ${rsWidth * 20 + 'px'};
+  justify-content: center;
 `;
 
 // --- 헤더 래퍼 (타이틀) ---

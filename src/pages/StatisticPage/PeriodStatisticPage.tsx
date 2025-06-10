@@ -157,7 +157,6 @@ const PeriodStatisticPage: React.FC<any> = ({ navigation }) => {
           <View
             style={{
               //backgroundColor: 'yellow',
-              flex: 1,
               justifyContent: 'center',
               alignItems: 'center',
             }}>
