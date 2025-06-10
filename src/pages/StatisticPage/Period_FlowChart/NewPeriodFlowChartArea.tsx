@@ -33,6 +33,7 @@ const STRIPE_NEW_COLORS = ['#F6B8B8', '#CFC7FD', '#E2E2E2', '#C3EFD5', '#FDEA9B'
 
 const NewPeriodFlowChartArea = ({ emotionsData }) => {
   const { dates, groups } = emotionsData;
+  console.log('NewPeriodFlowChartArea - emotionsData:', emotionsData);
   const n = dates.length;
   // 수정 코드 (패딩 5px 반영)
   const spacing =
