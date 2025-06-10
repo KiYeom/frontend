@@ -39,7 +39,7 @@ export const chatting = async (
   image?: string,
   isSticker?: boolean,
 ): Promise<TChatAnswerV3 | undefined> => {
-  console.log('chatting', characterId, question, isDemo, image, isSticker);
+  //console.log('chatting', characterId, question, isDemo, image, isSticker);
   const maxAttempts = 3;
   let attempts = 0;
 
@@ -88,7 +88,7 @@ export const chatting = async (
         });
         return res.data;
       } else {
-        console.log('🧞‍♂️🧞‍♂️🧞‍♂️🧞‍♂️🧞‍♂️🧞‍♂️🧞‍♂️isSticker 여부', isSticker);
+        //console.log('🧞‍♂️🧞‍♂️🧞‍♂️🧞‍♂️🧞‍♂️🧞‍♂️🧞‍♂️isSticker 여부', isSticker);
         const res = await instance.post('/v3/chat/memory', {
           characterId,
           question,

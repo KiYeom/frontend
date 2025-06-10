@@ -43,7 +43,7 @@ const InAppTest: React.FC<{ navigation: any }> = ({ navigation }) => {
       await updatePurchaseStatus(); // 초기 구매 상태 갱신
     };
 
-    Purchases.setDebugLogsEnabled(true);
+    //Purchases.setDebugLogsEnabled(true);
     setup().catch(console.log);
   }, []);
 

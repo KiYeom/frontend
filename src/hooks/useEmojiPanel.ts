@@ -118,7 +118,7 @@ export const useEmojiPanel = () => {
   // 이모티콘 선택 핸들러
   const onEmojiSelect = useCallback((emoji: string) => {
     // 이모티콘 선택 로직 (나중에 텍스트 입력에 추가하는 로직 구현)
-    console.log('Selected emoji:', emoji);
+    //console.log('Selected emoji:', emoji);
   }, []);
 
   // 패널 높이를 고정값으로 유지 (키보드 높이에 따라 변경하지 않음)

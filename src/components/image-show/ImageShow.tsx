@@ -13,10 +13,10 @@ type ImageShowProps = {
 const ImageShow = ({ image, setImage }: ImageShowProps) => {
   const [scaledSize, setScaledSize] = useState({ width: 0, height: 0 });
   useEffect(() => {
-    console.log('이미지 보여주기 컴포넌트 실행됨', image);
+    //console.log('이미지 보여주기 컴포넌트 실행됨', image);
     if (!image) return;
     if (typeof image === 'string') {
-      console.log('이미지~~', image);
+      //console.log('이미지~~', image);
       Image.getSize(
         image,
         (width, height) => {

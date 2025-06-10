@@ -584,7 +584,7 @@ const NewChat: React.FC = ({ navigation }) => {
   };
 
   const sendMessageToServerWithText = (text: string) => {
-    console.log('sendMessageToServerWithText 실행', text, image);
+    //console.log('sendMessageToServerWithText 실행', text, image);
 
     const buf = text || ''; // 전달받은 텍스트 직접 사용
     const img = imageRef.current;
@@ -599,7 +599,7 @@ const NewChat: React.FC = ({ navigation }) => {
 
     // 나머지 로직은 기존 sendMessageToServer와 동일
     if (img) {
-      console.log('이미지 전송 시작', img);
+      //console.log('이미지 전송 시작', img);
       const pendingMsg: ExtendedIMessage = {
         _id: uuid.v4().toString(),
         text: buf,
@@ -615,7 +615,7 @@ const NewChat: React.FC = ({ navigation }) => {
       });
 
       if (buf?.trim() !== '') {
-        console.log('버퍼에 텍스트가 존재함', buf);
+        //console.log('버퍼에 텍스트가 존재함', buf);
         const textMsg: ExtendedIMessage = {
           _id: uuid.v4().toString(),
           text: buf,
@@ -632,7 +632,7 @@ const NewChat: React.FC = ({ navigation }) => {
 
     const question = buf;
     const isDemo = getIsDemo();
-    console.log('전송할 텍스트:', question, '이미지:', img);
+    //console.log('전송할 텍스트:', question, '이미지:', img);
     const imageToSend = img ?? '';
 
     chatting(1, question, isDemo, imageToSend, isSticker)
@@ -693,7 +693,7 @@ const NewChat: React.FC = ({ navigation }) => {
         }
       })
       .catch((err) => {
-        console.log('error 발생', err);
+        //console.log('error 발생', err);
         const newMessages: ExtendedIMessage[] = [
           {
             _id: uuid.v4().toString(),
@@ -719,11 +719,11 @@ const NewChat: React.FC = ({ navigation }) => {
 
   //버퍼에 저장된 메시지를 서버로 전송하는 sendMessageToServer 함수
   const sendMessageToServer = () => {
-    console.log('sendMessageToServer 실행');
+    //console.log('sendMessageToServer 실행');
     const buf = bufferRef.current;
     const img = imageRef.current;
-    console.log('sendMessageToServer 실행', buffer, image);
-    console.log('sendMessageToServer 내에서 읽은 값', buf, img);
+    //console.log('sendMessageToServer 실행', buffer, image);
+    //console.log('sendMessageToServer 내에서 읽은 값', buf, img);
     if ((!buf && !img) || sending) return; //텍스트도, 이미지도 없는 경우에는 전송하지 않음
     setSending(true);
     setBuffer(null); // 버퍼 비우기
@@ -732,7 +732,7 @@ const NewChat: React.FC = ({ navigation }) => {
     imageRef.current = null;
 
     if (img) {
-      console.log('이미지 전송 시작', img);
+      //console.log('이미지 전송 시작', img);
       // 1) 화면에 보여줄 임시 메시지 객체 생성
       const pendingMsg: ExtendedIMessage = {
         _id: uuid.v4().toString(), // 랜덤 ID
@@ -775,10 +775,10 @@ const NewChat: React.FC = ({ navigation }) => {
     }
     const question = buf ?? '';
     const isDemo = getIsDemo();
-    console.log('iamge ', img, question);
+    //console.log('iamge ', img, question);
     const imageToSend = img ?? '';
     //setImage(null);
-    console.log('이모티콘?', isSticker);
+    //console.log('이모티콘?', isSticker);
 
     chatting(1, question, isDemo, imageToSend, isSticker) //버퍼에 저장된 메세지를 서버로 전송하여 질문 & 대화 전체 쌍을 받아옴
       .then((res) => {
@@ -823,12 +823,12 @@ const NewChat: React.FC = ({ navigation }) => {
                     msg.text &&
                     msg.text.includes(imageUrlPattern.exec(apiQuestions[i].question)?.[0] || '')
                   ) {
-                    console.log('이 버블은 텍스트와 이미지가 존재함', msg.text);
+                    //console.log('이 버블은 텍스트와 이미지가 존재함', msg.text);
                     return true;
                   }
                   // 2. image 필드가 있는 경우
                   if (msg.image && apiQuestions[i].question.includes(msg.image)) {
-                    console.log('이 버블은 이미지만 존재함', msg.image);
+                    //console.log('이 버블은 이미지만 존재함', msg.image);
                     return true;
                   }
                 }
@@ -861,9 +861,9 @@ const NewChat: React.FC = ({ navigation }) => {
         }
       })
       .catch((err) => {
-        console.log('error 발생', err);
-        console.log(isSticker, 'isSticker');
-        console.log(imageToSend, 'imageToSend');
+        //console.log('error 발생', err);
+        //console.log(isSticker, 'isSticker');
+        //console.log(imageToSend, 'imageToSend');
         const newMessages: ExtendedIMessage[] = [
           {
             _id: uuid.v4().toString(),
@@ -1124,12 +1124,12 @@ const NewChat: React.FC = ({ navigation }) => {
     if (image) {
       if (isSticker) {
         //이모티콘은 바로 전송
-        console.log('😀이모티콘 전송 같이 보내는 글자 : ', newMessages[0].text);
+        //console.log('😀이모티콘 전송 같이 보내는 글자 : ', newMessages[0].text);
         setBuffer(newMessages[0].text);
         sendMessageToServerWithText(newMessages[0].text);
         return;
       }
-      console.log('🧞‍♂️이미지 전송');
+      //console.log('🧞‍♂️이미지 전송');
       // 이미지를 보낸 경우
       //setBuffer(buffer ? buffer + newMessages[0].text + '\t' : newMessages[0].text + '\t');
       setBuffer(newMessages[0].text);
@@ -1185,7 +1185,7 @@ const NewChat: React.FC = ({ navigation }) => {
 
   // NewChat.tsx에서 handleEmojiSelect 함수 추가
   const handleEmojiSelectAsImage = useCallback((emoji: string) => {
-    console.log('이모티콘 선택', emoji);
+    //console.log('이모티콘 선택', emoji);
 
     // 이모티콘을 이미지 상태에 설정
     setImage(emoji);
@@ -1205,7 +1205,7 @@ const NewChat: React.FC = ({ navigation }) => {
   const messageContainerRef = useRef<React.ElementRef<typeof GiftedChat>>(null);
 
   const insets = useSafeAreaInsets();
-  console.log('insets', insets);
+  //console.log('insets', insets);
 
   /* 채팅 화면 전체 구성 */
   return (

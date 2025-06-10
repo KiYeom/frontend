@@ -12,7 +12,7 @@ interface Props {
   onDelete: (image: string) => void;
 }
 const AttachmentPreview: React.FC<Props> = ({ image, onDelete }) => {
-  console.log('이미지 미리보기 컴포넌트 실행됨', image);
+  //console.log('이미지 미리보기 컴포넌트 실행됨', image);
   return (
     <Container>
       <Image
@@ -23,17 +23,17 @@ const AttachmentPreview: React.FC<Props> = ({ image, onDelete }) => {
         source={{ uri: image }}
         style={{ width: '100%', height: '100%' }}
         resizeMode="contain"
-        onLoadStart={() => console.log('🔄 이미지 로드 시작')}
-        onLoad={() => console.log('✅ 이미지 로드 성공')}
-        onError={(error) => {
+        //onLoadStart={() => console.log('🔄 이미지 로드 시작')}
+        //onLoad={() => console.log('✅ 이미지 로드 성공')}
+        /*onError={(error) => {
           console.log('❌ 이미지 로드 실패:', error.nativeEvent);
           console.log('❌ 에러 상세:', JSON.stringify(error.nativeEvent, null, 2));
-        }}
+        }}*/
       />
       <DeleteButton
         hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
         onPress={() => {
-          console.log('이미지 미리보기 삭제 버튼');
+          //console.log('이미지 미리보기 삭제 버튼');
           Analytics.clickImagePreviewCancelButton();
           onDelete(image);
         }}>
