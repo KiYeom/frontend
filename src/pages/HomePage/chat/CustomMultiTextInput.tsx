@@ -93,7 +93,7 @@ const CustomMultiTextInput = (props: CustomMultiTextInputProps) => {
         <Icon
           name={'emojiIcon'}
           width={24}
-          color={isEmojiPanelVisible ? palette.primary[500] : palette.neutral[400]}
+          color={isEmojiPanelVisible ? palette.primary[100] : palette.neutral[200]}
         />
       </TouchableOpacity>
     </View>

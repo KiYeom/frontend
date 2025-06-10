@@ -8,7 +8,7 @@ export const useEmojiPanel = () => {
   const [emojiPanelHeight, setEmojiPanelHeight] = useState(350); // 기본 이모티콘 패널 높이
 
   // 애니메이션 값
-  const translateY = useSharedValue(0);
+  const translateY = useSharedValue<number>(emojiPanelHeight);
   const opacity = useSharedValue(0);
 
   // 키보드 이벤트 리스너
@@ -39,8 +39,8 @@ export const useEmojiPanel = () => {
     setKeyboardHeight(0);
   }, []);
 
-  // 이모티콘 패널 표시
-  const showEmojiPanel = useCallback(() => {
+  // 이모티콘 패널 표시하는 showEmojiPanel 함수
+  /*const showEmojiPanel = useCallback(() => {
     // 키보드가 열려있다면 먼저 닫기
     if (keyboardHeight > 0) {
       Keyboard.dismiss();
@@ -48,16 +48,29 @@ export const useEmojiPanel = () => {
 
     setIsEmojiPanelVisible(true);
 
-    // 애니메이션 시작
+    // Y = 0 위치 (화면 바닥)에 스프링으로 튕기듯 이동
     translateY.value = withSpring(0, {
       damping: 20,
       stiffness: 300,
     });
+    // 0 -> 1로 0.5초간 페이드인
     opacity.value = withTiming(1, { duration: 500 });
+  }, [keyboardHeight, translateY, opacity]);*/
+
+  //이모티콘 패널을 표시하는 showEmojiPanel 함수
+  const showEmojiPanel = useCallback(() => {
+    if (keyboardHeight > 0) {
+      Keyboard.dismiss();
+    }
+    setIsEmojiPanelVisible(true);
+
+    // 그냥 0 위치로 300ms 동안 부드럽게 이동
+    translateY.value = withTiming(0, { duration: 300 });
+    opacity.value = withTiming(1, { duration: 300 });
   }, [keyboardHeight, translateY, opacity]);
 
   // 이모티콘 패널 숨기기
-  const hideEmojiPanel = useCallback(() => {
+  /*const hideEmojiPanel = useCallback(() => {
     // 애니메이션으로 숨기기
     translateY.value = withSpring(emojiPanelHeight, {
       damping: 20,
@@ -66,6 +79,19 @@ export const useEmojiPanel = () => {
     opacity.value = withTiming(0, { duration: 200 });
 
     // 애니메이션 완료 후 상태 변경
+    setTimeout(() => {
+      setIsEmojiPanelVisible(false);
+    }, 300);
+  }, [emojiPanelHeight, translateY, opacity]);*/
+
+  //이모티콘 패널을 숨기는 hideEmojiPanel 함수
+  const hideEmojiPanel = useCallback(() => {
+    // translateY를 emojiPanelHeight 만큼 내려서 화면 밖으로 부드럽게 이동
+    translateY.value = withTiming(emojiPanelHeight, { duration: 300 });
+    // opacity도 0으로 300ms 동안 페이드 아웃
+    opacity.value = withTiming(0, { duration: 300 });
+
+    // 애니메이션이 끝난 뒤 상태를 false로 전환 (duration과 동일하게)
     setTimeout(() => {
       setIsEmojiPanelVisible(false);
     }, 300);
@@ -95,7 +121,7 @@ export const useEmojiPanel = () => {
     }
   }, [keyboardHeight]);
 
-  // 초기 애니메이션 값 설정
+  // 초기 애니메이션 값 설정 : 패널 높이에 맞춰 화면 밖으로 밀어낸 상태로 초기화
   useEffect(() => {
     translateY.value = emojiPanelHeight;
   }, [emojiPanelHeight]);

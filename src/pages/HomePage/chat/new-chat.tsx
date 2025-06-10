@@ -96,7 +96,7 @@ import {
 } from 'react-native-google-mobile-ads';
 import Constants from 'expo-constants';
 import { getUserInfo } from '../../../apis/setting';
-import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, withTiming, interpolate } from 'react-native-reanimated';
 //import adUnitId from '../../../utils/advertise'; //앱 시작 시 결정된 값
 import { useEmojiPanel } from '../../../hooks/useEmojiPanel';
 import { useSelectedEmoji } from '../../../hooks/useSelectedEmoji';
@@ -213,7 +213,7 @@ const NewChat: React.FC = ({ navigation }) => {
   } = useEmojiPanel();
 
   // 채팅 화면 전체에 적용할 애니메이션 스타일
-  const screenAnimatedStyle = useAnimatedStyle(() => ({
+  /*const screenAnimatedStyle = useAnimatedStyle(() => ({
     transform: [
       {
         translateY: withTiming(isEmojiPanelVisible ? -emojiPanelHeight : 0, {
@@ -223,11 +223,20 @@ const NewChat: React.FC = ({ navigation }) => {
       },
     ],
     opacity: 1,
-  }));
+  }));*/
   //이모지 패널에 쓸 애니메이션
+  /*const emojiPanelAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value }],
+    opacity: opacity.value,
+  }));*/
+  // 1) 패널 애니메이션 스타일
   const emojiPanelAnimatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }],
     opacity: opacity.value,
+  }));
+  // 2) 화면 전체 애니메이션 스타일
+  const screenAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value - emojiPanelHeight }],
   }));
 
   //입력 필드 높이
