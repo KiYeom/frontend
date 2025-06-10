@@ -38,6 +38,8 @@ type NewEmojiPanelProps = {
     left: number;
     right: number;
   };
+  onPurchaseStart?: () => void;
+  onPurchaseEnd?: () => void;
 };
 
 // 이모지 데이터 타입 정의
@@ -181,6 +183,8 @@ const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({
   selectedEmoji,
   onSelectEmoji,
   insets,
+  onPurchaseStart = () => {},
+  onPurchaseEnd = () => {},
 }) => {
   //const { selectedEmoji, onSelectEmoji } = useSelectedEmoji();
   const [hasPurchased, setHasPurchased] = useState<boolean>(false);
@@ -198,8 +202,12 @@ const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({
   }, []);
 
   const handlePurchase = async (pkg) => {
+    onPurchaseStart();
     const success = await purchasePackage(pkg, hasPurchased);
+    onPurchaseEnd();
     if (success) {
+      //구매 상태 갱신
+      console.log('구매 성공, 상태 갱신', success);
       const purchased = await updatePurchaseStatus();
       setHasPurchased(purchased);
     }

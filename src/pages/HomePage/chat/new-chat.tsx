@@ -171,6 +171,9 @@ const NewChat: React.FC = ({ navigation }) => {
   const bufferRef = useRef<string | null>(null);
   const imageRef = useRef<string | null>(null);
 
+  //결제 상태
+  const [isPurchasing, setIsPurchasing] = useState(false);
+
   const { selectedEmoji, onSelectEmoji } = useSelectedEmoji();
 
   // state를 변경할 때마다 ref도 업데이트
@@ -1414,6 +1417,8 @@ const NewChat: React.FC = ({ navigation }) => {
           selectedEmoji={selectedEmoji}
           onSelectEmoji={handleEmojiSelectAsImage}
           insets={insets}
+          onPurchaseStart={() => setIsPurchasing(true)}
+          onPurchaseEnd={() => setIsPurchasing(false)}
         />
       </Animated.View>
       <AdsModal
@@ -1436,6 +1441,22 @@ const NewChat: React.FC = ({ navigation }) => {
             : `광고를 시청하면\n쿠키에게 사진을 보여줄 수 있어요`
         }
       />
+      {isPurchasing && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            zIndex: 999,
+          }}>
+          <ActivityIndicator size="large" color="#ffffff" />
+        </View>
+      )}
     </SafeAreaView>
   );
 };
