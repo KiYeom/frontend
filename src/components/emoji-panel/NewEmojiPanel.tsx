@@ -338,29 +338,27 @@ const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({
           )}
         </View>
 
-        {currentOffering?.availablePackages?.length > 0 && (
-          <TouchableOpacity
+        <TouchableOpacity
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}
+          onPress={() => {
+            console.log('구매하기 버튼 클릭됨');
+            Analytics.clickEmojiPanelPurchaseButton();
+            handlePurchase(currentOffering.availablePackages[0]);
+          }}>
+          <Text
             style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}
-            onPress={() => {
-              console.log('구매하기 버튼 클릭됨');
-              Analytics.clickEmojiPanelPurchaseButton();
-              handlePurchase(currentOffering.availablePackages[0]);
+              //color: 'blue',
+              fontFamily: 'Pretendard-Regular',
+              fontSize: 14,
+              color: palette.neutral[900],
             }}>
-            <Text
-              style={{
-                //color: 'blue',
-                fontFamily: 'Pretendard-Regular',
-                fontSize: 14,
-                color: palette.neutral[900],
-              }}>
-              구매하기
-            </Text>
-            <Icon name={'arrow-right'} height={11} color={palette.neutral[900]} />
-          </TouchableOpacity>
-        )}
+            구매하기
+          </Text>
+          <Icon name={'arrow-right'} height={11} color={palette.neutral[900]} />
+        </TouchableOpacity>
       </View>
 
       {/* 스크롤 가능한 아이템 그리드 */}
