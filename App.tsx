@@ -64,9 +64,9 @@ if (isProductionOrStaging && process.env.EXPO_PUBLIC_AMPLITUDE) {
     minIdLength: 1,
   });
 }
-amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE, undefined, {
+/*amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE, undefined, {
   minIdLength: 1,
-});
+});*/
 
 SplashScreen.preventAutoHideAsync();
 const RootStack = createNativeStackNavigator();
@@ -93,9 +93,9 @@ const App: React.FC = () => {
     'Kyobo-handwriting': require('./src/assets/fonts/KyoboHandwriting2019.ttf'),
   });
 
-  const [isAppReady, setIsAppReady] = useState(false);
+  //const [isAppReady, setIsAppReady] = useState(false);
 
-  useEffect(() => {
+  /*useEffect(() => {
     async function prepare() {
       try {
         // 이미지 프리로딩
@@ -110,7 +110,7 @@ const App: React.FC = () => {
     }
 
     prepare();
-  }, []);
+  }, []);*/
 
   const checkSignIn = async (): Promise<boolean> => {
     //자동 로그인 판단
@@ -192,7 +192,7 @@ const App: React.FC = () => {
 
   //앱 처음 실행 시 폰트 로드 진행. 완료되면 로그인 여부를 판단한 뒤에 로딩 화면을 숨김
   useEffect(() => {
-    if (loaded || error || isAppReady) {
+    if (loaded || error) {
       //로딩중
       SplashScreen.hideAsync();
     }
@@ -202,7 +202,7 @@ const App: React.FC = () => {
         checkAppVersion();
       });
     }
-  }, [loaded, error, isAppReady]);
+  }, [loaded, error]);
 
   // 처음 앱을 실행할 때 amplitude에 로그인 화면에 진입했음을 알려준다.
   useEffect(() => {
