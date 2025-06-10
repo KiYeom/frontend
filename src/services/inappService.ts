@@ -44,7 +44,8 @@ export const purchasePackage = async (pkg: PurchasesPackage, hasPurchased: boole
   try {
     const purchaseResult = await Purchases.purchasePackage(pkg);
     console.log('구매 성공:', purchaseResult);
-    Alert.alert('구매 성공', `${pkg.product.identifier} 상품이 구매되었습니다.`);
+    //Alert.alert('구매 성공', `${pkg.product.identifier} 상품이 구매되었습니다.`);
+    Alert.alert('구매 성공', `이모티콘 상품이 구매되었습니다.`);
     Analytics.watchEmojiPanelPurchaseCompleteAlert();
     return true;
   } catch (e: any) {
