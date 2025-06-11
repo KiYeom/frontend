@@ -1449,12 +1449,13 @@ const NewChat: React.FC = ({ navigation }) => {
             left: 0,
             right: 0,
             bottom: 0,
+            zIndex: 1000,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
             justifyContent: 'center',
             alignItems: 'center',
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            zIndex: 999,
           }}>
-          <ActivityIndicator size="large" color="#ffffff" />
+          <ActivityIndicator size="large" color="#fff" />
+          <Text style={{ color: '#fff', marginTop: 10 }}>이모티콘 구매 중...</Text>
         </View>
       )}
     </SafeAreaView>

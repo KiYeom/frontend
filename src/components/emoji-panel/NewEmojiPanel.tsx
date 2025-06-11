@@ -20,6 +20,8 @@ import {
   getCurrentOffering,
   updatePurchaseStatus,
   purchasePackage,
+  resetPurchaseState,
+  restoreTransactions,
 } from '../../services/inappService';
 import Purchases, { PurchasesOffering } from 'react-native-purchases';
 import Analytics from '../../utils/analytics';
@@ -197,14 +199,17 @@ const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({
       setCurrentOffering(offering);
       const purchased = await updatePurchaseStatus();
       setHasPurchased(purchased);
+      console.log('offering:', offering);
+      console.log('구매 상태:', purchased);
     };
     setup().catch(console.log);
   }, []);
 
   const handlePurchase = async (pkg) => {
-    onPurchaseStart();
-    const success = await purchasePackage(pkg, hasPurchased);
-    onPurchaseEnd();
+    //onPurchaseStart();
+    const success = await purchasePackage(pkg, hasPurchased, onPurchaseStart, onPurchaseEnd);
+    console.log('구매 결과:', success);
+    //onPurchaseEnd();
     if (success) {
       //구매 상태 갱신
       console.log('구매 성공, 상태 갱신', success);
@@ -363,7 +368,7 @@ const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({
               fontSize: 14,
               color: palette.neutral[900],
             }}>
-            구매하기
+            {hasPurchased ? '이미 구매를 했습니다' : '이모티콘 구매하기'}
           </Text>
           <Icon name={'arrow-right'} height={11} color={palette.neutral[900]} />
         </TouchableOpacity>

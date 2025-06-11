@@ -44,6 +44,7 @@ import Favorites from './src/pages/HomePage/favorites/favorites';
 import Constants from 'expo-constants';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { preloadEmojiImages } from './src/services/imagePreloader';
+import { restoreTransactions, initializeInApp } from './src/services/inappService';
 
 /*const { APP_ENV } = Constants.expoConfig?.extra || {};
 // 환경 확인
@@ -92,25 +93,6 @@ const App: React.FC = () => {
     'Pretendard-Medium': require('./src/assets/fonts/Pretendard-Medium.ttf'),
     'Kyobo-handwriting': require('./src/assets/fonts/KyoboHandwriting2019.ttf'),
   });
-
-  //const [isAppReady, setIsAppReady] = useState(false);
-
-  /*useEffect(() => {
-    async function prepare() {
-      try {
-        // 이미지 프리로딩
-        await preloadEmojiImages();
-
-        // 다른 초기화 작업들...
-      } catch (e) {
-        console.warn(e);
-      } finally {
-        setIsAppReady(true);
-      }
-    }
-
-    prepare();
-  }, []);*/
 
   const checkSignIn = async (): Promise<boolean> => {
     //자동 로그인 판단

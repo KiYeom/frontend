@@ -34,6 +34,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { rsWidth, rsHeight } from '../../../utils/responsive-size';
 import NewCheckBox from '../../../components/v3-checkbox/NewCheckBox';
 import { switchChatTone } from '../../../apis/setting';
+import { checkPurchaseHistory } from '../../../services/inappService';
 
 const validateName = (name: string): 'error' | 'default' | 'correct' => {
   if (name.length !== 0 && (name.length < 2 || name.length > 15)) return 'error';
@@ -298,10 +299,11 @@ const InputName = ({ route, navigation }) => {
               title="비밀 채팅하러 가기"
               disabled={!isButtonEnabled}
               primary={true}
-              onPress={() => {
+              onPress={async () => {
                 Analytics.clickSignUpSaveButton();
                 saveNickName(name);
                 switchChatTone(isCasualMode); //변경 사항을 서버에 patch로 업데이트
+                await checkPurchaseHistory(); // 구매 이력 확인
               }}
             />
           </View>

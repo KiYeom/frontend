@@ -29,6 +29,7 @@ import {
   WelcomeTitle,
 } from './sing-in.styles';
 import { AuthProvider } from '../../constants/Constants';
+import { checkPurchaseHistory } from '../../services/inappService';
 
 enum OauthResult {
   UserCancel,
@@ -198,6 +199,7 @@ const Login: React.FC<any> = ({ navigation }) => {
       if (oauthResult === OauthResult.OldUserSuccess) {
         //로그인 성공
         setSigninStatus(true);
+        await checkPurchaseHistory();
         return;
       }
       if (oauthResult === OauthResult.NewUserSuccess) {
