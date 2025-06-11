@@ -16,7 +16,7 @@ export const initializeInApp = async () => {
   } else {
     await Purchases.configure({ apiKey: APIKeys.apple });
   }
-  Purchases.setDebugLogsEnabled(true);
+  //Purchases.setDebugLogsEnabled(true);
 };
 /*
   const decodedToken = jwtDecode<{ userId: string }>(accessToken);
@@ -57,14 +57,14 @@ export const getCurrentOffering = async () => {
 export const updatePurchaseStatus = async () => {
   try {
     const customerInfo = await Purchases.getCustomerInfo();
-    console.log('고객 정보', customerInfo?.entitlements?.active);
+    //console.log('고객 정보', customerInfo?.entitlements?.active);
     if (typeof customerInfo.entitlements.active[ENTITLEMENT_ID] === 'undefined') {
-      console.log('활성화된 entitlements가 없습니다.');
+      //console.log('활성화된 entitlements가 없습니다.');
       return false;
     } else {
-      console.log('활성화된 entitlements가 있습니다.');
-      console.log('활성화된 entitlements:', Object.keys(customerInfo.entitlements.active));
-      console.log('고객 정보', customerInfo.entitlements.active);
+      //console.log('활성화된 entitlements가 있습니다.');
+      //console.log('활성화된 entitlements:', Object.keys(customerInfo.entitlements.active));
+      //console.log('고객 정보', customerInfo.entitlements.active);
       return true;
     }
     //console.log('활성화된 entitlements:', Object.keys(customerInfo.entitlements.active));
@@ -116,32 +116,34 @@ export const restoreTransactions = async () => {
   console.log('복원 트랜잭션 호출 시작');
   try {
     const customerInfo = await Purchases.restorePurchases();
-    console.log('복원된 고객 정보:', customerInfo);
+    //console.log('복원된 고객 정보:', customerInfo);
+    //console.log('구매 내역:', customerInfo.entitlements.active);
     if (Object.keys(customerInfo.entitlements.active).length > 0) {
       Alert.alert('복원 성공', '이모티콘 상품이 복원되었습니다.');
-      //Analytics.watchEmojiPanelRestoreCompleteAlert();
+      Analytics.watchEmojiPanelRestorePurchaseSuccess();
       return true;
     } else {
-      Alert.alert('복원 실패', '복원된 상품이 없습니다.'); //복원 실패이면 사실 복원된 값이 없는거니까 Alert 안 띄워도 됨
+      //Alert.alert('복원 실패', '복원된 상품이 없습니다.'); //복원 실패이면 사실 복원된 값이 없는거니까 Alert 안 띄워도 됨
       //Analytics.watchEmojiPanelRestoreFailedAlert();
       return false;
     }
   } catch (e) {
-    console.warn('복원 중 오류 발생:', e);
+    //console.warn('복원 중 오류 발생:', e);
     Alert.alert('복원 실패', '오류가 발생했습니다. 다시 시도해주세요.');
-    //Analytics.watchEmojiPanelRestoreFailedAlert();
+    const errorMessage = e?.message || e?.toString() || '알 수 없는 오류';
+    Analytics.watchEmojiPanelRestorePurchaseFailed(errorMessage);
     return false;
   }
 };
 
 // 구매 이력 확인 함수 (재로그인 혹은 회원 탈퇴 이후 다시 회원가입 시)
 export const checkPurchaseHistory = async () => {
-  console.log('In-App 결제 구매 이력 확인 시작');
+  //console.log('In-App 결제 구매 이력 확인 시작');
   try {
     //await initializeInApp();
     const hasPurchased = await restoreTransactions();
     if (hasPurchased) {
-      console.log('이모티콘 상품 복원 완료');
+      //console.log('이모티콘 상품 복원 완료');
       // Analytics.watchEmojiPanelRestoreCompleteAlert();
     } else {
       console.log('복원된 상품이 없습니다.');
@@ -164,6 +166,7 @@ export const tryRestoreEntitlementsForNewUser = async (accessToken?: string) => 
   // Step 1: 익명 사용자로 복원
   const customerInfo = await Purchases.restorePurchases(); // 스토어 기반으로 이전 구매 내역 가져오기
   console.log('복원된 고객 정보:', customerInfo);
+  console.log('구매 내역:', customerInfo.entitlements.active);
 
   // Step 2: 유효한 구매가 있는지 확인
   const hasEntitlements = Object.keys(customerInfo.entitlements.active).length > 0;

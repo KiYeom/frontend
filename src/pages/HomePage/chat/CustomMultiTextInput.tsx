@@ -70,9 +70,9 @@ const CustomMultiTextInput = (props: CustomMultiTextInputProps) => {
         placeholderTextColor={palette.neutral[300]}
         onContentSizeChange={handleContentSizeChange}
         onPressIn={() => {
-          console.log('TextInput Pressed');
+          //console.log('TextInput Pressed');
           if (isEmojiPanelVisible) {
-            console.log('이모티콘 열려있음');
+            //console.log('이모티콘 열려있음');
             hideEmojiPanel();
             setTimeout(() => {
               textInputRef?.current?.focus();

@@ -565,6 +565,18 @@ export default class Analytics {
     );
   };
 
+  //홈 화면 - 이모티콘 구매 복원 성공 관찰
+  public static watchEmojiPanelRestorePurchaseSuccess = (): void => {
+    this.sendEvent('홈 화면 - 이모티콘 구매 복원 성공 관찰', 'emojiPanelRestorePurchaseSuccess');
+  };
+
+  //홈 화면 - 이모티콘 구매 복원 실패 관찰
+  public static watchEmojiPanelRestorePurchaseFailed = (errorMessage: string): void => {
+    this.sendEvent('홈 화면 - 이모티콘 구매 복원 실패 관찰', 'emojiPanelRestorePurchaseFailed', {
+      errorMessage,
+    });
+  };
+
   //채팅 - 사이드바 버튼 클릭
   public static clickHeaderSideMenuButton = (): void => {
     this.sendEvent('채팅 - 헤더의 우측 사이드바 버튼 클릭', 'headerSideMenuButton');

@@ -105,7 +105,7 @@ export const RenderBubble = (
   }, [props?.currentMessage?.image]);
 
   if (isImage) {
-    console.log('이미지 렌더링 진행');
+    //console.log('이미지 렌더링 진행');
     return (
       <View
         style={css`

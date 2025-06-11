@@ -248,7 +248,7 @@ const NewChat: React.FC = ({ navigation }) => {
   //console.log('화면 너비:', width, '화면 높이:', height);
   const [keyboardHeight, setKeyboardHeight] = useState<number>(0);
   const handleEmojiToggle = useCallback(() => {
-    console.log('이모티콘 패널 토글');
+    //console.log('이모티콘 패널 토글');
     Analytics.clickHeaderEmojiButton(isEmojiPanelVisible ? 'close' : 'open');
     // 키보드가 열려 있으면 키보드를 닫고 이모티콘 패널을 연다
     if (keyboardHeight > 0) {
@@ -274,7 +274,7 @@ const NewChat: React.FC = ({ navigation }) => {
 
   //광고 로드 상태
   const [loaded, setLoaded] = useState(false);
-  console.log('이모지 패널', emojiPanelHeight);
+  //console.log('이모지 패널', emojiPanelHeight);
   //console.log('rewarded', rewarded);
   useFocusEffect(
     useCallback(() => {
