@@ -141,6 +141,7 @@ export default class Analytics {
     });
   };
 
+  //quote.tsx 화면
   //행복 세잎클로버 화면 진입
   public static watchBeforeOpenHappyLyricsImageScreen = (): void => {
     this.sendEvent('행복 세잎클로버 화면 진입', 'happyLyricsScreen');
@@ -157,6 +158,51 @@ export default class Analytics {
   //행복 이미지 페이지 공유 버튼 클릭
   public static clickHappyLyricsImageShareButton = (): void => {
     this.sendEvent('행복 이미지 페이지 공유 버튼 클릭', 'happyLyricsImageShareButton');
+  };
+
+  // 광고 로드 시작
+  public static startHappyLyricsAdLoad = (): void => {
+    this.sendEvent('행복 세잎클로버 광고 로드 시작', 'happyLyricsAdLoadStart');
+  };
+
+  // 광고 로드 성공
+  public static successHappyLyricsAdLoad = (): void => {
+    this.sendEvent('행복 세잎클로버 광고 로드 성공', 'happyLyricsAdLoadSuccess');
+  };
+
+  // 광고 로드 실패
+  public static failHappyLyricsAdLoad = (error: string): void => {
+    this.sendEvent('행복 세잎클로버 광고 로드 실패', 'happyLyricsAdLoadFail', { error });
+  };
+
+  // 광고 표시 시작 (클릭 시)
+  public static clickHappyLyricsAdShow = (): void => {
+    this.sendEvent('행복 세잎클로버 광고 표시 클릭', 'happyLyricsAdShowClick');
+  };
+
+  // 광고 표시 성공
+  public static successHappyLyricsAdShow = (): void => {
+    this.sendEvent('행복 세잎클로버 광고 표시 성공', 'happyLyricsAdShowSuccess');
+  };
+
+  // 광고 표시 실패
+  public static failHappyLyricsAdShow = (error: string): void => {
+    this.sendEvent('행복 세잎클로버 광고 표시 실패', 'happyLyricsAdShowFail', { error });
+  };
+
+  // 광고 시청 완료 (보상 획득)
+  public static earnHappyLyricsAdReward = (): void => {
+    this.sendEvent('행복 세잎클로버 광고 시청 완료', 'happyLyricsAdRewardEarned');
+  };
+
+  // 광고 닫기 (중간에 닫은 경우)
+  public static closeHappyLyricsAd = (): void => {
+    this.sendEvent('행복 세잎클로버 광고 닫기', 'happyLyricsAdClosed');
+  };
+
+  // 광고 시청 후 결과 화면 표시
+  public static showHappyLyricsResult = (): void => {
+    this.sendEvent('행복 세잎클로버 광고 시청 후 결과 표시', 'happyLyricsAdResultShown');
   };
 
   //탭 - 설정 화면
@@ -405,9 +451,20 @@ export default class Analytics {
     });
   };
 
-  //채팅 - 채팅 전송 버튼 클릭
-  public static clickChatSendButton = (): void => {
+  //채팅 - 채팅 전송 버튼 클릭 (텍스트 전송 여부, 사진 전송 여부, 이모티콘 전송 여부)
+  /*public static clickChatSendButton = (): void => {
     this.sendEvent('채팅 - 채팅 전송 버튼 클릭', 'chatSendButton');
+  };*/
+  public static clickChatSendButton = (
+    isText: boolean = false,
+    isPhoto: boolean = false,
+    isEmoji: boolean = false,
+  ): void => {
+    this.sendEvent('채팅 - 채팅 전송 버튼 클릭', 'chatSendButton', {
+      isText,
+      isPhoto,
+      isEmoji,
+    });
   };
   //채팅 - AI답변 전송 시작 상태
   public static aiRequestSentStatus = (): void => {
@@ -456,6 +513,68 @@ export default class Analytics {
   //채팅 - 헤더 우측 선물 상자 버튼 클릭
   public static clickHeaderGiftBoxButton = (eventUrl: string): void => {
     this.sendEvent('채팅 - 헤더의 우측 선물 상자 버튼 클릭', 'headerGiftBoxButton', { eventUrl });
+  };
+
+  //채팅 - 이모티콘 버튼 클릭 (열거나 닫는 것을 구분)
+  public static clickHeaderEmojiButton = (panelStatus: string): void => {
+    this.sendEvent('채팅 - 입력창 우측의 이모티콘 버튼 클릭', 'headerEmojiButton', { panelStatus });
+  };
+
+  //채팅 - 이모티콘 패널의 아이콘 클릭
+  public static clickEmojiPanelIcon = (emojiName: string): void => {
+    this.sendEvent('채팅 - 이모티콘 패널의 아이콘 클릭', 'emojiPanelIcon', { emojiName });
+  };
+
+  //채팅 - 이모티콘 패널의 구매하기 버튼 클릭
+  public static clickEmojiPanelPurchaseButton = (): void => {
+    this.sendEvent('채팅 - 이모티콘 패널의 구매하기 버튼 클릭', 'emojiPanelPurchaseButton');
+  };
+
+  //채팅 - 이모티콘 패널 - 구매하기 버튼 클릭 - 이미 구매한 이모티콘 알림창 관찰
+  public static watchEmojiPanelAlreadyPurchasedAlert = (): void => {
+    this.sendEvent(
+      '채팅 - 이모티콘 패널 - 구매하기 버튼 클릭 - 이미 구매한 이모티콘 알림창 관찰',
+      'emojiPanelAlreadyPurchasedAlert',
+    );
+  };
+
+  //채팅 - 이모티콘 패널 - 구매하기 버튼 클릭 - 구매 완료 알림창 관찰
+  public static watchEmojiPanelPurchaseCompleteAlert = (): void => {
+    this.sendEvent(
+      '채팅 - 이모티콘 패널 - 구매하기 버튼 클릭 - 구매 완료 알림창 관찰',
+      'emojiPanelPurchaseCompleteAlert',
+    );
+  };
+
+  //채팅 - 이모티콘 패널 - 구매하기 버튼 클릭 - 구매 실패 알림창 관찰
+  public static watchEmojiPanelPurchaseFailedAlert = (): void => {
+    this.sendEvent(
+      '채팅 - 이모티콘 패널 - 구매하기 버튼 클릭 - 구매 실패 알림창 관찰',
+      'emojiPanelPurchaseFailedAlert',
+    );
+  };
+
+  //채팅 - 이모티콘 패널 - 구매 안하고 이모티콘을 클릭 시 토스트 나온 상황 관찰
+  public static watchEmojiPanelNoPurchaseClick = (emojiName: string): void => {
+    this.sendEvent(
+      '채팅 - 이모티콘 패널 - 구매 안하고 이모티콘 클릭',
+      'emojiPanelNoPurchaseClick',
+      {
+        emojiName,
+      },
+    );
+  };
+
+  //홈 화면 - 이모티콘 구매 복원 성공 관찰
+  public static watchEmojiPanelRestorePurchaseSuccess = (): void => {
+    this.sendEvent('홈 화면 - 이모티콘 구매 복원 성공 관찰', 'emojiPanelRestorePurchaseSuccess');
+  };
+
+  //홈 화면 - 이모티콘 구매 복원 실패 관찰
+  public static watchEmojiPanelRestorePurchaseFailed = (errorMessage: string): void => {
+    this.sendEvent('홈 화면 - 이모티콘 구매 복원 실패 관찰', 'emojiPanelRestorePurchaseFailed', {
+      errorMessage,
+    });
   };
 
   //채팅 - 사이드바 버튼 클릭

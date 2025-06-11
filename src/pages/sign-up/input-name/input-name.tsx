@@ -34,6 +34,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { rsWidth, rsHeight } from '../../../utils/responsive-size';
 import NewCheckBox from '../../../components/v3-checkbox/NewCheckBox';
 import { switchChatTone } from '../../../apis/setting';
+import {
+  checkPurchaseHistory,
+  NewLoginInApp,
+  tryRestoreEntitlementsForNewUser,
+} from '../../../services/inappService';
 
 const validateName = (name: string): 'error' | 'default' | 'correct' => {
   if (name.length !== 0 && (name.length < 2 || name.length > 15)) return 'error';
@@ -73,13 +78,14 @@ const InputName = ({ route, navigation }) => {
   const [allowGuestMode, setAllowGuestMode] = React.useState<boolean>(true);
   const [isCasualMode, setIsCasualMode] = React.useState<boolean>(true);
 
+  //전체 회원가입 화면
   const guestModeSignUp = async () => {
     if (name) {
       const res = await updateUserProfile({
         nickname: name,
         gender: null,
         birthdate: null,
-      });
+      }); //회원가입 진행
 
       if (res) {
         Analytics.setUser(res.accessToken);
@@ -93,6 +99,8 @@ const InputName = ({ route, navigation }) => {
           AuthProvider.Guest,
         );
         setSigninStatus(true);
+        await NewLoginInApp(res.accessToken);
+        await checkPurchaseHistory();
         return true;
       }
       return false;
@@ -298,7 +306,7 @@ const InputName = ({ route, navigation }) => {
               title="비밀 채팅하러 가기"
               disabled={!isButtonEnabled}
               primary={true}
-              onPress={() => {
+              onPress={async () => {
                 Analytics.clickSignUpSaveButton();
                 saveNickName(name);
                 switchChatTone(isCasualMode); //변경 사항을 서버에 patch로 업데이트

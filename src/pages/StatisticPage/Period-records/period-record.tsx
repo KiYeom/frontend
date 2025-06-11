@@ -67,7 +67,6 @@ const PeriodRecord = (props: any) => {
     <RContainer>
       <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
         <SectionTitle>내가 기록한 하루들</SectionTitle>
-        <View style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}></View>
       </View>
       {records.map((record, index) => {
         //console.log('record', record);

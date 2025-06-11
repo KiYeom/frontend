@@ -43,6 +43,14 @@ import 'react-native-gesture-handler';
 import Favorites from './src/pages/HomePage/favorites/favorites';
 import Constants from 'expo-constants';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { preloadEmojiImages } from './src/services/imagePreloader';
+import {
+  restoreTransactions,
+  initializeInApp,
+  NewInitializeInApp,
+  NewLoginInApp,
+} from './src/services/inappService';
+import Purchases from 'react-native-purchases';
 
 /*const { APP_ENV } = Constants.expoConfig?.extra || {};
 // 환경 확인
@@ -63,9 +71,12 @@ if (isProductionOrStaging && process.env.EXPO_PUBLIC_AMPLITUDE) {
     minIdLength: 1,
   });
 }
-amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE, undefined, {
+//앱 시작 시 인앱 결제 초기화
+NewInitializeInApp();
+
+/*amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE, undefined, {
   minIdLength: 1,
-});
+});*/
 
 SplashScreen.preventAutoHideAsync();
 const RootStack = createNativeStackNavigator();
@@ -127,7 +138,10 @@ const App: React.FC = () => {
       clearInfoWhenLogout();
     }
     const accessToken = getAccessToken();
-    if (accessToken) Analytics.setUser(accessToken);
+    if (accessToken) {
+      Analytics.setUser(accessToken);
+      NewLoginInApp(accessToken);
+    }
     setSigninStatus(signinResult);
   };
   //업데이트 알림
@@ -173,6 +187,7 @@ const App: React.FC = () => {
   //앱 처음 실행 시 폰트 로드 진행. 완료되면 로그인 여부를 판단한 뒤에 로딩 화면을 숨김
   useEffect(() => {
     if (loaded || error) {
+      //로딩중
       SplashScreen.hideAsync();
     }
     if (loaded) {

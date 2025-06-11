@@ -29,6 +29,11 @@ import {
   WelcomeTitle,
 } from './sing-in.styles';
 import { AuthProvider } from '../../constants/Constants';
+import {
+  checkPurchaseHistory,
+  NewLoginInApp,
+  tryRestoreEntitlementsForNewUser,
+} from '../../services/inappService';
 
 enum OauthResult {
   UserCancel,
@@ -57,6 +62,8 @@ const guestLogin = async (): Promise<OauthResult> => {
 
   if (!res.isNewUser) {
     Analytics.setUser(res.accessToken);
+    NewLoginInApp(res.accessToken);
+
     setInfoWhenLogin(
       res.nickname,
       res.birthdate,
@@ -103,6 +110,7 @@ const googleLogin = async (): Promise<OauthResult> => {
 
   if (!res.isNewUser) {
     Analytics.setUser(res.accessToken);
+    NewLoginInApp(res.accessToken);
     //setUserAccountProvider('google');
     setInfoWhenLogin(
       res.nickname,
@@ -149,6 +157,7 @@ const appleLogin = async (): Promise<OauthResult> => {
 
   if (!res.isNewUser) {
     Analytics.setUser(res.accessToken);
+    NewLoginInApp(res.accessToken);
     setInfoWhenLogin(
       '' + res.nickname,
       res.birthdate,
@@ -198,6 +207,8 @@ const Login: React.FC<any> = ({ navigation }) => {
       if (oauthResult === OauthResult.OldUserSuccess) {
         //로그인 성공
         setSigninStatus(true);
+        await checkPurchaseHistory();
+        //await tryRestoreEntitlementsForNewUser();
         return;
       }
       if (oauthResult === OauthResult.NewUserSuccess) {

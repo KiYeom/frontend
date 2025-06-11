@@ -1,5 +1,5 @@
 // NewPeriodEmotionArea.tsx
-import React from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Text, View } from 'react-native';
 import Cloud from 'react-native-word-cloud';
 import Empty from '../Empty';
@@ -12,8 +12,10 @@ import {
   LegendColorDot,
   LegendLabel,
   constants,
+  CardContainer,
 } from './NewPeriodEmotionArea.style';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
+import { useIsFocused } from '@react-navigation/native';
 
 // --- 대감정별 기본 색상 정의 ---
 const EMOTION_COLORS = {
@@ -78,54 +80,75 @@ interface PeriodEmotionAreaProps {
 }
 
 const NewPeriodEmotionArea: React.FC<PeriodEmotionAreaProps> = ({ periodEmotionList }) => {
+  console.log('NewPeriodEmotionArea - periodEmotionList:', periodEmotionList);
+  const isFocused = useIsFocused();
+  const [cloudKey, setCloudKey] = useState(0);
+
   // --- 안전한 배열 체크 ---
   const isValidEmotionList = Array.isArray(periodEmotionList) && periodEmotionList.length > 0;
 
-  // --- WordCloud용 데이터 변환 (최대 6개)
-  const wordCloudData = isValidEmotionList
-    ? periodEmotionList
-        .filter((emotionName) => emotionName && typeof emotionName === 'string')
-        .slice(0, 6)
-        .map((emotionName, index) => {
-          const emotionInfo = EMOTION_INFO_MAP[emotionName] || DEFAULT_EMOTION_INFO;
+  // --- WordCloud용 데이터 변환 (최대 6개) - useMemo로 메모이제이션
+  const wordCloudData = useMemo(() => {
+    if (!isValidEmotionList) return [];
 
-          // 반지름 기반 빈도수 계산 (index가 클수록 빈도가 낮아짐)
-          const baseRadius = constants.BASE_RADIUS; // 90
-          const radiusDecrement = constants.RADIUS_DECREMENT; // 15
-          const targetRadius = Math.max(baseRadius - index * radiusDecrement, constants.MIN_RADIUS); // 최소 25
-          const frequency = targetRadius * constants.FREQUENCY_MULTIPLIER; // 1.8
+    return periodEmotionList
+      .filter((emotionName) => emotionName && typeof emotionName === 'string')
+      .slice(0, 6)
+      .map((emotionName, index) => {
+        const emotionInfo = EMOTION_INFO_MAP[emotionName] || DEFAULT_EMOTION_INFO;
 
-          return {
-            keyword: emotionName,
-            frequency: Math.max(frequency, constants.MIN_FREQUENCY), // 최소 40
-            color: getEmotionColor(emotionInfo.category, emotionInfo.intensity),
-          };
-        })
-        .filter((item) => item.keyword && item.frequency > 0)
-        .sort((a, b) => b.frequency - a.frequency)
-    : [];
+        // 반지름 기반 빈도수 계산 (index가 클수록 빈도가 낮아짐)
+        const baseRadius = constants.BASE_RADIUS; // 90
+        const radiusDecrement = constants.RADIUS_DECREMENT; // 15
+        const targetRadius = Math.max(baseRadius - index * radiusDecrement, constants.MIN_RADIUS); // 최소 25
+        const frequency = targetRadius * constants.FREQUENCY_MULTIPLIER; // 1.8
+
+        return {
+          keyword: emotionName,
+          frequency: Math.max(frequency, constants.MIN_FREQUENCY), // 최소 40
+          color: getEmotionColor(emotionInfo.category, emotionInfo.intensity),
+        };
+      })
+      .filter((item) => item.keyword && item.frequency > 0)
+      .sort((a, b) => b.frequency - a.frequency);
+  }, [periodEmotionList, isValidEmotionList]);
+
+  // 화면 포커스 변경 시 Cloud 컴포넌트만 새로 그리기
+  useEffect(() => {
+    if (isFocused && isValidEmotionList && wordCloudData.length > 0) {
+      // 작은 지연으로 부드럽게 처리
+      const timer = setTimeout(() => {
+        setCloudKey((prev) => prev + 1);
+      }, 10);
+      return () => clearTimeout(timer);
+    }
+  }, [isFocused, isValidEmotionList, wordCloudData.length]);
 
   return (
-    <View style={{ paddingLeft: 20 }}>
-      <Container>
-        {/* 헤더 */}
-        <HeaderWrapper>
-          <SectionTitle>그 동안 이러한 감정들을 느꼈어요</SectionTitle>
-        </HeaderWrapper>
+    <Container>
+      {/* 헤더 */}
+      <HeaderWrapper>
+        <SectionTitle>그 동안 이러한 감정들을 느꼈어요</SectionTitle>
+      </HeaderWrapper>
 
-        {/* 워드 클라우드 */}
+      {/* 워드 클라우드 */}
+      <CardContainer>
         {isValidEmotionList && wordCloudData.length > 0 ? (
           <Cloud
+            key={cloudKey} // 포커스 시에만 변경되는 key
             keywords={wordCloudData}
             scale={constants.CLOUD_SCALE}
             largestAtCenter={true}
             drawContainerCircle={false}
+            textStyle={{
+              fontFamily: 'Kyobo-handwriting',
+            }}
           />
         ) : (
           <Empty type="채팅기록" />
         )}
-      </Container>
-    </View>
+      </CardContainer>
+    </Container>
   );
 };
 

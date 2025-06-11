@@ -13,10 +13,9 @@ const ICON_COLUMN_WIDTH = 30; // 왼쪽 아이콘 열 너비
 const ICON_CHART_GAP = 0; // 아이콘 열과 차트 사이 간격
 const YAXIS_LABEL_AREA = 30; // y축 숫자 레이블 영역 확보
 
-// 실제 차트가 그려질 폭
+// 수정된 계산
 export const CHART_WIDTH =
-  SCREEN_WIDTH - HORIZONTAL_PADDING - ICON_COLUMN_WIDTH - ICON_CHART_GAP - YAXIS_LABEL_AREA;
-
+  SCREEN_WIDTH - HORIZONTAL_PADDING - ICON_COLUMN_WIDTH - ICON_CHART_GAP - 10;
 // 차트 높이 및 밴드 높이
 export const CHART_HEIGHT = 280;
 export const STRIPE_HEIGHT = CHART_HEIGHT / 5; // 280 / 5 = 56
@@ -25,10 +24,10 @@ export const STRIPE_HEIGHT = CHART_HEIGHT / 5; // 280 / 5 = 56
 // 컨테이너: 좌우 padding, 상하 padding, 백그라운드색, 가운데 정렬
 // ───────────────────────────────────────────────────────────
 export const Container = styled.View`
-  padding-horizontal: 16px;
-  padding-vertical: 16px;
-  background-color: ${palette.neutral[50]}; // 필요에 따라 컬러 조정
+  //background-color: ${palette.neutral[50]}; // 필요에 따라 컬러 조정
   align-items: center;
+  //gap: 12px;
+  //background-color: yellow;
 `;
 
 // ───────────────────────────────────────────────────────────
@@ -37,6 +36,7 @@ export const Container = styled.View`
 export const ChartAreaWrapper = styled.View`
   flex-direction: row;
   align-items: stretch;
+  //background-color: pink;
 `;
 
 // ───────────────────────────────────────────────────────────
@@ -45,10 +45,11 @@ export const ChartAreaWrapper = styled.View`
 //   - 아이콘들을 세로로 5등분하여 space-between으로 배치
 // ───────────────────────────────────────────────────────────
 export const IconsColumn = styled.View`
-  width: ${ICON_COLUMN_WIDTH}px;
-  justify-content: space-between;
+  width: ${ICON_COLUMN_WIDTH + 'px'};
+  height: ${CHART_HEIGHT + 'px'}; // 추가
+  position: relative; // 추가
   align-items: center;
-  padding-vertical: ${rsHeight * 30 + 'px'};
+  //background-color: purple;
 `;
 
 // ───────────────────────────────────────────────────────────
@@ -75,9 +76,10 @@ export const IconText = styled.Text`
 //   - position: relative (안에 absolute 요소가 들어갈 예정)
 // ───────────────────────────────────────────────────────────
 export const ChartWrapper = styled.View`
-  width: ${CHART_WIDTH}px;
-  height: ${CHART_HEIGHT}px;
+  width: ${CHART_WIDTH + 'px'};
+  //height: ${CHART_HEIGHT + 'px'};
   position: relative;
+  //background-color: gray;
 `;
 
 // ───────────────────────────────────────────────────────────
@@ -85,15 +87,16 @@ export const ChartWrapper = styled.View`
 //   - 위치(top), 높이, 배경색, 가로폭은 props로 전달
 // ───────────────────────────────────────────────────────────
 export const StripeBand = styled.View<{
-  top: number;
+  bottom: number;
   bgColor: string;
-}>(({ top, bgColor }) => ({
+}>(({ bottom, bgColor }) => ({
   position: 'absolute',
-  top: top,
-  left: 0,
-  width: CHART_WIDTH,
+  bottom: bottom,
+  left: 0, // initialSpacing 보정
+  width: CHART_WIDTH, // 양쪽 spacing 포함
   height: STRIPE_HEIGHT,
   backgroundColor: bgColor,
+  opacity: 0.5, // 투명도 조정
 }));
 
 // ───────────────────────────────────────────────────────────

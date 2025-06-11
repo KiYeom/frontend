@@ -6,7 +6,7 @@ import { rsWidth, rsHeight, rsFont } from '../../utils/responsive-size';
 import palette from '../../assets/styles/theme';
 
 export const Container = styled.View`
-  background-color: pink;
+  background-color: rgba(0, 0, 0, 0.1);
   width: ${rsWidth * 100 + 'px'};
   height: ${rsHeight * 100 + 'px'};
   border-radius: 10px;

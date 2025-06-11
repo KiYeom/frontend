@@ -28,7 +28,7 @@ type PhotoCardProps = {
 
 const PhotoCard = (props: PhotoCardProps) => {
   const { lyric, singer, title, lyricObject, backgroundImage } = props;
-  console.log('backgoundImage', backgroundImage);
+  //console.log('backgoundImage', backgroundImage);
   return (
     <PhotoCardContainer>
       <Image

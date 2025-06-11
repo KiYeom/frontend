@@ -4,9 +4,11 @@ import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { Image, ImageProps } from 'react-native';
 
 export const RContainer = styled.View`
-  width: 100%;
   gap: ${12 * rsHeight + 'px'};
-  padding-horizontal: ${rsWidth * 20 + 'px'};
+  //padding-horizontal: ${rsWidth * 20 + 'px'};
+  //background-color: red;
+  flex-direction: column;
+  width: ${rsWidth * 350 + 'px'};
 `;
 
 //키워드 흰색 컨테이너

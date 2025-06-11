@@ -33,7 +33,7 @@ export const constants = {
 export const Container = styled.View`
   /* 아이템 간 세로 간격 */
   gap: 12px;
-  padding-right: ${rsWidth * 20 + 'px'};
+  justify-content: center;
 `;
 
 // --- 헤더 래퍼 (타이틀) ---
@@ -69,4 +69,15 @@ export const LegendColorDot = styled.View<{ color: string }>`
 export const LegendLabel = styled.Text`
   font-size: ${constants.LEGEND_LABEL_FONT * rsFont}px;
   color: ${palette.neutral[500]};
+`;
+// 카드 모양 배경 (워드 클라우드 또는 빈 상태 컨테이너)
+export const CardContainer = styled.View`
+  width: 100%;
+  background-color: white;
+  border-radius: 10px;
+  border-color: ${palette.neutral[100]};
+  border-width: 1px;
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
 `;

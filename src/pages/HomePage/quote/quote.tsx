@@ -23,9 +23,8 @@ import {
   useForeground,
   InterstitialAd,
   AdEventType,
-  RewardedAd,
   RewardedAdEventType,
-  RewardedInterstitialAd,
+  RewardedInterstitialAd, //보상형 전면 광고 클래스 추가
 } from 'react-native-google-mobile-ads';
 import Animated, {
   useSharedValue,
@@ -96,10 +95,11 @@ const isTestUser = userName === 'Test_remind';
 const adUnitId =
   isProductionOrStaging && !isTestUser
     ? Platform.OS === 'android'
-      ? process.env.EXPO_PUBLIC_QUOTE_REWARD_AD_UNIT_ID_ANDROID
-      : process.env.EXPO_PUBLIC_QUOTE_REWARD_AD_UNIT_ID_IOS
-    : TestIds.INTERSTITIAL_VIDEO;
-
+      ? process.env.EXPO_PUBLIC_QUOTE_REWARDED_INTERSTITIAL_AD_UNIT_ID_ANDROID
+      : process.env.EXPO_PUBLIC_QUOTE_REWARDED_INTERSTITIAL_AD_UNIT_ID_IOS
+    : TestIds.REWARDED_INTERSTITIAL;
+console.log('adUnitId', adUnitId);
+console.log('test?', adUnitId === TestIds.REWARDED_INTERSTITIAL);
 const Quote: React.FC = () => {
   //console.log('adUnitId in quote', adUnitId === TestIds.REWARDED);
   //console.log('appVariant in quote', appVariant);
@@ -123,9 +123,9 @@ const Quote: React.FC = () => {
     //console.log('사진 권한 상태', status);
   }
 
-  const interstitial = useMemo(
+  const rewardedInterstitial = useMemo(
     () =>
-      InterstitialAd.createForAdRequest(adUnitId, {
+      RewardedInterstitialAd.createForAdRequest(adUnitId, {
         keywords: ['fashion', 'clothing'],
       }),
     [],
@@ -133,36 +133,46 @@ const Quote: React.FC = () => {
 
   useFocusEffect(
     useCallback(() => {
-      const unsubscribeLoaded = interstitial.addAdEventListener(AdEventType.LOADED, () => {
-        //console.log('광고 로드');
-        setLoaded(true);
-      });
+      Analytics.startHappyLyricsAdLoad();
+      const unsubscribeLoaded = rewardedInterstitial.addAdEventListener(
+        RewardedAdEventType.LOADED,
+        () => {
+          //console.log('광고 로드 성공');
+          Analytics.successHappyLyricsAdLoad(); // 애널리틱스 추가
+          setLoaded(true);
+        },
+      );
       //광고를 끝까지 봐서 보상을 줄 수 있을 때 일기와 사진을 등록할 수 있는 콜백 함수를 unsubscribeEarned 이라는 이름으로 등록해둔다
-      const unsubscribeEarned = interstitial.addAdEventListener(AdEventType.OPENED, async () => {
-        setUiMode('loading');
-        //console.log('User earned reward of ');
-        //api 호출하여 오늘 열어봤음을 업데이트 하기
+      const unsubscribeEarned = rewardedInterstitial.addAdEventListener(
+        RewardedAdEventType.EARNED_REWARD,
+        async () => {
+          Analytics.earnHappyLyricsAdReward(); // 애널리틱스 추가
+          setUiMode('loading');
+          //console.log('User earned reward of ');
+          //api 호출하여 오늘 열어봤음을 업데이트 하기
 
-        //랜덤 가사 객체 선택
-        const lyricIndex = Math.floor(Math.random() * happyLyrics.length);
-        setSelectedLyricObject(happyLyrics[lyricIndex]);
-        //console.log('랜덤 가사 객체 선택 완료', lyricIndex);
+          //랜덤 가사 객체 선택
+          const lyricIndex = Math.floor(Math.random() * happyLyrics.length);
+          setSelectedLyricObject(happyLyrics[lyricIndex]);
+          //console.log('랜덤 가사 객체 선택 완료', lyricIndex);
 
-        //랜덤 이미지 선택
-        const imageIndex = Math.floor(Math.random() * backgroundImages.length);
-        //console.log('======imageIndex', imageIndex);
-        setSelectedImageSource(backgroundImages[imageIndex]);
-        //console.log('랜덤 이미지 선택 완료', imageIndex);
-        /// ==== ///
+          //랜덤 이미지 선택
+          const imageIndex = Math.floor(Math.random() * backgroundImages.length);
+          //console.log('======imageIndex', imageIndex);
+          setSelectedImageSource(backgroundImages[imageIndex]);
+          //console.log('랜덤 이미지 선택 완료', imageIndex);
+          /// ==== ///
 
-        // 선택한 데이터 mmkv에 저장
-        savePhotoCardData(happyLyrics[lyricIndex], backgroundImages[imageIndex]);
-        await updateUserCanOpenQuote();
-        //setUiMode('showCookieResult'); //state를 변경하기 (uiMode를 showCookieResult로 변경하기)
-      });
+          // 선택한 데이터 mmkv에 저장
+          savePhotoCardData(happyLyrics[lyricIndex], backgroundImages[imageIndex]);
+          await updateUserCanOpenQuote();
+          //setUiMode('showCookieResult'); //state를 변경하기 (uiMode를 showCookieResult로 변경하기)
+        },
+      );
       //광고가 닫힐 때 실행되는 이벤트 리스터
-      const unsubscribeClosed = interstitial.addAdEventListener(AdEventType.CLOSED, () => {
+      const unsubscribeClosed = rewardedInterstitial.addAdEventListener(AdEventType.CLOSED, () => {
         //console.log('광고 종료');
+        Analytics.closeHappyLyricsAd(); // 애널리틱스 추가
 
         // After 3 seconds, change to result
         setTimeout(() => {
@@ -171,16 +181,27 @@ const Quote: React.FC = () => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft); // 광고 시청 후 진동 알림
         }, 1500);
       });
+      // 광고 로드 실패 감지
+      const unsubscribeFailedToLoad = rewardedInterstitial.addAdEventListener(
+        AdEventType.ERROR,
+        (error) => {
+          Alert.alert('광고를 불러올 수 없습니다. 잠시 후 다시 시도해주세요.');
+          console.log('광고 로드 실패:', error);
+          Analytics.failHappyLyricsAdLoad(error.message || 'Unknown error'); // 애널리틱스 추가
+          setLoaded(false);
+        },
+      );
       //광고 로드
-      interstitial.load();
+      rewardedInterstitial.load();
       // 컴포넌트 언마운트 시 이벤트 리스너 해제
       return () => {
         unsubscribeLoaded();
         unsubscribeEarned();
         unsubscribeClosed();
+        unsubscribeFailedToLoad();
         //console.log(`리스너 해제됨 : 현재 ${listenerCount}번 등록됨`);
       };
-    }, [interstitial]),
+    }, [rewardedInterstitial]),
   );
 
   // 컴포넌트 초기화 시 저장된 데이터 확인
@@ -231,7 +252,7 @@ const Quote: React.FC = () => {
     initializeQuote();
   }, []);
 
-  interstitial.load();
+  rewardedInterstitial.load();
   //console.log('uiMode', uiMode);
 
   //랜덤 값 뽑기
@@ -434,9 +455,23 @@ const Quote: React.FC = () => {
       <AnimationContainer>
         <TouchableOpacity
           onPress={async () => {
+            Analytics.clickHappyLyricsAdShow(); // 애널리틱스 추가
             //console.log('Animation clicked!');
-            interstitial.load();
-            await interstitial.show();
+            if (loaded) {
+              try {
+                Analytics.successHappyLyricsAdShow(); // 애널리틱스 추가
+                await rewardedInterstitial.show();
+              } catch (error) {
+                console.log('광고 표시 실패:', error);
+                Analytics.failHappyLyricsAdShow(error.message || 'Unknown error'); // 애널리틱스 추가
+                Alert.alert('광고를 불러올 수 없습니다. 잠시 후 다시 시도해주세요.');
+                rewardedInterstitial.load();
+              }
+            } else {
+              console.log('광고가 아직 로드되지 않았습니다.');
+              Alert.alert('광고를 준비 중입니다. 잠시 후 다시 시도해주세요.');
+              rewardedInterstitial.load();
+            }
           }}>
           <LottieView
             autoPlay

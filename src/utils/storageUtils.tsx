@@ -454,5 +454,5 @@ export const getPhotoCardImage = (backgroundImages: any[]): any | null => {
 export const deletePhotoCardData = (): void => {
   storage.delete(PHOTO_CARD_LYRIC_ID);
   storage.delete(PHOTO_CARD_IMAGE_ID);
-  console.log('포토카드 데이터 삭제 완료');
+  //console.log('포토카드 데이터 삭제 완료');
 };

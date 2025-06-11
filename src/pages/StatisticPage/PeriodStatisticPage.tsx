@@ -3,14 +3,13 @@ import { useNavigation } from '@react-navigation/native';
 import dayjs from 'dayjs';
 import { Image } from 'expo-image';
 import React, { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, TouchableOpacity, View, Text } from 'react-native';
+import { ActivityIndicator, ScrollView, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   periodChart,
   periodKeyword,
   periodRecordEmotions,
   periodTotalEmotion,
-  newPeriodChart,
 } from '../../apis/analyze';
 import { TPeriodRecordEmotions } from '../../apis/analyze.type';
 import palette from '../../assets/styles/theme';
@@ -19,9 +18,7 @@ import { rsFont, rsHeight, rsWidth } from '../../utils/responsive-size';
 import RangeDatePickerModal from '../../components/rangeCal/range-date-picker-modal';
 import PeriodRecord from './Period-records/period-record';
 import PeriodFlowChart from './Period_FlowChart/PeriodFlowChartArea';
-import NewPeriodKeywordArea from './Period_keyword/NewPeriodKeywordArea';
-import NewPeriodEmotionArea from './Period_Emotion/NewPeriodEmotionArea';
-import NewPeriodFlowChartArea from './Period_FlowChart/NewPeriodFlowChartArea';
+import PeriodKeywordArea from './Period_keyword/PeriodKeywordArea';
 //import ReportType from './ReportType';
 import { DateLineContainer, DateLineText, StatisticTitle } from './StatisticMain.style';
 import Icon from '../../components/icons/icons';
@@ -31,6 +28,11 @@ import EmptyBox from '../../components/emptybox/emptyBox';
 import { RecordedEmotion } from '../HomePage/diary/EmotionChart.style';
 import { RootStackName, HomeStackName } from '../../constants/Constants';
 import { getDate } from '../../utils/times';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import NewPeriodFlowChartArea from './Period_FlowChart/NewPeriodFlowChartArea';
+import { newPeriodChart } from '../../apis/analyze';
+import NewPeriodEmotionArea from './Period_Emotion/NewPeriodEmotionArea';
+import NewPeriodKeywordArea from './Period_keyword/NewPeriodKeywordArea';
 
 const HINT_NAME = 'main';
 const HINT_MESSAGE =
@@ -83,7 +85,6 @@ const PeriodStatisticPage: React.FC<any> = ({ navigation }) => {
           periodTotalEmotion(startDateFormatted, endDateFormatted), //기간 기록한 감정들
         ]);
         if (res) {
-          console.log('res.charts', res);
           setEmotionsData(res);
         }
         if (res2 && res2.keywords) {
@@ -123,14 +124,27 @@ const PeriodStatisticPage: React.FC<any> = ({ navigation }) => {
     );
   }
   return (
-    <View
-      style={css`
-        /* background-color: ${palette.neutral[50]}; */
-        flex: 1;
-        //padding-top: ${insets.top + 'px'};
-      `}>
+    <SafeAreaView
+      edges={['bottom', 'left', 'right']}
+      style={{
+        width: '100%',
+        height: 2000,
+        backgroundColor: palette.neutral[50],
+        flex: 1,
+        flexGrow: 1,
+        flexDirection: 'column',
+      }}>
       <Header title={'나의 감정 타임라인'} bgcolor={`${palette.neutral[50]}`} />
-      <ScrollView>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{
+          flexGrow: 1,
+          paddingVertical: rsHeight * 16,
+          alignItems: 'center',
+        }}
+        nestedScrollEnabled={false}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}>
         <View
           style={css`
             gap: ${rsHeight * 16 + 'px'};
@@ -138,11 +152,11 @@ const PeriodStatisticPage: React.FC<any> = ({ navigation }) => {
             //background-color: pink;
             justify-content: center;
             align-items: center;
+            //flex: 1; <- 이거 넣으면 스크롤 안됨
           `}>
           <View
             style={{
               //backgroundColor: 'yellow',
-              flex: 1,
               justifyContent: 'center',
               alignItems: 'center',
             }}>
@@ -178,7 +192,21 @@ const PeriodStatisticPage: React.FC<any> = ({ navigation }) => {
                 }}
               />*/}
               <NewPeriodFlowChartArea emotionsData={emotionsData} />
+              {/*<PeriodEmotionArea
+                periodEmotionList={totalEmotions}
+                hintStatus={hintStatus}
+                setHintStatus={(hint: 'period-emotion' | undefined) => {
+                  setHintStatus(hint);
+                }}
+              />*/}
               <NewPeriodEmotionArea periodEmotionList={totalEmotions} />
+              {/*<PeriodKeywordArea
+                periodKeywordList={periodKeywordList}
+                hintStatus={hintStatus}
+                setHintStatus={(hint: 'period-keyword' | undefined) => {
+                  setHintStatus(hint);
+                }}
+              />*/}
               <NewPeriodKeywordArea periodKeywordList={periodKeywordList} />
             </>
           )}
@@ -223,13 +251,14 @@ const PeriodStatisticPage: React.FC<any> = ({ navigation }) => {
           )}
         </View>
       </ScrollView>
+
       <RangeDatePickerModal
         modalVisible={openModal}
         onClose={() => setOpenModal(false)}
         onChange={onChange}
         range={range}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 export default PeriodStatisticPage;

@@ -113,7 +113,7 @@ export const newPeriodChart = async (
     const res = await instance.get('/v2/analyze/period-status', {
       params: { start_date: start, end_date: end },
     });
-    console.log('newPeriodChart res.data', res.data);
+    //console.log('newPeriodChart res.data', res.data);
     return res.data;
   } catch (error) {
     //console.log('[ERROR] period chart analyze', error);
