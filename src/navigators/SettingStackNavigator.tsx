@@ -12,7 +12,7 @@ import Chattingsetting from '../pages/SettingPage/chattingsetting/chattingsettin
 import OrganizationConnect from '../pages/SettingPage/organization/organization-connect/organization-connect';
 import OrganizationStatus from '../pages/SettingPage/organization/organization-status/organization-status';
 //import PrivacyPolicy from '../components/pages/SettingPage/PrivacyPolicy'; //개인정보처리방침 페이지
-import InAppTest from '../pages/SettingPage/organization/organization-connect/in-app'; //인앱 테스트 페이지
+//import InAppTest from '../pages/SettingPage/organization/organization-connect/in-app'; //인앱 테스트 페이지
 import { SettingStackName } from '../constants/Constants';
 
 const SettingStack = createNativeStackNavigator();
@@ -73,11 +73,6 @@ const SettingStackNavigator: React.FC = () => {
       <SettingStack.Screen
         name={SettingStackName.OrganizationStatus}
         component={OrganizationStatus}
-        options={{ header: () => <Header /> }}
-      />
-      <SettingStack.Screen
-        name={SettingStackName.InAppTest}
-        component={InAppTest}
         options={{ header: () => <Header /> }}
       />
     </SettingStack.Navigator>

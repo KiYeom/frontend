@@ -191,15 +191,30 @@ const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({
   //const { selectedEmoji, onSelectEmoji } = useSelectedEmoji();
   const [hasPurchased, setHasPurchased] = useState<boolean>(false);
   const [currentOffering, setCurrentOffering] = useState<PurchasesOffering | null>(null);
-  useEffect(() => {
+  /*useEffect(() => {
     console.log('😀useEffect 실행됨😀');
     const setup = async () => {
       await initializeInApp();
       const offering = await getCurrentOffering();
       setCurrentOffering(offering);
       const purchased = await updatePurchaseStatus();
-      setHasPurchased(purchased);
+      setHasPurchased(purchased); //구매 상태 (true/false) 설정
       console.log('offering:', offering);
+      console.log('구매 상태:', purchased);
+    };
+    setup().catch(console.log);
+  }, []);*/
+
+  //구매 상태에 따라 버튼 변경
+  useEffect(() => {
+    console.log('😀NewEmojiPanel useEffect 실행됨😀');
+    const setup = async () => {
+      const offering = await getCurrentOffering();
+      setCurrentOffering(offering); //판매 상품
+      const purchased = await updatePurchaseStatus();
+      setHasPurchased(purchased); //구매 상태 (true/false) 설정
+      console.log('offering:', offering);
+      //offeringIdentifier : "emoji_offering"
       console.log('구매 상태:', purchased);
     };
     setup().catch(console.log);

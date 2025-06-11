@@ -44,7 +44,13 @@ import Favorites from './src/pages/HomePage/favorites/favorites';
 import Constants from 'expo-constants';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { preloadEmojiImages } from './src/services/imagePreloader';
-import { restoreTransactions, initializeInApp } from './src/services/inappService';
+import {
+  restoreTransactions,
+  initializeInApp,
+  NewInitializeInApp,
+  NewLoginInApp,
+} from './src/services/inappService';
+import Purchases from 'react-native-purchases';
 
 /*const { APP_ENV } = Constants.expoConfig?.extra || {};
 // 환경 확인
@@ -65,6 +71,9 @@ if (isProductionOrStaging && process.env.EXPO_PUBLIC_AMPLITUDE) {
     minIdLength: 1,
   });
 }
+//앱 시작 시 인앱 결제 초기화
+NewInitializeInApp();
+
 /*amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE, undefined, {
   minIdLength: 1,
 });*/
@@ -129,7 +138,10 @@ const App: React.FC = () => {
       clearInfoWhenLogout();
     }
     const accessToken = getAccessToken();
-    if (accessToken) Analytics.setUser(accessToken);
+    if (accessToken) {
+      Analytics.setUser(accessToken);
+      NewLoginInApp(accessToken);
+    }
     setSigninStatus(signinResult);
   };
   //업데이트 알림
