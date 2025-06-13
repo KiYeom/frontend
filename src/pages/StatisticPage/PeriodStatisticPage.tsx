@@ -49,6 +49,21 @@ const PeriodStatisticPage: React.FC<any> = ({ navigation }) => {
   const [emotionsData, setEmotionsData] = useState<string[]>([]);
   const [openModal, setOpenModal] = React.useState(false);
 
+  const navigateToNewChat = useCallback(() => {
+    Analytics.clickCTADiaryButtonInPeriod();
+    navigation.navigate(RootStackName.HomeStackNavigator, {
+      screen: HomeStackName.NewChat,
+    });
+  }, [navigation]);
+
+  const navigateToSmallEmotionChart = useCallback(() => {
+    Analytics.clickCTADiaryButtonInPeriod();
+    navigation.navigate(RootStackName.HomeStackNavigator, {
+      screen: HomeStackName.SmallEmotionChart,
+      params: { dateID: getDate(new Date()) },
+    });
+  }, [navigation]);
+
   useEffect(() => {
     Analytics.watchPeriodStatisticScreen();
     const fetchData = async () => {
@@ -127,7 +142,9 @@ const PeriodStatisticPage: React.FC<any> = ({ navigation }) => {
           range={range}
         />
       }>
+      {/* children 으로 전달 */}
       <Container>
+        {/* ai 가 분석한 나의 모습 */}
         {periodKeywordList && periodKeywordList.length > 0 && (
           <>
             <NewPeriodFlowChartArea emotionsData={emotionsData} />
@@ -135,18 +152,33 @@ const PeriodStatisticPage: React.FC<any> = ({ navigation }) => {
             <NewPeriodKeywordArea periodKeywordList={periodKeywordList} />
           </>
         )}
-
-        {recordEmotions && recordEmotions?.records.length > 0 ? (
+        {/* 내가 직접 작성한 나의 모습 */}
+        {recordEmotions && recordEmotions?.records.length > 0 && (
           <PeriodRecord
             records={recordEmotions ? recordEmotions.records : []}
             hintStatus={hintStatus}
             setHintStatus={setHintStatus}
             navigation={navigation}
           />
-        ) : (
-          <Text>CTA 버튼으로 바꾸기</Text>
         )}
-        {periodKeywordList.length === 0 && <Text>CTA 버튼으로 바꾸기</Text>}
+        {/* 대화가 없어 ai 가 분석한 나의 모습이 존재하지 않을 때 */}
+        {periodKeywordList.length === 0 && (
+          <CTAButton
+            mainTitle="이 기간에는 쿠키를 만나지 않았어요"
+            subTitle="오늘 쿠키를 만나보러 가는건 어떠세요?"
+            iconName="green-chat-icon"
+            onPress={navigateToNewChat}
+          />
+        )}
+        {/* 내가 직접 작성한 나의 모습이 없는 경우 */}
+        {recordEmotions && recordEmotions?.records.length === 0 && (
+          <CTAButton
+            mainTitle="이 기간에 작성한 일기가 없어요"
+            subTitle="오늘의 감정 일기를 작성하고, 마음 보고서를 채워봐요"
+            iconName="pencil"
+            onPress={navigateToSmallEmotionChart}
+          />
+        )}
       </Container>
     </StatisticLayout>
   );
