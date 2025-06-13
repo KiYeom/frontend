@@ -121,6 +121,8 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
     <StatisticLayout
       headerTitle="감정 다이어리"
       iconName="clover-cookie"
+      rightIcon="edit-icon"
+      rightFunction={navigateToSmallEmotionChart}
       dateText={formatDateKorean(dateID)}
       onDatePress={() => setOpenModal(true)}
       title={`쿠키와 함께 돌아보는\n어느 날의 감정`}
