@@ -36,6 +36,7 @@ import Header from '../../components/header/header';
 import BottomTabNavigator from '~/src/navigators/BottomTabNavigator';
 import Carousel, { Pagination, ICarouselInstance } from 'react-native-reanimated-carousel';
 import { useSharedValue } from 'react-native-reanimated';
+import StatisticLayout from '../../components/layout/StatisticLayout';
 const START_HOUR_OF_DAY = 6;
 
 const HINT_NAME = 'main';
@@ -123,220 +124,147 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
   }, [dateID]);
   //console.log('🎨🎨🎨🎨🎨🎨Rendering statistic🎨🎨🎨🎨🎨🎨');
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: palette.neutral[50],
-        //paddingTop: insets.top,
-      }}>
-      <Header
-        title={'감정 다이어리'}
-        isRight={true}
-        rightIcon={'edit-icon'}
-        rightFunction={() => {
-          navigation.navigate(RootStackName.HomeStackNavigator, {
-            screen: HomeStackName.SmallEmotionChart,
-            params: { dateID: dateID },
-          });
-          Analytics.clickEditDiaryButton();
-        }}
-        leftFunction={() => {
-          if (!navigation.canGoBack()) {
-            navigation.reset({
-              index: 0,
-              routes: [
-                {
-                  name: RootStackName.BottomTabNavigator,
-                  params: {
-                    screen: TabScreenName.Home,
-                  },
-                },
-              ],
-            });
-          } else {
-            // 뒤로 갈 화면이 있을 때는 일반적인 뒤로가기 호출
-            navigation.goBack();
-          }
-        }}
-        bgcolor={`${palette.neutral[50]}`}
-      />
-      <ScrollView style={{ paddingTop: rsHeight * 12 }}>
-        <View
-          style={css`
-            flex: 1; //통계 전체 컨테이너 (대시보드)
-            flex-direction: column;
-            background-color: ${palette.neutral[50]};
-            padding-bottom: ${rsHeight * 20 + 'px'};
-            gap: ${rsHeight * 16 + 'px'};
-            justify-content: center;
-          `}>
-          <View
-            style={{
-              //backgroundColor: 'yellow',
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Icon name="clover-cookie" width={80} height={80} />
-            {/*<Image
+    <StatisticLayout
+      headerTitle="감정 다이어리"
+      iconName="clover-cookie"
+      dateText={formatDateKorean(dateID)}
+      onDatePress={() => setOpenModal(true)}
+      title={`쿠키와 함께 돌아보는\n어느 날의 감정`}
+      modalComponent={
+        <SingleDatePickerModal
+          modalVisible={openModal}
+          onClose={() => setOpenModal(false)}
+          onChange={onChange}
+          availableDates={availableDates}
+        />
+      }>
+      {/* 이 부분이 children으로 전달됨 */}
+      <Container>
+        {!isNullClassification && (
+          <>
+            <DailyEmotionClassification
+              labelsClassification={labelsClassification}
+              hintStatus={hintStatus}
+              setHintStatus={(hint: 'emotion' | undefined) => {
+                setHintStatus(hint);
+              }}
+            />
+            <KeywordArea
+              summaryList={summaryList}
+              hintStatus={hintStatus}
+              setHintStatus={(hint: 'keyword' | undefined) => {
+                setHintStatus(hint);
+              }}
+            />
+          </>
+        )}
+        {(!isNullRecordKeywordList || todayFeeling !== '') && (
+          <>
+            <EmotionArea
+              isRecordKeywordList={isRecordKeywordList}
+              hintStatus={hintStatus}
+              setHintStatus={(hint: 'record' | undefined) => {
+                setHintStatus(hint);
+              }}
+            />
+            <EmotionDairy
+              todayFeeling={todayFeeling}
+              hintStatus={hintStatus}
+              setHintStatus={(hint: 'daily' | undefined) => {
+                setHintStatus(hint);
+              }}
+            />
+          </>
+        )}
+        {images.length > 0 && (
+          <View style={{ position: 'relative', gap: rsHeight * 12 }}>
+            <Text
               style={{
-                width: 70 * rsWidth,
-                height: 70 * rsHeight,
-                aspectRatio: 1, // 가로 세로 비율을 고정
-                resizeMode: 'contain', // 이미지를 잘리지 않게 표시
-              }}
-              source={{
-                uri: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/statistic/reportlogo.png',
-              }}
-            />*/}
-            <View style={{ marginVertical: 10 * rsHeight }}>
-              {/* 현재 날짜와 쿠키의 안내 말 */}
-              <DateLineContainer onPress={() => setOpenModal(true)}>
-                {/*<TouchableOpacity onPress={() => setOpenModal(true)}>*/}
-                {/*<DateLineText>{getDateKoreanString(date)}</DateLineText> 1.5.7 UPDATE 잠시 주석 처리*/}
-                <DateLineText>{formatDateKorean(dateID)}</DateLineText>
-                <Icon name="arrow-down" color={'white'} />
-              </DateLineContainer>
-              <StatisticTitle>
-                쿠키와 함께 돌아보는{'\n'}
-                어느 날의 감정
-              </StatisticTitle>
-            </View>
-          </View>
-          <Container>
-            {!isNullClassification && (
-              <>
-                <DailyEmotionClassification
-                  labelsClassification={labelsClassification}
-                  hintStatus={hintStatus}
-                  setHintStatus={(hint: 'emotion' | undefined) => {
-                    setHintStatus(hint);
-                  }}
-                />
-                <KeywordArea
-                  summaryList={summaryList}
-                  hintStatus={hintStatus}
-                  setHintStatus={(hint: 'keyword' | undefined) => {
-                    setHintStatus(hint);
-                  }}
-                />
-              </>
-            )}
-            {(!isNullRecordKeywordList || todayFeeling !== '') && (
-              <>
-                <EmotionArea
-                  isRecordKeywordList={isRecordKeywordList}
-                  hintStatus={hintStatus}
-                  setHintStatus={(hint: 'record' | undefined) => {
-                    setHintStatus(hint);
-                  }}
-                />
-                <EmotionDairy
-                  todayFeeling={todayFeeling}
-                  hintStatus={hintStatus}
-                  setHintStatus={(hint: 'daily' | undefined) => {
-                    setHintStatus(hint);
-                  }}
-                />
-              </>
-            )}
-            {images.length > 0 && (
-              <View style={{ position: 'relative', gap: rsHeight * 12 }}>
-                <Text
-                  style={{
-                    fontFamily: 'Kyobo-handwriting',
-                    fontSize: 18 * rsFont,
-                    color: palette.neutral[900],
-                  }}>
-                  그 때 내가 기록한 순간을 담았어요!
-                </Text>
+                fontFamily: 'Kyobo-handwriting',
+                fontSize: 18 * rsFont,
+                color: palette.neutral[900],
+              }}>
+              그 때 내가 기록한 순간을 담았어요!
+            </Text>
 
-                <Carousel
-                  ref={ref}
-                  width={rsWidth * 350}
-                  height={rsHeight * 263}
-                  data={images}
-                  onProgressChange={progress}
-                  defaultIndex={0}
-                  loop={images.length > 1 ? true : false}
-                  enabled={images.length > 1 ? true : false}
+            <Carousel
+              ref={ref}
+              width={rsWidth * 350}
+              height={rsHeight * 263}
+              data={images}
+              onProgressChange={progress}
+              defaultIndex={0}
+              loop={images.length > 1 ? true : false}
+              enabled={images.length > 1 ? true : false}
+              style={{
+                borderRadius: 10,
+                overflow: 'hidden',
+              }}
+              renderItem={({ item }) => (
+                <Image
                   style={{
-                    borderRadius: 10,
-                    overflow: 'hidden',
+                    width: '100%',
+                    height: '100%',
                   }}
-                  renderItem={({ item }) => (
-                    <Image
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                      }}
-                      contentFit="cover"
-                      source={{ uri: item }}
-                    />
-                  )}
+                  contentFit="cover"
+                  source={{ uri: item }}
                 />
-                {images.length > 1 && (
-                  <View
-                    style={{
-                      position: 'absolute',
-                      bottom: 10,
-                      left: 0,
-                      right: 0,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Pagination.Basic
-                      progress={progress}
-                      data={images}
-                      dotStyle={{ backgroundColor: 'rgba(0,0,0,0.2)', borderRadius: 50 }}
-                      activeDotStyle={{ backgroundColor: '#FFFFFF' }}
-                      containerStyle={{ gap: 5 }}
-                      onPress={onPressPagination}
-                    />
-                  </View>
-                )}
+              )}
+            />
+            {images.length > 1 && (
+              <View
+                style={{
+                  position: 'absolute',
+                  bottom: 10,
+                  left: 0,
+                  right: 0,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Pagination.Basic
+                  progress={progress}
+                  data={images}
+                  dotStyle={{ backgroundColor: 'rgba(0,0,0,0.2)', borderRadius: 50 }}
+                  activeDotStyle={{ backgroundColor: '#FFFFFF' }}
+                  containerStyle={{ gap: 5 }}
+                  onPress={onPressPagination}
+                />
               </View>
             )}
-            {isNullClassification && (
-              <EmptyBox
-                mainTitle="쿠키에게 고민을 말해보세요"
-                subTitle="쿠키와의 대화가 부족해 마음을 들여다 볼 수 없었어요"
-                isLeftIcon={true}
-                iconName="green-chat-icon"
-                iconSize={40}
-                onPress={() =>
-                  navigation.navigate(RootStackName.HomeStackNavigator, {
-                    screen: HomeStackName.NewChat,
-                  })
-                }
-              />
-            )}
-            {isNullRecordKeywordList && (
-              <EmptyBox
-                mainTitle="나에게 어떤 하루였나요?"
-                subTitle="감정 일기를 작성하고, 마음 보고서를 완성해보세요"
-                isLeftIcon={true}
-                iconName="pencil"
-                iconSize={40}
-                onPress={() => {
-                  //console.log('누름');
-                  navigation.navigate(RootStackName.HomeStackNavigator, {
-                    screen: HomeStackName.SmallEmotionChart,
-                    params: { dateID: dateID },
-                  });
-                }}
-              />
-            )}
-          </Container>
-        </View>
-      </ScrollView>
-      <SingleDatePickerModal
-        modalVisible={openModal}
-        onClose={() => setOpenModal(false)}
-        onChange={onChange}
-        availableDates={availableDates}
-      />
-    </View>
+          </View>
+        )}
+        {isNullClassification && (
+          <EmptyBox
+            mainTitle="쿠키에게 고민을 말해보세요"
+            subTitle="쿠키와의 대화가 부족해 마음을 들여다 볼 수 없었어요"
+            isLeftIcon={true}
+            iconName="green-chat-icon"
+            iconSize={40}
+            onPress={() =>
+              navigation.navigate(RootStackName.HomeStackNavigator, {
+                screen: HomeStackName.NewChat,
+              })
+            }
+          />
+        )}
+        {isNullRecordKeywordList && (
+          <EmptyBox
+            mainTitle="나에게 어떤 하루였나요?"
+            subTitle="감정 일기를 작성하고, 마음 보고서를 완성해보세요"
+            isLeftIcon={true}
+            iconName="pencil"
+            iconSize={40}
+            onPress={() => {
+              //console.log('누름');
+              navigation.navigate(RootStackName.HomeStackNavigator, {
+                screen: HomeStackName.SmallEmotionChart,
+                params: { dateID: dateID },
+              });
+            }}
+          />
+        )}
+      </Container>
+    </StatisticLayout>
   );
 };
 

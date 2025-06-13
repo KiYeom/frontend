@@ -7,6 +7,7 @@ export const Container = styled.View`
   flex: 1;
   gap: ${rsHeight * 30 + 'px'};
   padding-horizontal: ${rsWidth * 20 + 'px'};
+  background-color: yellow;
 `;
 
 //키워드 제목
