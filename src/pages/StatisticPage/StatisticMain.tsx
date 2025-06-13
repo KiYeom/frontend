@@ -31,7 +31,6 @@ import {
   getKoreanServerTodayDateString,
   getKoreanServerYesterdayDateString,
 } from '../../utils/times';
-import EmptyBox from '../../components/emptybox/emptyBox';
 import CTAButton from '../../components/CTAButton/CTAButton';
 import Header from '../../components/header/header';
 import BottomTabNavigator from '~/src/navigators/BottomTabNavigator';
@@ -41,23 +40,23 @@ import StatisticLayout from '../../components/layout/StatisticLayout';
 import DailyGallery from './Daily_Gallery/DailyGallery';
 const START_HOUR_OF_DAY = 6;
 
-const HINT_NAME = 'main';
-const HINT_MESSAGE =
-  '쿠키와의 대화를 통해 나의 감정을 객관적으로 확인하고 그날의 자신을 돌아볼 수 있어요!\n※ 일일 보고서는 매일 오전 6시에 갱신돼요.\n※ 본 보고서는 참고용이며, 필요 시 전문가와 상의하세요.';
-
 //전체 통계 화면
 const StatisticMain: React.FC<any> = ({ navigation, route }) => {
   const [openModal, setOpenModal] = React.useState(false); //날짜 선택 모달
   const [availableDates, setAvailableDates] = useState<string[]>([]);
+  //section1. 감정 분류
   const [isNullClassification, setIsNullClassification] = useState(true);
-  const [labelsClassification, setLabelsClassification] = useState<TLabel[]>([]); //section1. 감정 분류
+  const [labelsClassification, setLabelsClassification] = useState<TLabel[]>([]);
+  //section2. 요약 키워드
   const [isSummaryList, setIsSummaryList] = useState(true);
-  const [summaryList, setSummaryList] = useState<string[]>([]); //section2. 요약 키워드
+  const [summaryList, setSummaryList] = useState<string[]>([]);
   const [isNullRecordKeywordList, setIsNullRecordKeywordList] = useState(true);
-  const [isRecordKeywordList, setIsRecordKeywordList] = useState<TEmotionCheck[]>([]); //section3. 내가 선택한 감정 키워드
-  const [todayFeeling, setTodayFeeling] = useState<string>(''); //setction4. 내가 기록한 나의 일기
-  const [images, setImages] = useState<string[]>([]); //section5. 내가 기록한 나의 사진
-
+  //section3. 내가 선택한 감정 키워드
+  const [isRecordKeywordList, setIsRecordKeywordList] = useState<TEmotionCheck[]>([]);
+  //setction4. 내가 기록한 나의 일기
+  const [todayFeeling, setTodayFeeling] = useState<string>('');
+  //section5. 내가 기록한 나의 사진
+  const [images, setImages] = useState<string[]>([]);
   //const navigation = useNavigation();
   const insets = useSafeAreaInsets();
 
@@ -155,19 +154,17 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
         {isNullClassification && (
           <CTAButton
             mainTitle="쿠키에게 고민을 말해보세요"
-            subTitle="이 날은 쿠키와의 대화가 부족해 마음을 들여다볼 수 없었어요"
+            subTitle="쿠키와의 대화가 부족해 마음을 들여다 볼 수 없었어요"
             iconName="pencil"
             onPress={navigateToNewChat}
           />
         )}
         {/* 내가 직접 작성한 나의 모습이 없는 경우 */}
         {isNullRecordKeywordList && (
-          <EmptyBox
+          <CTAButton
             mainTitle="나에게 어떤 하루였나요?"
             subTitle="감정 일기를 작성하고, 마음 보고서를 완성해보세요"
-            isLeftIcon={true}
-            iconName="pencil"
-            iconSize={40}
+            iconName="green-chat-icon"
             onPress={navigateToSmallEmotionChart}
           />
         )}

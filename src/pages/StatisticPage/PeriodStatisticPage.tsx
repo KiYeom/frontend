@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, View, Text } from 'react-native';
 import { css } from '@emotion/native';
 import dayjs from 'dayjs';
 import {
@@ -18,7 +18,6 @@ import { Container } from './StatisticMain.style';
 import StatisticLayout from '../../components/layout/StatisticLayout';
 import RangeDatePickerModal from '../../components/rangeCal/range-date-picker-modal';
 import PeriodRecord from './Period-records/period-record';
-import EmptyBox from '../../components/emptybox/emptyBox';
 import CTAButton from '../../components/CTAButton/CTAButton';
 import NewPeriodFlowChartArea from './Period_FlowChart/NewPeriodFlowChartArea';
 import { newPeriodChart } from '../../apis/analyze';
@@ -145,36 +144,9 @@ const PeriodStatisticPage: React.FC<any> = ({ navigation }) => {
             navigation={navigation}
           />
         ) : (
-          <EmptyBox
-            mainTitle="이 기간에 작성한 일기가 없어요"
-            subTitle="오늘의 감정 일기를 작성하고, 마음 보고서를 채워봐요"
-            isLeftIcon={true}
-            iconName="pencil"
-            iconSize={40}
-            onPress={() => {
-              Analytics.clickCTADiaryButtonInPeriod();
-              navigation.navigate(RootStackName.HomeStackNavigator, {
-                screen: HomeStackName.SmallEmotionChart,
-                params: { dateID: getDate(new Date()) },
-              });
-            }}
-          />
+          <Text>CTA 버튼으로 바꾸기</Text>
         )}
-        {periodKeywordList.length === 0 && (
-          <EmptyBox
-            mainTitle="이 기간에는 쿠키를 만나지 않았어요"
-            subTitle="오늘 쿠키를 만나보러 가는건 어떠세요?"
-            isLeftIcon={true}
-            iconName="green-chat-icon"
-            iconSize={40}
-            onPress={() => {
-              Analytics.clickCTADiaryButtonInPeriod();
-              navigation.navigate(RootStackName.HomeStackNavigator, {
-                screen: HomeStackName.NewChat,
-              });
-            }}
-          />
-        )}
+        {periodKeywordList.length === 0 && <Text>CTA 버튼으로 바꾸기</Text>}
       </Container>
     </StatisticLayout>
   );
