@@ -261,8 +261,16 @@ const DailyDairy = ({ navigation, route }) => {
 
   //홈으로 돌아가는 코드
   const navigateToHome = (isShownAds: boolean) => {
-    navigation.navigate(RootStackName.BottomTabNavigator, {
-      screen: TabScreenName.Home,
+    navigation.reset({
+      index: 0,
+      routes: [
+        {
+          name: RootStackName.BottomTabNavigator,
+          state: {
+            routes: [{ name: TabScreenName.Home }],
+          },
+        },
+      ],
     });
     isShownAds &&
       Toast.show(`광고를 시청하고 이미지를 첨부했어요!`, {
