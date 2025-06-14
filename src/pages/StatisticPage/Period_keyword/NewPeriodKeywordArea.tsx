@@ -92,12 +92,8 @@ const NewPeriodKeywordArea: React.FC<PeriodKeywordAreaProps> = ({ periodKeywordL
       </HeaderContainer>
 
       <CardContainer>
-        {wordCloudData.length > 0 ? (
+        {wordCloudData.length > 0 && (
           <WordCloud options={wordCloudOptions} onWordPress={() => {}} />
-        ) : (
-          <EmptyContainer>
-            <Empty type="채팅기록" />
-          </EmptyContainer>
         )}
       </CardContainer>
     </Container>

@@ -39,26 +39,9 @@ export const KeywordIcon = styled.View<{ index: number }>`
   }};
 `;
 
-//키워드 제목
-export const KeywordTitle = styled.Text`
-  font-family: Pretendard-SemiBold;
-  font-size: ${18 * rsFont + 'px'};
-  color: ${palette.neutral[900]};
-`;
-
 //키워드에 대한 설명
 export const KeywordText = styled.Text`
   font-family: Pretendard-SemiBold;
   font-size: ${16 * rsFont + 'px'};
   color: ${palette.neutral[900]};
-`;
-
-//키워드 전체 컨테이너 (제목 + 키워드들)
-export const Container = styled.View`
-  width: 100%;
-  max-width: ${350 * rsWidth + 'px'};
-  height: auto;
-  //max-height: ${253 * rsHeight + 'px'};
-  gap: ${12 * rsHeight + 'px'};
-  //background-color: pink;
 `;

@@ -5,6 +5,7 @@ import { rsHeight, rsWidth, rsFont } from '../../../utils/responsive-size';
 import palette from '../../../assets/styles/theme';
 import Carousel, { Pagination, ICarouselInstance } from 'react-native-reanimated-carousel';
 import { useSharedValue } from 'react-native-reanimated';
+import { MAX_WIDTH } from '../AnalysisBlock/AnalysisBlock.style';
 interface ImageCarouselProps {
   images: string[];
 }
@@ -21,19 +22,10 @@ const DailyGallery: React.FC<ImageCarouselProps> = ({ images }) => {
   };
   if (images.length === 0) return null;
   return (
-    <View style={{ position: 'relative', gap: rsHeight * 12 }}>
-      <Text
-        style={{
-          fontFamily: 'Kyobo-handwriting',
-          fontSize: 18 * rsFont,
-          color: palette.neutral[900],
-        }}>
-        그 때 내가 기록한 순간을 담았어요!
-      </Text>
-
+    <>
       <Carousel
         ref={ref}
-        width={rsWidth * 350}
+        width={rsWidth * MAX_WIDTH}
         height={rsHeight * 263}
         data={images}
         onProgressChange={progress}
@@ -75,7 +67,7 @@ const DailyGallery: React.FC<ImageCarouselProps> = ({ images }) => {
           />
         </View>
       )}
-    </View>
+    </>
   );
 };
 export default DailyGallery;

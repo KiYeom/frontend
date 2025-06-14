@@ -33,13 +33,11 @@ const PeriodEmotionArea: React.FC<any> = (props: any) => {
           height: auto;
           gap: ${rsHeight * 8 + 'px'};
         `}>
-        {periodEmotionList && periodEmotionList.length > 0 ? (
+        {periodEmotionList &&
+          periodEmotionList.length > 0 &&
           periodEmotionList.map((emotion: string, index: number) => (
             <PeriodKeyword key={index} title={emotion} ranking={index + 1} />
-          ))
-        ) : (
-          <Empty type="채팅기록" />
-        )}
+          ))}
       </View>
     </View>
   );

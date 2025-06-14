@@ -89,8 +89,7 @@ export type TEmotions = {
 
 export type TEmotionCheck = {
   desc?: string;
-  //group: 'angry' | 'sad' | 'happy' | 'calm';
-  group: string;
-  keyword: string;
+  group: string; //group: 'angry' | 'sad' | 'happy' | 'calm';
+  keyword: string; //keyword: '지친', '신나는', '엄준식(커스텀)'
   type?: 'default' | 'custom'; //default, custom
 };

@@ -63,7 +63,7 @@ const StatisticLayout: React.FC<StatisticLayoutProps> = ({
           </View>
         </View>
 
-        {/* 여기서 children 렌더링 */}
+        {/* 여기서 children 렌더링, 간격 : 16px */}
         <View style={{ gap: rsHeight * 16 }}>{children}</View>
       </ScrollView>
 

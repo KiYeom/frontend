@@ -133,7 +133,7 @@ const NewPeriodEmotionArea: React.FC<PeriodEmotionAreaProps> = ({ periodEmotionL
 
       {/* 워드 클라우드 */}
       <CardContainer>
-        {isValidEmotionList && wordCloudData.length > 0 ? (
+        {isValidEmotionList && wordCloudData.length > 0 && (
           <Cloud
             key={cloudKey} // 포커스 시에만 변경되는 key
             keywords={wordCloudData}
@@ -144,8 +144,6 @@ const NewPeriodEmotionArea: React.FC<PeriodEmotionAreaProps> = ({ periodEmotionL
               fontFamily: 'Kyobo-handwriting',
             }}
           />
-        ) : (
-          <Empty type="채팅기록" />
         )}
       </CardContainer>
     </Container>

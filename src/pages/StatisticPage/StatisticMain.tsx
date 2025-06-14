@@ -1,44 +1,23 @@
-import { css } from '@emotion/native';
-import { useNavigation, CommonActions } from '@react-navigation/native';
-import { Image } from 'expo-image';
 import React, { useCallback, useEffect, useState, useRef } from 'react';
-import { ScrollView, TouchableOpacity, View, Text } from 'react-native';
+import { ScrollView, TouchableOpacity, View, Text, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { dailyAnalyze, dailyAnalyzeStatus } from '../../apis/analyze';
 import { TEmotionCheck, TLabel } from '../../apis/analyze.type';
-import palette from '../../assets/styles/theme';
 import { HomeStackName, RootStackName, TabScreenName } from '../../constants/Constants';
 import Analytics from '../../utils/analytics';
-import { rsFont, rsHeight, rsWidth } from '../../utils/responsive-size';
 import SingleDatePickerModal from '../../components/rangeCal/single-date-picker-modal';
-//import BlurredButton from './BlurredButton';
 import DailyEmotionClassification from './Daily_EmotionClassification/DailyEmotionClassification';
 import EmotionArea from './Daily_Keyword/EmotionArea';
 import EmotionDairy from './Daily_Keyword/EmotionDairy';
 import KeywordArea from './Daily_Keyword/KeywordArea';
-//import ReportType from './ReportType';
 import { formatDateKorean } from '../../utils/times';
-import {
-  Container,
-  DateLineContainer,
-  DateLineText,
-  PageHintText,
-  StatisticTitle,
-} from './StatisticMain.style';
-import Icon from '../../components/icons/icons';
-import {
-  getKoreanRealDateString,
-  getKoreanServerTodayDateString,
-  getKoreanServerYesterdayDateString,
-} from '../../utils/times';
+import { Container } from './StatisticMain.style';
+import { getKoreanRealDateString, getKoreanServerTodayDateString } from '../../utils/times';
 import CTAButton from '../../components/CTAButton/CTAButton';
-import Header from '../../components/header/header';
-import BottomTabNavigator from '~/src/navigators/BottomTabNavigator';
-import Carousel, { Pagination, ICarouselInstance } from 'react-native-reanimated-carousel';
-import { useSharedValue } from 'react-native-reanimated';
 import StatisticLayout from '../../components/layout/StatisticLayout';
 import DailyGallery from './Daily_Gallery/DailyGallery';
-const START_HOUR_OF_DAY = 6;
+import AnaylsisBlock from './AnalysisBlock/AnalysisBlock';
+import palette from '../../assets/styles/theme';
 
 //전체 통계 화면
 const StatisticMain: React.FC<any> = ({ navigation, route }) => {
@@ -57,45 +36,54 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
   const [todayFeeling, setTodayFeeling] = useState<string>('');
   //section5. 내가 기록한 나의 사진
   const [images, setImages] = useState<string[]>([]);
-  //const navigation = useNavigation();
-  const insets = useSafeAreaInsets();
-
-  //const { dateID } = route.params;
+  //홈 화면 혹은 날짜 선택 모달에서 받은 날짜 ID
   const [dateID, setDateID] = useState(route.params.dateID);
-  //console.log('홈에서 받은 dateID', dateID);
 
   const onChange = useCallback((newDate) => {
-    //setDate(new Date(newDate));
     setDateID(getKoreanRealDateString(newDate));
   }, []);
 
   //앱이 처음 실행됐을 때 실행되는 부분
   useEffect(() => {
     Analytics.watchDailyStatisticScreen(); //일일 리포트 화면 진입
-    const currentYear = new Date().getFullYear();
-    dailyAnalyzeStatus(currentYear).then((data) => {
-      if (!data) {
-        setAvailableDates([getKoreanServerTodayDateString(new Date())]);
-      } else {
-        setAvailableDates([...data.dates, getKoreanServerTodayDateString(new Date())]);
+    const initializeData = async () => {
+      try {
+        const currentYear = new Date().getFullYear();
+        const data = await dailyAnalyzeStatus(currentYear);
+        if (!data) {
+          setAvailableDates([getKoreanServerTodayDateString(new Date())]);
+        } else {
+          setAvailableDates([...data.dates, getKoreanServerTodayDateString(new Date())]);
+        }
+      } catch (error) {
+        console.error('Error fetching initial data:', error);
+        alert('네트워크 연결이 불안정합니다. 잠시 후 다시 시도해주세요.');
+      } finally {
       }
-    });
+    };
+    initializeData();
   }, []);
 
   const fetchData = useCallback(async () => {
-    const dailyStatistics = await dailyAnalyze(dateID);
-    if (!dailyStatistics) {
-      alert('네트워크 연결이 불안정합니다. 잠시 후 다시 시도해주세요.');
-      return;
+    try {
+      const dailyStatistics = await dailyAnalyze(dateID);
+      if (!dailyStatistics) {
+        alert('네트워크 연결이 불안정합니다. 잠시 후 다시 시도해주세요.');
+        return;
+      }
+      setIsNullClassification(dailyStatistics.classification.isNULL);
+      setLabelsClassification(dailyStatistics.classification.labels);
+      setIsSummaryList(dailyStatistics.summary.isNULL);
+      setSummaryList(dailyStatistics.summary.keywords);
+      setIsRecordKeywordList(dailyStatistics.record.Keywords);
+      setIsNullRecordKeywordList(dailyStatistics.record.isNULL);
+      setTodayFeeling(dailyStatistics.record.todayFeeling ?? '');
+      setImages(dailyStatistics.record.images ?? []);
+    } catch (error) {
+      console.error('Error fetching daily statistics:', error);
+      alert('데이터를 불러오는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+    } finally {
     }
-    setIsNullClassification(dailyStatistics.classification.isNULL);
-    setLabelsClassification(dailyStatistics.classification.labels);
-    setIsSummaryList(dailyStatistics.summary.isNULL);
-    setSummaryList(dailyStatistics.summary.keywords);
-    setIsRecordKeywordList(dailyStatistics.record.Keywords);
-    setIsNullRecordKeywordList(dailyStatistics.record.isNULL);
-    setTodayFeeling(dailyStatistics.record.todayFeeling ?? '');
-    setImages(dailyStatistics.record.images ?? []);
   }, [dateID]);
 
   //날짜가 바뀜에 따라 데이터를 다시 api를 통해 불러옴
@@ -136,28 +124,43 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
       }>
       {/* children으로 전달 */}
       <Container>
-        {/* ai 가 분석한 나의 모습 */}
+        {/* ai 가 분석한 나의 모습 (그래프) */}
         {!isNullClassification && (
-          <>
+          <AnaylsisBlock title={'쿠키가 생각했을 때의 모습이에요'}>
             <DailyEmotionClassification labelsClassification={labelsClassification} />
+          </AnaylsisBlock>
+        )}
+        {/* ai 가 분석한 나의 모습 (대화 키워드 분석) */}
+        {!isSummaryList && (
+          <AnaylsisBlock title={'쿠키와 이런 이야기를 했어요'}>
             <KeywordArea summaryList={summaryList} />
-          </>
+          </AnaylsisBlock>
         )}
         {/* 내가 직접 작성한 나의 모습 */}
         {!isNullRecordKeywordList && (
           <>
-            <EmotionArea isRecordKeywordList={isRecordKeywordList} />
-            <EmotionDairy todayFeeling={todayFeeling} />
-            <DailyGallery images={images} />
+            <AnaylsisBlock title={'그 때의 나는 어떤 감정이었나요?'}>
+              <EmotionArea isRecordKeywordList={isRecordKeywordList} />
+            </AnaylsisBlock>
+            <AnaylsisBlock title={'그 때의 나는 어떤 생각을 했을까요?'}>
+              <EmotionDairy todayFeeling={todayFeeling} />
+            </AnaylsisBlock>
           </>
         )}
 
+        {/*(추가) 일기에 사진을 첨부한 경우)*/}
+        {images.length > 0 && (
+          <AnaylsisBlock title={'그 때 내가 기록한 순간을 담았어요!'}>
+            <DailyGallery images={images} />
+          </AnaylsisBlock>
+        )}
+
         {/* 대화가 없어 ai 가 분석한 나의 모습이 존재하지 않는 경우 */}
-        {isNullClassification && (
+        {isNullClassification && isSummaryList && (
           <CTAButton
             mainTitle="쿠키에게 고민을 말해보세요"
             subTitle="쿠키와의 대화가 부족해 마음을 들여다 볼 수 없었어요"
-            iconName="pencil"
+            iconName="green-chat-icon"
             onPress={navigateToNewChat}
           />
         )}
@@ -166,7 +169,7 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
           <CTAButton
             mainTitle="나에게 어떤 하루였나요?"
             subTitle="감정 일기를 작성하고, 마음 보고서를 완성해보세요"
-            iconName="green-chat-icon"
+            iconName="pencil"
             onPress={navigateToSmallEmotionChart}
           />
         )}

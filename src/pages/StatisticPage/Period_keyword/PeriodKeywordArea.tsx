@@ -57,13 +57,11 @@ const PeriodKeywordArea: React.FC<any> = (props: any) => {
           height: auto;
           gap: ${rsHeight * 8 + 'px'};
         `}>
-        {periodKeywordList && periodKeywordList.length > 0 ? (
+        {periodKeywordList &&
+          periodKeywordList.length > 0 &&
           periodKeywordList.map((keyword, index) => (
             <PeriodKeyword key={index} title={keyword} ranking={index + 1} />
-          ))
-        ) : (
-          <Empty type="채팅기록" />
-        )}
+          ))}
       </View>
     </View>
   );
