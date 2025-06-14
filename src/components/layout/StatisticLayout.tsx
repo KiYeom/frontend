@@ -2,13 +2,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, Text, ScrollView } from 'react-native';
 import Header from '../header/header';
 import Icon from '../icons/icons';
+import { rsHeight } from '../../utils/responsive-size';
+import palette from '../../assets/styles/theme';
 import {
   DateLineContainer,
   DateLineText,
   StatisticTitle,
-} from '../../pages/StatisticPage/StatisticMain.style';
-import { rsHeight } from '../../utils/responsive-size';
-import palette from '../../assets/styles/theme';
+  Container,
+  ItemContainer,
+} from './StatisticLayout.style';
 
 interface StatisticLayoutProps {
   headerTitle: string;
@@ -40,7 +42,7 @@ const StatisticLayout: React.FC<StatisticLayoutProps> = ({
   leftFunction,
 }) => {
   return (
-    <View style={{ flex: 1, backgroundColor: 'pink', top: 0 }}>
+    <Container>
       <Header
         title={headerTitle}
         bgcolor={backgroundColor}
@@ -50,12 +52,14 @@ const StatisticLayout: React.FC<StatisticLayoutProps> = ({
         leftFunction={leftFunction}
       />
 
-      <ScrollView contentContainerStyle={{ flexGrow: 1, paddingVertical: rsHeight * 16 }}>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ flexGrow: 1, paddingVertical: rsHeight * 16 }}>
         {/* 상단 고정 영역 */}
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
           <Icon name={iconName} width={iconSize} height={iconSize} />
           <View style={{ marginVertical: 10 * rsHeight }}>
-            <DateLineContainer onPress={onDatePress}>
+            <DateLineContainer onPress={onDatePress} accessibilityLabel="날짜 선택">
               <DateLineText>{dateText}</DateLineText>
               <Icon name="arrow-down" color="white" />
             </DateLineContainer>
@@ -64,11 +68,11 @@ const StatisticLayout: React.FC<StatisticLayoutProps> = ({
         </View>
 
         {/* 여기서 children 렌더링, 간격 : 16px */}
-        <View style={{ gap: rsHeight * 16 }}>{children}</View>
+        <ItemContainer>{children}</ItemContainer>
       </ScrollView>
 
       {modalComponent}
-    </View>
+    </Container>
   );
 };
 export default StatisticLayout;

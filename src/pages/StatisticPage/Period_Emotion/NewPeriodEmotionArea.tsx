@@ -3,7 +3,6 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Text, View } from 'react-native';
 import Cloud from 'react-native-word-cloud';
 import Empty from '../Empty';
-import { SectionTitle } from '../StatisticMain.style';
 import {
   Container,
   HeaderWrapper,
@@ -80,7 +79,7 @@ interface PeriodEmotionAreaProps {
 }
 
 const NewPeriodEmotionArea = ({ periodEmotionList }: PeriodEmotionAreaProps) => {
-  console.log('NewPeriodEmotionArea - periodEmotionList:', periodEmotionList);
+  //console.log('NewPeriodEmotionArea - periodEmotionList:', periodEmotionList);
   const isFocused = useIsFocused();
   const [cloudKey, setCloudKey] = useState(0);
 

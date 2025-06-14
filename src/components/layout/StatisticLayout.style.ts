@@ -1,45 +1,20 @@
 import styled from '@emotion/native';
 import palette from '../../assets/styles/theme';
 import { rsFont, rsHeight, rsWidth } from '../../utils/responsive-size';
+/*
+  DateLineContainer,
+  DateLineText,
+  StatisticTitle,*/
 
-//통계 컴포넌트를 감싸는 전체 컨테이너
-export const Container = styled.View`
-  flex: 1;
-  gap: ${rsHeight * 30 + 'px'};
-  padding-horizontal: ${rsWidth * 20 + 'px'};
-  background-color: yellow;
-`;
-
-//키워드 제목
-export const Title = styled.Text`
+//날짜 폰트
+export const DateLineText = styled.Text`
   font-family: Pretendard-SemiBold;
-  font-size: ${18 * rsFont + 'px'};
-  color: ${palette.neutral[900]};
-`;
-
-//아무것도 없을 때 컨테이너
-export const EmptyContainer = styled.View`
-  width: 100%;
-  height: ${rsHeight * 220 + 'px'};
-  background-color: white;
-  border-radius: 10px;
-  gap: ${rsHeight * 12 + 'px'};
-  padding-vertical: ${rsHeight * 12 + 'px'};
-  padding-horizontal: ${rsWidth * 12 + 'px'};
-  justify-content: center;
-  align-items: center;
-`;
-
-//아무것도 없을 때 안내 글
-export const DescText = styled.Text`
-  font-family: Pretendard-Regular;
-  font-size: ${12 * rsFont}px;
-  color: ${palette.neutral[300]};
-  background-color: white;
+  font-size: ${16 * rsFont + 'px'};
+  color: white;
   text-align: center;
 `;
 
-//INFO : 변경
+//날짜 컴포넌트
 export const DateLineContainer = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
@@ -49,14 +24,6 @@ export const DateLineContainer = styled.TouchableOpacity`
   padding-horizontal: ${rsWidth * 10 + 'px'};
   padding-vertical: ${rsHeight * 5 + 'px'};
   border-radius: 20px;
-`;
-
-//변경된 날짜 폰트
-export const DateLineText = styled.Text`
-  font-family: Pretendard-SemiBold;
-  font-size: ${16 * rsFont + 'px'};
-  color: white;
-  text-align: center;
 `;
 
 //변경된 리포트 제목 폰트
@@ -70,6 +37,22 @@ export const StatisticTitle = styled.Text`
   //height: ${rsHeight * 70 + 'px'};
   padding: ${rsHeight * 8 + 'px'} 0 ${rsHeight * 8 + 'px'} 0;
 `;
+//전체 화면
+export const Container = styled.View`
+  flex: 1;
+  background-color: ${palette.neutral[50]};
+  top: 0;
+`;
+
+//통계 컴포넌트를 감싸는 전체 컨테이너
+export const ItemContainer = styled.View`
+  flex: 1;
+  gap: ${rsHeight * 30 + 'px'};
+  padding-horizontal: ${rsWidth * 20 + 'px'};
+  background-color: ${palette.neutral[50]};
+`;
+
+//---//
 
 //변경된 색션 제목 폰트
 export const SectionTitle = styled.Text`

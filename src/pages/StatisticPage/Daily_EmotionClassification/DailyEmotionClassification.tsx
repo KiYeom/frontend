@@ -7,7 +7,6 @@ import { TLabel } from '../../../apis/analyze.type';
 import palette from '../../../assets/styles/theme';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { Container } from '../Daily_Keyword/Keyword.style';
-import { SectionTitle } from '../StatisticMain.style';
 import { TouchableOpacity } from 'react-native';
 import Icon from '../../../components/icons/icons';
 

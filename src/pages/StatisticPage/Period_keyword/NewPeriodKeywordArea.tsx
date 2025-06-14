@@ -2,8 +2,6 @@
 import React, { useMemo } from 'react';
 import { Dimensions } from 'react-native';
 import WordCloud from 'rn-wordcloud';
-import Empty from '../Empty';
-import { SectionTitle } from '../StatisticMain.style';
 import {
   Container,
   HeaderContainer,

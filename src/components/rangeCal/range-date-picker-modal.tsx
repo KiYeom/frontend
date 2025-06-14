@@ -3,9 +3,8 @@ import React, { useState } from 'react';
 import { Modal, TouchableWithoutFeedback, View } from 'react-native';
 import DateTimePicker, { DateType } from 'react-native-ui-datepicker';
 import palette from '../../assets/styles/theme';
-import { rsHeight, rsWidth } from '../../utils/responsive-size';
+import { rsHeight, rsWidth, rsFont } from '../../utils/responsive-size';
 import Button from '../button/button';
-import { DescText } from '../../pages/StatisticPage/StatisticMain.style';
 
 const RangeDatePickerModal = ({
   modalVisible,
@@ -95,6 +94,15 @@ const ModalInner = styled.View`
   background-color: white;
   padding: ${rsHeight * 30 + 'px'} ${rsWidth * 20 + 'px'};
   border-radius: 30px;
+`;
+
+//아무것도 없을 때 안내 글
+export const DescText = styled.Text`
+  font-family: Pretendard-Regular;
+  font-size: ${12 * rsFont + 'px'};
+  color: ${palette.neutral[300]};
+  background-color: white;
+  text-align: center;
 `;
 
 export default RangeDatePickerModal;

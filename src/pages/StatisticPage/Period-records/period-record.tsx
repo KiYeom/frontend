@@ -1,6 +1,5 @@
 import React from 'react';
 import { EmotionKeyword, TRecordEmotion } from '../../../apis/analyze.type';
-import { SectionTitle } from '../StatisticMain.style';
 import {
   RContainer,
   RecordContainer,

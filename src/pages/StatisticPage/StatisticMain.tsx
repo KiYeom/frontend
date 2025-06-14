@@ -1,6 +1,4 @@
-import React, { useCallback, useEffect, useState, useRef } from 'react';
-import { ScrollView, TouchableOpacity, View, Text, ActivityIndicator } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, { useCallback, useEffect, useState } from 'react';
 import { dailyAnalyze, dailyAnalyzeStatus } from '../../apis/analyze';
 import { TEmotionCheck, TLabel } from '../../apis/analyze.type';
 import { HomeStackName, RootStackName, TabScreenName } from '../../constants/Constants';
@@ -11,7 +9,6 @@ import EmotionArea from './Daily_Keyword/EmotionArea';
 import EmotionDairy from './Daily_Keyword/EmotionDairy';
 import KeywordArea from './Daily_Keyword/KeywordArea';
 import { formatDateKorean } from '../../utils/times';
-import { Container } from './StatisticMain.style';
 import { getKoreanRealDateString, getKoreanServerTodayDateString } from '../../utils/times';
 import CTAButton from '../../components/CTAButton/CTAButton';
 import StatisticLayout from '../../components/layout/StatisticLayout';
@@ -102,7 +99,7 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
       params: { dateID },
     });
   }, [navigation, dateID]);
-  console.log('StatisticMain 컴포넌트 실행됨');
+  //console.log('StatisticMain 컴포넌트 실행됨');
 
   return (
     <StatisticLayout
@@ -122,57 +119,55 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
         />
       }>
       {/* children으로 전달 */}
-      <Container>
-        {/* ai 가 분석한 나의 모습 (그래프) */}
-        {!isNullClassification && (
-          <AnaylsisBlock title={'쿠키가 생각했을 때의 모습이에요'}>
-            <DailyEmotionClassification labelsClassification={labelsClassification} />
+      {/* ai 가 분석한 나의 모습 (그래프) */}
+      {!isNullClassification && (
+        <AnaylsisBlock title={'쿠키가 생각했을 때의 모습이에요'}>
+          <DailyEmotionClassification labelsClassification={labelsClassification} />
+        </AnaylsisBlock>
+      )}
+      {/* ai 가 분석한 나의 모습 (대화 키워드 분석) */}
+      {!isSummaryList && (
+        <AnaylsisBlock title={'쿠키와 이런 이야기를 했어요'}>
+          <KeywordArea summaryList={summaryList} />
+        </AnaylsisBlock>
+      )}
+      {/* 내가 직접 작성한 나의 모습 */}
+      {!isNullRecordKeywordList && (
+        <>
+          <AnaylsisBlock title={'그 때의 나는 어떤 감정이었나요?'}>
+            <EmotionArea isRecordKeywordList={isRecordKeywordList} />
           </AnaylsisBlock>
-        )}
-        {/* ai 가 분석한 나의 모습 (대화 키워드 분석) */}
-        {!isSummaryList && (
-          <AnaylsisBlock title={'쿠키와 이런 이야기를 했어요'}>
-            <KeywordArea summaryList={summaryList} />
+          <AnaylsisBlock title={'그 때의 나는 어떤 생각을 했을까요?'}>
+            <EmotionDairy todayFeeling={todayFeeling} />
           </AnaylsisBlock>
-        )}
-        {/* 내가 직접 작성한 나의 모습 */}
-        {!isNullRecordKeywordList && (
-          <>
-            <AnaylsisBlock title={'그 때의 나는 어떤 감정이었나요?'}>
-              <EmotionArea isRecordKeywordList={isRecordKeywordList} />
-            </AnaylsisBlock>
-            <AnaylsisBlock title={'그 때의 나는 어떤 생각을 했을까요?'}>
-              <EmotionDairy todayFeeling={todayFeeling} />
-            </AnaylsisBlock>
-          </>
-        )}
+        </>
+      )}
 
-        {/*(추가) 일기에 사진을 첨부한 경우)*/}
-        {images.length > 0 && (
-          <AnaylsisBlock title={'그 때 내가 기록한 순간을 담았어요!'}>
-            <DailyGallery images={images} />
-          </AnaylsisBlock>
-        )}
+      {/*(추가) 일기에 사진을 첨부한 경우)*/}
+      {images.length > 0 && (
+        <AnaylsisBlock title={'그 때 내가 기록한 순간을 담았어요!'}>
+          <DailyGallery images={images} />
+        </AnaylsisBlock>
+      )}
 
-        {/* 대화가 없어 ai 가 분석한 나의 모습이 존재하지 않는 경우 */}
-        {isNullClassification && isSummaryList && (
-          <CTAButton
-            mainTitle="쿠키에게 고민을 말해보세요"
-            subTitle="쿠키와의 대화가 부족해 마음을 들여다 볼 수 없었어요"
-            iconName="green-chat-icon"
-            onPress={navigateToNewChat}
-          />
-        )}
-        {/* 내가 직접 작성한 나의 모습이 없는 경우 */}
-        {isNullRecordKeywordList && (
-          <CTAButton
-            mainTitle="나에게 어떤 하루였나요?"
-            subTitle="감정 일기를 작성하고, 마음 보고서를 완성해보세요"
-            iconName="pencil"
-            onPress={navigateToSmallEmotionChart}
-          />
-        )}
-      </Container>
+      {/* 대화가 없어 ai 가 분석한 나의 모습이 존재하지 않는 경우 */}
+      {isNullClassification && isSummaryList && (
+        <CTAButton
+          mainTitle="쿠키에게 고민을 말해보세요"
+          subTitle="쿠키와의 대화가 부족해 마음을 들여다 볼 수 없었어요"
+          iconName="green-chat-icon"
+          onPress={navigateToNewChat}
+        />
+      )}
+      {/* 내가 직접 작성한 나의 모습이 없는 경우 */}
+      {isNullRecordKeywordList && (
+        <CTAButton
+          mainTitle="나에게 어떤 하루였나요?"
+          subTitle="감정 일기를 작성하고, 마음 보고서를 완성해보세요"
+          iconName="pencil"
+          onPress={navigateToSmallEmotionChart}
+        />
+      )}
     </StatisticLayout>
   );
 };

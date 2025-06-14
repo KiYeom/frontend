@@ -31,8 +31,8 @@ type NewPeriodFlowChartAreaProps = {
 
 const NewPeriodFlowChartArea = ({ emotionsData }: NewPeriodFlowChartAreaProps) => {
   const { dates, groups } = emotionsData;
-  console.log('NewPeriodFlowChartArea - dates:', dates);
-  console.log('NewPeriodFlowChartArea - emotionsData:', groups);
+  //console.log('NewPeriodFlowChartArea - dates:', dates);
+  //console.log('NewPeriodFlowChartArea - emotionsData:', groups);
   const n = dates.length;
   // 수정 코드 (패딩 5px 반영)
   const spacing =

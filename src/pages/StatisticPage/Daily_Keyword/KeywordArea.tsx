@@ -2,7 +2,6 @@ import React from 'react';
 import palette from '../../../assets/styles/theme';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 import Icon from '../../../components/icons/icons';
-import { SectionTitle } from '../StatisticMain.style';
 import { KeywordContainer, KeywordIcon, KeywordText } from './Keyword.style';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { css } from '@emotion/native';

@@ -10,7 +10,7 @@ export const Container = styled.View`
   max-width: ${MAX_WIDTH * rsWidth + 'px'};
   height: auto;
   gap: ${12 * rsHeight + 'px'};
-  background-color: green;
+  background-color: ${palette.neutral[50]};
 `;
 
 //변경된 색션 제목 폰트
@@ -18,5 +18,5 @@ export const SectionTitle = styled.Text`
   font-family: Kyobo-handwriting;
   font-size: ${18 * rsFont + 'px'};
   color: ${palette.neutral[900]};
-  background-color: white;
+  background-color: ${palette.neutral[50]};
 `;
