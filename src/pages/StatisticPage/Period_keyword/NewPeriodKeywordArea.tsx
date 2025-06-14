@@ -44,7 +44,7 @@ const RANKING_SETTINGS: RankingSetting[] = [
   { color: '#FCB31E', fontSize: 12 }, // 10순위
 ];
 
-const NewPeriodKeywordArea: React.FC<PeriodKeywordAreaProps> = ({ periodKeywordList }) => {
+const NewPeriodKeywordArea = ({ periodKeywordList }: PeriodKeywordAreaProps) => {
   // WordCloud 데이터 변환
   const wordCloudData = useMemo((): KeywordData[] => {
     if (!periodKeywordList?.length) {
@@ -87,10 +87,6 @@ const NewPeriodKeywordArea: React.FC<PeriodKeywordAreaProps> = ({ periodKeywordL
 
   return (
     <Container>
-      <HeaderContainer>
-        <SectionTitle>그 동안 이런 이야기를 나눴어요</SectionTitle>
-      </HeaderContainer>
-
       <CardContainer>
         {wordCloudData.length > 0 && (
           <WordCloud options={wordCloudOptions} onWordPress={() => {}} />

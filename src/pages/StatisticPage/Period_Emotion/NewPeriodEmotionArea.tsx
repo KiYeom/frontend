@@ -76,10 +76,10 @@ const getEmotionColor = (category: string, intensity: number) => {
 
 // --- 컴포넌트 Props 타입 정의 ---
 interface PeriodEmotionAreaProps {
-  periodEmotionList: string[];
+  periodEmotionList: string[]; // ['우울한', '자신있는', '신이난', ...]
 }
 
-const NewPeriodEmotionArea: React.FC<PeriodEmotionAreaProps> = ({ periodEmotionList }) => {
+const NewPeriodEmotionArea = ({ periodEmotionList }: PeriodEmotionAreaProps) => {
   console.log('NewPeriodEmotionArea - periodEmotionList:', periodEmotionList);
   const isFocused = useIsFocused();
   const [cloudKey, setCloudKey] = useState(0);
@@ -126,11 +126,6 @@ const NewPeriodEmotionArea: React.FC<PeriodEmotionAreaProps> = ({ periodEmotionL
 
   return (
     <Container>
-      {/* 헤더 */}
-      <HeaderWrapper>
-        <SectionTitle>그 동안 이러한 감정들을 느꼈어요</SectionTitle>
-      </HeaderWrapper>
-
       {/* 워드 클라우드 */}
       <CardContainer>
         {isValidEmotionList && wordCloudData.length > 0 && (

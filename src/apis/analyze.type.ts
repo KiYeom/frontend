@@ -43,8 +43,8 @@ export type TPeriodChart = {
 };
 
 export type TNewPeriodChart = {
-  id: number;
-  nickname: string;
+  id?: number;
+  nickname?: string;
   dates: string[];
   groups: string[];
 };

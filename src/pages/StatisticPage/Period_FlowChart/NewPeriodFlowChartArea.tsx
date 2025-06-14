@@ -1,24 +1,19 @@
 // EmotionsFlowChart.js
-
 import React from 'react';
-import { View, Text } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 import Icon from '../../../components/icons/icons';
-import { SectionTitle } from '../StatisticMain.style';
 import {
   Container,
   ChartAreaWrapper,
   IconsColumn,
   IconWrapper,
-  IconText,
   ChartWrapper,
   StripeBand,
-  EmptyContainer,
-  EmptyText,
   CHART_WIDTH,
   CHART_HEIGHT,
   STRIPE_HEIGHT,
 } from './NewPeriodFlowChartArea.style';
+import { TNewPeriodChart } from '~/src/apis/analyze.type';
 
 const EMOTION_TO_CENTER = {
   angry: 0.5,
@@ -28,12 +23,16 @@ const EMOTION_TO_CENTER = {
   happy: 4.5,
 };
 
-const STRIPE_COLORS = ['#FDEA9B', '#C3EFD5', '#E2E2E2', '#CFC7FD', '#F6B8B8'];
 const STRIPE_NEW_COLORS = ['#F6B8B8', '#CFC7FD', '#E2E2E2', '#C3EFD5', '#FDEA9B'];
 
-const NewPeriodFlowChartArea = ({ emotionsData }) => {
+type NewPeriodFlowChartAreaProps = {
+  emotionsData: TNewPeriodChart;
+};
+
+const NewPeriodFlowChartArea = ({ emotionsData }: NewPeriodFlowChartAreaProps) => {
   const { dates, groups } = emotionsData;
-  console.log('NewPeriodFlowChartArea - emotionsData:', emotionsData);
+  console.log('NewPeriodFlowChartArea - dates:', dates);
+  console.log('NewPeriodFlowChartArea - emotionsData:', groups);
   const n = dates.length;
   // 수정 코드 (패딩 5px 반영)
   const spacing =
@@ -52,9 +51,6 @@ const NewPeriodFlowChartArea = ({ emotionsData }) => {
 
   return (
     <Container>
-      <View style={{ alignSelf: 'stretch' }}>
-        <SectionTitle>얼마나 많은 감정 변화가 있었을까요?</SectionTitle>
-      </View>
       <ChartAreaWrapper>
         {/* y축 범례 (감정 아이콘) */}
         <IconsColumn>

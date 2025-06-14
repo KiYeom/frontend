@@ -17,7 +17,6 @@ import CTAButton from '../../components/CTAButton/CTAButton';
 import StatisticLayout from '../../components/layout/StatisticLayout';
 import DailyGallery from './Daily_Gallery/DailyGallery';
 import AnaylsisBlock from './AnalysisBlock/AnalysisBlock';
-import palette from '../../assets/styles/theme';
 
 //전체 통계 화면
 const StatisticMain: React.FC<any> = ({ navigation, route }) => {
