@@ -1,11 +1,24 @@
 import { css } from '@emotion/native';
-import React from 'react';
+import React, { memo } from 'react';
 import { Text, TouchableOpacity } from 'react-native';
 import palette from '../../../assets/styles/theme';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 import Icon, { TIconName } from '../../icons/icons';
+import useEmotionStore from '../../../store/useEmotionStore';
 
-const EmotionChip = ({ group, keyword, onPress, isSelected }) => {
+const EmotionChip = memo(({ group, keyword, onPress }) => {
+  const isSelected = useEmotionStore((state) => state.selectedEmotionKeywords.has(keyword));
+  const addEmotion = useEmotionStore((state) => state.addEmotion);
+  const removeEmotion = useEmotionStore((state) => state.removeEmotion);
+  console.log('EmotionChip 렌더링', isSelected, keyword);
+
+  const toggleEmotion = () => {
+    if (isSelected) {
+      removeEmotion(keyword);
+    } else {
+      addEmotion({ group, keyword, type: 'default' });
+    }
+  };
   return (
     <TouchableOpacity
       style={css`
@@ -19,10 +32,11 @@ const EmotionChip = ({ group, keyword, onPress, isSelected }) => {
         padding-vertical: ${rsHeight * 10 + 'px'};
         //margin-vertical: ${rsHeight * 5 + 'px'};
         border-radius: 10px;
+        border-color: ${isSelected ? palette.primary[500] : palette.neutral[300]};
+        border-width: 5px;
         gap: ${rsWidth * 10 + 'px'};
-        border: 3px solid ${isSelected ? palette.primary[500] : 'transparent'};
       `}
-      onPress={onPress}>
+      onPress={toggleEmotion}>
       <Icon name={`${group}-emotion` as TIconName} width={rsWidth * 35 + 'px'} />
       <Text
         style={css`
@@ -37,6 +51,8 @@ const EmotionChip = ({ group, keyword, onPress, isSelected }) => {
       </Text>
     </TouchableOpacity>
   );
-};
+});
+
+EmotionChip.displayName = 'EmotionChip';
 
 export default EmotionChip;

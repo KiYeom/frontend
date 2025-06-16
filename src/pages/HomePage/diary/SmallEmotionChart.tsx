@@ -34,7 +34,8 @@ import Header from '../../../components/header/header';
 import EmotionTitleBox from './emotionTitleBox';
 import Analytics from '../../../utils/analytics';
 import useRecordedEmotionStore from '../../../utils/emotion-recorded';
-import useEmotionStore from '../../../store/emotion-status';
+//import useEmotionStore from '../../../store/emotion-status';
+import useMemosStore from '../../../store/useEmotionStore';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { getUserNickname } from '../../../utils/storageUtils';
 import EmotionCard from '../../../components/atoms/EmotionCard/EmotionCard';
@@ -55,7 +56,7 @@ import { MAX_SELECTED_EMOTION_COUNT } from '../../../constants/Constants';
 
 const SmallEmotionChart = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
-  const {
+  /*const {
     selectedEmotions,
     diaryText,
     setSelectedEmotions,
@@ -63,7 +64,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
     removeEmotion,
     setDiaryText,
     setImages,
-  } = useEmotionStore();
+  } = useEmotionStore();*/
   //const [selectedEmotionsV2, setSelectedEmotionsV2] = useState([]);
   //const { recordedEmotions, setRecordedEmotions } = useRecordedEmotionStore();
   const scrollViewRef = useRef(null);
@@ -82,22 +83,22 @@ const SmallEmotionChart = ({ navigation, route }) => {
   const width = Dimensions.get('window').width - 24;
 
   //일일 감정 데이터 가져오기
-  const fetchData = async () => {
+  /*const fetchData = async () => {
     const diaryData = await todayEmotionCheck(dateID);
     //console.log('new diaryData', diaryData.Keywords);
     //console.log('~~~~~~', selectedEmotions);
     setSelectedEmotions(diaryData.Keywords);
     setDiaryText(diaryData.todayFeeling ?? '');
     setImages(diaryData.images ?? []);
-  };
+  };*/
 
-  useEffect(() => {
+  /*useEffect(() => {
     //Analytics.watchEmotionRecordScreen();
     fetchData();
     //setSelectedEmotion(recordedEmotions);
-  }, []);
+  }, []);*/
 
-  const handleEmotionListClick = async (emotion) => {
+  /*const handleEmotionListClick = async (emotion) => {
     //console.log('emotion', emotion);
     // 이미 선택된 감정인지 확인
     if (selectedEmotions.some((e) => e.keyword === emotion.keyword)) {
@@ -113,14 +114,24 @@ const SmallEmotionChart = ({ navigation, route }) => {
       }
       addEmotion(emotion);
     }
+  };*/
+
+  const handleEmotionClick = (emotion: Emotion) => {
+    const selected = useMemosStore.getState().selectedEmotionKeywords.has(emotion.keyword);
+    if (selected) {
+      useMemosStore.getState().removeEmotion(emotion.keyword);
+    } else {
+      useMemosStore.getState().addEmotion(emotion);
+    }
+    console.log('선택된 감정들:', useMemosStore.getState().allSelectedEmotions);
   };
 
   // Chip을 삭제하는 핸들러
-  const handleRemoveEmotion = (emotion) => {
+  /*const handleRemoveEmotion = (emotion) => {
     removeEmotion(emotion.keyword);
-  };
+  };*/
 
-  useEffect(() => {
+  /*useEffect(() => {
     // 스크롤 움직임을 약간 지연시키기 위해 setTimeout 사용
     const timeout = setTimeout(() => {
       if (scrollViewRef.current) {
@@ -129,7 +140,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
     }, 100); // 100ms 뒤에 스크롤 움직임
 
     return () => clearTimeout(timeout); // 타이머 제거
-  }, [selectedEmotions]); // selectedEmotions가 변경될 때마다 실행
+  }, [selectedEmotions]); // selectedEmotions가 변경될 때마다 실행*/
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -158,24 +169,26 @@ const SmallEmotionChart = ({ navigation, route }) => {
               <View key={colIndex} style={{ gap: 12 /*backgroundColor: 'red'*/ }}>
                 {column.map((emotion, i) => (
                   <EmotionChip
-                    key={i}
+                    key={emotion.keyword}
                     group={emotion.group}
                     keyword={emotion.keyword}
-                    isSelected={selectedEmotions.some((e) => e.keyword === emotion.keyword)}
-                    onPress={() => handleEmotionListClick(emotion)}
+                    //onPress={handleEmotionClick(emotion)}
+                    //onPress={() => console.log('감정 클릭:', emotion.keyword)}
+                    //isSelected={selectedEmotions.some((e) => e.keyword === emotion.keyword)}
+                    //onPress={() => handleEmotionListClick(emotion)}
                   />
                 ))}
               </View>
             ))}
           </ScrollView>
-          <EmotionDesc textAlign={'center'}>
+          {/*<EmotionDesc textAlign={'center'}>
             {selectedEmotions.length > 0 &&
             emotionData[selectedEmotions[selectedEmotions.length - 1].keyword] !== undefined
               ? `${selectedEmotions[selectedEmotions.length - 1].keyword} : ${emotionData[selectedEmotions[selectedEmotions.length - 1].keyword].desc}`
               : ''}
-          </EmotionDesc>
+          </EmotionDesc>()*/}
 
-          {selectedEmotions.length > 0 && (
+          {/*selectedEmotions.length > 0 && (
             <View
               style={css`
                 margin-top: ${rsHeight * 12 + 'px'};
@@ -197,7 +210,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
                   ))
                 : ''}
             </View>
-          )}
+          )*/}
         </KeyboardAwareScrollView>
         <KeyboardStickyView
           offset={{ closed: 0, opened: Platform.OS === 'ios' ? insets.bottom : 0 }}>
@@ -213,26 +226,20 @@ const SmallEmotionChart = ({ navigation, route }) => {
               title="원하는 감정이 없어요"
               primary={false}
               //disabled={selectedEmotions.length < MINIMUM_EMOTION_COUNT}
-              disabled={
-                selectedEmotions.filter((emotion) => emotion.type !== 'custom').length ===
-                MAX_SELECTED_EMOTION_COUNT
-              }
+              //disabled={
+              //selectedEmotions.filter((emotion) => emotion.type !== 'custom').length ===
+              //MAX_SELECTED_EMOTION_COUNT
+              //}
               onPress={async () => {
                 openBottomSheet();
                 //console.log('bottom sheet 열기');
                 Analytics.clickNoEmotionButton();
-                //setRecordedEmotions(selectedEmotions); // 상태 업데이트
-                //await todayEmotion(dateID, selectedEmotions, text);
-                //navigation.navigate(TabScreenName.Home);
-                /*navigation.navigate(RootStackName.HomeStackNavigator, {
-                screen: HomeStackName.TestPage,
-              });*/
               }}
             />
             <Button
               title="마음일기 쓰러가기"
               primary={true}
-              disabled={selectedEmotions.length === 0}
+              //disabled={selectedEmotions.length === 0}
               onPress={() => {
                 Analytics.clickGotoDiaryWriteButton();
                 navigation.navigate(HomeStackName.DailyDairy, { dateID: dateID });

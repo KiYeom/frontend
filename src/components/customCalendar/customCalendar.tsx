@@ -11,6 +11,7 @@ import Toast from 'react-native-root-toast';
 import { useCalendarStore } from '../../store/calendarStore';
 import { getDate, getMonthRange } from '../../utils/times';
 import Analytics from '../../utils/analytics';
+import useMemosStore from '../../store/useEmotionStore';
 /*
 DateData 
 {
@@ -89,6 +90,7 @@ const CustomCalendar = ({ navigation }) => {
   const [today, setToday] = useState<string>(getDate());
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth() + 1);
+  const clearEmotions = useMemosStore((state) => state.clearEmotions);
 
   useEffect(() => {
     setToday(getDate());
@@ -219,6 +221,7 @@ const CustomCalendar = ({ navigation }) => {
                     });
                   } else {
                     //감정 데이터가 일기도, 채팅에도 존재하지 않는 경우 : 감정 입력하도록
+                    clearEmotions();
                     navigation.navigate(RootStackName.HomeStackNavigator, {
                       screen: HomeStackName.SmallEmotionChart,
                       params: { dateID: date.dateString },
