@@ -5,8 +5,9 @@ import palette from '../../../assets/styles/theme';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 import Icon, { TIconName } from '../../icons/icons';
 import useEmotionStore from '../../../store/useEmotionStore';
+import { transparent } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 
-const EmotionChip = memo(({ group, keyword, onPress }) => {
+const EmotionChip = memo(({ group, keyword, desc, onPress }) => {
   const isSelected = useEmotionStore((state) => state.selectedEmotionKeywords.has(keyword));
   const addEmotion = useEmotionStore((state) => state.addEmotion);
   const removeEmotion = useEmotionStore((state) => state.removeEmotion);
@@ -16,7 +17,7 @@ const EmotionChip = memo(({ group, keyword, onPress }) => {
     if (isSelected) {
       removeEmotion(keyword);
     } else {
-      addEmotion({ group, keyword, type: 'default' });
+      addEmotion({ group, keyword, desc, type: 'default' });
     }
   };
   return (
@@ -32,7 +33,7 @@ const EmotionChip = memo(({ group, keyword, onPress }) => {
         padding-vertical: ${rsHeight * 10 + 'px'};
         //margin-vertical: ${rsHeight * 5 + 'px'};
         border-radius: 10px;
-        border-color: ${isSelected ? palette.primary[500] : palette.neutral[300]};
+        border-color: ${isSelected ? palette.primary[500] : `transparent`};
         border-width: 5px;
         gap: ${rsWidth * 10 + 'px'};
       `}

@@ -3,13 +3,13 @@ import { ScrollView, Platform, Alert, Linking } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { ImageContainer } from '../../pages/HomePage/diary/DailyDairy.style';
 import UploadButton from '../../components/upload-picture/UploadButton';
-import useMemosStore from '../../store/useEmotionStore';
+import useEmotionStore from '../../store/useEmotionStore';
 import { MAX_DIARY_IMAGE_COUNT } from '../../constants/Constants';
 import AttachmentPreview from '../../components/image-container/AttachmentPreview';
 const DiaryImageSection = () => {
-  const image = useMemosStore((state) => state.image);
-  const addImage = useMemosStore((state) => state.addImage);
-  const removeImage = useMemosStore((state) => state.removeImage);
+  const image = useEmotionStore((state) => state.image);
+  const addImage = useEmotionStore((state) => state.addImage);
+  const removeImage = useEmotionStore((state) => state.removeImage);
 
   const getPermission = async () => {
     if (Platform.OS !== 'web') {

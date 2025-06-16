@@ -1,0 +1,59 @@
+import React from 'react';
+import { EmotionDesc, SmallTitle, Title } from './EmotionChart.style';
+import useEmotionStore from '../../../store/useEmotionStore';
+import { Text } from 'react-native';
+import { emotionsByColumn } from '../../../constants/Constants';
+import EmotionCardDefault from './EmotionCardDefault';
+import { View } from 'react-native';
+import { all } from 'axios';
+const SelectedEmotionDesc = () => {
+  const allSelectedEmotions = useEmotionStore((state) => state.allSelectedEmotions);
+  const isSelected = useEmotionStore((state) =>
+    state.selectedEmotionKeywords.has(allSelectedEmotions[allSelectedEmotions.length - 1]?.keyword),
+  );
+
+  console.log('선택된 감정들:', allSelectedEmotions);
+  console.log('선감', allSelectedEmotions[0]?.desc);
+  return (
+    <>
+      <View style={{ marginVertical: 12, justifyContent: 'center', alignItems: 'center' }}>
+        {allSelectedEmotions.length > 0 && (
+          <Text style={{ fontSize: 15, fontFamily: 'Kyobo-handwriting' }}>
+            {allSelectedEmotions[allSelectedEmotions.length - 1]?.keyword} :{' '}
+            {allSelectedEmotions[allSelectedEmotions.length - 1]?.desc}
+          </Text>
+        )}
+      </View>
+      <View style={{ backgroundColor: 'black', gap: 10, flexDirection: 'row', flexWrap: 'wrap' }}>
+        {allSelectedEmotions.map((emotion, index) => (
+          <EmotionCardDefault key={emotion.keyword} emotion={emotion} />
+        ))}
+      </View>
+
+      {/*selectedEmotions.length > 0 && (
+            <View
+              style={css`
+                margin-top: ${rsHeight * 12 + 'px'};
+                //background-color: gray;
+                height: ${rsHeight * 80 + 'px'};
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: ${rsWidth * 6 + 'px'};
+                padding-horizontal: ${rsWidth * 24 + 'px'};
+              `}>
+              {selectedEmotions.length > 0
+                ? selectedEmotions.map((emotion, i) => (
+                    <EmotionCard
+                      key={i}
+                      emotion={emotion}
+                      onPress={handleRemoveEmotion}
+                      status={'default'}
+                    />
+                  ))
+                : ''}
+            </View>
+          )*/}
+    </>
+  );
+};
+export default SelectedEmotionDesc;

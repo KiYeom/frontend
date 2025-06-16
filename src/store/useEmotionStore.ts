@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 
-const useMemosStore = create((set) => ({
+const useEmotionStore = create((set) => ({
   selectedEmotionKeywords: new Set(),
-  allSelectedEmotions: [],
+  allSelectedEmotions: [], //[{'group' : 'sad', 'keyword': '우울한', 'type': 'default'}]
   diaryText: '',
   image: [],
   addEmotion: (emotion) =>
@@ -40,4 +40,4 @@ const useMemosStore = create((set) => ({
   removeImage: (url) => set((state) => ({ image: state.image.filter((i) => i !== url) })),
   clearImage: () => set({ image: [] }),
 }));
-export default useMemosStore;
+export default useEmotionStore;

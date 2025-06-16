@@ -72,4 +72,6 @@ export const EmotionDesc = styled.Text<{
   color: ${palette.neutral[500]};
   margin-top: ${rsHeight * 24 + 'px'};
   margin-bottom: ${rsHeight * 12 + 'px'};
+  background-color: black;
+  gap: ${rsWidth * 10 + 'px'};
 `;

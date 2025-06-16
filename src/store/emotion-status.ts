@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+/*import { create } from 'zustand';
 
 //Emotion 객체 타입 정의
 export interface Emotion {
@@ -60,3 +60,4 @@ const useEmotionStore = create<EmotionStore>((set) => ({
   clearImages: () => set({ images: [] }),
 }));
 export default useEmotionStore;
+*/
