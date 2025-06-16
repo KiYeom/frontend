@@ -6,6 +6,7 @@ import { emotionsByColumn } from '../../../constants/Constants';
 import EmotionCardDefault from './EmotionCardDefault';
 import { View } from 'react-native';
 import { all } from 'axios';
+import SelectedEmotionChip from './SelectedEmotionChip';
 const SelectedEmotionDesc = () => {
   const allSelectedEmotions = useEmotionStore((state) => state.allSelectedEmotions);
   const isSelected = useEmotionStore((state) =>
@@ -23,11 +24,6 @@ const SelectedEmotionDesc = () => {
             {allSelectedEmotions[allSelectedEmotions.length - 1]?.desc}
           </Text>
         )}
-      </View>
-      <View style={{ backgroundColor: 'black', gap: 10, flexDirection: 'row', flexWrap: 'wrap' }}>
-        {allSelectedEmotions.map((emotion, index) => (
-          <EmotionCardDefault key={emotion.keyword} emotion={emotion} />
-        ))}
       </View>
 
       {/*selectedEmotions.length > 0 && (

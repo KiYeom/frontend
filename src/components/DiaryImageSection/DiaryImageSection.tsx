@@ -57,8 +57,7 @@ const DiaryImageSection = () => {
   };
 
   return (
-    <ImageContainer
-      style={{ height: image.length > 0 ? 120 : undefined, justifyContent: 'center' }}>
+    <ImageContainer style={{ height: 120, justifyContent: 'center' }}>
       {image.length > 0 ? (
         <ScrollView
           horizontal

@@ -54,6 +54,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { formatDateKorean } from '../../../utils/times';
 import { MAX_SELECTED_EMOTION_COUNT } from '../../../constants/Constants';
 import SelectedEmotionDesc from './SelectedEmotionDesc';
+import SelectedEmotionChip from './SelectedEmotionChip';
 const SmallEmotionChart = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
   /*const {
@@ -169,6 +170,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
             ))}
           </ScrollView>
           <SelectedEmotionDesc />
+          <SelectedEmotionChip />
           {/*<EmotionDesc textAlign={'center'}>
             {selectedEmotions.length > 0 &&
             emotionData[selectedEmotions[selectedEmotions.length - 1].keyword] !== undefined

@@ -62,6 +62,7 @@ import { ImageContainer } from './DailyDairy.style';
 import Button from '../../../components/button/button';
 import useMemosStore from '../../../store/useEmotionStore';
 import DiaryImageSection from '../../../components/DiaryImageSection/DiaryImageSection';
+import SelectedEmotionChip from './SelectedEmotionChip';
 
 const userName = getUserNickname() ?? 'Test_remind_empty';
 const appVariant = Constants.expoConfig?.extra?.appVariant;
@@ -406,6 +407,7 @@ const DailyDairy = ({ navigation, route }) => {
           </View>
 
           {/* 감정 카드 리스트 */}
+          <SelectedEmotionChip />
           {/*selectedEmotions.length > 0 && (
             <View
               style={css`
