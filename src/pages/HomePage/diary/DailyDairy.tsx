@@ -63,7 +63,7 @@ import Button from '../../../components/button/button';
 import useMemosStore from '../../../store/useEmotionStore';
 import DiaryImageSection from '../../../components/DiaryImageSection/DiaryImageSection';
 import SelectedEmotionChip from './SelectedEmotionChip';
-
+import TextInputSection from './TextInputSection';
 const userName = getUserNickname() ?? 'Test_remind_empty';
 const appVariant = Constants.expoConfig?.extra?.appVariant;
 const isProductionOrStaging = appVariant === 'production' || appVariant === 'staging';
@@ -85,8 +85,7 @@ const DailyDairy = ({ navigation, route }) => {
   console.log('비교군', testEnv);
   console.log('테스트 값인가?', TestIds.REWARDED === adUnitId);*/
   //console.log('가지고 온 adUnitId', adUnitId);
-  const diaryText = useMemosStore((state) => state.diaryText);
-  const setDiaryText = useMemosStore((state) => state.setDiaryText);
+
   //const image = useMemosStore((state) => state.image);
   const addImage = useMemosStore((state) => state.addImage);
   const removeImage = useMemosStore((state) => state.removeImage);
@@ -253,7 +252,7 @@ const DailyDairy = ({ navigation, route }) => {
     diaryTextRef.current = diaryText;
   }, [diaryText]);*/
 
-  const handleContentSizeChange = (event) => {
+  /*const handleContentSizeChange = (event) => {
     //console.log('호출');
     const now = Date.now();
     if (now - lastContentSizeChange.current > throttleDelay) {
@@ -265,7 +264,7 @@ const DailyDairy = ({ navigation, route }) => {
         setTextInputContainerHeight(Math.max(minInputHeight, newHeight));
       }
     }
-  };
+  };*/
 
   //홈으로 돌아가는 코드
   const navigateToHome = (isShownAds: boolean) => {
@@ -408,85 +407,11 @@ const DailyDairy = ({ navigation, route }) => {
 
           {/* 감정 카드 리스트 */}
           <SelectedEmotionChip />
-          {/*selectedEmotions.length > 0 && (
-            <View
-              style={css`
-                margin-top: ${rsHeight * 12 + 'px'};
-                flex-direction: row;
-                flex-wrap: wrap;
-                gap: ${rsWidth * 6 + 'px'};
-                padding-horizontal: ${rsWidth * 24 + 'px'};
-              `}>
-              {selectedEmotions.map((emotion, i) => (
-                <EmotionCard key={i} emotion={emotion} status={'default'} />
-              ))}
-            </View>
-          )*/}
-          {/*image.length > 0 ? (
-            <ImageContainer
-              style={{
-                height: 120,
-                //backgroundColor: 'gray',
-                justifyContent: 'center',
-              }}>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                //style={{ height: rsHeight * 100 }}
-                style={{ flex: 1 }}
-                contentContainerStyle={{
-                  gap: rsWidth * 12,
-                }}>
-                {image.map((img, idx) => (
-                  <AttachmentPreview
-                    key={idx}
-                    image={img}
-                    onDelete={(uriToDelete) => removeImage(uriToDelete)}
-                  />
-                ))}
-              </ScrollView>
-            </ImageContainer>
-          ) : (
-            <ImageContainer>
-              <UploadButton onPress={pickImage}></UploadButton>
-            </ImageContainer>
-          )*/}
+          {/* 사진 선택 창 */}
           <DiaryImageSection />
 
           {/* 풀스크린 멀티라인 입력창 */}
-          <View
-            style={{
-              //backgroundColor: 'blue',
-              flex: 1,
-              marginHorizontal: rsWidth * 24,
-              marginVertical: rsHeight * 5,
-              minHeight: textInputContainerHeight,
-              //padding: 10,
-            }}>
-            <TextInput
-              multiline
-              autoFocus
-              scrollEnabled={true}
-              value={diaryText}
-              onChangeText={setDiaryText}
-              placeholder="이 감정을 강하게 느낀 순간을 기록해보세요"
-              placeholderTextColor="#B6BDC6"
-              style={{
-                backgroundColor: `${palette.neutral[50]}`,
-                flex: 1,
-                fontSize: rsFont * 16,
-                lineHeight: rsFont * 16 * 1.5,
-                padding: rsHeight * 12,
-                textAlignVertical: 'top',
-                fontFamily: 'Kyobo-handwriting',
-                width: '100%',
-                borderRadius: 10,
-                paddingVertical: rsHeight * 12,
-                paddingHorizontal: rsWidth * 16,
-              }}
-              onContentSizeChange={handleContentSizeChange}
-            />
-          </View>
+          <TextInputSection />
         </KeyboardAwareScrollView>
 
         <KeyboardStickyView offset={{ closed: 0, opened: insets.bottom }}>

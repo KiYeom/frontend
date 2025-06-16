@@ -39,7 +39,7 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
   // callbacks
   // 닫힐 때는 index -1 , 열릴 때는 index 0
 
-  const { selectedEmotions, setSelectedEmotion, addEmotion, updateEmotion } = useEmotionStore();
+  //const { selectedEmotions, setSelectedEmotion, addEmotion, updateEmotion } = useEmotionStore();
   const handleSheetChanges = useCallback((index: number) => {
     if (index === -1) {
       onClose();
@@ -57,14 +57,11 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
 
   //감정 적은 적 있는지 확인
   useEffect(() => {
-    //console.log('selectedEmotionsssss', selectedEmotions);
-    const customEmotion = selectedEmotions.find((emotion) => emotion.type === 'custom');
-    //console.log('customEmotion', customEmotion);
-    //console.log('selectedEmotions', selectedEmotions);
-    if (customEmotion) {
+    //const customEmotion = selectedEmotions.find((emotion) => emotion.type === 'custom');
+    /*if (customEmotion) {
       setText(customEmotion.keyword);
       setSelectedStatus(emotions.indexOf(customEmotion.group));
-    }
+    }*/
   }, []);
 
   // 키보드 등장 시 높이 저장
