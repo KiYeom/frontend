@@ -61,6 +61,7 @@ import UploadButton from '../../../components/upload-picture/UploadButton';
 import { ImageContainer } from './DailyDairy.style';
 import Button from '../../../components/button/button';
 import useMemosStore from '../../../store/useEmotionStore';
+import DiaryImageSection from '../../../components/DiaryImageSection/DiaryImageSection';
 
 const userName = getUserNickname() ?? 'Test_remind_empty';
 const appVariant = Constants.expoConfig?.extra?.appVariant;
@@ -83,8 +84,11 @@ const DailyDairy = ({ navigation, route }) => {
   console.log('비교군', testEnv);
   console.log('테스트 값인가?', TestIds.REWARDED === adUnitId);*/
   //console.log('가지고 온 adUnitId', adUnitId);
-  const { dairyText } = useMemosStore((state) => state.diaryText);
-  const { setDiaryText } = useMemosStore((state) => state.setDiaryText);
+  const diaryText = useMemosStore((state) => state.diaryText);
+  const setDiaryText = useMemosStore((state) => state.setDiaryText);
+  //const image = useMemosStore((state) => state.image);
+  const addImage = useMemosStore((state) => state.addImage);
+  const removeImage = useMemosStore((state) => state.removeImage);
   const { dateID } = route.params;
   const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();
@@ -319,7 +323,7 @@ const DailyDairy = ({ navigation, route }) => {
   };*/
 
   //사진 가져오기 로직
-  /*const pickImage = async () => {
+  const pickImage = async () => {
     Analytics.clickAddPicButton();
     const permission = await getPermission();
     //console.log('사진 접근 권한:', permission);
@@ -327,7 +331,7 @@ const DailyDairy = ({ navigation, route }) => {
       //console.log('사진 접근 권한 없음');
       return;
     }
-    if (images.length >= MAX_DIARY_IMAGE_COUNT) {
+    if (image.length >= MAX_DIARY_IMAGE_COUNT) {
       setModalVisible(true);
 
       return;
@@ -343,10 +347,12 @@ const DailyDairy = ({ navigation, route }) => {
     if (!result.canceled) {
       const uris = result.assets.map((asset) => asset.uri);
       //setImage((prev) => [...prev, ...uris]); // 기존 이미지에 추가
-      setImages((prev) => [...prev, ...uris]);
+      console.log('선택한 이미지:', uris);
+      addImage(uris[0]); // 상태 업데이트
+      console.log('선택한 이미지:', uris);
     }
     return;
-  };*/
+  };
 
   //광고 시청 함수
   const watchAds = async () => {
@@ -414,7 +420,7 @@ const DailyDairy = ({ navigation, route }) => {
               ))}
             </View>
           )*/}
-          {/*images.length > 0 ? (
+          {/*image.length > 0 ? (
             <ImageContainer
               style={{
                 height: 120,
@@ -429,13 +435,11 @@ const DailyDairy = ({ navigation, route }) => {
                 contentContainerStyle={{
                   gap: rsWidth * 12,
                 }}>
-                {images.map((img, idx) => (
+                {image.map((img, idx) => (
                   <AttachmentPreview
                     key={idx}
                     image={img}
-                    onDelete={(uriToDelete) =>
-                      setImages((prev) => prev.filter((uri) => uri !== uriToDelete))
-                    }
+                    onDelete={(uriToDelete) => removeImage(uriToDelete)}
                   />
                 ))}
               </ScrollView>
@@ -445,6 +449,7 @@ const DailyDairy = ({ navigation, route }) => {
               <UploadButton onPress={pickImage}></UploadButton>
             </ImageContainer>
           )*/}
+          <DiaryImageSection />
 
           {/* 풀스크린 멀티라인 입력창 */}
           <View
@@ -460,7 +465,7 @@ const DailyDairy = ({ navigation, route }) => {
               multiline
               autoFocus
               scrollEnabled={true}
-              value={dairyText}
+              value={diaryText}
               onChangeText={setDiaryText}
               placeholder="이 감정을 강하게 느낀 순간을 기록해보세요"
               placeholderTextColor="#B6BDC6"

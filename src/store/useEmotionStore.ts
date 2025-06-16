@@ -4,6 +4,7 @@ const useMemosStore = create((set) => ({
   selectedEmotionKeywords: new Set(),
   allSelectedEmotions: [],
   diaryText: '',
+  image: [],
   addEmotion: (emotion) =>
     set((state) => {
       const updatedSet = new Set(state.selectedEmotionKeywords);
@@ -35,5 +36,8 @@ const useMemosStore = create((set) => ({
       allSelectedEmotions: [],
     })),
   setDiaryText: (value: string) => set({ diaryText: value }),
+  addImage: (url) => set((state) => ({ image: [...state.image, url] })),
+  removeImage: (url) => set((state) => ({ image: state.image.filter((i) => i !== url) })),
+  clearImage: () => set({ image: [] }),
 }));
 export default useMemosStore;
