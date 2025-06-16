@@ -35,7 +35,7 @@ import EmotionTitleBox from './emotionTitleBox';
 import Analytics from '../../../utils/analytics';
 import useRecordedEmotionStore from '../../../utils/emotion-recorded';
 //import useEmotionStore from '../../../store/emotion-status';
-import useMemosStore from '../../../store/useEmotionStore';
+import useEmotionStore from '../../../store/useEmotionStore';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { getUserNickname } from '../../../utils/storageUtils';
 import EmotionCard from '../../../components/atoms/EmotionCard/EmotionCard';
