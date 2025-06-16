@@ -116,16 +116,6 @@ const SmallEmotionChart = ({ navigation, route }) => {
     }
   };*/
 
-  const handleEmotionClick = (emotion: Emotion) => {
-    const selected = useMemosStore.getState().selectedEmotionKeywords.has(emotion.keyword);
-    if (selected) {
-      useMemosStore.getState().removeEmotion(emotion.keyword);
-    } else {
-      useMemosStore.getState().addEmotion(emotion);
-    }
-    console.log('선택된 감정들:', useMemosStore.getState().allSelectedEmotions);
-  };
-
   // Chip을 삭제하는 핸들러
   /*const handleRemoveEmotion = (emotion) => {
     removeEmotion(emotion.keyword);

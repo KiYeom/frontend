@@ -25,7 +25,7 @@ import EmotionTitleBox from './emotionTitleBox';
 import EmotionChip from '../../../components/atoms/EmotionChip/EmotionChip';
 import EmotionCard from '../../../components/atoms/EmotionCard/EmotionCard';
 import Analytics from '../../../utils/analytics';
-import useEmotionStore from '../../../store/emotion-status';
+//import useEmotionStore from '../../../store/emotion-status';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { formatDateKorean } from '../../../utils/times';
 import Header from '../../../components/header/header';
@@ -60,6 +60,7 @@ import { getUserNickname } from '../../../utils/storageUtils';
 import UploadButton from '../../../components/upload-picture/UploadButton';
 import { ImageContainer } from './DailyDairy.style';
 import Button from '../../../components/button/button';
+import useMemosStore from '../../../store/useEmotionStore';
 
 const userName = getUserNickname() ?? 'Test_remind_empty';
 const appVariant = Constants.expoConfig?.extra?.appVariant;
@@ -82,6 +83,8 @@ const DailyDairy = ({ navigation, route }) => {
   console.log('비교군', testEnv);
   console.log('테스트 값인가?', TestIds.REWARDED === adUnitId);*/
   //console.log('가지고 온 adUnitId', adUnitId);
+  const { dairyText } = useMemosStore((state) => state.diaryText);
+  const { setDiaryText } = useMemosStore((state) => state.setDiaryText);
   const { dateID } = route.params;
   const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();
@@ -89,15 +92,15 @@ const DailyDairy = ({ navigation, route }) => {
   // 상태: 텍스트 인풋 높이
   const [inputHeight, setInputHeight] = useState(46); //초기 높이
 
-  const { selectedEmotions, diaryText, setDiaryText, setImages, images } = useEmotionStore();
+  //const { selectedEmotions, diaryText, setDiaryText, setImages, images } = useEmotionStore();
   const { updateEntryStatus } = useCalendarStore();
 
   //이미지 가지고 오기
   //const [image, setImage] = useState<string[]>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false); //사진 경고 모달
   const [adsModalVisible, setAdsModalVisible] = useState<boolean>(false); //광고 모달
-  const imageRef = useRef<string[]>(images);
-  const diaryTextRef = useRef<string>(diaryText);
+  //const imageRef = useRef<string[]>(images);
+  //const diaryTextRef = useRef<string>(diaryText);
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
 
   //네비게이션 로딩 상태
@@ -237,13 +240,13 @@ const DailyDairy = ({ navigation, route }) => {
   }, []);
 
   //image 상태가 변경될 때마다 ref 업데이트
-  useEffect(() => {
+  /*useEffect(() => {
     imageRef.current = images;
   }, [images]);
   //텍스트 값이 바뀔 때마다 ref 업데이트
   useEffect(() => {
     diaryTextRef.current = diaryText;
-  }, [diaryText]);
+  }, [diaryText]);*/
 
   const handleContentSizeChange = (event) => {
     //console.log('호출');
@@ -289,7 +292,7 @@ const DailyDairy = ({ navigation, route }) => {
   };
 
   // 일기 저장 로직
-  const saveDiary = async () => {
+  /*const saveDiary = async () => {
     Analytics.clickDiaryWriteButton();
     console.log('클릭');
 
@@ -313,10 +316,10 @@ const DailyDairy = ({ navigation, route }) => {
     } catch (err) {
       handleSaveError(err);
     }
-  };
+  };*/
 
   //사진 가져오기 로직
-  const pickImage = async () => {
+  /*const pickImage = async () => {
     Analytics.clickAddPicButton();
     const permission = await getPermission();
     //console.log('사진 접근 권한:', permission);
@@ -343,7 +346,7 @@ const DailyDairy = ({ navigation, route }) => {
       setImages((prev) => [...prev, ...uris]);
     }
     return;
-  };
+  };*/
 
   //광고 시청 함수
   const watchAds = async () => {
@@ -397,7 +400,7 @@ const DailyDairy = ({ navigation, route }) => {
           </View>
 
           {/* 감정 카드 리스트 */}
-          {selectedEmotions.length > 0 && (
+          {/*selectedEmotions.length > 0 && (
             <View
               style={css`
                 margin-top: ${rsHeight * 12 + 'px'};
@@ -410,8 +413,8 @@ const DailyDairy = ({ navigation, route }) => {
                 <EmotionCard key={i} emotion={emotion} status={'default'} />
               ))}
             </View>
-          )}
-          {images.length > 0 ? (
+          )*/}
+          {/*images.length > 0 ? (
             <ImageContainer
               style={{
                 height: 120,
@@ -423,11 +426,6 @@ const DailyDairy = ({ navigation, route }) => {
                 showsHorizontalScrollIndicator={false}
                 //style={{ height: rsHeight * 100 }}
                 style={{ flex: 1 }}
-                /*contentContainerStyle={{
-                  paddingHorizontal: rsWidth * 24,
-                  gap: rsWidth * 12,
-                  marginTop: rsHeight * 10,
-                }}*/
                 contentContainerStyle={{
                   gap: rsWidth * 12,
                 }}>
@@ -446,7 +444,7 @@ const DailyDairy = ({ navigation, route }) => {
             <ImageContainer>
               <UploadButton onPress={pickImage}></UploadButton>
             </ImageContainer>
-          )}
+          )*/}
 
           {/* 풀스크린 멀티라인 입력창 */}
           <View
@@ -462,7 +460,7 @@ const DailyDairy = ({ navigation, route }) => {
               multiline
               autoFocus
               scrollEnabled={true}
-              value={diaryText}
+              value={dairyText}
               onChangeText={setDiaryText}
               placeholder="이 감정을 강하게 느낀 순간을 기록해보세요"
               placeholderTextColor="#B6BDC6"
@@ -485,28 +483,6 @@ const DailyDairy = ({ navigation, route }) => {
         </KeyboardAwareScrollView>
 
         <KeyboardStickyView offset={{ closed: 0, opened: insets.bottom }}>
-          {/*<View
-            style={css`
-              flex-direction: row;
-              justify-content: space-between;
-              align-items: center;
-              padding: ${rsHeight * 12 + 'px'} ${rsWidth * 16 + 'px'};
-              background-color: ${palette.neutral[100]};
-              border-top-width: 1px;
-              border-top-color: ${palette.neutral[200]};
-            `}>
-            <TouchableOpacity
-              onPress={pickImage}
-              hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}>
-              <Icon name="picture-icon" width={20} color={palette.neutral[400]} />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={saveDiary}
-              hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}>
-              <Icon name="check-icon" width={24} color={palette.neutral[400]} />
-            </TouchableOpacity>
-          </View>*/}
           <View
             style={{
               height: rsHeight * 80,
@@ -514,7 +490,12 @@ const DailyDairy = ({ navigation, route }) => {
               //backgroundColor: 'black',
               paddingHorizontal: rsWidth * 20,
             }}>
-            <Button title="일기 저장하기" onPress={saveDiary} primary={true} disabled={false} />
+            <Button
+              title="일기 저장하기"
+              onPress={() => console.log('hi')}
+              primary={true}
+              disabled={false}
+            />
           </View>
         </KeyboardStickyView>
       </View>

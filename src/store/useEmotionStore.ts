@@ -3,6 +3,7 @@ import { create } from 'zustand';
 const useMemosStore = create((set) => ({
   selectedEmotionKeywords: new Set(),
   allSelectedEmotions: [],
+  diaryText: '',
   addEmotion: (emotion) =>
     set((state) => {
       const updatedSet = new Set(state.selectedEmotionKeywords);
@@ -33,5 +34,6 @@ const useMemosStore = create((set) => ({
       selectedEmotionKeywords: new Set(),
       allSelectedEmotions: [],
     })),
+  setDiaryText: (value: string) => set({ diaryText: value }),
 }));
 export default useMemosStore;
