@@ -91,6 +91,7 @@ const CustomCalendar = ({ navigation }) => {
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth() + 1);
   const clearEmotions = useMemosStore((state) => state.clearEmotions);
+  const clearDiaryText = useMemosStore((state) => state.clearDiaryText);
 
   useEffect(() => {
     setToday(getDate());
@@ -222,6 +223,7 @@ const CustomCalendar = ({ navigation }) => {
                   } else {
                     //감정 데이터가 일기도, 채팅에도 존재하지 않는 경우 : 감정 입력하도록
                     clearEmotions();
+                    clearDiaryText();
                     navigation.navigate(RootStackName.HomeStackNavigator, {
                       screen: HomeStackName.SmallEmotionChart,
                       params: { dateID: date.dateString },

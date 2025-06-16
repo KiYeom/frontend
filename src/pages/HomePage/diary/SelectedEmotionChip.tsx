@@ -16,21 +16,19 @@ const SelectedEmotionChip = () => {
   console.log('선택된 감정들:', allSelectedEmotions);
   console.log('선감', allSelectedEmotions[0]?.desc);
   return (
-    <>
-      <View
-        style={{
-          backgroundColor: 'black',
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          marginTop: rsHeight * 12,
-          gap: rsWidth * 6,
-          paddingHorizontal: rsWidth * 24,
-        }}>
-        {allSelectedEmotions.map((emotion, index) => (
-          <EmotionCardDefault key={emotion.keyword} emotion={emotion} />
-        ))}
-      </View>
-    </>
+    <View
+      style={{
+        backgroundColor: 'black',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        marginTop: rsHeight * 12,
+        gap: rsWidth * 6,
+        paddingHorizontal: rsWidth * 24,
+      }}>
+      {allSelectedEmotions.map((emotion, index) => (
+        <EmotionCardDefault key={emotion.keyword} emotion={emotion} />
+      ))}
+    </View>
   );
 };
 export default SelectedEmotionChip;

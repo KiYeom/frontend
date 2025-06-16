@@ -60,7 +60,7 @@ import { getUserNickname } from '../../../utils/storageUtils';
 import UploadButton from '../../../components/upload-picture/UploadButton';
 import { ImageContainer } from './DailyDairy.style';
 import Button from '../../../components/button/button';
-import useMemosStore from '../../../store/useEmotionStore';
+import useEmotionStore from '../../../store/useEmotionStore';
 import DiaryImageSection from '../../../components/DiaryImageSection/DiaryImageSection';
 import SelectedEmotionChip from './SelectedEmotionChip';
 import TextInputSection from './TextInputSection';
@@ -87,8 +87,8 @@ const DailyDairy = ({ navigation, route }) => {
   //console.log('가지고 온 adUnitId', adUnitId);
 
   //const image = useMemosStore((state) => state.image);
-  const addImage = useMemosStore((state) => state.addImage);
-  const removeImage = useMemosStore((state) => state.removeImage);
+  const addImage = useEmotionStore((state) => state.addImage);
+  const removeImage = useEmotionStore((state) => state.removeImage);
   const { dateID } = route.params;
   const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();
@@ -139,7 +139,7 @@ const DailyDairy = ({ navigation, route }) => {
 
   //일기장 화면 진입 시 실행되는 useEffect
   const [loaded, setLoaded] = useState(false);
-  useFocusEffect(
+  /*useFocusEffect(
     useCallback(() => {
       const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
         //console.log('광고 로드');
@@ -200,7 +200,7 @@ const DailyDairy = ({ navigation, route }) => {
         //console.log(`리스너 해제됨 : 현재 ${listenerCount}번 등록됨`);
       };
     }, [rewarded, navigation]),
-  );
+  );*/
 
   //사진 접근 권한
   const getPermission = async () => {
@@ -288,39 +288,44 @@ const DailyDairy = ({ navigation, route }) => {
 
   //기본 감정 선택 함수
   const handleStatusUpdate = (emotion) => {
+    console.log('handleStatusUpdate called with emotion:', emotion);
     const targetEmotion = emotion.find((e) => e.type === 'custom') || emotion[0];
+    console.log('targetEmotion:', targetEmotion);
     const group = targetEmotion?.group || 'normal';
     const statusToUpdate = `${group}-emotion`;
+    console.log('statusToUpdate:', statusToUpdate);
     //console.log('updating status to:', statusToUpdate);
     updateEntryStatus(dateID, statusToUpdate);
   };
 
   // 일기 저장 로직
-  /*const saveDiary = async () => {
+  const saveDiary = async () => {
+    const { image, allSelectedEmotions, diaryText } = useEmotionStore.getState();
     Analytics.clickDiaryWriteButton();
-    console.log('클릭');
+    console.log('클릭! ', image, allSelectedEmotions, diaryText);
 
-    if (images.length > 1) {
+    /*if (images.length > 1) {
       //console.log('사진은 최대 1장까지 선택할 수 있습니다. error');
       return;
-    }
+    }*/
 
-    const handleSaveError = (err) => {
+    /*const handleSaveError = (err) => {
       //console.log('일기 저장 중 오류 발생', err);
-    };
+    };*/
 
     try {
-      if (images.length === 0) {
-        await todayEmotion(dateID, selectedEmotions, diaryText);
-        handleStatusUpdate(selectedEmotions);
+      if (image.length === 0) {
+        await todayEmotion(dateID, allSelectedEmotions, diaryText);
+        handleStatusUpdate(allSelectedEmotions);
         navigateToHome(false);
       } else if (getUserPlan() === 'free') {
         setAdsModalVisible(true);
       }
     } catch (err) {
-      handleSaveError(err);
+      //handleSaveError(err);
+      console.log('일기 저장 중 오류 발생', err);
     }
-  };*/
+  };
 
   //사진 가져오기 로직
   const pickImage = async () => {
@@ -377,6 +382,7 @@ const DailyDairy = ({ navigation, route }) => {
     console.log('null');
     return null;
   }*/
+  console.log('렌더링 DailyDairy 전체 화면');
 
   return (
     <>
@@ -414,21 +420,14 @@ const DailyDairy = ({ navigation, route }) => {
           <TextInputSection />
         </KeyboardAwareScrollView>
 
-        <KeyboardStickyView offset={{ closed: 0, opened: insets.bottom }}>
-          <View
-            style={{
-              height: rsHeight * 80,
-              paddingVertical: rsHeight * 10,
-              //backgroundColor: 'black',
-              paddingHorizontal: rsWidth * 20,
-            }}>
-            <Button
-              title="일기 저장하기"
-              onPress={() => console.log('hi')}
-              primary={true}
-              disabled={false}
-            />
-          </View>
+        <KeyboardStickyView
+          offset={{ closed: 0, opened: insets.bottom }}
+          style={{
+            paddingHorizontal: rsWidth * 20,
+            paddingVertical: rsHeight * 10,
+            backgroundColor: 'pink',
+          }}>
+          <Button title="일기 저장하기" onPress={saveDiary} primary={true} disabled={false} />
         </KeyboardStickyView>
       </View>
       <TierModal

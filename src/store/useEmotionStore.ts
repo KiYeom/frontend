@@ -36,6 +36,7 @@ const useEmotionStore = create((set) => ({
       allSelectedEmotions: [],
     })),
   setDiaryText: (value: string) => set({ diaryText: value }),
+  clearDiaryText: () => set({ diaryText: '' }),
   addImage: (url) => set((state) => ({ image: [...state.image, url] })),
   removeImage: (url) => set((state) => ({ image: state.image.filter((i) => i !== url) })),
   clearImage: () => set({ image: [] }),
