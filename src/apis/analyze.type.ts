@@ -19,6 +19,7 @@ export type DailyRecordDto = {
 export type EmotionKeyword = {
   keyword: string;
   group: string;
+  type?: 'default' | 'custom'; // default, custom
 };
 
 export type DailySummaryDto = {
@@ -71,6 +72,13 @@ export type TPeriodTotalEmotions = {
   end_date: string;
   count: number;
   emotions: string[];
+};
+
+export type TDailyDiaryDatas = {
+  Keywords: EmotionKeyword[];
+  images: string[] | null;
+  isNull: boolean;
+  todayFeeling: string | null;
 };
 
 export type TPeriodRecordEmotions = {

@@ -55,6 +55,7 @@ import { formatDateKorean } from '../../../utils/times';
 import { MAX_SELECTED_EMOTION_COUNT } from '../../../constants/Constants';
 import SelectedEmotionDesc from './SelectedEmotionDesc';
 import SelectedEmotionChip from './SelectedEmotionChip';
+import { useEmotionData } from '../../../queries/emotionQueries';
 const SmallEmotionChart = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
   /*const {
@@ -80,6 +81,17 @@ const SmallEmotionChart = ({ navigation, route }) => {
   const { dateID } = route.params;
   //const dateID = route?.params?.dateID ?? '2025-04-21';
   //console.log('감정 입력 페이지에서 받은 dateID', dateID);
+  const initializeFromServerData = useEmotionStore((state) => state.initializeFromServerData);
+  // React Query로 서버 데이터 관리
+  const { data: emotionData, isLoading, error, isError, dataUpdatedAt } = useEmotionData(dateID);
+
+  console.log('Query 상태:', {
+    isLoading,
+    isError,
+    error: error?.message,
+    data: emotionData,
+    dataUpdatedAt: new Date(dataUpdatedAt).toISOString(),
+  });
 
   const width = Dimensions.get('window').width - 24;
 
@@ -87,17 +99,21 @@ const SmallEmotionChart = ({ navigation, route }) => {
   /*const fetchData = async () => {
     const diaryData = await todayEmotionCheck(dateID);
     //console.log('new diaryData', diaryData.Keywords);
-    //console.log('~~~~~~', selectedEmotions);
-    setSelectedEmotions(diaryData.Keywords);
-    setDiaryText(diaryData.todayFeeling ?? '');
-    setImages(diaryData.images ?? []);
-  };*/
+    console.log('~~~~~~', diaryData);
+  };
 
-  /*useEffect(() => {
+  useEffect(() => {
     //Analytics.watchEmotionRecordScreen();
     fetchData();
     //setSelectedEmotion(recordedEmotions);
   }, []);*/
+
+  useEffect(() => {
+    if (emotionData) {
+      console.log('emotionData!', emotionData);
+      initializeFromServerData(emotionData);
+    }
+  }, [emotionData, initializeFromServerData]);
 
   /*const handleEmotionListClick = async (emotion) => {
     //console.log('emotion', emotion);
@@ -115,11 +131,6 @@ const SmallEmotionChart = ({ navigation, route }) => {
       }
       addEmotion(emotion);
     }
-  };*/
-
-  // Chip을 삭제하는 핸들러
-  /*const handleRemoveEmotion = (emotion) => {
-    removeEmotion(emotion.keyword);
   };*/
 
   /*useEffect(() => {
@@ -171,36 +182,6 @@ const SmallEmotionChart = ({ navigation, route }) => {
           </ScrollView>
           <SelectedEmotionDesc />
           <SelectedEmotionChip />
-          {/*<EmotionDesc textAlign={'center'}>
-            {selectedEmotions.length > 0 &&
-            emotionData[selectedEmotions[selectedEmotions.length - 1].keyword] !== undefined
-              ? `${selectedEmotions[selectedEmotions.length - 1].keyword} : ${emotionData[selectedEmotions[selectedEmotions.length - 1].keyword].desc}`
-              : ''}
-          </EmotionDesc>()*/}
-
-          {/*selectedEmotions.length > 0 && (
-            <View
-              style={css`
-                margin-top: ${rsHeight * 12 + 'px'};
-                //background-color: gray;
-                height: ${rsHeight * 80 + 'px'};
-                flex-direction: row;
-                flex-wrap: wrap;
-                gap: ${rsWidth * 6 + 'px'};
-                padding-horizontal: ${rsWidth * 24 + 'px'};
-              `}>
-              {selectedEmotions.length > 0
-                ? selectedEmotions.map((emotion, i) => (
-                    <EmotionCard
-                      key={i}
-                      emotion={emotion}
-                      onPress={handleRemoveEmotion}
-                      status={'default'}
-                    />
-                  ))
-                : ''}
-            </View>
-          )*/}
         </KeyboardAwareScrollView>
         <KeyboardStickyView
           offset={{ closed: 0, opened: Platform.OS === 'ios' ? insets.bottom : 0 }}>

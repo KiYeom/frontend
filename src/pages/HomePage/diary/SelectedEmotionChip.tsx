@@ -8,12 +8,13 @@ import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { View } from 'react-native';
 import { all } from 'axios';
 import Toast from 'react-native-root-toast';
+import { MAX_SELECTED_EMOTION_COUNT } from '../../../constants/Constants';
 const SelectedEmotionChip = () => {
   const allSelectedEmotions = useEmotionStore((state) => state.allSelectedEmotions);
 
   console.log('선택된 감정들:', allSelectedEmotions.length);
   console.log('선감', allSelectedEmotions[0]?.desc);
-  if (allSelectedEmotions.length >= 5) {
+  if (allSelectedEmotions.length > MAX_SELECTED_EMOTION_COUNT) {
     Toast.show('감정은 최대 5개까지 선택할 수 있습니다.', {
       duration: Toast.durations.SHORT,
       position: Toast.positions.BOTTOM,

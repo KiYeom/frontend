@@ -64,6 +64,7 @@ import useEmotionStore from '../../../store/useEmotionStore';
 import DiaryImageSection from '../../../components/DiaryImageSection/DiaryImageSection';
 import SelectedEmotionChip from './SelectedEmotionChip';
 import TextInputSection from './TextInputSection';
+import { useSaveEmotion, useSaveEmotionWithImage } from '../../../queries/emotionQueries';
 const userName = getUserNickname() ?? 'Test_remind_empty';
 const appVariant = Constants.expoConfig?.extra?.appVariant;
 const isProductionOrStaging = appVariant === 'production' || appVariant === 'staging';
@@ -114,6 +115,9 @@ const DailyDairy = ({ navigation, route }) => {
 
   const lastContentSizeChange = useRef(Date.now());
   const throttleDelay = 100; // 100ms throttle
+
+  const saveEmotionMutation = useSaveEmotion();
+  const saveEmotionWithImageMutation = useSaveEmotionWithImage();
 
   const rewarded = useMemo(
     () =>
@@ -302,7 +306,7 @@ const DailyDairy = ({ navigation, route }) => {
   const saveDiary = async () => {
     const { image, allSelectedEmotions, diaryText } = useEmotionStore.getState();
     Analytics.clickDiaryWriteButton();
-    console.log('클릭! ', image, allSelectedEmotions, diaryText);
+    console.log('일기 저장 시작:', { image, allSelectedEmotions, diaryText });
 
     /*if (images.length > 1) {
       //console.log('사진은 최대 1장까지 선택할 수 있습니다. error');
@@ -315,15 +319,33 @@ const DailyDairy = ({ navigation, route }) => {
 
     try {
       if (image.length === 0) {
-        await todayEmotion(dateID, allSelectedEmotions, diaryText);
+        // 이미지 없는 일기 저장
+        await saveEmotionMutation.mutateAsync({
+          dateID,
+          emotions: allSelectedEmotions,
+          text: diaryText,
+        });
+
         handleStatusUpdate(allSelectedEmotions);
         navigateToHome(false);
       } else if (getUserPlan() === 'free') {
+        // 무료 사용자 - 광고 모달 표시
         setAdsModalVisible(true);
+      } else {
+        // 유료 사용자 - 바로 이미지 포함 저장
+        await saveEmotionWithImageMutation.mutateAsync({
+          dateID,
+          emotions: allSelectedEmotions,
+          text: diaryText,
+          images: image,
+        });
+
+        handleStatusUpdate(allSelectedEmotions);
+        navigateToHome(false);
       }
-    } catch (err) {
-      //handleSaveError(err);
-      console.log('일기 저장 중 오류 발생', err);
+    } catch (error) {
+      console.error('일기 저장 중 오류:', error);
+      Toast.show('일기 저장 중 오류가 발생했습니다.');
     }
   };
 

@@ -13,6 +13,7 @@ const EmotionChip = memo(({ group, keyword, desc, onPress }) => {
   const addEmotion = useEmotionStore((state) => state.addEmotion);
   const removeEmotion = useEmotionStore((state) => state.removeEmotion);
   //const selectedCount = useEmotionStore((state) => state.selectedCount);
+  console.log('isSelected', isSelected);
 
   const toggleEmotion = () => {
     if (isSelected) {
