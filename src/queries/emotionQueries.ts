@@ -1,6 +1,11 @@
 // queries/emotionQueries.js
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { todayEmotionCheck, dailyAnalyze, todayEmotion } from '../apis/analyze';
+import {
+  todayEmotionCheck,
+  dailyAnalyze,
+  todayEmotion,
+  todayEmotionWithImage,
+} from '../apis/analyze';
 // 특정 날짜의 감정 일기 조회
 export const useEmotionData = (dateID) => {
   return useQuery({

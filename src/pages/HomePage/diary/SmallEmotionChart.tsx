@@ -93,56 +93,12 @@ const SmallEmotionChart = ({ navigation, route }) => {
     dataUpdatedAt: new Date(dataUpdatedAt).toISOString(),
   });
 
-  const width = Dimensions.get('window').width - 24;
-
-  //일일 감정 데이터 가져오기
-  /*const fetchData = async () => {
-    const diaryData = await todayEmotionCheck(dateID);
-    //console.log('new diaryData', diaryData.Keywords);
-    console.log('~~~~~~', diaryData);
-  };
-
-  useEffect(() => {
-    //Analytics.watchEmotionRecordScreen();
-    fetchData();
-    //setSelectedEmotion(recordedEmotions);
-  }, []);*/
-
   useEffect(() => {
     if (emotionData) {
       console.log('emotionData!', emotionData);
       initializeFromServerData(emotionData);
     }
   }, [emotionData, initializeFromServerData]);
-
-  /*const handleEmotionListClick = async (emotion) => {
-    //console.log('emotion', emotion);
-    // 이미 선택된 감정인지 확인
-    if (selectedEmotions.some((e) => e.keyword === emotion.keyword)) {
-      removeEmotion(emotion.keyword);
-    } else {
-      // 선택된 감정 추가
-      if (selectedEmotions.length >= MAXIMUM_EMOTION_COUNT) {
-        Toast.show(`감정은 ${MAXIMUM_EMOTION_COUNT}개까지 선택할 수 있어요🐶`, {
-          duration: Toast.durations.SHORT,
-          position: Toast.positions.CENTER,
-        });
-        return;
-      }
-      addEmotion(emotion);
-    }
-  };*/
-
-  /*useEffect(() => {
-    // 스크롤 움직임을 약간 지연시키기 위해 setTimeout 사용
-    const timeout = setTimeout(() => {
-      if (scrollViewRef.current) {
-        scrollViewRef.current.scrollToEnd({ animated: true }); // 스크롤을 맨 끝으로 이동
-      }
-    }, 100); // 100ms 뒤에 스크롤 움직임
-
-    return () => clearTimeout(timeout); // 타이머 제거
-  }, [selectedEmotions]); // selectedEmotions가 변경될 때마다 실행*/
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

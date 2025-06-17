@@ -1,43 +1,23 @@
 import { css } from '@emotion/native';
-import { useHeaderHeight } from '@react-navigation/elements';
-import { useFocusEffect } from '@react-navigation/native';
-import React, { useEffect, useState, useMemo, useRef, useCallback } from 'react';
-import {
-  Keyboard,
-  TextInput,
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  Platform,
-  StatusBar,
-  ImageSourcePropType,
-  Alert,
-  Linking,
-} from 'react-native';
+import React, { useEffect, useState, useMemo } from 'react';
+import { View, Platform, ImageSourcePropType } from 'react-native';
+import { rsHeight, rsWidth, rsFont } from '../../../utils/responsive-size';
 import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
-import Icon from '../../../components/icons/icons';
 import Toast from 'react-native-root-toast';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { dailyAnalyze, todayEmotion, todayEmotionWithImage } from '../../../apis/analyze';
-import { TabScreenName, RootStackName, HomeStackName } from '../../../constants/Constants';
+import { TabScreenName, RootStackName } from '../../../constants/Constants';
 import EmotionTitleBox from './emotionTitleBox';
-import EmotionChip from '../../../components/atoms/EmotionChip/EmotionChip';
-import EmotionCard from '../../../components/atoms/EmotionCard/EmotionCard';
 import Analytics from '../../../utils/analytics';
 //import useEmotionStore from '../../../store/emotion-status';
-import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { formatDateKorean } from '../../../utils/times';
 import Header from '../../../components/header/header';
 import { useCalendarStore } from '../../../store/calendarStore';
 import palette from '../../../assets/styles/theme';
-import * as ImagePicker from 'expo-image-picker';
-import AttachmentPreview from '../../../components/image-container/AttachmentPreview';
-import { MAX_DIARY_IMAGE_COUNT } from '../../../constants/Constants';
 import TierModal from '../../../components/modals/tier-modal';
 import AdsModal from '../../../components/modals/ads-modal';
 import { getUserInfo } from '../../../apis/setting';
 import { ActivityIndicator, StyleSheet } from 'react-native';
+import { updateSendPhotoPermission } from '../../../apis/chatting';
 import {
   BannerAd,
   BannerAdSize,
@@ -80,22 +60,8 @@ const localImage: ImageSourcePropType = require('../../../assets/images/cookie_p
 const adsImage: ImageSourcePropType = require('../../../assets/images/ads_cookie.png');
 
 const DailyDairy = ({ navigation, route }) => {
-  /*console.log('일기장 adUnitId', adUnitId);
-  console.log('테스트 Id 인가?!', TestIds.REWARDED);
-  console.log('현재 빌드 상태', appVariant);
-  console.log('비교군', testEnv);
-  console.log('테스트 값인가?', TestIds.REWARDED === adUnitId);*/
-  //console.log('가지고 온 adUnitId', adUnitId);
-
-  //const image = useMemosStore((state) => state.image);
-  const addImage = useEmotionStore((state) => state.addImage);
-  const removeImage = useEmotionStore((state) => state.removeImage);
   const { dateID } = route.params;
-  const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();
-
-  // 상태: 텍스트 인풋 높이
-  const [inputHeight, setInputHeight] = useState(46); //초기 높이
 
   //const { selectedEmotions, diaryText, setDiaryText, setImages, images } = useEmotionStore();
   const { updateEntryStatus } = useCalendarStore();
@@ -104,17 +70,9 @@ const DailyDairy = ({ navigation, route }) => {
   //const [image, setImage] = useState<string[]>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false); //사진 경고 모달
   const [adsModalVisible, setAdsModalVisible] = useState<boolean>(false); //광고 모달
-  //const imageRef = useRef<string[]>(images);
-  //const diaryTextRef = useRef<string>(diaryText);
-  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
 
   //네비게이션 로딩 상태
   const [isNavigationLoading, setNavigationLoading] = useState(false);
-  const [textInputContainerHeight, setTextInputContainerHeight] = useState(200);
-  const minInputHeight = 200;
-
-  const lastContentSizeChange = useRef(Date.now());
-  const throttleDelay = 100; // 100ms throttle
 
   const saveEmotionMutation = useSaveEmotion();
   const saveEmotionWithImageMutation = useSaveEmotionWithImage();
@@ -126,24 +84,10 @@ const DailyDairy = ({ navigation, route }) => {
       }),
     [],
   );
-  // Keyboard event listeners
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
-      setIsKeyboardVisible(true);
-    });
-    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-      setIsKeyboardVisible(false);
-    });
-
-    return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-    };
-  }, []);
 
   //일기장 화면 진입 시 실행되는 useEffect
-  const [loaded, setLoaded] = useState(false);
-  /*useFocusEffect(
+  /* const [loaded, setLoaded] = useState(false);
+  useFocusEffect(
     useCallback(() => {
       const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
         //console.log('광고 로드');
@@ -206,35 +150,10 @@ const DailyDairy = ({ navigation, route }) => {
     }, [rewarded, navigation]),
   );*/
 
-  //사진 접근 권한
-  const getPermission = async () => {
-    if (Platform.OS !== 'web') {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      //console.log('사진 접근 권한:', status); //사진 접근 권한 버튼 누른 뒤에 실행됨
-      if (status !== 'granted') {
-        Alert.alert(
-          '사진 접근 권한이 필요합니다',
-          '사진 업로드를 위해 앱 설정에서 사진 접근 권한을 허용해주세요.',
-          [
-            { text: '취소', style: 'cancel' },
-            {
-              text: '설정',
-              onPress: () => {
-                // iOS, Android 둘 다 앱 설정 화면으로 이동
-                Linking.openSettings();
-              },
-            },
-          ],
-          { cancelable: true },
-        );
-
-        return false;
-      }
-      return true;
-    }
-  };
+  const [loaded, setLoaded] = useState<boolean>(false);
 
   useEffect(() => {
+    console.log('DailyDairy useEffect 실행 : getUserInfo');
     //listenerCount++;
     //console.log(`리스너 등록 시작 : 현재 총 ${listenerCount}번 등록됨`);
     Analytics.watchDiaryWriteScreen();
@@ -245,30 +164,54 @@ const DailyDairy = ({ navigation, route }) => {
       .catch((error) => {
         //console.log('getUserInfo error', error);
       });
+    //광고 이벤트
+    const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
+      setLoaded(true);
+    });
+    const unsubscribeEarned = rewarded.addAdEventListener(
+      RewardedAdEventType.EARNED_REWARD,
+      async (reward) => {
+        console.log('User earned reward of ', reward);
+        setUserPlan('pro');
+        await onPressSaveDiary();
+      },
+    );
+    const unsubscribeClosed = rewarded.addAdEventListener(AdEventType.CLOSED, () => {
+      console.log('Ad was closed');
+      setAdsModalVisible(false);
+      setNavigationLoading(true); // 네비게이션 로딩 시작
+      // 짧은 지연 후 네비게이션 - 로딩 표시가 보이도록
+      setTimeout(() => {
+        navigation.reset({
+          index: 0,
+          routes: [
+            {
+              name: RootStackName.BottomTabNavigator,
+              state: {
+                routes: [{ name: TabScreenName.Home }],
+              },
+            },
+          ],
+        });
+        Toast.show('광고 시청 완료! 일기를 기록했어요.', {
+          duration: Toast.durations.SHORT,
+          position: Toast.positions.CENTER,
+        });
+        // 네비게이션 후 로딩 상태 해제
+        setNavigationLoading(false);
+      }, 1000); // 1초 지연
+    });
+
+    // Start loading the rewarded ad straight away
+    rewarded.load();
+
+    // Unsubscribe from events on unmount
+    return () => {
+      unsubscribeLoaded();
+      unsubscribeEarned();
+      unsubscribeClosed();
+    };
   }, []);
-
-  //image 상태가 변경될 때마다 ref 업데이트
-  /*useEffect(() => {
-    imageRef.current = images;
-  }, [images]);
-  //텍스트 값이 바뀔 때마다 ref 업데이트
-  useEffect(() => {
-    diaryTextRef.current = diaryText;
-  }, [diaryText]);*/
-
-  /*const handleContentSizeChange = (event) => {
-    //console.log('호출');
-    const now = Date.now();
-    if (now - lastContentSizeChange.current > throttleDelay) {
-      lastContentSizeChange.current = now;
-      // Only update if there's a significant change (more than 20px)
-      const newHeight = event.nativeEvent.contentSize.height;
-      if (Math.abs(newHeight - textInputContainerHeight) > 20) {
-        //console.log("    '높이 변경', newHeight);");
-        setTextInputContainerHeight(Math.max(minInputHeight, newHeight));
-      }
-    }
-  };*/
 
   //홈으로 돌아가는 코드
   const navigateToHome = (isShownAds: boolean) => {
@@ -302,23 +245,75 @@ const DailyDairy = ({ navigation, route }) => {
     updateEntryStatus(dateID, statusToUpdate);
   };
 
-  // 일기 저장 로직
-  const saveDiary = async () => {
+  // 일기 저장하기 버튼 클릭
+  const onPressSaveDiary = async () => {
     const { image, allSelectedEmotions, diaryText } = useEmotionStore.getState();
-    Analytics.clickDiaryWriteButton();
-    console.log('일기 저장 시작:', { image, allSelectedEmotions, diaryText });
+    if (image.length === 0) {
+      console.log('이미지 없음 - 감정만 저장');
+      await saveTextOnlyDiary({ dateID, allSelectedEmotions, diaryText });
+    } else {
+      console.log('이미지 있음 - 이미지 포함 저장');
+      await handleImageDiaryFlow({ dateID, image, allSelectedEmotions, diaryText });
+    }
+  };
 
-    /*if (images.length > 1) {
-      //console.log('사진은 최대 1장까지 선택할 수 있습니다. error');
+  const saveTextOnlyDiary = async ({ dateID, allSelectedEmotions, diaryText }) => {
+    try {
+      await saveEmotionMutation.mutateAsync({
+        dateID,
+        emotions: allSelectedEmotions,
+        text: diaryText,
+      });
+      handleStatusUpdate(allSelectedEmotions);
+      setTimeout(() => {
+        navigateToHome(false);
+      }, 3000);
+    } catch (e) {
+      Toast.show('일기 저장 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleImageDiaryFlow = async ({ dateID, image, allSelectedEmotions, diaryText }) => {
+    const userPlan = getUserPlan();
+    console.log('사용자 플랜:', userPlan);
+
+    if (userPlan === 'free') {
+      setAdsModalVisible(true); // 광고 보기 유도
+    } else {
+      try {
+        await saveEmotionWithImageMutation.mutateAsync({
+          dateID,
+          emotions: allSelectedEmotions,
+          text: diaryText,
+          images: image,
+        });
+        handleStatusUpdate(allSelectedEmotions);
+        console.log('유료 사용자 - 이미지 포함 일기 저장 성공');
+      } catch (e) {
+        Toast.show('일기 저장 중 오류가 발생했습니다.');
+      }
+    }
+  };
+
+  //광고 보기 모달에서 저장하기 버튼 클릭
+  const onConfirmWatchAd = () => {
+    console.log('광고 보기 버튼 클릭');
+    Analytics.clickWatchAdsButton(); // 클릭 이벤트 트래킹
+    if (!loaded) {
+      Toast.show('광고를 불러오는 중입니다. 잠시만 기다려주세요.');
+      rewarded.load(); // 다시 로드 시도
       return;
-    }*/
+    }
+    rewarded.show(); // 광고 표시
+  };
 
-    /*const handleSaveError = (err) => {
-      //console.log('일기 저장 중 오류 발생', err);
-    };*/
+  /*
+      Analytics.clickDiaryWriteButton();
+    console.log('일기 저장 시작:', { image, allSelectedEmotions, diaryText });
 
     try {
       if (image.length === 0) {
+        console.log('이미지 없음 - 감정만 저장');
         // 이미지 없는 일기 저장
         await saveEmotionMutation.mutateAsync({
           dateID,
@@ -329,10 +324,12 @@ const DailyDairy = ({ navigation, route }) => {
         handleStatusUpdate(allSelectedEmotions);
         navigateToHome(false);
       } else if (getUserPlan() === 'free') {
+        console.log('무료 사용자 : 광고 모달 표시하기', getUserPlan());
         // 무료 사용자 - 광고 모달 표시
         setAdsModalVisible(true);
       } else {
         // 유료 사용자 - 바로 이미지 포함 저장
+        console.log('유료 사용자 : 이미지 포함 일기 저장');
         await saveEmotionWithImageMutation.mutateAsync({
           dateID,
           emotions: allSelectedEmotions,
@@ -347,39 +344,8 @@ const DailyDairy = ({ navigation, route }) => {
       console.error('일기 저장 중 오류:', error);
       Toast.show('일기 저장 중 오류가 발생했습니다.');
     }
-  };
-
-  //사진 가져오기 로직
-  const pickImage = async () => {
-    Analytics.clickAddPicButton();
-    const permission = await getPermission();
-    //console.log('사진 접근 권한:', permission);
-    if (!permission) {
-      //console.log('사진 접근 권한 없음');
-      return;
-    }
-    if (image.length >= MAX_DIARY_IMAGE_COUNT) {
-      setModalVisible(true);
-
-      return;
-    }
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      allowsEditing: false,
-      quality: 0.5,
-      allowsMultipleSelection: false,
-      exif: false,
-    });
-    //console.log(result);
-    if (!result.canceled) {
-      const uris = result.assets.map((asset) => asset.uri);
-      //setImage((prev) => [...prev, ...uris]); // 기존 이미지에 추가
-      console.log('선택한 이미지:', uris);
-      addImage(uris[0]); // 상태 업데이트
-      console.log('선택한 이미지:', uris);
-    }
-    return;
-  };
+  
+  */
 
   //광고 시청 함수
   const watchAds = async () => {
@@ -405,6 +371,10 @@ const DailyDairy = ({ navigation, route }) => {
     return null;
   }*/
   console.log('렌더링 DailyDairy 전체 화면');
+  if (!loaded) {
+    console.log('no advert ready to show yet');
+    return null;
+  }
 
   return (
     <>
@@ -449,7 +419,12 @@ const DailyDairy = ({ navigation, route }) => {
             paddingVertical: rsHeight * 10,
             backgroundColor: 'pink',
           }}>
-          <Button title="일기 저장하기" onPress={saveDiary} primary={true} disabled={false} />
+          <Button
+            title="일기 저장하기"
+            onPress={onPressSaveDiary}
+            primary={true}
+            disabled={false}
+          />
         </KeyboardStickyView>
       </View>
       <TierModal
@@ -468,19 +443,13 @@ const DailyDairy = ({ navigation, route }) => {
       <AdsModal
         modalVisible={adsModalVisible}
         onClose={() => {
-          //console.log('모달 꺼짐', diaryText);
           Analytics.clickNoWatchAdsButton();
           setAdsModalVisible(false);
         }}
-        onSubmit={async () => {
-          //console.log('광고 보기 버튼을 클릭', loaded);
+        onSubmit={() => {
           Analytics.clickWatchAdsButton();
-          if (!loaded) {
-            Toast.show('광고 로딩중입니다. 잠시 기다려주세요');
-            rewarded.load();
-            return;
-          }
-          watchAds(); //광고가 로드된 상태에서 광고 보여주기
+          console.log('광고 보기 버튼 클릭');
+          onConfirmWatchAd();
         }}
         imageSource={adsImage}
         modalContent={
