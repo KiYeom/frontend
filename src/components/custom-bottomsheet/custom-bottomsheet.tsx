@@ -5,7 +5,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { css } from '@emotion/native';
 import { rsWidth } from '../../utils/responsive-size';
 import { EmotionIcon } from '../../components/emotionIcon/emotionIcon';
-import { Emotion } from '../../store/emotion-status';
 import Button from '../../components/button/button';
 import { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import {
@@ -17,7 +16,8 @@ import {
   ButtonContainer,
   TextLengthAlert,
 } from './custom-bottomsheet.styles';
-import useEmotionStore from '../../store/emotion-status';
+//import useEmotionStore from '../../store/emotion-status';
+import useEmotionStore from '../../store/useEmotionStore';
 import Analytics from '../../utils/analytics';
 
 interface BottomSheetProps {
@@ -30,7 +30,7 @@ interface BottomSheetProps {
 
 const emotions = ['happy', 'angry', 'sad', 'calm', 'normal'];
 
-const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
+const CustomBottomSheet = (props: BottomSheetProps) => {
   const { indexNumber, isOpen = false, onClose = () => {}, onSubmit = () => {} } = props;
   //감정 입력 상태를 저장하는 state : boolean 타입, 5개
   const [selectedStatus, setSelectedStatus] = useState<number>(-1);
@@ -38,6 +38,8 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
   const [index, setIndex] = useState<number>(indexNumber);
   // callbacks
   // 닫힐 때는 index -1 , 열릴 때는 index 0
+
+  const { allSelectedEmotions, addEmotion, removeEmotion } = useEmotionStore();
 
   //const { selectedEmotions, setSelectedEmotion, addEmotion, updateEmotion } = useEmotionStore();
   const handleSheetChanges = useCallback((index: number) => {
@@ -54,6 +56,19 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
     bottomSheetRef.current.close();
   };
   const insets = useSafeAreaInsets();
+
+  useEffect(() => {
+    if (index === 0) {
+      console.log('CustomBottomSheet isOpen:', isOpen);
+      const customEmotion = allSelectedEmotions.find((emotion) => emotion.type === 'custom');
+      console.log('customEmotion', customEmotion);
+      if (customEmotion) {
+        setText(customEmotion.keyword);
+        const emotionIndex = emotions.indexOf(customEmotion.group as EmotionType);
+        setSelectedStatus(emotionIndex);
+      }
+    }
+  }, [index]);
 
   //감정 적은 적 있는지 확인
   useEffect(() => {
@@ -75,7 +90,7 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
   }, []);
 
   useEffect(() => {
-    Analytics.watchCustomEmotionSheet();
+    //Analytics.watchCustomEmotionSheet();
     const showSub = Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
     const hideSub = Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide);
 
@@ -101,29 +116,37 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
     return text.length === 0 || text.length > 10 || selectedStatus === -1;
   };
 
-  // 감정 아이콘 클릭 이벤트
-  const handleEmotionPress = (emotion: string) => {
-    //console.log(`${emotion} icon click`);
-    switch (emotion) {
-      case 'happy':
-        setSelectedStatus(0);
-        break;
-      case 'angry':
-        setSelectedStatus(1);
-        break;
-      case 'sad':
-        setSelectedStatus(2);
-        break;
-      case 'calm':
-        setSelectedStatus(3);
-        break;
-      case 'normal':
-        setSelectedStatus(4);
-        break;
+  // 감정 추가 핸들러
+  const handleAddEmotion = useCallback(() => {
+    Analytics.clickAddCustomEmotionButton(text);
+
+    const customEmotion: Emotion = {
+      keyword: text.trim(),
+      group: emotions[selectedStatus],
+      type: 'custom',
+    };
+
+    // 기존 custom 타입 감정이 있으면 먼저 제거
+    const existingCustom = allSelectedEmotions.find((e) => e.type === 'custom');
+    if (existingCustom) {
+      removeEmotion(existingCustom.keyword);
     }
 
-    // 감정 선택 시 추가 로직 구현 가능
-  };
+    // 새로운 custom 감정 추가
+    addEmotion(customEmotion);
+
+    // 콜백 실행
+    onSubmit(text);
+
+    // 바텀시트 닫기
+    handleClosePress();
+  }, [text, selectedStatus, allSelectedEmotions, removeEmotion, addEmotion, onSubmit]);
+
+  // 감정 아이콘 클릭 이벤트
+  const handleEmotionPress = useCallback((emotion: any) => {
+    const emotionIndex = emotions.indexOf(emotion);
+    setSelectedStatus(emotionIndex);
+  }, []);
   //console.log('custom-bottomsheet', bottomSheetRef);
 
   //원하는 인덱스로 이동하는 핸들러
@@ -192,25 +215,7 @@ const CustomBottomSheet: React.FC<BottomSheetProps> = (props) => {
             title="나의 감정 추가하기"
             primary={true}
             disabled={validateButton(text)}
-            onPress={() => {
-              Analytics.clickAddCustomEmotionButton(text);
-              //console.log('😀😀😀😀😀😀');
-              const customEmotion: Emotion = {
-                keyword: text,
-                group: emotions[selectedStatus],
-                type: 'custom',
-              };
-              // 동일한 keyword를 가진 custom 타입의 감정이 있는지 확인
-              const exists = selectedEmotions.find((e) => e.type === 'custom');
-              //console.log('exists', exists);
-
-              if (exists) {
-                updateEmotion(text, customEmotion);
-              } else {
-                addEmotion(customEmotion);
-              }
-              handleClosePress();
-            }}
+            onPress={handleAddEmotion}
           />
         </ButtonContainer>
       </BottomSheetView>
