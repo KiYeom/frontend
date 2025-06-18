@@ -13,9 +13,11 @@ import DailyDairy from '../pages/HomePage/diary/DailyDairy';
 import { Alert } from 'react-native';
 import DrawerNavigator from './DrawerNavigator';
 import Favorites from '../pages/HomePage/favorites/favorites';
+import newFavorites from '../pages/HomePage/favorites/newFavorites';
 import StatisticMain from '../pages/StatisticPage/StatisticMain';
 import Home from '../pages/HomePage/Home';
 import Quote from '../pages/HomePage/quote/quote';
+import UpgradeNewChat from '../pages/HomePage/chat/upgrade/upgrade-new-chat';
 const HomeStack = createNativeStackNavigator();
 
 const HomeStackNavigator: React.FC = () => {
@@ -38,11 +40,12 @@ const HomeStackNavigator: React.FC = () => {
         component={Profile}
         options={{ header: () => <Header /> }}
       />
-      <HomeStack.Screen
-        name={HomeStackName.NewChat}
-        component={DrawerNavigator}
-        options={{ headerShown: false }}
-      />
+      <HomeStack.Screen name={HomeStackName.NewChat} options={{ headerShown: false }}>
+        {() => <DrawerNavigator initialScreen="NewChat" />}
+      </HomeStack.Screen>
+      <HomeStack.Screen name={HomeStackName.UpgradeNewChat} options={{ headerShown: false }}>
+        {() => <DrawerNavigator initialScreen="UpgradeNewChat" />}
+      </HomeStack.Screen>
       <HomeStack.Screen
         name={HomeStackName.NewChatRefresh}
         component={DrawerNavigator}
@@ -57,7 +60,7 @@ const HomeStackNavigator: React.FC = () => {
       {/* 1.5.7 UPDATE 즐겨찾기 추가 */}
       <HomeStack.Screen
         name={HomeStackName.Favorites}
-        component={Favorites}
+        component={newFavorites}
         options={{ headerShown: false }}
       />
       {/* 1.8.9 quote 추가 */}

@@ -1256,7 +1256,6 @@ const NewChat: React.FC = ({ navigation }) => {
         }}
         rightFunction={() => {
           if (!isSearchMode) {
-            //console.log('사이드바 열기');
             navigation.openDrawer();
             Analytics.clickHeaderSideMenuButton();
           }

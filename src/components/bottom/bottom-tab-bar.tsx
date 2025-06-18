@@ -71,9 +71,13 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
 
         const onLongPress = () => {
           if (route.name === TabScreenName.Setting) {
-            Analytics.clickTabSettingConnectButton();
+            /*Analytics.clickTabSettingConnectButton();
             navigation.navigate(RootStackName.SettingStackNavigator, {
               screen: SettingStackName.OrganizationConnect,
+            });*/
+            console.log('NewChat onLongPress');
+            navigation.navigate(RootStackName.HomeStackNavigator, {
+              screen: HomeStackName.UpgradeNewChat,
             });
             return;
           } else if (route.name === TabScreenName.Home) {
