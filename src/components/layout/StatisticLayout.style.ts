@@ -39,9 +39,7 @@ export const StatisticTitle = styled.Text`
 `;
 //전체 화면
 export const Container = styled.View`
-  flex: 1;
   background-color: ${palette.neutral[50]};
-  top: 0;
 `;
 
 //통계 컴포넌트를 감싸는 전체 컨테이너

@@ -9,45 +9,35 @@ interface MessageBubbleProps {
 }
 
 export const MessageBubble = ({ message, onToggleSave }: MessageBubbleProps) => {
-  console.log('메세지 버블 렌더링', message);
   if (!message) return null;
-  const handleFavorite = () => {
-    onToggleSave(message._id);
-    //Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
-  };
+  const isUser = message.user?._id === 1;
+
   return (
-    <Animated.View entering={FadeInDown} style={styles.container}>
-      <View style={styles.textContainer}>
-        {message.position === 'left' ? (
-          <>
-            <TouchableOpacity activeOpacity={1}>
-              <View style={[styles.messageBubble, { backgroundColor: palette.neutral[100] }]}>
-                {message.text ? <Text style={styles.messageText}>{message.text}</Text> : null}
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text style={styles.time}>14:38</Text>
-            </TouchableOpacity>
-          </>
-        ) : (
-          <>
-            <TouchableOpacity>
-              <Text style={styles.time}>14:38</Text>
-            </TouchableOpacity>
-            <TouchableOpacity activeOpacity={1}>
-              <View style={[styles.messageBubble, { backgroundColor: palette.primary[100] }]}>
-                {message.text ? <Text style={styles.messageText}>{message.text}</Text> : null}
-              </View>
-            </TouchableOpacity>
-          </>
-        )}
-      </View>
-      <View>
-        {/* 좋아요 버튼 */}
-        <TouchableOpacity onPress={() => onToggleSave(message._id)} style={styles.favoriteButton}>
-          <Text style={styles.favoriteIcon}>{message.isSaved ? '❤️' : '🤍'}</Text>
+    <Animated.View
+      entering={FadeInDown}
+      style={[styles.container, { alignItems: isUser ? 'flex-end' : 'flex-start' }]}>
+      <View style={[styles.textContainer, { flexDirection: isUser ? 'row-reverse' : 'row' }]}>
+        <TouchableOpacity activeOpacity={1}>
+          <View
+            style={[
+              styles.messageBubble,
+              {
+                backgroundColor: isUser ? palette.primary[500] : palette.neutral[100],
+              },
+            ]}>
+            {message.text ? (
+              <Text style={[styles.messageText, { color: isUser ? '#fff' : palette.neutral[500] }]}>
+                {message.text}
+              </Text>
+            ) : null}
+          </View>
         </TouchableOpacity>
+        <Text style={styles.time}>14:38</Text>
       </View>
+
+      <TouchableOpacity onPress={() => onToggleSave(message._id)} style={styles.favoriteButton}>
+        <Text style={styles.favoriteIcon}>{message.isSaved ? '❤️' : '🤍'}</Text>
+      </TouchableOpacity>
     </Animated.View>
   );
 };
@@ -55,34 +45,27 @@ export const MessageBubble = ({ message, onToggleSave }: MessageBubbleProps) => 
 const styles = StyleSheet.create({
   container: {
     marginBottom: rsHeight * 5,
-    backgroundColor: 'red',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
   },
   textContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-start',
+    gap: rsWidth * 6,
   },
   messageBubble: {
-    //backgroundColor: palette.neutral[100],
     paddingHorizontal: rsWidth * 12,
     paddingVertical: rsHeight * 8,
     borderRadius: 10,
     maxWidth: rsWidth * 200,
-    marginBottom: rsHeight * 5,
-  },
-  messageBubbleLeft: {
-    backgroundColor: palette.neutral[100],
-  },
-  messageBubbleRight: {
-    backgroundColor: palette.primary[500],
   },
   messageText: {
     fontFamily: 'Pretendard-Regular',
     fontSize: rsFont * 14,
-    color: palette.neutral[500],
-    margin: 0,
+  },
+  time: {
+    fontFamily: 'Pretendard-Regular',
+    fontSize: rsFont * 12,
+    color: palette.neutral[400],
+    marginTop: rsHeight * 2,
   },
   favoriteButton: {
     marginTop: rsHeight * 5,
@@ -91,11 +74,5 @@ const styles = StyleSheet.create({
   },
   favoriteIcon: {
     fontSize: 18,
-  },
-  time: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: rsFont * 12,
-    color: palette.neutral[400],
-    marginTop: rsHeight * 2,
   },
 });

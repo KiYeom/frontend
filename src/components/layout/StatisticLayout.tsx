@@ -42,7 +42,7 @@ const StatisticLayout: React.FC<StatisticLayoutProps> = ({
   leftFunction,
 }) => {
   return (
-    <Container>
+    <>
       <Header
         title={headerTitle}
         bgcolor={backgroundColor}
@@ -54,9 +54,18 @@ const StatisticLayout: React.FC<StatisticLayoutProps> = ({
 
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ flexGrow: 1, paddingVertical: rsHeight * 16 }}>
+        contentContainerStyle={{
+          minHeight: rsHeight * 800,
+          paddingVertical: rsHeight * 16,
+          backgroundColor: palette.neutral[50],
+        }}>
         {/* 상단 고정 영역 */}
-        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <View
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: palette.neutral[50],
+          }}>
           <Icon name={iconName} width={iconSize} height={iconSize} />
           <View style={{ marginVertical: 10 * rsHeight }}>
             <DateLineContainer onPress={onDatePress} accessibilityLabel="날짜 선택">
@@ -72,7 +81,7 @@ const StatisticLayout: React.FC<StatisticLayoutProps> = ({
       </ScrollView>
 
       {modalComponent}
-    </Container>
+    </>
   );
 };
 export default StatisticLayout;

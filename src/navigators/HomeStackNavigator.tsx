@@ -43,9 +43,9 @@ const HomeStackNavigator: React.FC = () => {
       <HomeStack.Screen name={HomeStackName.NewChat} options={{ headerShown: false }}>
         {() => <DrawerNavigator initialScreen="NewChat" />}
       </HomeStack.Screen>
-      <HomeStack.Screen name={HomeStackName.UpgradeNewChat} options={{ headerShown: false }}>
+      {/*<HomeStack.Screen name={HomeStackName.UpgradeNewChat} options={{ headerShown: false }}>
         {() => <DrawerNavigator initialScreen="UpgradeNewChat" />}
-      </HomeStack.Screen>
+      </HomeStack.Screen>*/}
       <HomeStack.Screen
         name={HomeStackName.NewChatRefresh}
         component={DrawerNavigator}

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   GiftedChat,
   IMessage,
@@ -9,6 +9,7 @@ import {
   Composer,
   ComposerProps,
   Send,
+  Avatar,
 } from 'react-native-gifted-chat';
 import { useDispatch, useSelector } from 'react-redux';
 import { sendMessages, setInputText, toggleMessageSaved } from '../../../../redux/chatSlice';
@@ -25,9 +26,11 @@ import { UpgradeChatMessage } from './type/upgradeChat-types';
 import ChatHeader from './components/ChatHeader';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AdMobBanner from '../../../../components/ads/AdMobBanner';
+import { fetchChatMessages } from '../../../../redux/chatThunks';
 const UpgradeNewChat = ({ navigation }) => {
   const dispatch = useDispatch();
-  const messages = useSelector(selectMessagesWithDate);
+  //const messages = useSelector(selectMessagesWithDate);
+  const { messages, status, error, inputText } = useSelector((state: RootState) => state.chat);
   const [image, setImage] = useState<string | null>(null);
   const [localText, setLocalText] = useState<string>('');
 
@@ -80,19 +83,66 @@ const UpgradeNewChat = ({ navigation }) => {
   );
   const renderComposer = useCallback(
     (props: ComposerProps) => (
-      <TextInput
-        {...props}
-        style={styles.inputText}
-        placeholder="메시지를 입력하세요"
-        placeholderTextColor={palette.neutral[400]}
-        value={props.text}
-        onChangeText={props.onTextChanged}
-        multiline={true}
-        autoFocus={true}
-      />
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'flex-end',
+          //backgroundColor: palette.neutral[50],
+          borderRadius: 20,
+          //paddingHorizontal: 15,
+          //paddingVertical: 15,
+          minHeight: rsFont * 16 * 1.5 + 15 * 2,
+          marginHorizontal: 10,
+          flex: 1,
+          backgroundColor: 'blue',
+        }}>
+        {/* TextInput */}
+        <TextInput
+          {...props}
+          style={[
+            {
+              fontFamily: 'Pretendard-Regular',
+              fontSize: rsFont * 16,
+              lineHeight: rsFont * 16 * 1.5,
+              color: palette.neutral[900],
+              flex: 1,
+              padding: 0,
+              margin: 0,
+              textAlignVertical: 'top',
+              maxHeight: rsFont * 16 * 1.5 * 5,
+            },
+            styles.inputText,
+          ]}
+          placeholder="메시지를 입력하세요"
+          placeholderTextColor={palette.neutral[400]}
+          value={props.text}
+          onChangeText={props.onTextChanged}
+          multiline={true}
+          autoFocus={true}
+        />
+
+        {/* 오른쪽 아래 아이콘 */}
+        <TouchableOpacity
+          onPress={props.onEmojiPress}
+          style={{
+            alignSelf: 'flex-end',
+            paddingLeft: 10,
+            minWidth: 24,
+            height: 24,
+            justifyContent: 'center',
+          }}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+          <Icon
+            name="emojiIcon"
+            width={24}
+            color={props.isEmojiPanelVisible ? palette.primary[100] : palette.neutral[300]}
+          />
+        </TouchableOpacity>
+      </View>
     ),
     [],
   );
+
   {
     /*<Composer
         {...props}
@@ -158,10 +208,30 @@ const UpgradeNewChat = ({ navigation }) => {
     ),
     [dispatch],
   );
+  //왼쪽 버블에만 아바타가 보이도록
+  const renderAvatar = useCallback((props) => {
+    const { position } = props;
+
+    //if (position !== 'left') return null;
+
+    return (
+      <View style={styles.avatarContainer}>
+        <Avatar
+          {...props}
+          imageStyle={{
+            left: styles.avatarImage,
+          }}
+        />
+      </View>
+    );
+  }, []);
   const insets = useSafeAreaInsets();
+  useEffect(() => {
+    dispatch(fetchChatMessages(new Date(0).toISOString()));
+  }, [dispatch]);
 
   return (
-    <View style={{ paddingTop: insets.top, flex: 1 }}>
+    <View style={{ paddingTop: insets.top, paddingBottom: insets.bottom, flex: 1 }}>
       <AdMobBanner />
       <ChatHeader navigation={navigation} />
       <GiftedChat
@@ -169,11 +239,11 @@ const UpgradeNewChat = ({ navigation }) => {
         onSend={onSend}
         user={{ _id: 1 }}
         renderActions={renderActions}
+        renderAvatar={renderAvatar}
         renderBubble={renderBubble}
         renderInputToolbar={renderInputToolbar}
         renderComposer={renderComposer}
         renderSend={renderSend}
-        textInputProps={{ autoCorrect: false }}
       />
     </View>
   );
@@ -203,7 +273,7 @@ const styles = StyleSheet.create({
     height: 35,
     borderRadius: 50,
     backgroundColor: palette.neutral[100],
-    marginLeft: 10,
+    marginLeft: 0,
   },
   messageBubble: {
     backgroundColor: palette.neutral[100],
@@ -229,9 +299,27 @@ const styles = StyleSheet.create({
   },
   inputText: {
     fontFamily: 'Pretendard-Regular',
-    fontSize: rsFont * 14,
-    color: 'red',
+    fontSize: rsFont * 16,
+    lineHeight: rsFont * 16 * 1.5,
+    color: palette.neutral[900], // 기존 스타일에 맞는 텍스트 색상
     flex: 1,
+    marginHorizontal: 10, // 기존 marginHorizontal 제거
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+    backgroundColor: palette.neutral[50],
+    borderRadius: 20,
+    textAlignVertical: 'top',
+    maxHeight: rsFont * 16 * 1.5 * 5, // 최대 5줄
+    minHeight: rsFont * 16 * 1.5 + 15 * 2, // 최소 높이
+  },
+  avatarContainer: {
+    width: rsWidth * 35,
+    height: rsHeight * 35,
+    backgroundColor: 'black',
+  },
+  avatarImage: {
+    width: rsWidth * 35,
+    height: rsHeight * 35,
   },
 });
 

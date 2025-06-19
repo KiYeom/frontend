@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, View, Text } from 'react-native';
+import { ActivityIndicator, View, Text, ScrollView } from 'react-native';
 import { css } from '@emotion/native';
 import dayjs from 'dayjs';
 import { periodKeyword, periodRecordEmotions, periodTotalEmotion } from '../../apis/analyze';
