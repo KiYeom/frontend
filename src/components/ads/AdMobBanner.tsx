@@ -11,6 +11,7 @@ const AdMobBanner = () => {
         width: '100%',
         alignItems: 'center',
         justifyContent: 'center',
+        zIndex: 101,
         //paddingTop: insets.top, // Adjust padding to avoid overlap with status bar
       }}>
       <BannerAd unitId={TestIds.BANNER} size={BannerAdSize.BANNER} />

@@ -2,7 +2,7 @@ import React from 'react';
 import { EmotionDesc, SmallTitle, Title } from './EmotionChart.style';
 import useEmotionStore from '../../../store/useEmotionStore';
 import { Text } from 'react-native';
-import { emotionsByColumn } from '../../../constants/Constants';
+import { emotionsByColumn, emotionData } from '../../../constants/Constants';
 import EmotionCardDefault from './EmotionCardDefault';
 import { View } from 'react-native';
 import { all } from 'axios';
@@ -18,12 +18,13 @@ const SelectedEmotionDesc = () => {
   return (
     <>
       <View style={{ marginVertical: 12, justifyContent: 'center', alignItems: 'center' }}>
-        {allSelectedEmotions.length > 0 && (
-          <Text style={{ fontSize: 15, fontFamily: 'Kyobo-handwriting' }}>
-            {allSelectedEmotions[allSelectedEmotions.length - 1]?.keyword} :{' '}
-            {allSelectedEmotions[allSelectedEmotions.length - 1]?.desc}
-          </Text>
-        )}
+        {allSelectedEmotions.length > 0 &&
+          allSelectedEmotions[allSelectedEmotions.length - 1]?.type === 'default' && (
+            <Text style={{ fontSize: 15, fontFamily: 'Kyobo-handwriting' }}>
+              {allSelectedEmotions[allSelectedEmotions.length - 1]?.keyword} :{' '}
+              {emotionData[allSelectedEmotions[allSelectedEmotions.length - 1]?.keyword]?.desc}
+            </Text>
+          )}
       </View>
 
       {/*selectedEmotions.length > 0 && (
