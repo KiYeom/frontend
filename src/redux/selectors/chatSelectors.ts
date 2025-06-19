@@ -16,5 +16,3 @@ export const selectMessagesWithDate = createSelector([selectRawMessages], (rawMe
 export const selectSavedMessages = createSelector([selectRawMessages], (messages) =>
   messages.filter((msg) => msg.isSaved),
 );
-//사용자가 입력한 텍스트
-export const selectInputText = (state: RootState) => state.chat.inputText;

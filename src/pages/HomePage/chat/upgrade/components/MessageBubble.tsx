@@ -10,7 +10,7 @@ interface MessageBubbleProps {
 
 export const MessageBubble = ({ message, onToggleSave }: MessageBubbleProps) => {
   if (!message) return null;
-  const isUser = message.user?._id === 1;
+  const isUser = message.user?.name === '나';
 
   return (
     <Animated.View

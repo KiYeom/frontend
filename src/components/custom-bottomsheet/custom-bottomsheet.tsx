@@ -16,7 +16,6 @@ import {
   ButtonContainer,
   TextLengthAlert,
 } from './custom-bottomsheet.styles';
-//import useEmotionStore from '../../store/emotion-status';
 import useEmotionStore from '../../store/useEmotionStore';
 import Analytics from '../../utils/analytics';
 

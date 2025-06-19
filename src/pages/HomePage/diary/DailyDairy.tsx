@@ -8,7 +8,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { TabScreenName, RootStackName } from '../../../constants/Constants';
 import EmotionTitleBox from './emotionTitleBox';
 import Analytics from '../../../utils/analytics';
-//import useEmotionStore from '../../../store/emotion-status';
 import { formatDateKorean } from '../../../utils/times';
 import Header from '../../../components/header/header';
 import { useCalendarStore } from '../../../store/calendarStore';
