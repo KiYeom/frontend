@@ -7,7 +7,7 @@ const AdMobBanner = () => {
   return (
     <View
       style={{
-        //zIndex: 99999999,
+        paddingTop: insets.top,
         width: '100%',
         alignItems: 'center',
         justifyContent: 'center',

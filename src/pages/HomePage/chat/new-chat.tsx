@@ -1214,6 +1214,7 @@ const NewChat: React.FC = ({ navigation }) => {
   return (
     <SafeAreaView
       style={{ flex: 1 }}
+      edges={['bottom']}
       onLayout={(event) => {
         if (Platform.OS === 'android') {
           const { height } = event.nativeEvent.layout;
@@ -1238,7 +1239,6 @@ const NewChat: React.FC = ({ navigation }) => {
           <RenderLoading />
         </View>
       )}
-
       <AdMobBanner />
       <ChatHeader
         isSearchMode={isSearchMode}
@@ -1271,6 +1271,7 @@ const NewChat: React.FC = ({ navigation }) => {
         handleSearch={handleSearch}
         updateMessageHighlights={updateMessageHighlights}
       />
+
       <TouchableOpacity style={{ flex: 1 }} activeOpacity={1} onPress={hideEmojiPanel}>
         <Animated.View style={[screenAnimatedStyle, { flexGrow: 1 }]}>
           <GiftedChat
