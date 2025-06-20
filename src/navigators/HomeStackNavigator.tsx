@@ -60,7 +60,7 @@ const HomeStackNavigator: React.FC = () => {
       {/* 1.5.7 UPDATE 즐겨찾기 추가 */}
       <HomeStack.Screen
         name={HomeStackName.Favorites}
-        component={newFavorites}
+        component={Favorites}
         options={{ headerShown: false }}
       />
       {/* 1.8.9 quote 추가 */}

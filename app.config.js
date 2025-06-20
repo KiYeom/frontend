@@ -49,7 +49,7 @@ module.exports = {
     },
     scheme: 'remind',
     web: {
-      favicon: './assets/favicon.png',
+      favicon: './src/assets/images/appicon.png',
       bundler: 'metro',
     },
 

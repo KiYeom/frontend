@@ -17,11 +17,11 @@ const DrawerNavigator: React.FC<{ initialScreen?: string }> = ({ initialScreen }
         drawerPosition: 'right',
         drawerType: 'front',
       }}>
-      <Drawer.Screen
+      {/*<Drawer.Screen
         name={'UpgradeNewChat'}
         component={UpgradeNewChat}
         options={{ headerShown: false }}
-      />
+      />*/}
       <Drawer.Screen name={'NewChat'} component={NewChat} options={{ headerShown: false }} />
     </Drawer.Navigator>
   );
