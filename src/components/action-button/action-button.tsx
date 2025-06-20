@@ -1,3 +1,4 @@
+// 홈화면에서 사용하는 오늘의 행복 버튼
 import React from 'react';
 import { Text, View } from 'react-native';
 import Icon from '../icons/icons';

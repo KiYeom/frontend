@@ -7,22 +7,20 @@ import { TLabel } from '../../../apis/analyze.type';
 import palette from '../../../assets/styles/theme';
 import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
 import { Container } from '../Daily_Keyword/Keyword.style';
-import { SectionTitle } from '../StatisticMain.style';
 import { TouchableOpacity } from 'react-native';
 import Icon from '../../../components/icons/icons';
 
 type TLabelWithColor = {
-  label: string;
-  value: number;
-  color: string;
+  label: string; // 감정 이름 (예 : 만족스러운)
+  value: number; // 감정 비율 (예 : 54%)
+  color: string; // 감정 색상 (예 : #FF5733)
 };
 
-const HINT_NAME = 'emotion';
-const HINT_MESSAGE =
-  '대화에서 숨은 나의 감정을 객관적으로 분석한 결과예요!\n※ 정확한 분석을 위해 30자 이상의 대화가 필요합니다.';
+type DailyEmotionClassificationProps = {
+  labelsClassification: TLabel[];
+};
 
-const DailyEmotionClassification: React.FC<any> = (props: any) => {
-  const { labelsClassification, hintStatus, setHintStatus } = props;
+const DailyEmotionClassification = ({ labelsClassification }: DailyEmotionClassificationProps) => {
   //pieData를 만들어주는 함수
   const generatePieData = (labelsClassification: TLabel[]): TLabelWithColor[] => {
     const result: TLabelWithColor[] = [];
@@ -36,9 +34,8 @@ const DailyEmotionClassification: React.FC<any> = (props: any) => {
     return result;
   };
 
+  // pieData 생성
   const pieData: TLabelWithColor[] = generatePieData(labelsClassification);
-  //데이터가 있으면 [{"value" : "화나는", "percent" : 29}, ...]
-  //데이터가 없으면 []
 
   //범례의 점 그리기
   const renderDot = (color: any) => {
@@ -55,7 +52,7 @@ const DailyEmotionClassification: React.FC<any> = (props: any) => {
     );
   };
 
-  //범례 전체
+  //범례 전체 컴포넌트
   const renderLegendComponent = (pieData: TLabelWithColor[]) => {
     return (
       <View
@@ -90,13 +87,8 @@ const DailyEmotionClassification: React.FC<any> = (props: any) => {
     );
   };
   return (
-    <Container>
-      <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
-        <SectionTitle>쿠키가 생각했을 때의 모습이에요</SectionTitle>
-        <View style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}></View>
-      </View>
-
-      {pieData.length !== 0 ? (
+    <>
+      {pieData.length !== 0 && (
         <View
           style={css`
             background-color: white;
@@ -145,10 +137,8 @@ const DailyEmotionClassification: React.FC<any> = (props: any) => {
           />
           {renderLegendComponent(pieData)}
         </View>
-      ) : (
-        <></>
       )}
-    </Container>
+    </>
   );
 };
 export default DailyEmotionClassification;

@@ -5,7 +5,7 @@ import { jwtDecode } from 'jwt-decode';
 
 const APIKeys = {
   apple: 'appl_fPMYhWqdXgEZtsFvoDpuZlklJSV',
-  google: 'your_revenuecat_google_api_key',
+  google: 'goog_lGhfMhvZXzUQWDfrGqdWojflABo',
 };
 
 const ENTITLEMENT_ID = 'emoji_v1_unlock'; // RevenueCat에서 설정한 entitlement ID
@@ -16,12 +16,7 @@ export const initializeInApp = async () => {
   } else {
     await Purchases.configure({ apiKey: APIKeys.apple });
   }
-  //Purchases.setDebugLogsEnabled(true);
 };
-/*
-  const decodedToken = jwtDecode<{ userId: string }>(accessToken);
-  const userId = decodedToken.userId;
-*/
 
 //초기화 함수
 export const NewInitializeInApp = async () => {

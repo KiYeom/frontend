@@ -1,7 +1,5 @@
 import React from 'react';
 import { EmotionKeyword, TRecordEmotion } from '../../../apis/analyze.type';
-import Empty from '../Empty';
-import { SectionTitle } from '../StatisticMain.style';
 import {
   RContainer,
   RecordContainer,
@@ -10,7 +8,6 @@ import {
   RecordDateIcon,
   RecordDateText,
   RecordKeywordText,
-  RImageContainer,
 } from './period-record.style';
 import { RootStackName, HomeStackName, StatisticStackName } from '../../../constants/Constants';
 import { TouchableOpacity, View, Text, Image } from 'react-native';
@@ -19,12 +16,14 @@ import palette from '../../../assets/styles/theme';
 import { rsFont } from '../../../utils/responsive-size';
 import { css } from '@emotion/native';
 import Analytics from '../../../utils/analytics';
+import { TPeriodRecordEmotions } from '../../../apis/analyze.type';
 
-const HINT_NAME = 'period-record';
-const HINT_MESSAGE = '자신이 기록한 날들을 한 눈에 볼 수 있어요!';
+type PeriodRecordProps = {
+  records: TPeriodRecordEmotions[];
+  navigation: any; // React Navigation 타입이 있다면 정확히 지정 가능
+};
 
-const PeriodRecord = (props: any) => {
-  const { records, hintStatus, setHintStatus, navigation } = props;
+const PeriodRecord = ({ records, navigation }: PeriodRecordProps) => {
   const getLocalDate = (date: string, locale: string) => {
     const formattedDate = new Date(date).toLocaleDateString(locale, {
       year: 'numeric',
@@ -65,9 +64,6 @@ const PeriodRecord = (props: any) => {
 
   return (
     <RContainer>
-      <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
-        <SectionTitle>내가 기록한 하루들</SectionTitle>
-      </View>
       {records.map((record, index) => {
         //console.log('record', record);
         const iconName = getEmotionIconName(record.keywords[0]);

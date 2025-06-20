@@ -32,5 +32,12 @@ const palette = {
     100: '#ECF6FF',
     200: '#70BFFF',
   },
+  emotion: {
+    angry: '#F49B9B',
+    sad: '#BCB2FF',
+    default: '#D7D7D7',
+    happy: '#FFE372',
+    calm: '#ABEBC5',
+  },
 };
 export default palette;

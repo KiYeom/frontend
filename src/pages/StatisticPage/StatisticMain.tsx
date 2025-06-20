@@ -1,342 +1,175 @@
-import { css } from '@emotion/native';
-import { useNavigation, CommonActions } from '@react-navigation/native';
-import { Image } from 'expo-image';
-import React, { useCallback, useEffect, useState, useRef } from 'react';
-import { ScrollView, TouchableOpacity, View, Text } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, { useCallback, useEffect, useState } from 'react';
 import { dailyAnalyze, dailyAnalyzeStatus } from '../../apis/analyze';
 import { TEmotionCheck, TLabel } from '../../apis/analyze.type';
-import palette from '../../assets/styles/theme';
 import { HomeStackName, RootStackName, TabScreenName } from '../../constants/Constants';
 import Analytics from '../../utils/analytics';
-import { rsFont, rsHeight, rsWidth } from '../../utils/responsive-size';
 import SingleDatePickerModal from '../../components/rangeCal/single-date-picker-modal';
-//import BlurredButton from './BlurredButton';
 import DailyEmotionClassification from './Daily_EmotionClassification/DailyEmotionClassification';
 import EmotionArea from './Daily_Keyword/EmotionArea';
 import EmotionDairy from './Daily_Keyword/EmotionDairy';
 import KeywordArea from './Daily_Keyword/KeywordArea';
-//import ReportType from './ReportType';
 import { formatDateKorean } from '../../utils/times';
-import {
-  Container,
-  DateLineContainer,
-  DateLineText,
-  PageHintText,
-  StatisticTitle,
-} from './StatisticMain.style';
-import Icon from '../../components/icons/icons';
-import {
-  getKoreanRealDateString,
-  getKoreanServerTodayDateString,
-  getKoreanServerYesterdayDateString,
-} from '../../utils/times';
-import EmptyBox from '../../components/emptybox/emptyBox';
-import Header from '../../components/header/header';
-import BottomTabNavigator from '~/src/navigators/BottomTabNavigator';
-import Carousel, { Pagination, ICarouselInstance } from 'react-native-reanimated-carousel';
-import { useSharedValue } from 'react-native-reanimated';
-const START_HOUR_OF_DAY = 6;
-
-const HINT_NAME = 'main';
-const HINT_MESSAGE =
-  '쿠키와의 대화를 통해 나의 감정을 객관적으로 확인하고 그날의 자신을 돌아볼 수 있어요!\n※ 일일 보고서는 매일 오전 6시에 갱신돼요.\n※ 본 보고서는 참고용이며, 필요 시 전문가와 상의하세요.';
+import { getKoreanRealDateString, getKoreanServerTodayDateString } from '../../utils/times';
+import CTAButton from '../../components/CTAButton/CTAButton';
+import StatisticLayout from '../../components/layout/StatisticLayout';
+import DailyGallery from './Daily_Gallery/DailyGallery';
+import AnaylsisBlock from './AnalysisBlock/AnalysisBlock';
 
 //전체 통계 화면
 const StatisticMain: React.FC<any> = ({ navigation, route }) => {
-  //const [date, setDate] = useState<Date>(new Date()); //서버에서 계산하는 날짜
-  //const [date, setDate] = useState();
-  const [openModal, setOpenModal] = React.useState(false);
+  const [openModal, setOpenModal] = React.useState(false); //날짜 선택 모달
+  const [availableDates, setAvailableDates] = useState<string[]>([]);
+  //section1. 감정 분류
   const [isNullClassification, setIsNullClassification] = useState(true);
   const [labelsClassification, setLabelsClassification] = useState<TLabel[]>([]);
+  //section2. 요약 키워드
   const [isSummaryList, setIsSummaryList] = useState(true);
-  const [isRecordKeywordList, setIsRecordKeywordList] = useState<TEmotionCheck[]>([]);
-  const [isNullRecordKeywordList, setIsNullRecordKeywordList] = useState(true);
   const [summaryList, setSummaryList] = useState<string[]>([]);
+  const [isNullRecordKeywordList, setIsNullRecordKeywordList] = useState(true);
+  //section3. 내가 선택한 감정 키워드
+  const [isRecordKeywordList, setIsRecordKeywordList] = useState<TEmotionCheck[]>([]);
+  //setction4. 내가 기록한 나의 일기
   const [todayFeeling, setTodayFeeling] = useState<string>('');
+  //section5. 내가 기록한 나의 사진
   const [images, setImages] = useState<string[]>([]);
-  const [availableDates, setAvailableDates] = useState<string[]>([]);
-  const [hintStatus, setHintStatus] = useState<
-    'emotion' | 'keyword' | 'record' | 'daily' | 'main' | undefined
-  >(undefined);
-  //const navigation = useNavigation();
-  const insets = useSafeAreaInsets();
-
-  //const { dateID } = route.params;
+  //홈 화면 혹은 날짜 선택 모달에서 받은 날짜 ID
   const [dateID, setDateID] = useState(route.params.dateID);
-  //console.log('홈에서 받은 dateID', dateID);
 
   const onChange = useCallback((newDate) => {
-    //setDate(new Date(newDate));
     setDateID(getKoreanRealDateString(newDate));
   }, []);
-
-  //캐러셀 추가
-  const ref = useRef<ICarouselInstance>(null);
-  const progress = useSharedValue<number>(0);
-
-  const onPressPagination = (index: number) => {
-    ref.current?.scrollTo({
-      count: index - progress.value,
-      animated: true,
-    });
-  };
 
   //앱이 처음 실행됐을 때 실행되는 부분
   useEffect(() => {
     Analytics.watchDailyStatisticScreen(); //일일 리포트 화면 진입
-    dailyAnalyzeStatus(2025).then((data) => {
-      //1.5.7 UPDATE 하드 코딩.. 2025년도에 대한 데이터를 가져옴
-      if (!data) {
-        setAvailableDates([getKoreanServerTodayDateString(new Date())]);
-      } else {
-        setAvailableDates([...data.dates, getKoreanServerTodayDateString(new Date())]);
+    const initializeData = async () => {
+      try {
+        const currentYear = new Date().getFullYear();
+        const data = await dailyAnalyzeStatus(currentYear);
+        if (!data) {
+          setAvailableDates([getKoreanServerTodayDateString(new Date())]);
+        } else {
+          setAvailableDates([...data.dates, getKoreanServerTodayDateString(new Date())]);
+        }
+      } catch (error) {
+        console.error('Error fetching initial data:', error);
+        alert('네트워크 연결이 불안정합니다. 잠시 후 다시 시도해주세요.');
+      } finally {
       }
-    });
-    //setDate(new Date(`${getKoreanServerYesterdayDateString(new Date())}T00:00:00.000+09:00`));
+    };
+    initializeData();
   }, []);
 
-  const fetchData = async () => {
-    //console.log('fetchData date: ', date);
-    //console.log('fetchData date: ', new Date());
-    // const dailyStatistics = await dailyAnalyze(getKoreanRealDateString(date)); //date -> new Date()
-    const dailyStatistics = await dailyAnalyze(dateID); //대화 기반으로 분석된 감정 결과 가져옴
-    if (!dailyStatistics) {
-      alert('네트워크 연결이 불안정합니다. 잠시 후 다시 시도해주세요.');
-      return;
+  const fetchData = useCallback(async () => {
+    try {
+      const dailyStatistics = await dailyAnalyze(dateID);
+      //console.log('dailyStatistics', dailyStatistics);
+      if (!dailyStatistics) {
+        alert('네트워크 연결이 불안정합니다. 잠시 후 다시 시도해주세요.');
+        return;
+      }
+      setIsNullClassification(dailyStatistics.classification.isNULL);
+      setLabelsClassification(dailyStatistics.classification.labels);
+      setIsSummaryList(dailyStatistics.summary.isNULL);
+      setSummaryList(dailyStatistics.summary.keywords);
+      setIsRecordKeywordList(dailyStatistics.record.Keywords);
+      setIsNullRecordKeywordList(dailyStatistics.record.isNULL);
+      setTodayFeeling(dailyStatistics.record.todayFeeling ?? '');
+      setImages(dailyStatistics.record.images ?? []);
+    } catch (error) {
+      console.error('Error fetching daily statistics:', error);
+      alert('데이터를 불러오는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+    } finally {
     }
-    setIsNullClassification(dailyStatistics.classification.isNULL);
-    setLabelsClassification(dailyStatistics.classification.labels);
-    setIsSummaryList(dailyStatistics.summary.isNULL);
-    setSummaryList(dailyStatistics.summary.keywords);
-    setIsRecordKeywordList(dailyStatistics.record.Keywords);
-    setIsNullRecordKeywordList(dailyStatistics.record.isNULL);
-    //빈 값 [] 이면 false를 넘겨주기 때문에 !을 붙여서 true로 만들어줌
-    setTodayFeeling(dailyStatistics.record.todayFeeling ?? '');
-    setImages(dailyStatistics.record.images ?? []);
-    //console.log('😀😀😀😀😀😀😀😀', dailyStatistics.record.todayFeeling);
-  };
+  }, [dateID]);
 
   //날짜가 바뀜에 따라 데이터를 다시 api를 통해 불러옴
   useEffect(() => {
     fetchData();
-  }, [dateID]);
-  //console.log('🎨🎨🎨🎨🎨🎨Rendering statistic🎨🎨🎨🎨🎨🎨');
-  return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: palette.neutral[50],
-        //paddingTop: insets.top,
-      }}>
-      <Header
-        title={'감정 다이어리'}
-        isRight={true}
-        rightIcon={'edit-icon'}
-        rightFunction={() => {
-          navigation.navigate(RootStackName.HomeStackNavigator, {
-            screen: HomeStackName.SmallEmotionChart,
-            params: { dateID: dateID },
-          });
-          Analytics.clickEditDiaryButton();
-        }}
-        leftFunction={() => {
-          if (!navigation.canGoBack()) {
-            navigation.reset({
-              index: 0,
-              routes: [
-                {
-                  name: RootStackName.BottomTabNavigator,
-                  params: {
-                    screen: TabScreenName.Home,
-                  },
-                },
-              ],
-            });
-          } else {
-            // 뒤로 갈 화면이 있을 때는 일반적인 뒤로가기 호출
-            navigation.goBack();
-          }
-        }}
-        bgcolor={`${palette.neutral[50]}`}
-      />
-      <ScrollView style={{ paddingTop: rsHeight * 12 }}>
-        <View
-          style={css`
-            flex: 1; //통계 전체 컨테이너 (대시보드)
-            flex-direction: column;
-            background-color: ${palette.neutral[50]};
-            padding-bottom: ${rsHeight * 20 + 'px'};
-            gap: ${rsHeight * 16 + 'px'};
-            justify-content: center;
-          `}>
-          <View
-            style={{
-              //backgroundColor: 'yellow',
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Icon name="clover-cookie" width={80} height={80} />
-            {/*<Image
-              style={{
-                width: 70 * rsWidth,
-                height: 70 * rsHeight,
-                aspectRatio: 1, // 가로 세로 비율을 고정
-                resizeMode: 'contain', // 이미지를 잘리지 않게 표시
-              }}
-              source={{
-                uri: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/statistic/reportlogo.png',
-              }}
-            />*/}
-            <View style={{ marginVertical: 10 * rsHeight }}>
-              {/* 현재 날짜와 쿠키의 안내 말 */}
-              <DateLineContainer onPress={() => setOpenModal(true)}>
-                {/*<TouchableOpacity onPress={() => setOpenModal(true)}>*/}
-                {/*<DateLineText>{getDateKoreanString(date)}</DateLineText> 1.5.7 UPDATE 잠시 주석 처리*/}
-                <DateLineText>{formatDateKorean(dateID)}</DateLineText>
-                <Icon name="arrow-down" color={'white'} />
-              </DateLineContainer>
-              <StatisticTitle>
-                쿠키와 함께 돌아보는{'\n'}
-                어느 날의 감정
-              </StatisticTitle>
-            </View>
-          </View>
-          <Container>
-            {!isNullClassification && (
-              <>
-                <DailyEmotionClassification
-                  labelsClassification={labelsClassification}
-                  hintStatus={hintStatus}
-                  setHintStatus={(hint: 'emotion' | undefined) => {
-                    setHintStatus(hint);
-                  }}
-                />
-                <KeywordArea
-                  summaryList={summaryList}
-                  hintStatus={hintStatus}
-                  setHintStatus={(hint: 'keyword' | undefined) => {
-                    setHintStatus(hint);
-                  }}
-                />
-              </>
-            )}
-            {(!isNullRecordKeywordList || todayFeeling !== '') && (
-              <>
-                <EmotionArea
-                  isRecordKeywordList={isRecordKeywordList}
-                  hintStatus={hintStatus}
-                  setHintStatus={(hint: 'record' | undefined) => {
-                    setHintStatus(hint);
-                  }}
-                />
-                <EmotionDairy
-                  todayFeeling={todayFeeling}
-                  hintStatus={hintStatus}
-                  setHintStatus={(hint: 'daily' | undefined) => {
-                    setHintStatus(hint);
-                  }}
-                />
-              </>
-            )}
-            {images.length > 0 && (
-              <View style={{ position: 'relative', gap: rsHeight * 12 }}>
-                <Text
-                  style={{
-                    fontFamily: 'Kyobo-handwriting',
-                    fontSize: 18 * rsFont,
-                    color: palette.neutral[900],
-                  }}>
-                  그 때 내가 기록한 순간을 담았어요!
-                </Text>
+  }, [fetchData]);
 
-                <Carousel
-                  ref={ref}
-                  width={rsWidth * 350}
-                  height={rsHeight * 263}
-                  data={images}
-                  onProgressChange={progress}
-                  defaultIndex={0}
-                  loop={images.length > 1 ? true : false}
-                  enabled={images.length > 1 ? true : false}
-                  style={{
-                    borderRadius: 10,
-                    overflow: 'hidden',
-                  }}
-                  renderItem={({ item }) => (
-                    <Image
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                      }}
-                      contentFit="cover"
-                      source={{ uri: item }}
-                    />
-                  )}
-                />
-                {images.length > 1 && (
-                  <View
-                    style={{
-                      position: 'absolute',
-                      bottom: 10,
-                      left: 0,
-                      right: 0,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Pagination.Basic
-                      progress={progress}
-                      data={images}
-                      dotStyle={{ backgroundColor: 'rgba(0,0,0,0.2)', borderRadius: 50 }}
-                      activeDotStyle={{ backgroundColor: '#FFFFFF' }}
-                      containerStyle={{ gap: 5 }}
-                      onPress={onPressPagination}
-                    />
-                  </View>
-                )}
-              </View>
-            )}
-            {isNullClassification && (
-              <EmptyBox
-                mainTitle="쿠키에게 고민을 말해보세요"
-                subTitle="쿠키와의 대화가 부족해 마음을 들여다 볼 수 없었어요"
-                isLeftIcon={true}
-                iconName="green-chat-icon"
-                iconSize={40}
-                onPress={() =>
-                  navigation.navigate(RootStackName.HomeStackNavigator, {
-                    screen: HomeStackName.NewChat,
-                  })
-                }
-              />
-            )}
-            {isNullRecordKeywordList && (
-              <EmptyBox
-                mainTitle="나에게 어떤 하루였나요?"
-                subTitle="감정 일기를 작성하고, 마음 보고서를 완성해보세요"
-                isLeftIcon={true}
-                iconName="pencil"
-                iconSize={40}
-                onPress={() => {
-                  //console.log('누름');
-                  navigation.navigate(RootStackName.HomeStackNavigator, {
-                    screen: HomeStackName.SmallEmotionChart,
-                    params: { dateID: dateID },
-                  });
-                }}
-              />
-            )}
-          </Container>
-        </View>
-      </ScrollView>
-      <SingleDatePickerModal
-        modalVisible={openModal}
-        onClose={() => setOpenModal(false)}
-        onChange={onChange}
-        availableDates={availableDates}
-      />
-    </View>
+  const navigateToNewChat = useCallback(() => {
+    navigation.navigate(RootStackName.HomeStackNavigator, {
+      screen: HomeStackName.NewChat,
+    });
+  }, [navigation]);
+
+  const navigateToSmallEmotionChart = useCallback(() => {
+    navigation.navigate(RootStackName.HomeStackNavigator, {
+      screen: HomeStackName.SmallEmotionChart,
+      params: { dateID },
+    });
+  }, [navigation, dateID]);
+  //console.log('StatisticMain 컴포넌트 실행됨');
+
+  return (
+    <StatisticLayout
+      headerTitle="감정 다이어리"
+      iconName="clover-cookie"
+      rightIcon="edit-icon"
+      rightFunction={navigateToSmallEmotionChart}
+      dateText={formatDateKorean(dateID)}
+      onDatePress={() => setOpenModal(true)}
+      title={`쿠키와 함께 돌아보는\n어느 날의 감정`}
+      modalComponent={
+        <SingleDatePickerModal
+          modalVisible={openModal}
+          onClose={() => setOpenModal(false)}
+          onChange={onChange}
+          availableDates={availableDates}
+        />
+      }>
+      {/* children으로 전달 */}
+      {/* ai 가 분석한 나의 모습 (그래프) */}
+      {!isNullClassification && (
+        <AnaylsisBlock title={'쿠키가 생각했을 때의 모습이에요'}>
+          <DailyEmotionClassification labelsClassification={labelsClassification} />
+        </AnaylsisBlock>
+      )}
+      {/* ai 가 분석한 나의 모습 (대화 키워드 분석) */}
+      {!isSummaryList && (
+        <AnaylsisBlock title={'쿠키와 이런 이야기를 했어요'}>
+          <KeywordArea summaryList={summaryList} />
+        </AnaylsisBlock>
+      )}
+      {/* 내가 직접 작성한 나의 모습 */}
+      {!isNullRecordKeywordList && (
+        <>
+          <AnaylsisBlock title={'그 때의 나는 어떤 감정이었나요?'}>
+            <EmotionArea isRecordKeywordList={isRecordKeywordList} />
+          </AnaylsisBlock>
+          <AnaylsisBlock title={'그 때의 나는 어떤 생각을 했을까요?'}>
+            <EmotionDairy todayFeeling={todayFeeling} />
+          </AnaylsisBlock>
+        </>
+      )}
+
+      {/*(추가) 일기에 사진을 첨부한 경우)*/}
+      {images.length > 0 && (
+        <AnaylsisBlock title={'그 때 내가 기록한 순간을 담았어요!'}>
+          <DailyGallery images={images} />
+        </AnaylsisBlock>
+      )}
+
+      {/* 대화가 없어 ai 가 분석한 나의 모습이 존재하지 않는 경우 */}
+      {isNullClassification && isSummaryList && (
+        <CTAButton
+          mainTitle="쿠키에게 고민을 말해보세요"
+          subTitle="쿠키와의 대화가 부족해 마음을 들여다 볼 수 없었어요"
+          iconName="green-chat-icon"
+          onPress={navigateToNewChat}
+        />
+      )}
+      {/* 내가 직접 작성한 나의 모습이 없는 경우 */}
+      {isNullRecordKeywordList && (
+        <CTAButton
+          mainTitle="나에게 어떤 하루였나요?"
+          subTitle="감정 일기를 작성하고, 마음 보고서를 완성해보세요"
+          iconName="pencil"
+          onPress={navigateToSmallEmotionChart}
+        />
+      )}
+    </StatisticLayout>
   );
 };
 

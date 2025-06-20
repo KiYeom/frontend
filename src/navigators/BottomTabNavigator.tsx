@@ -27,6 +27,7 @@ const BottomTabNavigator: React.FC<any> = () => {
           headerShown: false,
         }}
       />
+
       <Tab.Screen
         name={TabScreenName.NewChat}
         component={NewChat}
@@ -35,6 +36,7 @@ const BottomTabNavigator: React.FC<any> = () => {
           headerShown: false,
         }}
       />
+
       <Tab.Screen
         name={TabScreenName.Statistic}
         component={StatisticStackNavigator}

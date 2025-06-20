@@ -16,7 +16,7 @@ index c62bb41..3fd51e4 100644
            keywords, center, scale, largestAtCenter);
        calcPositions(circles);
 diff --git a/node_modules/react-native-word-cloud/utils.js b/node_modules/react-native-word-cloud/utils.js
-index bb226c8..142dd0e 100644
+index bb226c8..e18a7da 100644
 --- a/node_modules/react-native-word-cloud/utils.js
 +++ b/node_modules/react-native-word-cloud/utils.js
 @@ -25,7 +25,7 @@ return keywords.sort((a,b)=>a.frequency<b.frequency?-1:1)
@@ -86,7 +86,7 @@ index bb226c8..142dd0e 100644
      ctx.textBaseline = 'middle';
 -    ctx.font = `lighter ${Math.floor(circle.size / 4)}px sans-serif`;
 +    //ctx.font = `lighter ${Math.floor(circle.size / 4)}px sans-serif`;
-+    ctx.font = `18px Pretendard-SemiBold`;
++    ctx.font = `18px Kyobo-handwriting`;
      ctx.fillStyle = '#000000';
      ctx.fillText(circle.label, circle.x, circle.y);
    });

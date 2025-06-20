@@ -1,37 +1,9 @@
 /** @jsxImportSource @emotion/react */
+// 커스텀 체크박스 컴포넌트
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import styled from '@emotion/native';
 import palette from '../../assets/styles/theme';
 import { Container, MessageText, CustomCheckbox, boxSize } from './NewCheckBox.style';
-/*
-const boxSize = 25;
-
-const Container = styled.View`
-  flex-direction: row;
-  align-items: center;
-  //background-color: yellow;
-  justify-content: flex-start;
-`;
-
-const MessageText = styled.Text`
-  font-size: 14px;
-  margin-left: 8px;
-  font-family: 'Pretendard-Regular';
-  color: ${palette.neutral[900]};
-`;
-
-// Custom checkbox that mimics Paper's Checkbox.Android
-const CustomCheckbox = styled.TouchableOpacity`
-  width: ${boxSize + 'px'};
-  height: ${boxSize + 'px'};
-  justify-content: center;
-  align-items: center;
-  padding: 0;
-  margin: 0;
-  //background-color: red;
-`;*/
 
 interface CustomCheckBoxProps {
   checked: boolean;

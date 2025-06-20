@@ -6,7 +6,7 @@ import Analytics from '../../../../utils/analytics';
 import { UseSigninStatus } from '../../../../utils/signin-status';
 import { clearInfoWhenLogout, getUserNickname } from '../../../../utils/storageUtils';
 import Button from '../../../../components/button/button';
-import DeactivateReasonCheckBoxs from '../../../../components/molecules/DeactivateReasonCheckBoxs';
+import DeactivateReasonCheckBoxs from './DeactivateReasonCheckBoxs';
 import { CheckboxContainer, FormContainer } from './DeactivateReason.style';
 import {
   Container,

@@ -101,7 +101,7 @@ import Animated, { useAnimatedStyle, withTiming, interpolate } from 'react-nativ
 import { useEmojiPanel } from '../../../hooks/useEmojiPanel';
 import { useSelectedEmoji } from '../../../hooks/useSelectedEmoji';
 import NewEmojiPanel from '../../../components/emoji-panel/NewEmojiPanel';
-
+import AdMobBanner from '../../../components/ads/AdMobBanner';
 const userName = getUserNickname() ?? 'Test_remind_empty';
 const appVariant = Constants.expoConfig?.extra?.appVariant;
 const isProductionOrStaging = appVariant === 'production' || appVariant === 'staging';
@@ -1239,7 +1239,7 @@ const NewChat: React.FC = ({ navigation }) => {
           <RenderLoading />
         </View>
       )}
-
+      <AdMobBanner />
       <ChatHeader
         isSearchMode={isSearchMode}
         setIsSearchMode={setIsSearchMode}
@@ -1256,7 +1256,6 @@ const NewChat: React.FC = ({ navigation }) => {
         }}
         rightFunction={() => {
           if (!isSearchMode) {
-            //console.log('사이드바 열기');
             navigation.openDrawer();
             Analytics.clickHeaderSideMenuButton();
           }
@@ -1272,6 +1271,7 @@ const NewChat: React.FC = ({ navigation }) => {
         handleSearch={handleSearch}
         updateMessageHighlights={updateMessageHighlights}
       />
+
       <TouchableOpacity style={{ flex: 1 }} activeOpacity={1} onPress={hideEmojiPanel}>
         <Animated.View style={[screenAnimatedStyle, { flexGrow: 1 }]}>
           <GiftedChat
