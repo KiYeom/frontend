@@ -33,7 +33,6 @@ const EMOTION_INFO_MAP: {
   짜증나는: { intensity: 0.7, category: 'anger' },
   괴로워하는: { intensity: 0.6, category: 'anger' },
   충격받은: { intensity: 0.5, category: 'anger' },
-  '충격 받은': { intensity: 0.5, category: 'anger' },
   걱정스러운: { intensity: 0.3, category: 'anger' },
 
   // — 슬픔 (sadness) —
@@ -50,7 +49,6 @@ const EMOTION_INFO_MAP: {
 
   // — 행복 (happiness) —
   신이난: { intensity: 0.8, category: 'happiness' },
-  '신이 난': { intensity: 0.8, category: 'happiness' },
   자신있는: { intensity: 0.6, category: 'happiness' },
 };
 
