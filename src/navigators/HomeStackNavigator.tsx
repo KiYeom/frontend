@@ -17,7 +17,6 @@ import newFavorites from '../pages/HomePage/favorites/newFavorites';
 import StatisticMain from '../pages/StatisticPage/StatisticMain';
 import Home from '../pages/HomePage/Home';
 import Quote from '../pages/HomePage/quote/quote';
-import UpgradeNewChat from '../pages/HomePage/chat/upgrade/upgrade-new-chat';
 const HomeStack = createNativeStackNavigator();
 
 const HomeStackNavigator: React.FC = () => {
@@ -42,9 +41,6 @@ const HomeStackNavigator: React.FC = () => {
       />
       <HomeStack.Screen name={HomeStackName.NewChat} options={{ headerShown: false }}>
         {() => <DrawerNavigator initialScreen="NewChat" />}
-      </HomeStack.Screen>
-      <HomeStack.Screen name={HomeStackName.UpgradeNewChat} options={{ headerShown: false }}>
-        {() => <DrawerNavigator initialScreen="UpgradeNewChat" />}
       </HomeStack.Screen>
       <HomeStack.Screen
         name={HomeStackName.NewChatRefresh}
