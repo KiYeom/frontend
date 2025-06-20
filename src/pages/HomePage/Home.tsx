@@ -249,7 +249,7 @@ const Home: React.FC<any> = ({ navigation }) => {
           </View>
 
           {/* 스트릭 */}
-          {/*<StreakContainer>
+          <StreakContainer>
             <StreakCard
               icon="fire"
               value={currentStreak}
@@ -257,7 +257,7 @@ const Home: React.FC<any> = ({ navigation }) => {
               lottieTrigger={playStreakLottieTrigger}
             />
             <StreakCard icon="twinkle-cookie" value={maxStreak} label="최장 일기 기록수" />
-          </StreakContainer>*/}
+          </StreakContainer>
 
           {/* 캘린더 */}
           <CustomCalendar navigation={navigation} />

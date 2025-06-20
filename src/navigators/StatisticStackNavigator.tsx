@@ -9,13 +9,6 @@ const StatisticStack = createNativeStackNavigator();
 const StatisticStackNavigator: React.FC = ({}) => {
   return (
     <StatisticStack.Navigator screenOptions={{ headerShown: false }}>
-      {/*<StatisticStack.Screen
-        name={StatisticStackName.Daily}
-        component={StatisticMain}
-        options={{
-          headerShown: false,
-        }}
-      />*/}
       <StatisticStack.Screen
         name={StatisticStackName.Period}
         component={PeriodStatisticPage}

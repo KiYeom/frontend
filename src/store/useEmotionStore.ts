@@ -39,6 +39,8 @@ interface EmotionStore {
   addImage: (url: string) => void;
   removeImage: (url: string) => void;
   clearImage: () => void;
+
+  getSelectedEmotionCount: () => number;
 }
 
 const useEmotionStore = create<EmotionStore>((set, get) => ({
@@ -110,5 +112,7 @@ const useEmotionStore = create<EmotionStore>((set, get) => ({
   addImage: (url) => set((state) => ({ image: [...state.image, url] })),
   removeImage: (url) => set((state) => ({ image: state.image.filter((i) => i !== url) })),
   clearImage: () => set({ image: [] }),
+
+  getSelectedEmotionCount: () => get().selectedEmotionKeywords.size,
 }));
 export default useEmotionStore;

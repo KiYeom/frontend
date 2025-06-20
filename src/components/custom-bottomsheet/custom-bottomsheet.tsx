@@ -69,15 +69,6 @@ const CustomBottomSheet = (props: BottomSheetProps) => {
     }
   }, [index]);
 
-  //감정 적은 적 있는지 확인
-  useEffect(() => {
-    //const customEmotion = selectedEmotions.find((emotion) => emotion.type === 'custom');
-    /*if (customEmotion) {
-      setText(customEmotion.keyword);
-      setSelectedStatus(emotions.indexOf(customEmotion.group));
-    }*/
-  }, []);
-
   // 키보드 등장 시 높이 저장
   const handleKeyboardDidShow = useCallback((e: KeyboardEvent) => {
     setKeyboardHeight(e.endCoordinates.height);
@@ -146,12 +137,7 @@ const CustomBottomSheet = (props: BottomSheetProps) => {
     const emotionIndex = emotions.indexOf(emotion);
     setSelectedStatus(emotionIndex);
   }, []);
-  //console.log('custom-bottomsheet', bottomSheetRef);
 
-  //원하는 인덱스로 이동하는 핸들러
-  const handlePress = (index: number) => {
-    bottomSheetRef.current?.snapToIndex(index);
-  };
   // 항상 배경이 보이도록 appearsOnIndex와 disappearsOnIndex 조정, opacity를 1로 설정
   const renderBackdrop = useCallback(
     (props) => (

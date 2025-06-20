@@ -19,6 +19,8 @@ import SelectedEmotionChip from './SelectedEmotionChip';
 import { useEmotionData } from '../../../../queries/emotionQueries';
 import { SelectableEmotion } from '../../../../store/useEmotionStore';
 import { getEmotionColumns, allEmotionData } from '../../../../constants/Constants';
+import EmotionFooterButtons from './EmotionFooterButton';
+
 type SmallEmotionChartRouteParams = {
   dateID: string; // 날짜 ID, 예: '2025-01-01'
 };
@@ -99,18 +101,7 @@ const SmallEmotionChart = ({ navigation, route }: Props) => {
           <SelectedEmotionDesc />
           <SelectedEmotionChip />
         </KeyboardAwareScrollView>
-        <KeyboardStickyView
-          offset={{ closed: 0, opened: Platform.OS === 'ios' ? insets.bottom : 0 }}
-          style={{
-            padding: rsHeight * 10,
-            flexDirection: 'column',
-            gap: rsHeight * 10,
-            justifyContent: 'center',
-            height: rsHeight * 150,
-          }}>
-          <Button title="원하는 감정이 없어요" primary={false} onPress={handleNoEmotion} />
-          <Button title="마음일기 쓰러가기" primary={true} onPress={handleGoToDiary} />
-        </KeyboardStickyView>
+        <EmotionFooterButtons onNoEmotionPress={handleNoEmotion} onGoToDiary={handleGoToDiary} />
       </View>
       {bottomSheetIndex !== -1 && (
         <CustomBottomSheet indexNumber={bottomSheetIndex} onClose={closeBottomSheet} />
