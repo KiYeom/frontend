@@ -77,8 +77,6 @@ const useEmotionStore = create<EmotionStore>((set, get) => ({
     }),
   // 서버 데이터로 폼 초기화
   initializeFromServerData: (serverData) => {
-    console.log('🔄 스토어 초기화 시작:', serverData);
-
     try {
       // 서버 데이터 구조에 맞게 변환
       const emotions = serverData.emotions || serverData.Keywords || [];
@@ -92,11 +90,6 @@ const useEmotionStore = create<EmotionStore>((set, get) => ({
         diaryText: diaryText,
         image: images,
       });
-
-      console.log('🔄 스토어 초기화 완료');
-      console.log('설정된 감정 키워드 Set:', keywordsSet);
-      console.log('설정된 감정들:', emotions);
-      console.log('설정된 일기 텍스트:', diaryText);
     } catch (error) {
       console.error('🔄 스토어 초기화 중 에러:', error);
       throw error;
