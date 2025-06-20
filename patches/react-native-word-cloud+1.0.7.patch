@@ -1,9 +1,13 @@
 diff --git a/node_modules/react-native-word-cloud/index.js b/node_modules/react-native-word-cloud/index.js
-index c62bb41..3fd51e4 100644
+index c62bb41..2cb6893 100644
 --- a/node_modules/react-native-word-cloud/index.js
 +++ b/node_modules/react-native-word-cloud/index.js
-@@ -13,9 +13,9 @@ class KeywordsCloud extends React.Component {
-   handleCanvas = (canvas) => {
+@@ -10,17 +10,56 @@ class KeywordsCloud extends React.Component {
+     this.setState({ selectedTab: tabName });
+   }
+ 
+-  handleCanvas = (canvas) => {
++  /*handleCanvas = (canvas) => {
      const { keywords,scale, largestAtCenter, drawContainerCircle,containerCircleColor } = this.props;
      if (canvas) {
 -      canvas.width = 300 
@@ -15,6 +19,50 @@ index c62bb41..3fd51e4 100644
        const circles = generateCircles(
            keywords, center, scale, largestAtCenter);
        calcPositions(circles);
+       drawCirclesOnCanvas(circles, canvas, drawContainerCircle, containerCircleColor);
+     }
++  }*/
++
++  handleCanvas = (canvas) => {
++    const { keywords, scale, largestAtCenter, drawContainerCircle, containerCircleColor } = this.props;
++    
++    if (canvas && keywords && keywords.length > 0) {
++      // Canvas 크기 설정
++      canvas.width = 350;
++      canvas.height = 400;
++      
++      // Canvas context가 준비될 때까지 재시도
++      let retryCount = 0;
++      const maxRetries = 10;
++      
++      const tryDrawing = () => {
++        const ctx = canvas.getContext('2d');
++        if (ctx && retryCount < maxRetries) {
++          // Context가 준비되었는지 테스트
++          try {
++            ctx.fillStyle = '#000000';
++            ctx.fillRect(0, 0, 1, 1);
++            ctx.clearRect(0, 0, canvas.width, canvas.height);
++            
++            // 실제 그리기 작업
++            const center = { x: canvas.width / 2, y: (canvas.height / 2) + 20 };
++            const circles = generateCircles(keywords, center, scale, largestAtCenter);
++            calcPositions(circles);
++            drawCirclesOnCanvas(circles, canvas, drawContainerCircle, containerCircleColor);
++          } catch (error) {
++            retryCount++;
++            setTimeout(tryDrawing, 50);
++          }
++        } else if (retryCount >= maxRetries) {
++          console.warn('Canvas drawing failed after maximum retries');
++        }
++      };
++      
++      setTimeout(tryDrawing, 100);
++    }
+   }
+ 
+   render() {
 diff --git a/node_modules/react-native-word-cloud/utils.js b/node_modules/react-native-word-cloud/utils.js
 index bb226c8..e18a7da 100644
 --- a/node_modules/react-native-word-cloud/utils.js
