@@ -47,7 +47,7 @@ const SmallEmotionChart = ({ navigation, route }: Props) => {
 
   useEffect(() => {
     if (emotionData) {
-      console.log('emotionData!', emotionData);
+      //console.log('emotionData!', emotionData);
       initializeFromServerData(emotionData);
     }
   }, [emotionData, initializeFromServerData]);

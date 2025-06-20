@@ -380,25 +380,29 @@ const Quote: React.FC = () => {
           </Animated.View>
         </ScrollView>
         <ButtonGroup insets={insets}>
-          <Button
-            title="저장하기"
-            onPress={() => {
-              //console.log('저장히기 버튼 클릭');
-              Analytics.clickHappyLyricsImageSaveButton();
-              onSaveImageAsync();
-              //navigation.navigate('Home');
-            }}
-            primary={false}
-          />
-          <Button
-            title="공유하기"
-            onPress={async () => {
-              //console.log('공유하기 버튼 클릭');
-              onShareImageAsync();
-              Analytics.clickHappyLyricsImageShareButton();
-            }}
-            primary={true}
-          />
+          <View style={{ flex: 1 }}>
+            <Button
+              title="저장하기"
+              onPress={() => {
+                //console.log('저장히기 버튼 클릭');
+                Analytics.clickHappyLyricsImageSaveButton();
+                onSaveImageAsync();
+                //navigation.navigate('Home');
+              }}
+              primary={false}
+            />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Button
+              title="공유하기"
+              onPress={async () => {
+                //console.log('공유하기 버튼 클릭');
+                onShareImageAsync();
+                Analytics.clickHappyLyricsImageShareButton();
+              }}
+              primary={true}
+            />
+          </View>
         </ButtonGroup>
       </View>
     );

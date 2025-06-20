@@ -11,9 +11,9 @@ export const useEmotionData = (dateID) => {
   return useQuery({
     queryKey: ['emotion', dateID],
     queryFn: async () => {
-      console.log('queryFn 실행, dateID:', dateID);
+      //console.log('queryFn 실행, dateID:', dateID);
       const result = await todayEmotionCheck(dateID);
-      console.log('API 결과:', result);
+      //console.log('API 결과:', result);
       return result;
     },
     enabled: !!dateID,

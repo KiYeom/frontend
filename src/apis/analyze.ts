@@ -193,7 +193,7 @@ export const todayEmotionWithImage = async (
 
 //1.5.7 신규 : 일일분석 - 감정 일기 조회
 export const todayEmotionCheck = async (date: string): Promise<TDailyDiaryDatas | undefined> => {
-  console.log('todayEmotionCheck date', date);
+  //console.log('todayEmotionCheck date', date);
   try {
     const res = await instance.get('/v1/analyze/today-record', { params: { date } });
     //console.log('todayEmotionCheck', res.data);
