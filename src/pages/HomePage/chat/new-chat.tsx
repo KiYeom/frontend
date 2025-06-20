@@ -6,9 +6,9 @@ import {
   ActivityIndicator,
   Text,
   Keyboard,
-  Animated,
   ImageSourcePropType,
   TextInput,
+  TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -96,7 +96,11 @@ import {
 } from 'react-native-google-mobile-ads';
 import Constants from 'expo-constants';
 import { getUserInfo } from '../../../apis/setting';
+import Animated, { useAnimatedStyle, withTiming, interpolate } from 'react-native-reanimated';
 //import adUnitId from '../../../utils/advertise'; //앱 시작 시 결정된 값
+import { useEmojiPanel } from '../../../hooks/useEmojiPanel';
+import { useSelectedEmoji } from '../../../hooks/useSelectedEmoji';
+import NewEmojiPanel from '../../../components/emoji-panel/NewEmojiPanel';
 
 const userName = getUserNickname() ?? 'Test_remind_empty';
 const appVariant = Constants.expoConfig?.extra?.appVariant;
@@ -155,6 +159,7 @@ const NewChat: React.FC = ({ navigation }) => {
 
   //1.5.8 사진 추가
   const [image, setImage] = useState<string | null>(null);
+  const [isSticker, setIsSticker] = useState<boolean>(false);
   //광고 모달 추가
   const [modalVisible, setModalVisible] = useState<boolean>(false);
 
@@ -165,6 +170,11 @@ const NewChat: React.FC = ({ navigation }) => {
   // 최신의 state를 읽도록 ref를 사용한다.
   const bufferRef = useRef<string | null>(null);
   const imageRef = useRef<string | null>(null);
+
+  //결제 상태
+  const [isPurchasing, setIsPurchasing] = useState(false);
+
+  const { selectedEmoji, onSelectEmoji } = useSelectedEmoji();
 
   // state를 변경할 때마다 ref도 업데이트
   useEffect(() => {
@@ -180,6 +190,7 @@ const NewChat: React.FC = ({ navigation }) => {
 
   const pickImage = async () => {
     //console.log('pickImage 클릭함');
+    setIsSticker(false); //이모지 패널 닫기
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       allowsEditing: false,
@@ -194,11 +205,63 @@ const NewChat: React.FC = ({ navigation }) => {
     return;
   };
 
+  const {
+    isEmojiPanelVisible,
+    emojiPanelHeight,
+    translateY,
+    opacity,
+    toggleEmojiPanel,
+    hideEmojiPanel,
+    onEmojiSelect,
+  } = useEmojiPanel();
+
+  // 채팅 화면 전체에 적용할 애니메이션 스타일
+  /*const screenAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        translateY: withTiming(isEmojiPanelVisible ? -emojiPanelHeight : 0, {
+          duration: 300, // 300ms 동안 애니메이션
+          // easing: Easing.out(Easing.quad), // 필요시 easing 추가
+        }),
+      },
+    ],
+    opacity: 1,
+  }));*/
+  //이모지 패널에 쓸 애니메이션
+  /*const emojiPanelAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value }],
+    opacity: opacity.value,
+  }));*/
+  // 1) 패널 애니메이션 스타일
+  const emojiPanelAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value }],
+    opacity: opacity.value,
+  }));
+  // 2) 화면 전체 애니메이션 스타일
+  const screenAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value - emojiPanelHeight }],
+  }));
+
   //입력 필드 높이
   const [inputHeight, setInputHeight] = useState(rsFont * 16 * 1.5 + 15 * 2);
 
   //console.log('화면 너비:', width, '화면 높이:', height);
   const [keyboardHeight, setKeyboardHeight] = useState<number>(0);
+  const handleEmojiToggle = useCallback(() => {
+    //console.log('이모티콘 패널 토글');
+    Analytics.clickHeaderEmojiButton(isEmojiPanelVisible ? 'close' : 'open');
+    // 키보드가 열려 있으면 키보드를 닫고 이모티콘 패널을 연다
+    if (keyboardHeight > 0) {
+      Keyboard.dismiss();
+      // 키보드가 닫힌 후 이모티콘 패널을 연다
+      setTimeout(() => {
+        toggleEmojiPanel();
+      }, 500); // 약간의 딜레이를 주어 부드럽게 동작
+      return;
+    }
+    // 키보드가 닫혀 있으면 이모티콘 패널만 토글
+    toggleEmojiPanel();
+  }, [keyboardHeight, toggleEmojiPanel]);
 
   const rewarded = useMemo(
     () =>
@@ -211,6 +274,7 @@ const NewChat: React.FC = ({ navigation }) => {
 
   //광고 로드 상태
   const [loaded, setLoaded] = useState(false);
+  //console.log('이모지 패널', emojiPanelHeight);
   //console.log('rewarded', rewarded);
   useFocusEffect(
     useCallback(() => {
@@ -522,8 +586,143 @@ const NewChat: React.FC = ({ navigation }) => {
     setNewIMessagesV3(messagesString);
   };
 
+  const sendMessageToServerWithText = (text: string) => {
+    //console.log('sendMessageToServerWithText 실행', text, image);
+
+    const buf = text || ''; // 전달받은 텍스트 직접 사용
+    const img = imageRef.current;
+
+    if ((!buf && !img) || sending) return;
+
+    setSending(true);
+    setBuffer(null);
+    setImage(null);
+    bufferRef.current = null;
+    imageRef.current = null;
+
+    // 나머지 로직은 기존 sendMessageToServer와 동일
+    if (img) {
+      //console.log('이미지 전송 시작', img);
+      const pendingMsg: ExtendedIMessage = {
+        _id: uuid.v4().toString(),
+        text: buf,
+        image: img,
+        createdAt: new Date(),
+        user: userObject,
+        isSaved: false,
+      };
+
+      setMessages((prev) => {
+        const updated = GiftedChat.append(prev, [pendingMsg]);
+        return updated;
+      });
+
+      if (buf?.trim() !== '') {
+        //console.log('버퍼에 텍스트가 존재함', buf);
+        const textMsg: ExtendedIMessage = {
+          _id: uuid.v4().toString(),
+          text: buf,
+          createdAt: new Date(),
+          user: userObject,
+          isSaved: false,
+        };
+        setMessages((prev) => {
+          const updated = GiftedChat.append(prev, [textMsg]);
+          return updated;
+        });
+      }
+    }
+
+    const question = buf;
+    const isDemo = getIsDemo();
+    //console.log('전송할 텍스트:', question, '이미지:', img);
+    const imageToSend = img ?? '';
+
+    chatting(1, question, isDemo, imageToSend, isSticker)
+      .then((res) => {
+        // 기존 then 로직과 동일
+        if (res) {
+          const sortedMessages: ApiChatResponse = res?.reverse();
+          const apiQuestions: ApiQuestions = sortedMessages.filter(
+            (item): item is ApiQuestionMessage =>
+              item.question !== null && item.question !== '' && item.answer === null,
+          );
+          const apiAnswers: ApiAnswers = sortedMessages.filter(
+            (item): item is ApiAnswerMessage => item.answer !== null && item.question === null,
+          );
+
+          setMessages((previousMessages) => {
+            const updatedMessages = [...previousMessages];
+            const imageUrlPattern = /https:\/\/bucket\.remind4u\.co\.kr\/gemini\/[a-f0-9]+\.jpg/;
+
+            for (let i = 0; i < apiQuestions.length; i++) {
+              const questionIndex = previousMessages.findIndex((msg, idx) => {
+                if (msg.text === apiQuestions[i].question) {
+                  return true;
+                }
+                if (imageUrlPattern.test(apiQuestions[i].question)) {
+                  if (
+                    msg.text &&
+                    msg.text.includes(imageUrlPattern.exec(apiQuestions[i].question)?.[0] || '')
+                  ) {
+                    return true;
+                  }
+                  if (msg.image && apiQuestions[i].question.includes(msg.image)) {
+                    return true;
+                  }
+                }
+                return false;
+              });
+
+              if (questionIndex !== -1) {
+                updatedMessages[questionIndex] = {
+                  ...updatedMessages[questionIndex],
+                  _id: apiQuestions[i].id,
+                };
+              }
+            }
+
+            const newBotMessages: ExtendedIMessage[] = apiAnswers.map((item, idx) => ({
+              _id: item.id,
+              text: item.answer ?? '',
+              createdAt: new Date(),
+              user: botObject,
+              isSaved: false,
+            }));
+
+            setIMessagesV3(updatedMessages, newBotMessages);
+            return GiftedChat.append(updatedMessages, newBotMessages);
+          });
+        }
+      })
+      .catch((err) => {
+        //console.log('error 발생', err);
+        const newMessages: ExtendedIMessage[] = [
+          {
+            _id: uuid.v4().toString(),
+            text: ERRORMESSAGE,
+            createdAt: new Date(),
+            user: botObject,
+            isSaved: false,
+          },
+        ];
+        setMessages((previousMessages) => {
+          setIMessagesV3(previousMessages, newMessages);
+          return GiftedChat.append(previousMessages, newMessages);
+        });
+      })
+      .finally(() => {
+        setBuffer(null);
+        setImage(null);
+        setSending(false);
+        bufferRef.current = null;
+        imageRef.current = null;
+      });
+  };
+
   //버퍼에 저장된 메시지를 서버로 전송하는 sendMessageToServer 함수
   const sendMessageToServer = () => {
+    //console.log('sendMessageToServer 실행');
     const buf = bufferRef.current;
     const img = imageRef.current;
     //console.log('sendMessageToServer 실행', buffer, image);
@@ -536,10 +735,12 @@ const NewChat: React.FC = ({ navigation }) => {
     imageRef.current = null;
 
     if (img) {
+      //console.log('이미지 전송 시작', img);
       // 1) 화면에 보여줄 임시 메시지 객체 생성
       const pendingMsg: ExtendedIMessage = {
         _id: uuid.v4().toString(), // 랜덤 ID
-        text: img, // 텍스트 있어도 그냥 이미지만 나오게 return 걸어둠
+        //text: img, // 텍스트 있어도 그냥 이미지만 나오게 return 걸어둠
+        text: buf ?? '',
         image: img, // 이미지가 있으면 URI
         createdAt: new Date(),
         user: userObject, // '나' 유저
@@ -577,11 +778,12 @@ const NewChat: React.FC = ({ navigation }) => {
     }
     const question = buf ?? '';
     const isDemo = getIsDemo();
-    console.log('iamge ', img, question);
+    //console.log('iamge ', img, question);
     const imageToSend = img ?? '';
     //setImage(null);
+    //console.log('이모티콘?', isSticker);
 
-    chatting(1, question, isDemo, imageToSend) //버퍼에 저장된 메세지를 서버로 전송하여 질문 & 대화 전체 쌍을 받아옴
+    chatting(1, question, isDemo, imageToSend, isSticker) //버퍼에 저장된 메세지를 서버로 전송하여 질문 & 대화 전체 쌍을 받아옴
       .then((res) => {
         if (res) {
           //const newMessages: IMessage[] = [];
@@ -617,6 +819,9 @@ const NewChat: React.FC = ({ navigation }) => {
                 // 이미지가 포함되어 전송된 경우
                 if (imageUrlPattern.test(apiQuestions[i].question)) {
                   // 1. 텍스트에 이미지 URL이 포함된 경우
+                  //console.log('이미지 URL이 포함된 경우', apiQuestions[i].question);
+                  //console.log('이미지 URL 패턴', imageUrlPattern);
+                  //console.log('메세지', msg, msg.text);
                   if (
                     msg.text &&
                     msg.text.includes(imageUrlPattern.exec(apiQuestions[i].question)?.[0] || '')
@@ -659,6 +864,9 @@ const NewChat: React.FC = ({ navigation }) => {
         }
       })
       .catch((err) => {
+        //console.log('error 발생', err);
+        //console.log(isSticker, 'isSticker');
+        //console.log(imageToSend, 'imageToSend');
         const newMessages: ExtendedIMessage[] = [
           {
             _id: uuid.v4().toString(),
@@ -690,6 +898,7 @@ const NewChat: React.FC = ({ navigation }) => {
       clearTimeout(typingTimeoutRef.current);
     }
     if (!image) {
+      //이미지가 없는 경우에만 디바운싱
       typingTimeoutRef.current = setTimeout(() => {
         sendMessageToServer();
       }, 2 * 1000);
@@ -910,8 +1119,20 @@ const NewChat: React.FC = ({ navigation }) => {
       //setIMessagesV3(previousMessages, newMessages.reverse());
       return GiftedChat.append(previousMessages, newMessages);
     });*/
+    Analytics.clickChatSendButton(
+      !!newMessages[0].text,
+      image ? true : false,
+      image && isSticker ? true : false,
+    );
     if (image) {
-      //console.log('이미지 전송');
+      if (isSticker) {
+        //이모티콘은 바로 전송
+        //console.log('😀이모티콘 전송 같이 보내는 글자 : ', newMessages[0].text);
+        setBuffer(newMessages[0].text);
+        sendMessageToServerWithText(newMessages[0].text);
+        return;
+      }
+      //console.log('🧞‍♂️이미지 전송');
       // 이미지를 보낸 경우
       //setBuffer(buffer ? buffer + newMessages[0].text + '\t' : newMessages[0].text + '\t');
       setBuffer(newMessages[0].text);
@@ -965,6 +1186,15 @@ const NewChat: React.FC = ({ navigation }) => {
     });
   };
 
+  // NewChat.tsx에서 handleEmojiSelect 함수 추가
+  const handleEmojiSelectAsImage = useCallback((emoji: string) => {
+    //console.log('이모티콘 선택', emoji);
+
+    // 이모티콘을 이미지 상태에 설정
+    setImage(emoji);
+    setIsSticker(true);
+  }, []);
+
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       setRiskScoreV2;
@@ -976,6 +1206,9 @@ const NewChat: React.FC = ({ navigation }) => {
   }, [navigation]);
 
   const messageContainerRef = useRef<React.ElementRef<typeof GiftedChat>>(null);
+
+  const insets = useSafeAreaInsets();
+  //console.log('insets', insets);
 
   /* 채팅 화면 전체 구성 */
   return (
@@ -1039,72 +1272,84 @@ const NewChat: React.FC = ({ navigation }) => {
         handleSearch={handleSearch}
         updateMessageHighlights={updateMessageHighlights}
       />
-
-      <GiftedChat
-        listViewProps={{
-          onScrollToIndexFailed: scrollToIndexFailed,
-          onMomentumScrollEnd: () => {
-            // 스크롤 애니메이션이 종료되면 재귀 호출이 더 이상 발생하지 않는다고 가정하고 로딩 스피너를 숨김
-            setSearchLoading(false);
-          },
-        }}
-        as
-        any
-        messageContainerRef={messageContainerRef}
-        messages={messages}
-        onSend={(messages) => onSend(messages)}
-        user={userObject}
-        onInputTextChanged={(text) => {
-          if (typingTimeoutRef.current) {
-            resetTimer();
-          }
-        }}
-        renderAvatar={RenderAvatar}
-        showAvatarForEveryMessage
-        renderAvatarOnTop
-        onPressAvatar={() => {
-          navigation.navigate(HomeStackName.Profile);
-        }}
-        onLongPressAvatar={() => {
-          if (getIsDemo()) setIsScoreDemo(true);
-        }}
-        renderBubble={(props) => <RenderBubble {...props} onFavoritePress={toggleFavorite} />}
-        onLongPress={(context, message: IMessage) => {
-          Clipboard.setStringAsync(message.text).then(() => {
-            showToast();
-          });
-        }}
-        renderFooter={() => RenderFooter(sending)}
-        renderTime={RenderTime}
-        renderDay={RenderDay}
-        renderSystemMessage={RenderSystemMessage}
-        renderInputToolbar={(sendProps: SendProps<ExtendedIMessage>) =>
-          RenderInputToolbar(
-            sendProps,
-            sending,
-            isSearchMode,
-            enableUp,
-            enableDown,
-            setEnableUp,
-            setEnableDown,
-            handleSearch,
-            searchWord,
-            pickImage,
-            setInputHeight,
-            image,
-            setImage,
-            textInputRef,
-          )
-        }
-        lightboxProps={undefined}
-        textInputProps={{
-          placeholder: getIsDemo() ? '메시지 입력.' : '메시지 입력',
-          marginLeft: rsWidth * 15,
-        }}
-        //renderMessageImage={RenderMessageImage}
-        keyboardShouldPersistTaps={'never'}
-        alwaysShowSend
-      />
+      <TouchableOpacity style={{ flex: 1 }} activeOpacity={1} onPress={hideEmojiPanel}>
+        <Animated.View style={[screenAnimatedStyle, { flexGrow: 1 }]}>
+          <GiftedChat
+            listViewProps={{
+              onScrollToIndexFailed: scrollToIndexFailed,
+              onMomentumScrollEnd: () => {
+                // 스크롤 애니메이션이 종료되면 재귀 호출이 더 이상 발생하지 않는다고 가정하고 로딩 스피너를 숨김
+                setSearchLoading(false);
+              },
+            }}
+            as
+            any
+            messageContainerRef={messageContainerRef}
+            messages={messages}
+            onSend={(messages) => onSend(messages)}
+            user={userObject}
+            onInputTextChanged={(text) => {
+              if (typingTimeoutRef.current) {
+                resetTimer();
+              }
+            }}
+            renderAvatar={RenderAvatar}
+            showAvatarForEveryMessage
+            renderAvatarOnTop
+            onPressAvatar={() => {
+              navigation.navigate(HomeStackName.Profile);
+            }}
+            onLongPressAvatar={() => {
+              if (getIsDemo()) setIsScoreDemo(true);
+            }}
+            renderBubble={(props) => <RenderBubble {...props} onFavoritePress={toggleFavorite} />}
+            onLongPress={(context, message: IMessage) => {
+              Clipboard.setStringAsync(message.text).then(() => {
+                showToast();
+              });
+            }}
+            renderFooter={() => RenderFooter(sending)}
+            renderTime={RenderTime}
+            renderDay={RenderDay}
+            renderSystemMessage={RenderSystemMessage}
+            renderInputToolbar={(sendProps: SendProps<ExtendedIMessage>) =>
+              RenderInputToolbar(
+                sendProps,
+                sending,
+                isSearchMode,
+                enableUp,
+                enableDown,
+                setEnableUp,
+                setEnableDown,
+                handleSearch,
+                searchWord,
+                pickImage,
+                setInputHeight,
+                image,
+                setImage,
+                textInputRef,
+                //추가
+                isEmojiPanelVisible,
+                emojiPanelHeight,
+                translateY,
+                opacity,
+                handleEmojiToggle, // 이모티콘 패널 토글 함수
+                hideEmojiPanel,
+                selectedEmoji,
+                onSelectEmoji,
+              )
+            }
+            lightboxProps={undefined}
+            textInputProps={{
+              placeholder: getIsDemo() ? '메시지 입력.' : '메시지 입력',
+              marginLeft: rsWidth * 15,
+            }}
+            //renderMessageImage={RenderMessageImage}
+            keyboardShouldPersistTaps={'never'}
+            alwaysShowSend
+          />
+        </Animated.View>
+      </TouchableOpacity>
       {searchLoading && (
         <View
           style={{
@@ -1132,6 +1377,50 @@ const NewChat: React.FC = ({ navigation }) => {
           pointerEvents: 'box-none',
         }}
         pointerEvents="box-none"></Animated.View>
+
+      {/*isEmojiPanelVisible && (
+        <Animated.View
+          style={[
+            css`
+              position: absolute;
+              bottom: 0;
+              left: 0;
+              right: 0;
+            `,
+            emojiPanelAnimatedStyle,
+          ]}>
+          <NewEmojiPanel
+            key="uniqueEmojiPanelKey"
+            height={emojiPanelHeight + insets.bottom}
+            selectedEmoji={selectedEmoji}
+            onSelectEmoji={handleEmojiSelectAsImage}
+            insets={insets}
+          />
+        </Animated.View>
+      )*/}
+      <Animated.View
+        // 항상 렌더링은 하지만, 애니메이션 값으로 위치와 불투명도를 제어합니다
+        style={[
+          {
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            zIndex: 100,
+          },
+          emojiPanelAnimatedStyle, // ← 이렇게 배열로 넣어야 Reanimated가 읽습니다
+        ]}
+        pointerEvents={isEmojiPanelVisible ? 'auto' : 'none'}>
+        <NewEmojiPanel
+          key="uniqueEmojiPanelKey"
+          height={emojiPanelHeight + insets.bottom}
+          selectedEmoji={selectedEmoji}
+          onSelectEmoji={handleEmojiSelectAsImage}
+          insets={insets}
+          onPurchaseStart={() => setIsPurchasing(true)}
+          onPurchaseEnd={() => setIsPurchasing(false)}
+        />
+      </Animated.View>
       <AdsModal
         modalVisible={modalVisible}
         onClose={() => {
@@ -1152,6 +1441,23 @@ const NewChat: React.FC = ({ navigation }) => {
             : `광고를 시청하면\n쿠키에게 사진을 보여줄 수 있어요`
         }
       />
+      {isPurchasing && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 1000,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <ActivityIndicator size="large" color="#fff" />
+          <Text style={{ color: '#fff', marginTop: 10 }}>이모티콘 구매 중...</Text>
+        </View>
+      )}
     </SafeAreaView>
   );
 };

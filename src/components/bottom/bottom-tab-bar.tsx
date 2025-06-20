@@ -73,7 +73,7 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
           if (route.name === TabScreenName.Setting) {
             Analytics.clickTabSettingConnectButton();
             navigation.navigate(RootStackName.SettingStackNavigator, {
-              screen: SettingStackName.OrganizationStatus,
+              screen: SettingStackName.OrganizationConnect,
             });
             return;
           } else if (route.name === TabScreenName.Home) {

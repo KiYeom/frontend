@@ -7,9 +7,10 @@ import {
   TChatSearchResult,
   TChatSendPhotoPermission,
 } from './chatting.types';
-import { Platform } from 'react-native';
+import { Platform, Image } from 'react-native';
 import { uriToBlob } from '../utils/chatting';
 import { instance } from './interceptor';
+import * as FileSystem from 'expo-file-system';
 
 const errorMessage: TChatAnswerV3 = [
   {
@@ -36,7 +37,9 @@ export const chatting = async (
   question: string,
   isDemo: boolean = false,
   image?: string,
+  isSticker?: boolean,
 ): Promise<TChatAnswerV3 | undefined> => {
+  //console.log('chatting', characterId, question, isDemo, image, isSticker);
   const maxAttempts = 3;
   let attempts = 0;
 
@@ -45,14 +48,22 @@ export const chatting = async (
       attempts++;
 
       if (image) {
+        //파일 데이터 생성
         const formData = new FormData();
+        //텍스트 필드 (characterId, question, isDemo, isSticker) 추가
         formData.append('characterId', characterId.toString());
         formData.append('question', question);
         formData.append('isDemo', isDemo ? 'true' : 'false');
+        if (isSticker) {
+          formData.append('isSticker', 'true');
+        }
 
+        //파일명 추출
         const filename = image.split('/').pop() || 'image.jpg';
+        //확장자 추출 : 이미지 URL에서 확장자를 추출하여 소문자로 변환하고, 없으면 'jpg'로 기본 설정
         const match = /\.(\w+)$/.exec(filename);
         const fileExtension = match ? match[1].toLowerCase() : 'jpg';
+        //MIME 타입 설정 : jpg는 jpeg로 변환, 그 외에는 그대로 사용
         const mimeType = `image/${fileExtension === 'jpg' ? 'jpeg' : fileExtension}`;
 
         // Correct URI handling for Android
@@ -61,10 +72,11 @@ export const chatting = async (
           correctedUri = `file://${image}`;
         }
 
+        //서버로 전송될 파일 객체
         const fileObj = {
-          uri: correctedUri,
-          name: filename,
-          type: mimeType,
+          uri: correctedUri, //로컬 파일 시스템 상의 이미지 경로
+          name: filename, //서버에 전달될 파일명
+          type: mimeType, //파일의 MIME 타입
         };
 
         //console.log('Processing image:', fileObj);
@@ -76,6 +88,7 @@ export const chatting = async (
         });
         return res.data;
       } else {
+        //console.log('🧞‍♂️🧞‍♂️🧞‍♂️🧞‍♂️🧞‍♂️🧞‍♂️🧞‍♂️isSticker 여부', isSticker);
         const res = await instance.post('/v3/chat/memory', {
           characterId,
           question,

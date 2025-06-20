@@ -81,7 +81,7 @@ const DailyDairy = ({ navigation, route }) => {
   console.log('현재 빌드 상태', appVariant);
   console.log('비교군', testEnv);
   console.log('테스트 값인가?', TestIds.REWARDED === adUnitId);*/
-  console.log('가지고 온 adUnitId', adUnitId);
+  //console.log('가지고 온 adUnitId', adUnitId);
   const { dateID } = route.params;
   const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();

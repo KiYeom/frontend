@@ -43,6 +43,7 @@ import { useState, RefObject } from 'react';
 import ImageShow from '../../../components/image-show/ImageShow';
 import { MAX_CHAT_IMAGE_WIDTH } from '../../../constants/Constants';
 import * as Haptics from 'expo-haptics';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export const reportMessages = async (messageId: string, isSaved: boolean): string | undefined => {
   //console.log('reportMessags 실행', messageId);
@@ -297,11 +298,14 @@ export const RenderMessageImage = (
         width: scaledSize.width,
         height: scaledSize.height,
         resizeMode: 'contain',
+        backgroundColor: 'transparent',
       }}
       containerStyle={{
         margin: 0,
         padding: 0,
         backgroundColor: 'transparent',
+        //borderColor: 'red',
+        //borderWidth: 4,
       }}
     />
   );
@@ -451,6 +455,15 @@ export const RenderInputToolbar = (
   image?: string | null,
   setImage?: (value: string | null) => void,
   textInputRef?: RefObject<TextInput>,
+  isEmojiPanelVisible?: boolean,
+  emojiPanelHeight?: number,
+  translateY?: Animated.SharedValue<number>,
+  opacity?: Animated.SharedValue<number>,
+  handleEmojiToggle?: () => void,
+  hideEmoijiPanel?: () => void,
+  //onEmojiSelect?: (emoji: string) => void,
+  selectedEmoji?: string | null,
+  onSelectEmoji?: (emoji: string) => void,
 ) =>
   !isSearchMode ? (
     <View>
@@ -507,6 +520,9 @@ export const RenderInputToolbar = (
             onChangeText={composerProps.onTextChanged}
             setInputHeight={setInputHeight}
             textInputRef={textInputRef}
+            hideEmojiPanel={hideEmoijiPanel} // 이모티콘 패널 숨기기 함수 전달
+            onEmojiPress={handleEmojiToggle} // 이모티콘 버튼 핸들러 전달
+            isEmojiPanelVisible={isEmojiPanelVisible} // 이모티콘 패널 상태 전달
           />
         )}
         renderSend={(sendProps) => (
@@ -537,6 +553,7 @@ export const RenderInputToolbar = (
               }}
               onPress={async () => {
                 if (sendingStatus) return;
+
                 const imageUrl = image;
 
                 // 텍스트와 이미지 모두 있을 때: 두 개의 메시지 전송

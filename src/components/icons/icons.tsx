@@ -47,6 +47,10 @@ import CloverCookie from './svg/clover-cookie';
 import Fire from './svg/fire';
 import TwinkleCookie from './svg/twinkle-cookie';
 import Dislike from './svg/dislike';
+import EmojiIcon from './svg/emoji';
+import EmojiThumbnail from './svg/emoji-thumbnail-on';
+import EmojiThumbnailOff from './svg/emoji-thumbnail-off';
+import Lock from './svg/lock';
 
 export type TIconName =
   | 'airplane'
@@ -99,7 +103,11 @@ export type TIconName =
   | 'clover-cookie'
   | 'fire'
   | 'twinkle-cookie'
-  | 'dislike';
+  | 'dislike'
+  | 'emojiIcon'
+  | 'emoji-thumbnail'
+  | 'emoji-thumbnail-off'
+  | 'lock';
 
 export default function Icon({
   width,
@@ -233,5 +241,13 @@ export default function Icon({
       return <TwinkleCookie width={width} height={height} color={color} />;
     case 'dislike':
       return <Dislike width={width} height={height} color={color} />;
+    case 'emojiIcon':
+      return <EmojiIcon width={width} height={height} color={color} />;
+    case 'emoji-thumbnail':
+      return <EmojiThumbnail width={width} height={height} color={color} />;
+    case 'emoji-thumbnail-off':
+      return <EmojiThumbnailOff width={width} height={height} color={color} />;
+    case 'lock':
+      return <Lock width={width} height={height} color={color} />;
   }
 }

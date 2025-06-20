@@ -17,7 +17,7 @@ const StreakCard = (props: StreakProps) => {
   const [isLottieVisible, setIsLottieVisible] = useState(false);
   useEffect(() => {
     if (lottieTrigger !== previousLottieTriggerRef.current) {
-      console.log('streakCard : lottie 애니메이션 재생');
+      //console.log('streakCard : lottie 애니메이션 재생');
       setIsLottieVisible(true); // Lottie 뷰를 보이도록 설정
       lottieAnimationRef.current?.reset();
       lottieAnimationRef.current?.play();
@@ -26,7 +26,7 @@ const StreakCard = (props: StreakProps) => {
   }, [lottieTrigger]);
   // Lottie 애니메이션 재생이 완료되면 호출될 함수
   const handleAnimationFinish = () => {
-    console.log(`StreakCard (${label}): Lottie 애니메이션 종료.`);
+    //console.log(`StreakCard (${label}): Lottie 애니메이션 종료.`);
     setIsLottieVisible(false); // Lottie 뷰를 다시 숨김
   };
 

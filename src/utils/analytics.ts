@@ -141,6 +141,7 @@ export default class Analytics {
     });
   };
 
+  //quote.tsx 화면
   //행복 세잎클로버 화면 진입
   public static watchBeforeOpenHappyLyricsImageScreen = (): void => {
     this.sendEvent('행복 세잎클로버 화면 진입', 'happyLyricsScreen');
@@ -157,6 +158,51 @@ export default class Analytics {
   //행복 이미지 페이지 공유 버튼 클릭
   public static clickHappyLyricsImageShareButton = (): void => {
     this.sendEvent('행복 이미지 페이지 공유 버튼 클릭', 'happyLyricsImageShareButton');
+  };
+
+  // 광고 로드 시작
+  public static startHappyLyricsAdLoad = (): void => {
+    this.sendEvent('행복 세잎클로버 광고 로드 시작', 'happyLyricsAdLoadStart');
+  };
+
+  // 광고 로드 성공
+  public static successHappyLyricsAdLoad = (): void => {
+    this.sendEvent('행복 세잎클로버 광고 로드 성공', 'happyLyricsAdLoadSuccess');
+  };
+
+  // 광고 로드 실패
+  public static failHappyLyricsAdLoad = (error: string): void => {
+    this.sendEvent('행복 세잎클로버 광고 로드 실패', 'happyLyricsAdLoadFail', { error });
+  };
+
+  // 광고 표시 시작 (클릭 시)
+  public static clickHappyLyricsAdShow = (): void => {
+    this.sendEvent('행복 세잎클로버 광고 표시 클릭', 'happyLyricsAdShowClick');
+  };
+
+  // 광고 표시 성공
+  public static successHappyLyricsAdShow = (): void => {
+    this.sendEvent('행복 세잎클로버 광고 표시 성공', 'happyLyricsAdShowSuccess');
+  };
+
+  // 광고 표시 실패
+  public static failHappyLyricsAdShow = (error: string): void => {
+    this.sendEvent('행복 세잎클로버 광고 표시 실패', 'happyLyricsAdShowFail', { error });
+  };
+
+  // 광고 시청 완료 (보상 획득)
+  public static earnHappyLyricsAdReward = (): void => {
+    this.sendEvent('행복 세잎클로버 광고 시청 완료', 'happyLyricsAdRewardEarned');
+  };
+
+  // 광고 닫기 (중간에 닫은 경우)
+  public static closeHappyLyricsAd = (): void => {
+    this.sendEvent('행복 세잎클로버 광고 닫기', 'happyLyricsAdClosed');
+  };
+
+  // 광고 시청 후 결과 화면 표시
+  public static showHappyLyricsResult = (): void => {
+    this.sendEvent('행복 세잎클로버 광고 시청 후 결과 표시', 'happyLyricsAdResultShown');
   };
 
   //탭 - 설정 화면
@@ -293,17 +339,17 @@ export default class Analytics {
     this.sendEvent('업데이트된 채팅 화면 진입', 'newChatScreen');
   };
 
-  //채팅 - 사진 전송 버튼 클릭
+  //채팅 - 사진 전송 버튼 클릭 (확인함)
   public static clickAddPicButtonInChatting = (): void => {
     this.sendEvent('채팅 - <사진 첨부하기> 버튼 클릭', 'clickAddPicButtonInChatting');
   };
 
-  //채팅 - <사진첨부> - <광고> - 네 버튼 클릭
+  //채팅 - <사진첨부> - <광고> - 네 버튼 클릭 (확인함)
   public static clickWatchAdsButtonInChatting = (): void => {
     this.sendEvent('채팅 - <광고 모달> - <광고보기> 버튼 클릭', 'save');
   };
 
-  //채팅 - <사진 첨부> - <광고 모달> - 저장하기 클릭 후 광고 송출
+  //채팅 - <사진 첨부> - <광고 모달> - 저장하기 클릭 후 광고 송출 (확인완 : 안씀)
   public static watchAdsScreenInChatting = (): void => {
     this.sendEvent(
       '채팅 - <사진첨부하기> - <광고 모달> - <광고보기> 버튼 클릭 후 광고 송출',
@@ -311,27 +357,114 @@ export default class Analytics {
     );
   };
 
-  //채팅 - <사진 첨부> - <광고 모달> - 저장하기 클릭 후 광고 송출 - 리워드 지급
+  //채팅 - <사진 첨부> - <광고 모달> - 저장하기 클릭 후 광고 송출 - 리워드 지급 (확인완)
   public static watchEarnRewardScreenInChatting = (): void => {
     this.sendEvent('채팅 사진 첨부 광고 송출 후, 리워드 지급', 'watchEarnRewardScreenInChatting');
   };
 
-  //채팅 - <사진 첨부> - <광고 모달> - 저장하기 클릭 후 광고 송출 - 리워드 미지급
-  public static watchNoEarnRewardScreenInChatting = (): void => {
-    this.sendEvent(
-      '채팅 사진 첨부 광고 송출 후, 채팅 저장에 오류 발생',
-      'watchNoEarnRewardScreenInChatting',
-    );
+  // 채팅 - <사진 첨부> - <광고 모달> - 광고 에러 발생 (애널리틱스에 들어간거 확인 완료)
+  public static watchNoEarnRewardScreenInChatting = (errorDetails?: {
+    errorCode?: number | string;
+    errorMessage?: string;
+    errorDomain?: string;
+    adUnitId?: string;
+    isTestMode?: boolean;
+    retryCount?: number;
+    timestamp?: string;
+  }): void => {
+    // 기본 이벤트 로깅
+    this.sendEvent('채팅 사진 첨부 광고 에러', 'chat_photo_ad_error', {
+      error_code: errorDetails?.errorCode || 'unknown',
+      error_message: errorDetails?.errorMessage || 'unknown',
+      error_domain: errorDetails?.errorDomain || 'unknown',
+      ad_unit_id: errorDetails?.adUnitId || 'unknown',
+      is_test_mode: errorDetails?.isTestMode || false,
+      retry_count: errorDetails?.retryCount || 0,
+      timestamp: errorDetails?.timestamp || new Date().toISOString(),
+    });
+
+    // 에러 타입별 추가 이벤트 로깅
+    if (errorDetails?.errorCode) {
+      switch (errorDetails.errorCode) {
+        case 0: // 내부 에러
+          this.sendEvent('채팅 광고 내부 에러', 'chat_ad_internal_error');
+          break;
+        case 2: // 네트워크 에러
+          this.sendEvent('채팅 광고 네트워크 에러', 'chat_ad_network_error');
+          break;
+        case 3: // No Fill
+          this.sendEvent('채팅 광고 No Fill', 'chat_ad_no_fill');
+          break;
+        default:
+          this.sendEvent('채팅 광고 기타 에러', 'chat_ad_other_error', {
+            error_code: errorDetails.errorCode,
+          });
+      }
+    }
   };
 
-  //채팅 - <사진첨부> - <광고모달> - 취소 버튼 클릭
+  // 광고 표시 시 에러 (watchAds 함수에서 사용, 확인완료)
+  public static clickWatchAdsErrorInChatting = (errorDetails: {
+    errorCode?: string;
+    errorMessage?: string;
+    stage: 'load' | 'show';
+  }): void => {
+    this.sendEvent('채팅 광고 표시 에러', 'chat_ad_display_error', {
+      error_code: errorDetails.errorCode || 'unknown',
+      error_message: errorDetails.errorMessage || 'unknown',
+      stage: errorDetails.stage,
+      timestamp: new Date().toISOString(),
+    });
+  };
+
+  // 광고 로드 재시도 : 안씀
+  public static retryAdLoadInChatting = (attemptNumber: number, maxAttempts: number): void => {
+    this.sendEvent('채팅 광고 재시도', 'chat_ad_retry', {
+      attempt_number: attemptNumber,
+      max_attempts: maxAttempts,
+      timestamp: new Date().toISOString(),
+    });
+  };
+
+  // 광고 로드 타임아웃 (확인함)
+  public static adLoadTimeoutInChatting = (): void => {
+    this.sendEvent('채팅 광고 로드 타임아웃', 'chat_ad_load_timeout', {
+      timestamp: new Date().toISOString(),
+    });
+  };
+
+  //채팅 - <사진첨부> - <광고모달> - 취소 버튼 클릭 (확인함)
   public static clickNoWatchAdsButtonInChatting = (): void => {
     this.sendEvent('채팅 - <사진첨부하기> - <광고 모달> - <취소> 버튼 클릭', 'cancel');
   };
 
-  //채팅 - 채팅 전송 버튼 클릭
-  public static clickChatSendButton = (): void => {
+  //채팅 - 사진첨부 - 사진 권한 에러 (확인함)
+  public static photoPermissionError = (errorDetails: {
+    errorCode?: string;
+    errorMessage?: string;
+    timestamp?: string;
+  }): void => {
+    this.sendEvent('채팅 - 사진 첨부 - 사진 권한 에러', 'photoPermissionError', {
+      error_code: errorDetails.errorCode || 'unknown',
+      error_message: errorDetails.errorMessage || 'unknown',
+      timestamp: errorDetails.timestamp || new Date().toISOString(),
+    });
+  };
+
+  //채팅 - 채팅 전송 버튼 클릭 (텍스트 전송 여부, 사진 전송 여부, 이모티콘 전송 여부)
+  /*public static clickChatSendButton = (): void => {
     this.sendEvent('채팅 - 채팅 전송 버튼 클릭', 'chatSendButton');
+  };*/
+  public static clickChatSendButton = (
+    isText: boolean = false,
+    isPhoto: boolean = false,
+    isEmoji: boolean = false,
+  ): void => {
+    this.sendEvent('채팅 - 채팅 전송 버튼 클릭', 'chatSendButton', {
+      isText,
+      isPhoto,
+      isEmoji,
+    });
   };
   //채팅 - AI답변 전송 시작 상태
   public static aiRequestSentStatus = (): void => {
@@ -380,6 +513,68 @@ export default class Analytics {
   //채팅 - 헤더 우측 선물 상자 버튼 클릭
   public static clickHeaderGiftBoxButton = (eventUrl: string): void => {
     this.sendEvent('채팅 - 헤더의 우측 선물 상자 버튼 클릭', 'headerGiftBoxButton', { eventUrl });
+  };
+
+  //채팅 - 이모티콘 버튼 클릭 (열거나 닫는 것을 구분)
+  public static clickHeaderEmojiButton = (panelStatus: string): void => {
+    this.sendEvent('채팅 - 입력창 우측의 이모티콘 버튼 클릭', 'headerEmojiButton', { panelStatus });
+  };
+
+  //채팅 - 이모티콘 패널의 아이콘 클릭
+  public static clickEmojiPanelIcon = (emojiName: string): void => {
+    this.sendEvent('채팅 - 이모티콘 패널의 아이콘 클릭', 'emojiPanelIcon', { emojiName });
+  };
+
+  //채팅 - 이모티콘 패널의 구매하기 버튼 클릭
+  public static clickEmojiPanelPurchaseButton = (): void => {
+    this.sendEvent('채팅 - 이모티콘 패널의 구매하기 버튼 클릭', 'emojiPanelPurchaseButton');
+  };
+
+  //채팅 - 이모티콘 패널 - 구매하기 버튼 클릭 - 이미 구매한 이모티콘 알림창 관찰
+  public static watchEmojiPanelAlreadyPurchasedAlert = (): void => {
+    this.sendEvent(
+      '채팅 - 이모티콘 패널 - 구매하기 버튼 클릭 - 이미 구매한 이모티콘 알림창 관찰',
+      'emojiPanelAlreadyPurchasedAlert',
+    );
+  };
+
+  //채팅 - 이모티콘 패널 - 구매하기 버튼 클릭 - 구매 완료 알림창 관찰
+  public static watchEmojiPanelPurchaseCompleteAlert = (): void => {
+    this.sendEvent(
+      '채팅 - 이모티콘 패널 - 구매하기 버튼 클릭 - 구매 완료 알림창 관찰',
+      'emojiPanelPurchaseCompleteAlert',
+    );
+  };
+
+  //채팅 - 이모티콘 패널 - 구매하기 버튼 클릭 - 구매 실패 알림창 관찰
+  public static watchEmojiPanelPurchaseFailedAlert = (): void => {
+    this.sendEvent(
+      '채팅 - 이모티콘 패널 - 구매하기 버튼 클릭 - 구매 실패 알림창 관찰',
+      'emojiPanelPurchaseFailedAlert',
+    );
+  };
+
+  //채팅 - 이모티콘 패널 - 구매 안하고 이모티콘을 클릭 시 토스트 나온 상황 관찰
+  public static watchEmojiPanelNoPurchaseClick = (emojiName: string): void => {
+    this.sendEvent(
+      '채팅 - 이모티콘 패널 - 구매 안하고 이모티콘 클릭',
+      'emojiPanelNoPurchaseClick',
+      {
+        emojiName,
+      },
+    );
+  };
+
+  //홈 화면 - 이모티콘 구매 복원 성공 관찰
+  public static watchEmojiPanelRestorePurchaseSuccess = (): void => {
+    this.sendEvent('홈 화면 - 이모티콘 구매 복원 성공 관찰', 'emojiPanelRestorePurchaseSuccess');
+  };
+
+  //홈 화면 - 이모티콘 구매 복원 실패 관찰
+  public static watchEmojiPanelRestorePurchaseFailed = (errorMessage: string): void => {
+    this.sendEvent('홈 화면 - 이모티콘 구매 복원 실패 관찰', 'emojiPanelRestorePurchaseFailed', {
+      errorMessage,
+    });
   };
 
   //채팅 - 사이드바 버튼 클릭
@@ -699,5 +894,32 @@ export default class Analytics {
   //앱 공지 클릭
   public static clickAppNoticeButton = (link: string): void => {
     this.sendEvent('앱 공지 클릭', 'clickAppNoticeButton', { link });
+  };
+
+  //이미지 미리보기 취소 버튼 클릭
+  public static clickImagePreviewCancelButton = (): void => {
+    this.sendEvent('이미지 미리보기 취소 버튼 클릭', 'imagePreviewCancelButton');
+  };
+  //이미지 한 장 첨부하고 다시 첨부할 때
+  public static clickIamgePreviewAddButton = (): void => {
+    this.sendEvent(
+      '이미지 미리보기 있는 상태에서 - 다시 첨부하기 버튼 클릭',
+      'imagePreviewAddButton',
+    );
+  };
+  //앨범에서 이미지를 선택하지 않고 취소를 누른 경우
+  public static clickImagePickerCancelButton = (): void => {
+    this.sendEvent('이미지 선택 - 취소 버튼 클릭', 'imagePickerCancelButton');
+  };
+  //앨범에서 이미지를 선택함
+  public static clickImagePickerConfirmButton = (): void => {
+    this.sendEvent(
+      '이미지 선택 (앨범) - 확인 버튼 클릭하여 이미지 고름',
+      'imagePickerConfirmButton',
+    );
+  };
+  //이미지 첨부 에러 발생
+  public static clickImagePickerErrorButton = (errorMessage: any, errorCode: any): void => {
+    this.sendEvent('이미지 첨부 에러 발생', 'imagePickerErrorButton', { errorMessage, errorCode });
   };
 }

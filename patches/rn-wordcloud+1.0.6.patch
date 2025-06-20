@@ -1,0 +1,503 @@
+diff --git a/node_modules/rn-wordcloud/src/index.js b/node_modules/rn-wordcloud/src/index.js
+index f45ffd8..e53953d 100644
+--- a/node_modules/rn-wordcloud/src/index.js
++++ b/node_modules/rn-wordcloud/src/index.js
+@@ -1,5 +1,5 @@
+ import React from "react";
+-import { View, Text, Touchable, TouchableOpacity } from "react-native";
++import { View, Text, TouchableOpacity } from "react-native";
+ import PropTypes from "prop-types";
+ import Word from "./word";
+ import Space from "./space";
+@@ -25,6 +25,9 @@ class WordCloud extends React.Component {
+ 
+     this._placeFirstWord = this._placeFirstWord.bind(this);
+     this._placeOtherWord = this._placeOtherWord.bind(this);
++
++    // 단어 사이 여백(gap)을 10px로 정의
++    this.gap = 10;
+   }
+ 
+   componentDidMount() {
+@@ -41,6 +44,8 @@ class WordCloud extends React.Component {
+       maxFont,
+       fontFamily,
+     } = options;
++
++    // 단어들을 value 기준으로 내림차순 정렬
+     initialWords.sort(function (a, b) {
+       if (a.value < b.value) {
+         return 1;
+@@ -98,7 +103,7 @@ class WordCloud extends React.Component {
+   }
+ 
+   _pushSpaceData(type, w, h, x, y) {
+-    // Calculating Distance between (x,y): Key point of Space and Center of Container (this.target.xOffset, this.target.yOffset)
++    // (x, y) 지점에서 컨테이너 중앙까지의 거리 계산
+     const distance = Math.sqrt(
+       (this.target.xOffset - x) * (this.target.xOffset - x) +
+         (this.target.yOffset - y) * (this.target.yOffset - y)
+@@ -106,24 +111,29 @@ class WordCloud extends React.Component {
+ 
+     const distanceS = `${distance}_${this.distanceCounter++}`;
+ 
+-    // Update Space Id Array
++    // spaceIdArray를 거리 순서대로 업데이트
+     this._updateSpaceIdArray(distanceS, distance);
+ 
+-    // Add Space into Space Data Object
++    // 실제 Space 객체를 저장
+     this.spaceDataObject[distanceS] = new Space(type, w, h, x, y);
+   }
+ 
+   _updateTextPosition(word, top, left, transform = false) {
+-    // Update the styles of the word view
++    // 실제 렌더링할 때는 “Gap”의 절반만큼(= this.gap / 2) 밀어서 찍어준다.
++    const offset = this.gap / 2;
+     const buttonStyle = {
+       position: "absolute",
+-      left,
+-      top,
++      //backgroundColor : 'red',
++      left: left + offset,   // 왼쪽으로 gap/2만큼 밀기
++      top: top + offset,     // 위쪽으로 gap/2만큼 밀기
+       transform: [{ rotate: transform ? "270deg" : "0deg" }],
+     };
+     const textStyle = {
+       fontSize: word.font,
+       lineHeight: word.font,
++      padding : 10,
++      // 예시라서 배경을 빨간으로 해두었습니다. 실제로는 원하시는 스타일로 조정하세요.
++      backgroundColor: "transparent",
+     };
+     if (word.color && word.color !== null && word.color !== "") {
+       textStyle.color = word.color;
+@@ -159,98 +169,161 @@ class WordCloud extends React.Component {
+   }
+ 
+   _placeFirstWord(word) {
+-    const w = word.width;
+-    const h = word.height;
+-    const xoff = this.target.xOffset - w / 2;
+-    const yoff = this.target.yOffset - h / 2;
++    // 실제 단어 크기
++    const realW = word.width;
++    const realH = word.height;
++
++    // 단어 사이 여백: this.gap (예: 10px)
++    const paddedW = realW + this.gap;
++    const paddedH = realH + this.gap;
++
++    // 컨테이너 중앙 기준으로 단어를 정가운데에 배치
++    const xoff = this.target.xOffset - paddedW / 2;
++    const yoff = this.target.yOffset - paddedH / 2;
++
+     const tw = this.target.width;
+     const th = this.target.height;
+ 
+-    // Update the styles of the word view
++    // 실제 렌더링 시에는 (_updateTextPosition 안에서) offset = gap/2 만큼만 밀려서 찍힌다.
+     this._updateTextPosition(word, yoff, xoff);
+ 
+-    // Call the pushSpaceData function with the appropriate parameters
++    // 여기에부터는 “공간을 분할해서 Space 데이터”를 집어넣는 로직인데,
++    // 원래는 realW, realH를 썼던 부분들을 paddedW, paddedH로 대체한다.
++
++    // — M1 ~ M4: 큰 사분면들
+     this._pushSpaceData(
+       spaceTypes.LB,
+-      tw - xoff - w,
+-      h,
+-      xoff + w,
+-      yoff + h / 2
+-    ); //M1
++      tw - (xoff + paddedW),
++      paddedH,
++      xoff + paddedW,
++      yoff + paddedH / 2
++    );
++    this._pushSpaceData(
++      spaceTypes.LT,
++      paddedW,
++      th - (yoff + paddedH),
++      xoff + paddedW / 2,
++      yoff + paddedH
++    );
++    this._pushSpaceData(
++      spaceTypes.RT,
++      xoff,
++      paddedH,
++      xoff,
++      yoff + paddedH / 2
++    );
++    this._pushSpaceData(
++      spaceTypes.RB,
++      paddedW,
++      yoff,
++      xoff + paddedW / 2,
++      yoff
++    );
++
++    // — C1 ~ C4: 사분면 내부 작은 공간들
+     this._pushSpaceData(
+       spaceTypes.LT,
+-      w,
+-      th - yoff - h,
+-      xoff + w / 2,
+-      yoff + h
+-    ); //M2
+-    this._pushSpaceData(spaceTypes.RT, xoff, h, xoff, yoff + h / 2); //M3
+-    this._pushSpaceData(spaceTypes.RB, w, yoff, xoff + w / 2, yoff); //M4
+-
+-    this._pushSpaceData(spaceTypes.LT, w / 2, h / 2, xoff + w, yoff + h / 2); //C1
+-    this._pushSpaceData(spaceTypes.RT, w / 2, h / 2, xoff + w / 2, yoff + h); //C2
+-    this._pushSpaceData(spaceTypes.RB, w / 2, h / 2, xoff, yoff + h / 2); //C3
+-    this._pushSpaceData(spaceTypes.LB, w / 2, h / 2, xoff + w / 2, yoff); //C4
++      paddedW / 2,
++      paddedH / 2,
++      xoff + paddedW,
++      yoff + paddedH / 2
++    );
++    this._pushSpaceData(
++      spaceTypes.RT,
++      paddedW / 2,
++      paddedH / 2,
++      xoff + paddedW / 2,
++      yoff + paddedH
++    );
++    this._pushSpaceData(
++      spaceTypes.RB,
++      paddedW / 2,
++      paddedH / 2,
++      xoff,
++      yoff + paddedH / 2
++    );
++    this._pushSpaceData(
++      spaceTypes.LB,
++      paddedW / 2,
++      paddedH / 2,
++      xoff + paddedW / 2,
++      yoff
++    );
+ 
++    // — S1 ~ S4: 더 큰 영역을 4개로 확장한 공간들 (코너 주변)
+     this._pushSpaceData(
+       spaceTypes.LT,
+-      tw - xoff - w - w / 2,
+-      th - yoff - h / 2,
+-      xoff + w + w / 2,
+-      yoff + h / 2
+-    ); //S1
++      tw - (xoff + paddedW) - paddedW / 2,
++      th - (yoff + paddedH / 2),
++      xoff + paddedW + paddedW / 2,
++      yoff + paddedH / 2
++    );
+     this._pushSpaceData(
+       spaceTypes.RT,
+-      xoff + w / 2,
+-      th - yoff - h - h / 2,
+-      xoff + w / 2,
+-      yoff + h + h / 2
+-    ); //S2
++      xoff + paddedW / 2,
++      th - (yoff + paddedH) - paddedH / 2,
++      xoff + paddedW / 2,
++      yoff + paddedH + paddedH / 2
++    );
+     this._pushSpaceData(
+       spaceTypes.RB,
+-      xoff - w / 2,
+-      yoff + h / 2,
+-      xoff - w / 2,
+-      yoff + h / 2
+-    ); //S3
++      xoff - paddedW / 2,
++      yoff + paddedH / 2,
++      xoff - paddedW / 2,
++      yoff + paddedH / 2
++    );
+     this._pushSpaceData(
+       spaceTypes.LB,
+-      xoff + w / 2,
+-      yoff - h / 2,
+-      xoff + w / 2,
+-      yoff - h / 2
+-    ); //S4
++      xoff + paddedW / 2,
++      yoff - paddedH / 2,
++      xoff + paddedW / 2,
++      yoff - paddedH / 2
++    );
+   }
+ 
+   _placeOtherWord(word) {
++    // 반복문을 돌면서 “공간 배열”에서 가장 중심에 가까운 순서대로 꺼낸다.
+     for (let index = 0; index < this.spaceIdArray.length; index++) {
+       const spaceId = this.spaceIdArray[index];
+       const obj = this.spaceDataObject[spaceId];
+ 
++      // 꺼낸 공간이 이미 null 처리되었으면 건너뛴다.
++      if (!obj) continue;
++
++      // 실제 단어 크기
++      const realW = word.width;
++      const realH = word.height;
++
++      // 단어 사이 여백만큼 확장한 크기
++      const paddedW = realW + this.gap;
++      const paddedH = realH + this.gap;
++
+       let alignmentInd = 0;
+       let alignmentIndCount = 0;
+ 
+-      if (word.width <= obj.width && word.height <= obj.height) {
++      // 가로 배치(HR) 가능한지 체크: 공간의 너비(obj.width)가 paddedW 이상이고, 공간의 높이(obj.height)가 paddedH 이상이어야 한다.
++      if (paddedW <= obj.width && paddedH <= obj.height) {
+         alignmentInd = spaceTypes.HR;
+         alignmentIndCount++;
+       }
+ 
++      // 세로 배치(VR)도 옵션에 허용되어 있으면(verticalEnabled === true) 검사
+       if (this.props.options.verticalEnabled) {
+-        if (word.height <= obj.width && word.width <= obj.height) {
++        if (paddedH <= obj.width && paddedW <= obj.height) {
+           alignmentInd = spaceTypes.VR;
+           alignmentIndCount++;
+         }
+       }
+ 
++      // 배치 가능한 모드가 하나라도 있으면(= 1 이상)
+       if (alignmentIndCount > 0) {
++        // 해당 공간을 비활성화하고 배열에서도 제거
+         this.spaceDataObject[spaceId] = null;
+         this.spaceIdArray.splice(index, 1);
+ 
+-        // For Word's Span Position
++        // (단어를 어느 방향으로 붙일지 결정하는 변수들)
+         let xMul = 1;
+         let yMul = 1;
+-
+-        // For new Child Spaces
+         let xMulS = 1;
+         let yMulS = 1;
+ 
+@@ -283,147 +356,118 @@ class WordCloud extends React.Component {
+             break;
+         }
+ 
++        // 만약 “가로도 되고 세로도 되는 두 가지 경우”라면 랜덤으로 골라준다.
+         if (alignmentIndCount > 1) {
+-          // Making Horizontal Word in Larger Number
+-          // Random number[0,5] is >0 and <3 --> HR
+-          // Random number[0,5] is >3 --> VR
+-
+           if (Math.random() * 5 > 3) alignmentInd = spaceTypes.VR;
+           else alignmentInd = spaceTypes.HR;
+         }
+ 
+-        const w = word.width;
+-        const h = word.height;
+-
+         switch (alignmentInd) {
+           case spaceTypes.HR:
+-            // Update the styles of the word view
+-            this._updateTextPosition(word, obj.y + yMul * h, obj.x + xMul * w);
++            // (1) 먼저 “실제 렌더링 위치”를 결정한다.
++            //     obj.x, obj.y 는 해당 공간의 기준이 되는 좌표
++            //     padding만큼 단어를 띄우기 위해, “yMul * paddedH” 처리를 한다.
++            this._updateTextPosition(
++              word,
++              obj.y + yMul * paddedH,
++              obj.x + xMul * paddedW
++            );
+ 
++            // (2) 이제 공간을 2개로 나눠서 다시 push
+             if (Math.random() * 2 > 1) {
+-              /*
+-               * 			_________________________________
+-               *			|								|
+-               *			|				T				|
+-               *			|								|
+-               *			|_______________________________|
+-               *			|				|				|
+-               *			|	  WORD		|		R		|
+-               *			|	********	|				|
+-               *			|_______________|_______________|
+-               *
+-               */
+-
++              // ┌───┐
++              // │ T │
++              // ├───┤
++              // │ W │  ← 여기가 단어(WORD)가 들어간 공간
++              // └───┘
++              // 공간 분할 1
+               this._pushSpaceData(
+                 obj.spaceType,
+-                obj.width - w,
+-                h,
+-                obj.x + xMulS * w,
++                obj.width - paddedW,
++                paddedH,
++                obj.x + xMulS * paddedW,
+                 obj.y
+-              ); //R
++              ); // R 영역
+               this._pushSpaceData(
+                 obj.spaceType,
+                 obj.width,
+-                obj.height - h,
++                obj.height - paddedH,
+                 obj.x,
+-                obj.y + yMulS * h
+-              ); //T
++                obj.y + yMulS * paddedH
++              ); // T 영역
+             } else {
+-              /*
+-               * 			_________________________________
+-               *			|				|				|
+-               *			|		T		|				|
+-               *			|				|				|
+-               *			|_______________|		R		|
+-               *			|				|				|
+-               *			|	  WORD		|				|
+-               *			|	********	|				|
+-               *			|_______________|_______________|
+-               *
+-               */
+-
++              // ┌───┐
++              // │ T │
++              // ├───┤
++              //     │ R │
++              //     ├───┤
++              //     │ W │
++              //     └───┘
+               this._pushSpaceData(
+                 obj.spaceType,
+-                obj.width - w,
++                obj.width - paddedW,
+                 obj.height,
+-                obj.x + xMulS * w,
++                obj.x + xMulS * paddedW,
+                 obj.y
+-              ); //R
++              ); // R 영역
+               this._pushSpaceData(
+                 obj.spaceType,
+-                w,
+-                obj.height - h,
++                paddedW,
++                obj.height - paddedH,
+                 obj.x,
+-                obj.y + yMulS * h
+-              ); //T
++                obj.y + yMulS * paddedH
++              ); // T 영역
+             }
+             break;
+ 
+           case spaceTypes.VR:
+-            // Update the styles of the word view
++            // “세로로(뒤집어서)” 그릴 때는 rotate: "270deg"를 준다.
+             this._updateTextPosition(
+               word,
+-              obj.y + yMul * w + (w - h) / 2,
+-              obj.x + xMul * h - (w - h) / 2,
++              obj.y + yMul * paddedW + (paddedW - paddedH) / 2,
++              obj.x + xMul * paddedH - (paddedW - paddedH) / 2,
+               true
+             );
+ 
+             if (Math.random() * 2 > 1) {
+-              /*
+-               * 			_________________________________
+-               *			|								|
+-               *			|				T				|
+-               *			|								|
+-               *			|_______________________________|
+-               *			|		D		|				|
+-               *			|		R		|		R		|
+-               *			|		O		|				|
+-               *			|_______W_______|_______________|
+-               *
+-               */
+-
++              // (1) R 영역 (너비: obj.width - paddedH, 높이: paddedW)
+               this._pushSpaceData(
+                 obj.spaceType,
+-                obj.width - h,
+-                w,
+-                obj.x + xMulS * h,
++                obj.width - paddedH,
++                paddedW,
++                obj.x + xMulS * paddedH,
+                 obj.y
+-              ); //R
++              );
++              // (2) T 영역 (너비: obj.width, 높이: obj.height - paddedW)
+               this._pushSpaceData(
+                 obj.spaceType,
+                 obj.width,
+-                obj.height - w,
++                obj.height - paddedW,
+                 obj.x,
+-                obj.y + yMulS * w
+-              ); //T
++                obj.y + yMulS * paddedW
++              );
+             } else {
+-              /*
+-               * 			_________________________________
+-               *			|				|				|
+-               *			|		T		|				|
+-               *			|				|				|
+-               *			|_______________|		R		|
+-               *			|		D		|				|
+-               *			|	  	R		|				|
+-               *			|		O		|				|
+-               *			|_______W_______|_______________|
+-               *
+-               */
+-
++              // ┌───┐
++              // │ T │
++              // ├───┤
++              // │ R │
++              // ├───┤
++              // │ W │
++              // └───┘
+               this._pushSpaceData(
+                 obj.spaceType,
+-                obj.width - h,
++                obj.width - paddedH,
+                 obj.height,
+-                obj.x + xMulS * h,
++                obj.x + xMulS * paddedH,
+                 obj.y
+-              ); //R
++              );
+               this._pushSpaceData(
+                 obj.spaceType,
+-                h,
+-                obj.height - w,
++                paddedH,
++                obj.height - paddedW,
+                 obj.x,
+-                obj.y + yMulS * w
+-              ); //T
++                obj.y + yMulS * paddedW
++              );
+             }
+             break;
+ 
+@@ -431,6 +475,7 @@ class WordCloud extends React.Component {
+             break;
+         }
+ 
++        // 이 단어는 배치가 끝났으므로 return해서 for-loop을 종료한다.
+         return;
+       }
+     }

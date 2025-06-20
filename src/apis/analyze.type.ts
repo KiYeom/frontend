@@ -42,6 +42,13 @@ export type TPeriodChart = {
   charts: EmotionChart[];
 };
 
+export type TNewPeriodChart = {
+  id: number;
+  nickname: string;
+  dates: string[];
+  groups: string[];
+};
+
 export type EmotionChart = {
   category: string;
   chart: PercentByDate[];

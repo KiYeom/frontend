@@ -10,7 +10,16 @@
       "autoIncrement": true,
       "env": {
         "APP_ENV": "development",
-        "APP_VARIANT": "development"
+        "APP_VARIANT": "development",
+        "EXPO_PUBLIC_REWARED_AD_UNIT_ID_IOS": "ca-app-pub-8136917168968629/5465491775",
+        "EXPO_PUBLIC_REWARED_AD_UNIT_ID_ANDROID": "ca-app-pub-8136917168968629/7210877770",
+        "EXPO_PUBLIC_CHATTING_REWARD_AD_UNIT_ID_IOS": "ca-app-pub-8136917168968629/3826832810",
+        "EXPO_PUBLIC_CHATTING_REWARD_AD_UNIT_ID_ANDROID": "ca-app-pub-8136917168968629/9562375229",
+        "EXPO_PUBLIC_QUOTE_REWARDED_INTERSTITIAL_AD_UNIT_ID_IOS": "ca-app-pub-8136917168968629/1999234493",
+        "EXPO_PUBLIC_QUOTE_REWARDED_INTERSTITIAL_AD_UNIT_ID_ANDROID": "ca-app-pub-8136917168968629/8663030986"
+      },
+      "ios": {
+        "buildArtifactPaths": ["ios/build/*"]
       }
     },
     "preview": {
@@ -44,18 +53,11 @@
         "EXPO_PUBLIC_REWARED_AD_UNIT_ID_ANDROID": "ca-app-pub-8136917168968629/7210877770",
         "EXPO_PUBLIC_CHATTING_REWARD_AD_UNIT_ID_IOS": "ca-app-pub-8136917168968629/3826832810",
         "EXPO_PUBLIC_CHATTING_REWARD_AD_UNIT_ID_ANDROID": "ca-app-pub-8136917168968629/9562375229",
-        "EXPO_PUBLIC_QUOTE_REWARD_AD_UNIT_ID_IOS": "ca-app-pub-8136917168968629/2201301088",
-        "EXPO_PUBLIC_QUOTE_REWARD_AD_UNIT_ID_ANDROID": "ca-app-pub-8136917168968629/8935356125"
-      }
-    },
-    "staging": {
-      "channel": "staging",
-      "autoIncrement": true,
-      "env": {
-        "APP_ENV": "staging",
-        "APP_VARIANT": "staging",
-        "EXPO_PUBLIC_REWARED_AD_UNIT_ID_IOS": "ca-app-pub-8136917168968629/5465491775",
-        "EXPO_PUBLIC_REWARED_AD_UNIT_ID_ANDROID": "ca-app-pub-8136917168968629/7210877770"
+        "EXPO_PUBLIC_QUOTE_REWARDED_INTERSTITIAL_AD_UNIT_ID_IOS": "ca-app-pub-8136917168968629/1999234493",
+        "EXPO_PUBLIC_QUOTE_REWARDED_INTERSTITIAL_AD_UNIT_ID_ANDROID": "ca-app-pub-8136917168968629/8663030986"
+      },
+      "ios": {
+        "buildArtifactPaths": ["ios/build/*"]
       }
     }
   }

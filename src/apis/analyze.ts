@@ -6,6 +6,7 @@ import {
   TPeriodKeywords,
   TPeriodRecordEmotions,
   TPeriodTotalEmotions,
+  TNewPeriodChart,
 } from './analyze.type';
 import { instance } from './interceptor';
 import { Platform } from 'react-native';
@@ -86,7 +87,7 @@ export const periodRecordEmotions = async (
   }
 };
 
-//기간 분석 : 감정 추이 조회
+//기간 분석 : 감정 추이 조회 (레거시 예정)
 export const periodChart = async (
   start: string,
   end: string,
@@ -96,6 +97,23 @@ export const periodChart = async (
     const res = await instance.get('/v1/analyze/period/chart', {
       params: { start_date: start, end_date: end },
     });
+    return res.data;
+  } catch (error) {
+    //console.log('[ERROR] period chart analyze', error);
+    return undefined;
+  }
+};
+
+//기간 분석 : 새 LineChart 컴포넌트에 사용
+export const newPeriodChart = async (
+  start: string,
+  end: string,
+): Promise<TNewPeriodChart | undefined> => {
+  try {
+    const res = await instance.get('/v2/analyze/period-status', {
+      params: { start_date: start, end_date: end },
+    });
+    //console.log('newPeriodChart res.data', res.data);
     return res.data;
   } catch (error) {
     //console.log('[ERROR] period chart analyze', error);

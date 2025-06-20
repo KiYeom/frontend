@@ -15,7 +15,7 @@ import Button from '../button/button';
 import NewCheckBox from '../v3-checkbox/NewCheckBox';
 import { Image } from 'react-native';
 
-const TierModal = ({
+const AdsModal = ({
   modalVisible,
   onClose,
   onSubmit,
@@ -128,4 +128,4 @@ const ButtonSingleGroup = styled.View`
   background-color: red;
 `;
 
-export default TierModal;
+export default AdsModal;
