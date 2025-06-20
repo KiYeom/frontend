@@ -1,12 +1,12 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
-import TextArea from '../textarea/TextArea';
-import { Container } from './CustomCheckBox.style';
-import NewCheckBox from '../v3-checkbox/NewCheckBox';
+import { StyleSheet, View } from 'react-native';
+import { rsHeight } from '../../../../utils/responsive-size';
+import TextArea from '../../../../components/textarea/TextArea';
+import NewCheckBox from '../../../../components/v3-checkbox/NewCheckBox';
 
 const CustomCheckBox = ({ title, checked, toggleCheck, index, text, setText }: any) => {
   return (
-    <Container>
+    <View style={{ gap: rsHeight * 20, paddingBottom: rsHeight * 16 }}>
       <NewCheckBox
         checked={checked}
         message={title}
@@ -21,7 +21,7 @@ const CustomCheckBox = ({ title, checked, toggleCheck, index, text, setText }: a
           onChange={(text) => setText(text)}
         />
       )}
-    </Container>
+    </View>
   );
 };
 export default CustomCheckBox;

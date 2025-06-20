@@ -1,7 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
-import { reasons } from '../../constants/Constants';
-import CustomCheckBox from '../atoms/CustomCheckBox';
+import { reasons } from '../../../../constants/Constants';
+import CustomCheckBox from './CustomCheckBox';
 
 const DeactivateReasonCheckBoxs = ({ isChecked, setIsChecked, text, setText }: any) => {
   //const [selectedData, setSelectedData] = useState([]);
