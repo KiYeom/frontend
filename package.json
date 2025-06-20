@@ -121,7 +121,7 @@
     "eslint-config-expo": "~8.0.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
-    "expo-atlas": "^0.3.0",
+    "expo-atlas": "^0.4.1",
     "prettier": "^3.3.3",
     "react-native-svg-transformer": "^1.5.0",
     "typescript": "~5.3.3"

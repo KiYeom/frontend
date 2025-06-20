@@ -1,6 +1,6 @@
 //AdmobBanner
 import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
-import { View } from 'react-native';
+import { View, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 const AdMobBanner = () => {
   const insets = useSafeAreaInsets();
