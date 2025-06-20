@@ -19,6 +19,7 @@ export const ButtonGroup = styled.View`
   flex-direction: row;
   gap: ${rsWidth * 20 + 'px'};
   height: ${rsHeight * 52 + 'px'};
+  justify-content: space-between;
   flex: 1;
 `;
 

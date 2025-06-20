@@ -1,6 +1,6 @@
 import { css } from '@emotion/native';
 import React, { useEffect } from 'react';
-import { View } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { userEditInfo } from '../../../apis/userEditInfo'; //api 수정해야 함
 import palette from '../../../assets/styles/theme';
@@ -125,18 +125,15 @@ const EditUserInfo: React.FC = ({ navigation }) => {
           <FormContainer>
             <Label>성별</Label>
             <ButtonGroup>
-              <GenderButton
-                activeOpacity={1}
-                selected={gender === '여성'}
-                onPress={() => setGender('여성')}>
-                <BtnLabel selected={gender === '여성'}>여성</BtnLabel>
-              </GenderButton>
-              <GenderButton
-                activeOpacity={1}
-                selected={gender === '남성'}
-                onPress={() => setGender('남성')}>
-                <BtnLabel selected={gender === '남성'}>남성</BtnLabel>
-              </GenderButton>
+              <TouchableOpacity onPress={() => setGender('남성')} style={{ flex: 1 }}>
+                <Button title="남성" disabled={gender !== '남성'} primary={false} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setGender('여성')} style={{ flex: 1 }}>
+                <Button title="여성" disabled={gender !== '여성'} primary={false} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setGender(undefined)} style={{ flex: 1 }}>
+                <Button title="미설정" disabled={gender !== undefined} primary={false} />
+              </TouchableOpacity>
             </ButtonGroup>
           </FormContainer>
         </ContentContainer>
