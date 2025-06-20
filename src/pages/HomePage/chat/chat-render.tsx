@@ -313,6 +313,7 @@ export const RenderMessageImage = (
 
 export const RenderAvatar = (props: AvatarProps<ExtendedIMessage>) => {
   const { position, currentMessage, previousMessage } = props;
+
   if (position !== 'left') return null;
 
   const isPreviousUserExist =

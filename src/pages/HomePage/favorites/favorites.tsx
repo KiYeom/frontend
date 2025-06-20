@@ -13,6 +13,7 @@ import { convertUtcToKst } from '../../../utils/times';
 import Analytics from '../../../utils/analytics';
 import { css } from '@emotion/native';
 import { ActivityIndicator } from 'react-native';
+import { Image } from 'expo-image';
 import { TabScreenName, RootStackName, HomeStackName } from '../../../constants/Constants';
 import {
   Container,
@@ -62,12 +63,6 @@ const assignGlobalIndices = (sections) => {
   });
   return result;
 };
-const TitleHeader = React.memo(() => (
-  <TitleContainer>
-    <TitleImage source={require('../../../assets/images/bubble_cookie.png')} />
-    <Title>하루 끝에 꺼내보는{'\n'}따뜻한 대화</Title>
-  </TitleContainer>
-));
 
 const Favorites: React.FC<any> = ({ navigation }) => {
   const [sections, setSections] = React.useState([]);
@@ -128,18 +123,29 @@ const Favorites: React.FC<any> = ({ navigation }) => {
     fetchFavorites();
   }, []);
   const imageSources = [
-    require('../../../assets/images/red_bubble.png'),
-    require('../../../assets/images/orange_bubble.png'),
-    require('../../../assets/images/yellow_bubble.png'),
-    require('../../../assets/images/green_bubble.png'),
-    require('../../../assets/images/pastel_green_bubble.png'),
-    require('../../../assets/images/sky_blue_bubble.png'),
-    require('../../../assets/images/blue_bubble.png'),
-    require('../../../assets/images/navy_bubble.png'),
-    require('../../../assets/images/purple_bubble.png'),
-    require('../../../assets/images/pink_bubble.png'),
+    require('../../../assets/images/red_bubble.webp'),
+    require('../../../assets/images/orange_bubble.webp'),
+    require('../../../assets/images/yellow_bubble.webp'),
+    require('../../../assets/images/green_bubble.webp'),
+    require('../../../assets/images/pastel_green_bubble.webp'),
+    require('../../../assets/images/sky_blue_bubble.webp'),
+    require('../../../assets/images/blue_bubble.webp'),
+    require('../../../assets/images/navy_bubble.webp'),
+    require('../../../assets/images/purple_bubble.webp'),
+    require('../../../assets/images/pink_bubble.webp'),
     // 추가 이미지...
   ];
+  // 컴포넌트 마운트 시 이미지 프리로드
+  useEffect(() => {
+    preloadImages();
+  }, []);
+
+  const preloadImages = () => {
+    imageSources.forEach((source) => {
+      Image.prefetch(source);
+    });
+    Image.prefetch(require('../../../assets/images/bubble_cookie.webp'));
+  };
   const toggleFavorite = async (id: string): Promise<void> => {
     Analytics.clickFavoriteHeartButton(id);
     const newState = !favoriteStates[id];
@@ -185,6 +191,17 @@ const Favorites: React.FC<any> = ({ navigation }) => {
     );
   }
 
+  const TitleHeader = React.memo(() => (
+    <TitleContainer>
+      {/*<TitleImage source={require('../../../assets/images/bubble_cookie.png')} />*/}
+      <Image
+        source={require('../../../assets/images/bubble_cookie.webp')}
+        style={{ width: 100, height: 100 }}
+      />
+      <Title>하루 끝에 꺼내보는{'\n'}따뜻한 대화</Title>
+    </TitleContainer>
+  ));
+
   return (
     <Container>
       <Header
@@ -210,8 +227,9 @@ const Favorites: React.FC<any> = ({ navigation }) => {
           return (
             <SectionComponent>
               {/* 버블 사진 영역 */}
-              <SectionComponentImage source={imageSource} />
+              {/*<SectionComponentImage source={imageSource} />*/}
               {/* Text 영역 */}
+              <Image source={imageSource} style={{ width: 28, height: 28 }} />
               <SectionComponentText>{item.answer}</SectionComponentText>
 
               {/* 아이콘 영역 */}
