@@ -17,7 +17,8 @@ export const FormContainer = styled.View`
 export const ButtonGroup = styled.View`
   display: flex;
   flex-direction: row;
-  gap: ${rsWidth * 8 + 'px'};
+  gap: ${rsWidth * 20 + 'px'};
+  height: ${rsHeight * 52 + 'px'};
   flex: 1;
 `;
 

@@ -17,13 +17,7 @@ import { validateName } from '../../../utils/ValidateName';
 import Button from '../../../components/button/button';
 import Input from '../../../components/input/input';
 import { ContentContainer } from '../../sign-up/input-name/input-name.styles';
-import {
-  BtnLabel,
-  ButtonGroup,
-  FormContainer,
-  GenderButton,
-  Label,
-} from '../../sign-up/input-profile/input-profile.styles';
+import { BtnLabel, ButtonGroup, FormContainer, GenderButton, Label } from './input-profile.styles';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { rsWidth } from '../../../utils/responsive-size';
 //설정 - 프로필 수정 화면

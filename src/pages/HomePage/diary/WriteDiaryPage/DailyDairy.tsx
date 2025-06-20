@@ -38,7 +38,7 @@ import Constants from 'expo-constants';
 import { getUserNickname } from '../../../../utils/storageUtils';
 import Button from '../../../../components/button/button';
 import useEmotionStore from '../../../../store/useEmotionStore';
-import DiaryImageSection from '../../../../components/DiaryImageSection/DiaryImageSection';
+import DiaryImageSection from './DiaryImageSection';
 import SelectedEmotionChip from '../SelectEmotionPage/SelectedEmotionChip';
 import TextInputSection from './TextInputSection';
 import { useSaveEmotion, useSaveEmotionWithImage } from '../../../../queries/emotionQueries';
