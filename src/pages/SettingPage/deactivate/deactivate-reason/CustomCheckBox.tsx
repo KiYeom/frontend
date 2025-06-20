@@ -1,7 +1,7 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, TextInput } from 'react-native';
 import { rsHeight } from '../../../../utils/responsive-size';
-import TextArea from '../../../../components/textarea/TextArea';
+import palette from '../../../../assets/styles/theme';
 import NewCheckBox from '../../../../components/v3-checkbox/NewCheckBox';
 
 const CustomCheckBox = ({ title, checked, toggleCheck, index, text, setText }: any) => {
@@ -15,21 +15,24 @@ const CustomCheckBox = ({ title, checked, toggleCheck, index, text, setText }: a
         }}
       />
       {checked && title === '기타' && (
-        <TextArea
+        <TextInput
           placeholder="떠나시는 이유를 작성해주세요🥺"
+          placeholderTextColor={palette.neutral[400]}
+          multiline={true}
           value={text}
-          onChange={(text) => setText(text)}
+          onChangeText={(text) => setText(text)}
+          style={{
+            height: rsHeight * 100,
+            backgroundColor: palette.neutral[50],
+            borderRadius: 8,
+            padding: 20,
+            fontSize: 16,
+            fontFamily: 'Pretendard-Regular',
+            color: palette.neutral[500],
+          }}
         />
       )}
     </View>
   );
 };
 export default CustomCheckBox;
-const styles = StyleSheet.create({
-  checkbox: {
-    marginBottom: 20, //체크박스와의 사이를 20씩 간격 띄움
-  },
-  label: {
-    fontSize: 16, //예시 : 폰트 사이즈
-  },
-});
