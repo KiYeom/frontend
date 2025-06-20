@@ -1,3 +1,4 @@
+//메인 컨테이너
 import React, { useEffect, useState } from 'react';
 import {
   Platform,

@@ -1,14 +1,13 @@
 import { css } from '@emotion/native';
 import React, { memo } from 'react';
 import { Text, TouchableOpacity } from 'react-native';
-import palette from '../../../assets/styles/theme';
-import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
-import Icon, { TIconName } from '../../icons/icons';
-import useEmotionStore from '../../../store/useEmotionStore';
-import { transparent } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
-import { MAXIMUM_EMOTION_COUNT } from '../../../constants/Constants';
-import Toast from 'react-native-root-toast';
-const EmotionChip = memo(({ group, keyword, desc, onPress }) => {
+import palette from '../../../../assets/styles/theme';
+import { rsFont, rsHeight, rsWidth } from '../../../../utils/responsive-size';
+import Icon, { TIconName } from '../../../../components/icons/icons';
+import useEmotionStore from '../../../../store/useEmotionStore';
+import { SelectableEmotion } from '../../../../store/useEmotionStore';
+
+const EmotionChip = memo(({ group, keyword, desc }: SelectableEmotion) => {
   const isSelected = useEmotionStore((state) => state.selectedEmotionKeywords.has(keyword));
   const addEmotion = useEmotionStore((state) => state.addEmotion);
   const removeEmotion = useEmotionStore((state) => state.removeEmotion);
@@ -20,7 +19,7 @@ const EmotionChip = memo(({ group, keyword, desc, onPress }) => {
       removeEmotion(keyword);
     } else {
       //console.log('개수', selectedCount);
-      addEmotion({ group, keyword, desc, type: 'default' });
+      addEmotion({ group, keyword, type: 'default' });
     }
   };
   return (

@@ -1,3 +1,4 @@
+//// 커스텀 입력창
 import React from 'react';
 import { InputToolbar as GiftedInputToolbar, InputToolbarProps } from 'react-native-gifted-chat';
 

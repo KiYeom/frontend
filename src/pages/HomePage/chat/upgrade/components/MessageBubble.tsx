@@ -1,3 +1,4 @@
+//커스텀 버블
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import palette from '../../../../../assets/styles/theme';

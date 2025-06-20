@@ -1,7 +1,7 @@
 import React from 'react';
-import { ScrollView, Platform, Alert, Linking } from 'react-native';
+import { View, ScrollView, Platform, Alert, Linking } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { ImageContainer } from '../../pages/HomePage/diary/DailyDairy.style';
+import { rsWidth, rsHeight } from '../../utils/responsive-size';
 import UploadButton from '../../components/upload-picture/UploadButton';
 import useEmotionStore from '../../store/useEmotionStore';
 import { MAX_DIARY_IMAGE_COUNT } from '../../constants/Constants';
@@ -57,7 +57,13 @@ const DiaryImageSection = () => {
   };
 
   return (
-    <ImageContainer style={{ height: 120, justifyContent: 'center' }}>
+    <View
+      style={{
+        justifyContent: 'center',
+        paddingHorizontal: rsWidth * 24,
+        paddingVertical: rsHeight * 10,
+        height: 120,
+      }}>
       {image.length > 0 ? (
         <ScrollView
           horizontal
@@ -70,7 +76,7 @@ const DiaryImageSection = () => {
       ) : (
         <UploadButton onPress={pickImage} />
       )}
-    </ImageContainer>
+    </View>
   );
 };
 

@@ -1,7 +1,47 @@
 import { create } from 'zustand';
 import { MAX_SELECTED_EMOTION_COUNT } from '../constants/Constants';
+//사용자가 선택한 Emotion 타입 정의
+export type EmotionGroup = 'angry' | 'sad' | 'happy' | 'calm';
+export interface Emotion {
+  group: EmotionGroup;
+  keyword: string;
+  type: 'custom' | 'default';
+}
 
-const useEmotionStore = create((set, get) => ({
+//감정 목록 테이블 타입
+export interface SelectableEmotion {
+  group: EmotionGroup;
+  keyword: string;
+  desc: string;
+}
+
+// 서버 데이터 타입 정의
+export interface ServerData {
+  emotions?: Emotion[];
+  Keywords?: Emotion[];
+  text?: string;
+  todayFeeling?: string;
+  images?: string[];
+}
+
+interface EmotionStore {
+  selectedEmotionKeywords: Set<string>;
+  allSelectedEmotions: Emotion[];
+  diaryText: string;
+  image: string[];
+
+  addEmotion: (emotion: Emotion) => void;
+  removeEmotion: (keyword: string) => void;
+  initializeFromServerData: (serverData: ServerData) => void;
+  clearEmotions: () => void;
+  setDiaryText: (value: string) => void;
+  clearDiaryText: () => void;
+  addImage: (url: string) => void;
+  removeImage: (url: string) => void;
+  clearImage: () => void;
+}
+
+const useEmotionStore = create<EmotionStore>((set, get) => ({
   selectedEmotionKeywords: new Set(),
   allSelectedEmotions: [], //[{'group' : 'sad', 'keyword': '우울한', 'type': 'default'}]
   diaryText: '',
@@ -64,7 +104,6 @@ const useEmotionStore = create((set, get) => ({
     set(() => ({
       selectedEmotionKeywords: new Set(),
       allSelectedEmotions: [],
-      selectedCount: 0, // 개수 초기화
     })),
   setDiaryText: (value: string) => set({ diaryText: value }),
   clearDiaryText: () => set({ diaryText: '' }),

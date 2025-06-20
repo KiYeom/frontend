@@ -63,6 +63,7 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
   const fetchData = useCallback(async () => {
     try {
       const dailyStatistics = await dailyAnalyze(dateID);
+      //console.log('dailyStatistics', dailyStatistics);
       if (!dailyStatistics) {
         alert('네트워크 연결이 불안정합니다. 잠시 후 다시 시도해주세요.');
         return;

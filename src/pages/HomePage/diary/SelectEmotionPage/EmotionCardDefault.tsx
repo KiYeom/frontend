@@ -1,9 +1,9 @@
 import React, { memo } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { css } from '@emotion/native';
-import Icon from '../../../components/icons/icons';
-import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
-import palette from '../../../assets/styles/theme';
+import Icon from '../../../../components/icons/icons';
+import { rsFont, rsHeight, rsWidth } from '../../../../utils/responsive-size';
+import palette from '../../../../assets/styles/theme';
 
 type Emotion = {
   group: string;

@@ -1,22 +1,22 @@
 import { css } from '@emotion/native';
 import React, { useEffect, useState, useMemo } from 'react';
 import { View, Platform, ImageSourcePropType } from 'react-native';
-import { rsHeight, rsWidth, rsFont } from '../../../utils/responsive-size';
+import { rsHeight, rsWidth, rsFont } from '../../../../utils/responsive-size';
 import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
 import Toast from 'react-native-root-toast';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { TabScreenName, RootStackName } from '../../../constants/Constants';
-import EmotionTitleBox from './emotionTitleBox';
-import Analytics from '../../../utils/analytics';
-import { formatDateKorean } from '../../../utils/times';
-import Header from '../../../components/header/header';
-import { useCalendarStore } from '../../../store/calendarStore';
-import palette from '../../../assets/styles/theme';
-import TierModal from '../../../components/modals/tier-modal';
-import AdsModal from '../../../components/modals/ads-modal';
-import { getUserInfo } from '../../../apis/setting';
+import { TabScreenName, RootStackName } from '../../../../constants/Constants';
+import EmotionTitleBox from '../SelectEmotionPage/emotionTitleBox';
+import Analytics from '../../../../utils/analytics';
+import { formatDateKorean } from '../../../../utils/times';
+import Header from '../../../../components/header/header';
+import { useCalendarStore } from '../../../../store/calendarStore';
+import palette from '../../../../assets/styles/theme';
+import TierModal from '../../../../components/modals/tier-modal';
+import AdsModal from '../../../../components/modals/ads-modal';
+import { getUserInfo } from '../../../../apis/setting';
 import { ActivityIndicator, StyleSheet } from 'react-native';
-import { updateSendPhotoPermission } from '../../../apis/chatting';
+import { updateSendPhotoPermission } from '../../../../apis/chatting';
 import {
   BannerAd,
   BannerAdSize,
@@ -32,18 +32,16 @@ import {
   setUserPlan,
   getCanSendPhoto,
   setCanSendPhoto,
-} from '../.././../utils/storageUtils';
+} from '../../../../utils/storageUtils';
 import Constants from 'expo-constants';
 //import adUnitId from '../../../utils/advertise';
-import { getUserNickname } from '../../../utils/storageUtils';
-import UploadButton from '../../../components/upload-picture/UploadButton';
-import { ImageContainer } from './DailyDairy.style';
-import Button from '../../../components/button/button';
-import useEmotionStore from '../../../store/useEmotionStore';
-import DiaryImageSection from '../../../components/DiaryImageSection/DiaryImageSection';
-import SelectedEmotionChip from './SelectedEmotionChip';
+import { getUserNickname } from '../../../../utils/storageUtils';
+import Button from '../../../../components/button/button';
+import useEmotionStore from '../../../../store/useEmotionStore';
+import DiaryImageSection from '../../../../components/DiaryImageSection/DiaryImageSection';
+import SelectedEmotionChip from '../SelectEmotionPage/SelectedEmotionChip';
 import TextInputSection from './TextInputSection';
-import { useSaveEmotion, useSaveEmotionWithImage } from '../../../queries/emotionQueries';
+import { useSaveEmotion, useSaveEmotionWithImage } from '../../../../queries/emotionQueries';
 const userName = getUserNickname() ?? 'Test_remind_empty';
 const appVariant = Constants.expoConfig?.extra?.appVariant;
 const isProductionOrStaging = appVariant === 'production' || appVariant === 'staging';
@@ -55,14 +53,13 @@ const adUnitId =
       : process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_IOS
     : TestIds.REWARDED;
 
-const localImage: ImageSourcePropType = require('../../../assets/images/cookie_pic_alarm.png');
-const adsImage: ImageSourcePropType = require('../../../assets/images/ads_cookie.png');
+const localImage: ImageSourcePropType = require('../../../../assets/images/cookie_pic_alarm.png');
+const adsImage: ImageSourcePropType = require('../../../../assets/images/ads_cookie.png');
 
 const DailyDairy = ({ navigation, route }) => {
   const { dateID } = route.params;
   const insets = useSafeAreaInsets();
 
-  //const { selectedEmotions, diaryText, setDiaryText, setImages, images } = useEmotionStore();
   const { updateEntryStatus } = useCalendarStore();
 
   //이미지 가지고 오기
@@ -83,71 +80,6 @@ const DailyDairy = ({ navigation, route }) => {
       }),
     [],
   );
-
-  //일기장 화면 진입 시 실행되는 useEffect
-  /* const [loaded, setLoaded] = useState(false);
-  useFocusEffect(
-    useCallback(() => {
-      const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
-        //console.log('광고 로드');
-        setLoaded(true);
-      });
-      //광고를 끝까지 봐서 보상을 줄 수 있을 때 일기와 사진을 등록할 수 있는 콜백 함수를 unsubscribeEarned 이라는 이름으로 등록해둔다
-      const unsubscribeEarned = rewarded.addAdEventListener(
-        RewardedAdEventType.EARNED_REWARD,
-        async (reward) => {
-          //console.log('User earned reward of ', reward, diaryText);
-          try {
-            Analytics.watchEarnRewardScreen();
-            await todayEmotionWithImage(
-              dateID,
-              selectedEmotions,
-              diaryTextRef.current,
-              imageRef.current,
-            );
-            updateEntryStatus(dateID, selectedEmotions[0]?.group + '-emotion');
-
-            //setAdsModalVisible(false);
-          } catch (err) {
-            //console.log('Error saving diary with image:', err);
-            Toast.show('일기 저장 중 오류가 발생했습니다.');
-            Analytics.watchNoEarnRewardScreen();
-          }
-        },
-      );
-      //광고가 닫힐 때 실행되는 이벤트 리스터
-      const unsubscribeClosed = rewarded.addAdEventListener(AdEventType.CLOSED, () => {
-        //console.log('Ad was cloesed');
-        setAdsModalVisible(false);
-        setNavigationLoading(true); //네비게이션 로딩
-
-        // 짧은 지연 후 네비게이션 - 로딩 표시가 보이도록
-        setTimeout(() => {
-          navigation.navigate(RootStackName.BottomTabNavigator, {
-            screen: TabScreenName.Home,
-          });
-          Toast.show('광고 시청 완료! 일기를 기록했어요.', {
-            duration: Toast.durations.SHORT,
-            position: Toast.positions.CENTER,
-          });
-          // 네비게이션 후 로딩 상태 해제
-          setNavigationLoading(false);
-        }, 1000); // 0.5초 지연
-      });
-      //광고 로드
-      rewarded.load();
-      // 컴포넌트 언마운트 시 이벤트 리스너 해제
-      return () => {
-        //console.log('컴포넌트 언마운트 시 이벤트 리스너 해제');
-        //listenerCount--;
-        unsubscribeLoaded();
-        unsubscribeEarned();
-        unsubscribeClosed();
-        setNavigationLoading(false);
-        //console.log(`리스너 해제됨 : 현재 ${listenerCount}번 등록됨`);
-      };
-    }, [rewarded, navigation]),
-  );*/
 
   const [loaded, setLoaded] = useState<boolean>(false);
 
@@ -306,70 +238,6 @@ const DailyDairy = ({ navigation, route }) => {
     rewarded.show(); // 광고 표시
   };
 
-  /*
-      Analytics.clickDiaryWriteButton();
-    console.log('일기 저장 시작:', { image, allSelectedEmotions, diaryText });
-
-    try {
-      if (image.length === 0) {
-        console.log('이미지 없음 - 감정만 저장');
-        // 이미지 없는 일기 저장
-        await saveEmotionMutation.mutateAsync({
-          dateID,
-          emotions: allSelectedEmotions,
-          text: diaryText,
-        });
-
-        handleStatusUpdate(allSelectedEmotions);
-        navigateToHome(false);
-      } else if (getUserPlan() === 'free') {
-        console.log('무료 사용자 : 광고 모달 표시하기', getUserPlan());
-        // 무료 사용자 - 광고 모달 표시
-        setAdsModalVisible(true);
-      } else {
-        // 유료 사용자 - 바로 이미지 포함 저장
-        console.log('유료 사용자 : 이미지 포함 일기 저장');
-        await saveEmotionWithImageMutation.mutateAsync({
-          dateID,
-          emotions: allSelectedEmotions,
-          text: diaryText,
-          images: image,
-        });
-
-        handleStatusUpdate(allSelectedEmotions);
-        navigateToHome(false);
-      }
-    } catch (error) {
-      console.error('일기 저장 중 오류:', error);
-      Toast.show('일기 저장 중 오류가 발생했습니다.');
-    }
-  
-  */
-
-  //광고 시청 함수
-  const watchAds = async () => {
-    try {
-      if (!loaded) {
-        Toast.show('광고 로딩중입니다. 잠시 기다려주세요');
-        rewarded.load();
-        return;
-      }
-      //console.log('전면 광고 시청');
-      //setAdsModalVisible(false);
-      await rewarded.show(); // 광고 표시
-      Analytics.watchAdsScreen();
-    } catch (error) {
-      //console.error('Error showing ad:', error);
-      Toast.show('광고 표시 중 오류가 발생했습니다');
-      setLoaded(false);
-      rewarded.load(); // Try to load again
-    }
-  };
-  /*if (!loaded) {
-    console.log('null');
-    return null;
-  }*/
-  console.log('렌더링 DailyDairy 전체 화면');
   if (!loaded) {
     console.log('no advert ready to show yet');
     return null;
@@ -416,7 +284,6 @@ const DailyDairy = ({ navigation, route }) => {
           style={{
             paddingHorizontal: rsWidth * 20,
             paddingVertical: rsHeight * 10,
-            backgroundColor: 'pink',
           }}>
           <Button
             title="일기 저장하기"

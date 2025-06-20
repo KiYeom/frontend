@@ -1,6 +1,6 @@
 import styled from '@emotion/native';
-import palette from '../../../assets/styles/theme';
-import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
+import palette from '../../../../assets/styles/theme';
+import { rsFont, rsHeight, rsWidth } from '../../../../utils/responsive-size';
 
 export const EmotionMainTitle = styled.Text`
   font-size: ${rsFont * 20 + 'px'};

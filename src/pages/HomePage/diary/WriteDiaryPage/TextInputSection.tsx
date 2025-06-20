@@ -1,8 +1,13 @@
 import React, { useState, useRef } from 'react';
-import { View, TextInput } from 'react-native';
-import { rsHeight, rsWidth, rsFont } from '../../../utils/responsive-size';
-import useEmotionStore from '../../../store/useEmotionStore';
-import palette from '../../../assets/styles/theme';
+import {
+  View,
+  TextInput,
+  NativeSyntheticEvent,
+  TextInputContentSizeChangeEventData,
+} from 'react-native';
+import { rsHeight, rsWidth, rsFont } from '../../../../utils/responsive-size';
+import useEmotionStore from '../../../../store/useEmotionStore';
+import palette from '../../../../assets/styles/theme';
 const TextInputSection = () => {
   const [textInputContainerHeight, setTextInputContainerHeight] = useState(200);
   const minInputHeight = 200;
@@ -11,15 +16,14 @@ const TextInputSection = () => {
   const lastContentSizeChange = useRef(Date.now());
   const throttleDelay = 100; // 100ms throttle
 
-  const handleContentSizeChange = (event) => {
-    //console.log('호출');
+  const handleContentSizeChange = (
+    event: NativeSyntheticEvent<TextInputContentSizeChangeEventData>,
+  ) => {
     const now = Date.now();
     if (now - lastContentSizeChange.current > throttleDelay) {
       lastContentSizeChange.current = now;
-      // Only update if there's a significant change (more than 20px)
       const newHeight = event.nativeEvent.contentSize.height;
       if (Math.abs(newHeight - textInputContainerHeight) > 20) {
-        //console.log("    '높이 변경', newHeight);");
         setTextInputContainerHeight(Math.max(minInputHeight, newHeight));
       }
     }
@@ -27,7 +31,7 @@ const TextInputSection = () => {
   return (
     <View
       style={{
-        backgroundColor: 'blue',
+        //backgroundColor: 'blue',
         flex: 1,
         marginHorizontal: rsWidth * 24,
         marginVertical: rsHeight * 5,

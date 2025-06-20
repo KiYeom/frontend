@@ -4,8 +4,8 @@ import {
   EmotionTitleContainer,
   EmotionTextContainer,
 } from './emotionTitleBox.styles';
-import { TIconName } from '../../../components/icons/icons';
-import Icon from '../../../components/icons/icons';
+import { TIconName } from '../../../../components/icons/icons';
+import Icon from '../../../../components/icons/icons';
 import React from 'react';
 type EmotionTitleBoxProps = {
   iconName?: TIconName;

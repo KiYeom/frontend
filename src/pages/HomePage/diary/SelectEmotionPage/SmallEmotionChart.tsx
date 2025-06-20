@@ -2,22 +2,36 @@ import { css } from '@emotion/native';
 import React, { useEffect, useState, useCallback } from 'react';
 import { Platform, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import CustomBottomSheet from '../../../components/custom-bottomsheet/custom-bottomsheet';
-import { emotionsByColumn, HomeStackName } from '../../../constants/Constants';
-import Header from '../../../components/header/header';
+import CustomBottomSheet from '../../../../components/custom-bottomsheet/custom-bottomsheet';
+import { HomeStackName } from '../../../../constants/Constants';
+import Header from '../../../../components/header/header';
 import EmotionTitleBox from './emotionTitleBox';
-import Analytics from '../../../utils/analytics';
-import useEmotionStore from '../../../store/useEmotionStore';
-import { rsFont, rsHeight, rsWidth } from '../../../utils/responsive-size';
-import EmotionChip from '../../../components/atoms/EmotionChip/EmotionChip';
-import Button from '../../../components/button/button';
+import Analytics from '../../../../utils/analytics';
+import useEmotionStore from '../../../../store/useEmotionStore';
+import { rsFont, rsHeight, rsWidth } from '../../../../utils/responsive-size';
+import EmotionChip from './EmotionChip';
+import Button from '../../../../components/button/button';
 import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { formatDateKorean } from '../../../utils/times';
+import { formatDateKorean } from '../../../../utils/times';
 import SelectedEmotionDesc from './SelectedEmotionDesc';
 import SelectedEmotionChip from './SelectedEmotionChip';
-import { useEmotionData } from '../../../queries/emotionQueries';
-const SmallEmotionChart = ({ navigation, route }) => {
+import { useEmotionData } from '../../../../queries/emotionQueries';
+import { SelectableEmotion } from '../../../../store/useEmotionStore';
+import { getEmotionColumns, allEmotionData } from '../../../../constants/Constants';
+type SmallEmotionChartRouteParams = {
+  dateID: string; // 날짜 ID, 예: '2025-01-01'
+};
+
+type Props = {
+  navigation: any; // 나중에 Navigation 타입도 정의 가능
+  route: {
+    params: SmallEmotionChartRouteParams;
+  };
+};
+// 감정 칩들을 열로 나누는 함수 (6개의 열로 나눔)
+const emotionsByColumn = getEmotionColumns(allEmotionData, 6);
+const SmallEmotionChart = ({ navigation, route }: Props) => {
   const insets = useSafeAreaInsets();
   //-1이면 닫힘, 0이면 열림
   const [bottomSheetIndex, setBottomSheetIndex] = useState(-1);
@@ -71,7 +85,7 @@ const SmallEmotionChart = ({ navigation, route }) => {
             contentContainerStyle={{ paddingHorizontal: 12, gap: 12, flexDirection: 'row' }}>
             {emotionsByColumn.map((column, colIndex) => (
               <View key={colIndex} style={{ gap: 12 /*backgroundColor: 'red'*/ }}>
-                {column.map((emotion, i) => (
+                {column.map((emotion: SelectableEmotion, i: number) => (
                   <EmotionChip
                     key={emotion.keyword}
                     group={emotion.group}
@@ -86,18 +100,16 @@ const SmallEmotionChart = ({ navigation, route }) => {
           <SelectedEmotionChip />
         </KeyboardAwareScrollView>
         <KeyboardStickyView
-          offset={{ closed: 0, opened: Platform.OS === 'ios' ? insets.bottom : 0 }}>
-          <View
-            style={css`
-              padding: ${rsHeight * 10 + 'px'};
-              flex-direction: column;
-              gap: ${rsWidth * 10 + 'px'};
-              justify-content: center;
-              height: ${rsHeight * 152 + 'px'};
-            `}>
-            <Button title="원하는 감정이 없어요" primary={false} onPress={handleNoEmotion} />
-            <Button title="마음일기 쓰러가기" primary={true} onPress={handleGoToDiary} />
-          </View>
+          offset={{ closed: 0, opened: Platform.OS === 'ios' ? insets.bottom : 0 }}
+          style={{
+            padding: rsHeight * 10,
+            flexDirection: 'column',
+            gap: rsHeight * 10,
+            justifyContent: 'center',
+            height: rsHeight * 150,
+          }}>
+          <Button title="원하는 감정이 없어요" primary={false} onPress={handleNoEmotion} />
+          <Button title="마음일기 쓰러가기" primary={true} onPress={handleGoToDiary} />
         </KeyboardStickyView>
       </View>
       {bottomSheetIndex !== -1 && (
