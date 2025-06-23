@@ -5,6 +5,7 @@ import Button from '../../../../components/button/button';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import useEmotionStore from '../../../../store/useEmotionStore';
 import { rsHeight } from '../../../../utils/responsive-size';
+import { MAX_SELECTED_EMOTION_COUNT } from '../../../../constants/Constants';
 
 type Props = {
   onNoEmotionPress: () => void;
@@ -25,7 +26,12 @@ const EmotionFooterButtons = ({ onNoEmotionPress, onGoToDiary }: Props) => {
         justifyContent: 'center',
         height: rsHeight * 150,
       }}>
-      <Button title="원하는 감정이 없어요" primary={false} onPress={onNoEmotionPress} />
+      <Button
+        title="원하는 감정이 없어요"
+        disabled={selectedCount === MAX_SELECTED_EMOTION_COUNT}
+        primary={false}
+        onPress={onNoEmotionPress}
+      />
       <Button
         title="마음일기 쓰러가기"
         primary={true}

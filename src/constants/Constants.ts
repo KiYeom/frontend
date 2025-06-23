@@ -69,7 +69,6 @@ export enum HomeStackName {
   Profile = 'Profile',
   NewChat = 'NewChat',
   NewChatRefresh = 'NewChatRefresh',
-  UpgradeNewChat = 'UpgradeNewChat',
   ChatList = 'ChatList',
   Report = 'Report', //1.5.7 UPDATE 일일 보고서
   Favorites = 'Favorites',

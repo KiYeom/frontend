@@ -51,7 +51,6 @@ import {
 } from './src/services/inappService';
 import Purchases from 'react-native-purchases';
 import { Provider } from 'react-redux';
-import { store } from './src/redux/store';
 /*const { APP_ENV } = Constants.expoConfig?.extra || {};
 // 환경 확인
 const isProduction = APP_ENV === 'production';
@@ -227,119 +226,114 @@ const App: React.FC = () => {
   );*/
 
   return (
-    <Provider store={store}>
-      <QueryClientProvider client={queryClient}>
-        <KeyboardProvider>
-          <SafeAreaProvider>
-            <PaperProvider>
-              <RootSiblingParent>
-                <NavigationContainer
-                  theme={navTheme}
-                  linking={{
-                    prefixes: [prefix],
-                    config: {
-                      // Configuration for linking
-                      screens: {
-                        // Define the linking configuration
-                        [RootStackName.HomeStackNavigator]: {
-                          screens: {
-                            [HomeStackName.NewChat]: 'chat', //{"url": "remind://chat" }
-                            [HomeStackName.Report]: 'statistic/daily/:dateID',
-                          },
+    <QueryClientProvider client={queryClient}>
+      <KeyboardProvider>
+        <SafeAreaProvider>
+          <PaperProvider>
+            <RootSiblingParent>
+              <NavigationContainer
+                theme={navTheme}
+                linking={{
+                  prefixes: [prefix],
+                  config: {
+                    // Configuration for linking
+                    screens: {
+                      // Define the linking configuration
+                      [RootStackName.HomeStackNavigator]: {
+                        screens: {
+                          [HomeStackName.NewChat]: 'chat', //{"url": "remind://chat" }
+                          [HomeStackName.Report]: 'statistic/daily/:dateID',
                         },
                       },
                     },
-                    async getInitialURL() {
-                      // First, you may want to do the default deep link handling
-                      // Check if app was opened from a deep link
-                      const url = await Linking.getInitialURL();
+                  },
+                  async getInitialURL() {
+                    // First, you may want to do the default deep link handling
+                    // Check if app was opened from a deep link
+                    const url = await Linking.getInitialURL();
 
-                      if (url != null) {
-                        return url;
-                      }
+                    if (url != null) {
+                      return url;
+                    }
 
-                      // Handle URL from expo push notifications
-                      const response = await Notifications.getLastNotificationResponseAsync();
+                    // Handle URL from expo push notifications
+                    const response = await Notifications.getLastNotificationResponseAsync();
 
-                      return response?.notification.request.content.data.url;
-                    },
-                    subscribe(listener) {
-                      const onReceiveURL = ({ url }: { url: string }) => listener(url);
+                    return response?.notification.request.content.data.url;
+                  },
+                  subscribe(listener) {
+                    const onReceiveURL = ({ url }: { url: string }) => listener(url);
 
-                      // Listen to incoming links from deep linking
-                      const eventListenerSubscription = Linking.addEventListener(
-                        'url',
-                        onReceiveURL,
-                      );
+                    // Listen to incoming links from deep linking
+                    const eventListenerSubscription = Linking.addEventListener('url', onReceiveURL);
 
-                      // Listen to expo push notifications
-                      const subscription = Notifications.addNotificationResponseReceivedListener(
-                        (response) => {
-                          const url = response.notification.request.content.data.url;
+                    // Listen to expo push notifications
+                    const subscription = Notifications.addNotificationResponseReceivedListener(
+                      (response) => {
+                        const url = response.notification.request.content.data.url;
 
-                          // Any custom logic to see whether the URL needs to be handled
-                          //...
+                        // Any custom logic to see whether the URL needs to be handled
+                        //...
 
-                          // Let React Navigation handle the URL
-                          listener(url);
-                        },
-                      );
+                        // Let React Navigation handle the URL
+                        listener(url);
+                      },
+                    );
 
-                      return () => {
-                        // Clean up the event listeners
-                        eventListenerSubscription.remove();
-                        subscription.remove();
-                      };
-                    },
-                  }}
-                  fallback={
-                    <View style={styles.loadingContainer}>
-                      <ActivityIndicator size="large" color={palette.primary[500]} />
-                    </View>
-                  }>
-                  <RootStack.Navigator
-                    screenOptions={{
-                      headerShown: false,
-                    }}>
-                    {SigninStatus ? (
-                      <>
-                        <RootStack.Screen
-                          name={RootStackName.BottomTabNavigator}
-                          component={BottomTabNavigator}
-                        />
-                        <RootStack.Screen
-                          name={RootStackName.StatisStackNavigator}
-                          component={StatisticStackNavigator}
-                        />
-                        <RootStack.Screen
-                          name={RootStackName.HomeStackNavigator}
-                          component={HomeStackNavigator}
-                        />
-                        <RootStack.Screen
-                          name={RootStackName.SettingStackNavigator}
-                          component={SettingStackNavigator}
-                        />
-                        <RootStack.Screen
-                          name={RootStackName.DangerStackNavigator}
-                          component={DangerStackNavigator}
-                        />
-                      </>
-                    ) : (
-                      <>
-                        <RootStack.Screen
-                          name={RootStackName.AuthStackNavigator}
-                          component={AuthStackNavigator}
-                        />
-                      </>
-                    )}
-                  </RootStack.Navigator>
-                </NavigationContainer>
-              </RootSiblingParent>
-            </PaperProvider>
-          </SafeAreaProvider>
-        </KeyboardProvider>
-      </QueryClientProvider>
-    </Provider>
+                    return () => {
+                      // Clean up the event listeners
+                      eventListenerSubscription.remove();
+                      subscription.remove();
+                    };
+                  },
+                }}
+                fallback={
+                  <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color={palette.primary[500]} />
+                  </View>
+                }>
+                <RootStack.Navigator
+                  screenOptions={{
+                    headerShown: false,
+                  }}>
+                  {SigninStatus ? (
+                    <>
+                      <RootStack.Screen
+                        name={RootStackName.BottomTabNavigator}
+                        component={BottomTabNavigator}
+                      />
+                      <RootStack.Screen
+                        name={RootStackName.StatisStackNavigator}
+                        component={StatisticStackNavigator}
+                      />
+                      <RootStack.Screen
+                        name={RootStackName.HomeStackNavigator}
+                        component={HomeStackNavigator}
+                      />
+                      <RootStack.Screen
+                        name={RootStackName.SettingStackNavigator}
+                        component={SettingStackNavigator}
+                      />
+                      <RootStack.Screen
+                        name={RootStackName.DangerStackNavigator}
+                        component={DangerStackNavigator}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <RootStack.Screen
+                        name={RootStackName.AuthStackNavigator}
+                        component={AuthStackNavigator}
+                      />
+                    </>
+                  )}
+                </RootStack.Navigator>
+              </NavigationContainer>
+            </RootSiblingParent>
+          </PaperProvider>
+        </SafeAreaProvider>
+      </KeyboardProvider>
+    </QueryClientProvider>
   );
 };
 
