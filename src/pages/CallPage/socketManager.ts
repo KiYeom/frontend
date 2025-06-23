@@ -16,7 +16,11 @@ export const initSocket = (token: string) => {
 
     // 이벤트 핸들링 예시
     socket.on('connect', () => {
-      console.log('[SOCKET] 연결됨:', socket?.id);
+      console.log('[SOCKET] 연결됨:', socket.id);
+    });
+
+    socket.on('connected', (data) => {
+      console.log('[서버 응답]: ', data.message);
     });
 
     socket.on('disconnect', () => {

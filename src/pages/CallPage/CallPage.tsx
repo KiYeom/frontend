@@ -11,6 +11,7 @@ import {
   disconnectSocket,
   sendMicAudio,
   onGeminiResponse,
+  getSocket,
 } from './socketManager';
 import { getAccessToken } from '../../utils/storageUtils';
 import { EventEmitter } from 'expo-modules-core';
@@ -27,10 +28,6 @@ const CallPage: React.FC = () => {
   useEffect(() => {
     const userToken = getAccessToken();
     initSocket(userToken);
-    onGeminiResponse((text: string) => {
-      setResponseText(text);
-      setRealTimeData(text);
-    });
   }, []);
 
   useEffect(() => {
@@ -52,10 +49,21 @@ const CallPage: React.FC = () => {
   };
 
   const handleConnect = async () => {
-    console.log('📞 startAudioCall 호출 전'); // ✅ 테스트 로그 추가
-    await startAudioCall(); //1. API 호출
-    console.log('📞 startAudioCall 호출 후'); // ✅ 여기도 로그 추가
-    connectSocket(); //2. 소켓 연결
+    connectSocket(); // 1. 소켓 연결
+
+    const socket = getSocket();
+    if (!socket) return;
+
+    socket.once('connect', async () => {
+      console.log('✅ WebSocket 연결됨');
+
+      try {
+        const response = await startAudioCall(); // 2. 연결된 후에 start 호출
+        console.log('✅ startAudioCall 응답:', response);
+      } catch (err) {
+        console.error('❌ startAudioCall 실패:', err);
+      }
+    });
   };
 
   const handleEnd = () => {
