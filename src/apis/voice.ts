@@ -33,9 +33,11 @@ export const pauseAudioCall = async (): Promise<AudioCallResponse> => {
 export const endAudioCall = async (): Promise<AudioCallResponse> => {
   try {
     const response = await instance.post('/v1/audio/end');
+    console.log('🔹 endAudioCall response:', response.data);
     return response.data;
   } catch (error) {
-    Sentry.captureException(error);
+    //Sentry.captureException(error);
+    console.log('🔹 endAudioCall error:', error);
     throw error;
   }
 };

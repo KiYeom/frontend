@@ -26,6 +26,9 @@ export const initSocket = (token: string) => {
     socket.on('disconnect', () => {
       console.log('[SOCKET] 연결 끊김');
     });
+    socket.on('disconnected', (data) => {
+      console.log('[서버 응답]: ', data.message);
+    });
 
     socket.on('connect_error', (err) => {
       console.error('[SOCKET] 연결 오류 발생');

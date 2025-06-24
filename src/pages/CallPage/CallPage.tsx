@@ -16,7 +16,7 @@ import {
 import { getAccessToken } from '../../utils/storageUtils';
 import { EventEmitter } from 'expo-modules-core';
 import float32ToInt16PCM from './float32ToInt16PCM';
-import { startAudioCall } from '../../apis/voice';
+import { endAudioCall, startAudioCall } from '../../apis/voice';
 const CallPage: React.FC = () => {
   const [samples, setSamples] = useState<number[]>([]);
   const [responseText, setResponseText] = useState<string>('');
@@ -48,6 +48,7 @@ const CallPage: React.FC = () => {
     MyModule.startRecording();
   };
 
+  //시작
   const handleConnect = async () => {
     connectSocket(); // 1. 소켓 연결
 
@@ -55,15 +56,24 @@ const CallPage: React.FC = () => {
     if (!socket) return;
 
     socket.once('connect', async () => {
-      console.log('✅ WebSocket 연결됨');
+      //console.log('✅ WebSocket 연결됨');
 
       try {
         const response = await startAudioCall(); // 2. 연결된 후에 start 호출
-        console.log('✅ startAudioCall 응답:', response);
+        //console.log('✅ startAudioCall 응답:', response);
       } catch (err) {
-        console.error('❌ startAudioCall 실패:', err);
+        //console.error('❌ startAudioCall 실패:', err);
       }
     });
+  };
+
+  //소켓 연결 해제 (프론트는 먼저 소켓 연결을 끊지 않는다)
+  const handleDisconnect = async () => {
+    try {
+      const response = await endAudioCall();
+    } catch (err) {
+      console.error('❌ endAudioCall 실패:', err);
+    }
   };
 
   const handleEnd = () => {
@@ -81,8 +91,8 @@ const CallPage: React.FC = () => {
       <Text>{MyModule.hello()}</Text>
       <Button title="녹음 시작" onPress={handleStart} />
       <Button title="녹음 중지" onPress={handleEnd} />
-      <Button title="연결하기!!!!!" onPress={handleConnect} />
-      <Button title="끊기" onPress={disconnectSocket} />
+      <Button title="시작(웹소켓 연결 후 서버 API 호출)" onPress={handleConnect} />
+      <Button title="끊기(음성 통화 종료하기 API 호출" onPress={handleDisconnect} />
       <Button title="테스트" onPress={() => console.log('hi')} />
       <Text style={{ fontFamily: 'Courier', fontSize: 12 }}>
         {samples.map((n) => n.toFixed(2)).join(', ')}
