@@ -10,10 +10,10 @@ type AudioCallResponse = {
 export const startAudioCall = async (): Promise<AudioCallResponse> => {
   try {
     const data = await instance.post('/v1/audio/start');
-    console.log('🔹 startAudioCall response:', data);
+    //console.log('🔹 startAudioCall response:', data);
     return data;
   } catch (error) {
-    console.log('🔹 startAudioCall error:', error);
+    //console.log('🔹 startAudioCall error:', error);
     throw error;
   }
 };
@@ -29,15 +29,26 @@ export const pauseAudioCall = async (): Promise<AudioCallResponse> => {
   }
 };
 
+//음성 통화 재개하기 (POST, /v1/audio/resume)
+export const resumeAudioCall = async (): Promise<AudioCallResponse> => {
+  try {
+    const response = await instance.post('/v1/audio/resume');
+    return response.data;
+  } catch (error) {
+    Sentry.captureException(error);
+    throw error;
+  }
+};
+
 //음성 통화 종료하기 (POST, /v1/audio/end)
 export const endAudioCall = async (): Promise<AudioCallResponse> => {
   try {
     const response = await instance.post('/v1/audio/end');
-    console.log('🔹 endAudioCall response:', response.data);
+    //console.log('🔹 endAudioCall response:', response.data);
     return response.data;
   } catch (error) {
     //Sentry.captureException(error);
-    console.log('🔹 endAudioCall error:', error);
+    //console.log('🔹 endAudioCall error:', error);
     throw error;
   }
 };

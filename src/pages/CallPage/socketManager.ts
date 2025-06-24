@@ -18,15 +18,21 @@ export const initSocket = (token: string) => {
     socket.on('connect', () => {
       console.log('[SOCKET] 연결됨:', socket.id);
     });
+    socket.on('disconnect', () => {
+      console.log('[SOCKET] 연결 끊김');
+    });
 
     socket.on('connected', (data) => {
       console.log('[서버 응답]: ', data.message);
     });
 
-    socket.on('disconnect', () => {
-      console.log('[SOCKET] 연결 끊김');
-    });
     socket.on('disconnected', (data) => {
+      console.log('[서버 응답]: ', data.message);
+    });
+    socket.on('pause', (data) => {
+      console.log('[서버 응답]: ', data.message);
+    });
+    socket.on('resume', (data) => {
       console.log('[서버 응답]: ', data.message);
     });
 
