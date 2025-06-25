@@ -9,7 +9,7 @@ import {
   initSocket,
   connectSocket,
   disconnectSocket,
-  sendMicAudio,
+  //sendMicAudio,
   onGeminiResponse,
   getSocket,
 } from './socketManager';
@@ -30,6 +30,7 @@ const CallPage: React.FC = () => {
   const [realTimeData, setRealTimeData] = useState('');
   const [waveform, setWaveform] = useState<number[]>([]);
   const heartbeatTimer = useRef<NodeJS.Timeout | null>(null);
+  const [wavFilePath, setWavFilePath] = useState<string | null>(null);
 
   useEffect(() => {
     const userToken = getAccessToken();
@@ -38,17 +39,41 @@ const CallPage: React.FC = () => {
 
   useEffect(() => {
     const emitter = new EventEmitter(MyModule);
+    // 🟡 시각화용 이벤트
     const sub = emitter.addListener('onAudioBuffer', (event) => {
       const samples: number[] = event.samples;
       // 파형으로 변환: 절댓값만 추출, 50개만 자름
       const normalized = samples.slice(0, 50).map((n) => Math.min(Math.abs(n), 1));
       setWaveform(normalized);
 
-      sendMicAudio(samples);
+      //sendMicAudio(samples);
+    });
+    // ✅  (PCM 전송용)
+    const micSub = emitter.addListener('onMicAudio', ({ pcm }) => {
+      //console.log('📥 Received mic PCM data!', pcm); // ✅ 내가 말한 거 JS로
+      //console.log('📥 Received mic PCM data!'); // ✅ 내가 말한 거 JS로
+      const socket = getSocket();
+      // 소켓에 연결된 경우 : 마이크 오디오 서버에 전송
+      if (socket && socket.connected) {
+        const payload = new Uint8Array(pcm);
+        socket.emit('mic_audio', payload);
+        //console.log('📤 mic_audio 전송됨:', payload.length, 'bytes');
+      } else {
+        console.log('❌ 소켓이 연결되지 않았습니다. mic_audio 전송 실패');
+      }
+    });
+    // 파일 경로 받기
+    const fileListener = emitter.addListener('onRecordingSaved', ({ filePath }) => {
+      console.log('📁 WAV 파일 저장됨:', filePath);
+      setWavFilePath(filePath); // 상태 저장
+      // 예: 파일 경로를 플레이어에 넘기거나 상태에 저장
+      // setWavPath(filePath);
     });
 
     return () => {
       sub.remove();
+      micSub.remove();
+      fileListener.remove();
       MyModule.stopRecording?.(); // 정리
     };
   }, []);
@@ -68,6 +93,7 @@ const CallPage: React.FC = () => {
         await startAudioCall(); // API 호출 (서버에 start 알림)
         MyModule.startRecording(); // 마이크 시작
         startHeartbeat(); // 하트비트 시작
+        MyModule.playNextChunk(); // 첫 번째 음성 데이터 전송 (필요시)
       } catch (err) {
         console.error('❌ startAudioCall 실패:', err);
       }
@@ -84,10 +110,6 @@ const CallPage: React.FC = () => {
       MyModule.stopRecording(); //2. 마이크 중지
       stopHeartbeat(); // 3. 하트비트 중지
     }
-  };
-
-  const handleEnd = () => {
-    MyModule.stopRecording();
   };
 
   //일시 중지
@@ -141,25 +163,10 @@ const CallPage: React.FC = () => {
     }
   };
 
-  const handleAudioBuffer = (samples: number[]) => {
-    const int16Buffer = float32ToInt16PCM(samples);
-    sendMicAudio(int16Buffer); // 전송!
-  };
-  //마이크 스트림 + 음성 전송
-  const initAudioGraph = async () => {
-    console.log('initAudioGraph 호출');
-  };
-  const testRecord = async () => {
-    MyModule.startRecording();
-  };
-
   return (
     <View style={{ paddingTop: 100 }}>
       <Text>하이맨</Text>
       <SimpleWaveform data={waveform} width={360} height={80} />
-      <Text>{MyModule.hello()}</Text>
-      <Button title="녹음 시작" onPress={testRecord} />
-      <Button title="녹음 중지" onPress={handleEnd} />
       <Button title="시작(웹소켓 연결 후 서버 API 호출)" onPress={handleConnect} />
       <Button title="끊기(음성 통화 종료하기 API 호출" onPress={handleDisconnect} />
       <Button title="일시중지(pause)" onPress={handlePause} />

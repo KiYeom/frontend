@@ -40,7 +40,16 @@ declare class MyModule extends NativeModule<MyModuleEvents> {
 
   startRecording(): void;
   stopRecording(): void;
+  startRealtimePlayback(): void;
+  stopRealtimePlayback(): void;
+  streamPCMData(pcmData: Uint8Array): void;
   getSampleRate(): number;
+  playWavFile(filePath: string): void;
+  appendPlaybackData(pcmData: number[]): void;
+  playNextChunk(): void;
+  clearQueue(): void;
+  enqueuePCMData(pcmData: Uint8Array): void;
+  playPCMBuffer(pcmBuffer: Uint8Array): void;
 }
 
 // ✅ 모듈 불러오기
