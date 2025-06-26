@@ -10,7 +10,6 @@ import {
   connectSocket,
   disconnectSocket,
   //sendMicAudio,
-  onGeminiResponse,
   getSocket,
 } from './socketManager';
 import { getAccessToken } from '../../utils/storageUtils';
@@ -31,6 +30,17 @@ const CallPage: React.FC = () => {
   const [waveform, setWaveform] = useState<number[]>([]);
   const heartbeatTimer = useRef<NodeJS.Timeout | null>(null);
   const [wavFilePath, setWavFilePath] = useState<string | null>(null);
+  const lastAudioRoute = useRef<string | null>(null);
+  // 🟢 오디오 경로 변경 감지 상태 추가
+  const [isAudioSessionActive, setIsAudioSessionActive] = useState(false);
+  const isAudioSessionActiveRef = useRef(false);
+
+  const setAudioSessionActive = (active: boolean) => {
+    console.log('setAudioSessionActive 호출 시작:', isAudioSessionActiveRef.current);
+    setIsAudioSessionActive(active);
+    isAudioSessionActiveRef.current = active;
+    console.log('setAudioSessionActive 호출 종료:', isAudioSessionActiveRef.current);
+  };
 
   useEffect(() => {
     const userToken = getAccessToken();
@@ -69,11 +79,41 @@ const CallPage: React.FC = () => {
       // 예: 파일 경로를 플레이어에 넘기거나 상태에 저장
       // setWavPath(filePath);
     });
+    const readySub = emitter.addListener('onRecordingReady', () => {
+      console.log('🎙️ 마이크 녹음 준비 완료!');
+      setAudioSessionActive(true);
+      readySub.remove();
+    });
+    // 에어팟 <-> 스피커
+    const subscription = emitter.addListener('onAudioRouteChange', (event) => {
+      const newRoute = event?.newRoute;
+      // 새 경로가 이전과 같으면 무시
+      console.log('✅ 오디오 경로 변경 감지:', newRoute);
+      console.log('🐾 현재 오디오 경로:', lastAudioRoute.current);
+      if (lastAudioRoute.current === null) {
+        console.log('🟡 초기 오디오 경로 설정 무시');
+        lastAudioRoute.current = newRoute;
+        return;
+      }
+      if (lastAudioRoute.current === newRoute) {
+        console.log('🔁 동일한 오디오 경로 - 처리 생략');
+        return;
+      }
+      lastAudioRoute.current = newRoute;
+
+      if (isAudioSessionActiveRef.current) {
+        console.log('활성 상태 - 오디오 경로 변경 처리');
+        handlePause();
+      } else {
+        console.log('비활성 상태 - 오디오 경로 변경 무시');
+      }
+    });
 
     return () => {
       sub.remove();
       micSub.remove();
       fileListener.remove();
+      subscription.remove();
       MyModule.stopRecording?.(); // 정리
     };
   }, []);
@@ -90,10 +130,16 @@ const CallPage: React.FC = () => {
     // 2. 소켓 연결 완료 후에 start + 마이크 + 하트비트
     socket.once('connect', async () => {
       try {
+        console.log('1. API 호출 시작');
         await startAudioCall(); // API 호출 (서버에 start 알림)
+        console.log('2. startAudioCall 응답 받고 마이크 시작');
         MyModule.startRecording(); // 마이크 시작
+        console.log('3. 마이크 시작 완료, 하트비트 시작');
         startHeartbeat(); // 하트비트 시작
-        MyModule.playNextChunk(); // 첫 번째 음성 데이터 전송 (필요시)
+        //console.log('4. 실시간 재생 시작');
+        //MyModule.playNextChunk(); // 첫 번째 음성 데이터 전송 (필요시)
+        //console.log('5. 오디오 세션 활성화');
+        console.log('4️⃣. startAudioCall 완료');
       } catch (err) {
         console.error('❌ startAudioCall 실패:', err);
       }
@@ -108,6 +154,7 @@ const CallPage: React.FC = () => {
       console.error('❌ endAudioCall 실패:', err);
     } finally {
       MyModule.stopRecording(); //2. 마이크 중지
+      MyModule.stopRealtimePlayback(); //3. 재생 중지
       stopHeartbeat(); // 3. 하트비트 중지
     }
   };
@@ -119,8 +166,8 @@ const CallPage: React.FC = () => {
       const response = await pauseAudioCall();
       console.log('✅ pauseRecording 응답:', response);
       //pause 인 동안은 음성 전송을 하면 안 됨
-      stopHeartbeat(); // 하트비트 중지
       MyModule.stopRecording(); // 녹음 중지
+      MyModule.pauseRealtimePlayback(); // 출력 정지 (버퍼 보존)
       // 소켓 연결은 유지
     } catch (err) {
       console.error('❌ pauseRecording 실패:', err);
@@ -134,7 +181,8 @@ const CallPage: React.FC = () => {
       const response = await resumeAudioCall();
       console.log('✅ resumeRecording 응답:', response);
       MyModule.startRecording(); // 마이크 재시작
-      startHeartbeat(); // 하트비트 재시작
+      MyModule.resumeRealtimePlayback(); // 출력 재개 (버퍼 계속 재생)
+      //startHeartbeat(); // 하트비트 재시작
     } catch (err) {
       console.error('❌ resumeRecording 실패:', err);
     }
@@ -147,9 +195,9 @@ const CallPage: React.FC = () => {
     heartbeatTimer.current = setInterval(async () => {
       try {
         await heartbeatAudioCall();
-        console.log('✅ Heartbeat sent');
+        //console.log('✅ Heartbeat sent');
       } catch (e) {
-        console.warn('❌ Heartbeat failed:', e.message);
+        //console.warn('❌ Heartbeat failed:', e.message);
       }
     }, 5000); // 5초 간격
   };
@@ -165,7 +213,7 @@ const CallPage: React.FC = () => {
 
   return (
     <View style={{ paddingTop: 100 }}>
-      <Text>하이맨</Text>
+      <Text>{MyModule.hello()}</Text>
       <SimpleWaveform data={waveform} width={360} height={80} />
       <Button title="시작(웹소켓 연결 후 서버 API 호출)" onPress={handleConnect} />
       <Button title="끊기(음성 통화 종료하기 API 호출" onPress={handleDisconnect} />

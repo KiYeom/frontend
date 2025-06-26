@@ -50,6 +50,8 @@ declare class MyModule extends NativeModule<MyModuleEvents> {
   clearQueue(): void;
   enqueuePCMData(pcmData: Uint8Array): void;
   playPCMBuffer(pcmBuffer: Uint8Array): void;
+  pauseRealtimePlayback(): void;
+  resumeRealtimePlayback(): void;
 }
 
 // ✅ 모듈 불러오기

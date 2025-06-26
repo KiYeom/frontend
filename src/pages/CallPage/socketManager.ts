@@ -1,11 +1,8 @@
 // socketManager.ts
-import { io, Socket } from 'socket.io-client';
-import float32ToInt16PCM from './float32ToInt16PCM'; // float32ToInt16PCM 함수 임포트
+import { io, Socket } from 'socket.io-client'; // float32ToInt16PCM 함수 임포트
 import MyModule from '../../../modules/my-module';
-import useRef from 'react';
 
 let socket: Socket | null = null;
-let isPlaying = false;
 let lastReceiveTime = Date.now();
 let NEW_RESPONSE_GAP = 1000; // 1초 이상 뜸하면 새로운 응답으로 간주
 
@@ -50,7 +47,7 @@ export const initSocket = (token: string) => {
     });
     // 서버로부터 오디오 응답 받기 (buf 는 100ms 분량 오디오 데이터가 담긴 ArrayBuffer)
     socket.on('gemini_audio', (buf) => {
-      console.log('🧠 Gemini 응답 수신:', typeof buf, buf);
+      //console.log('🧠 Gemini 응답 수신:', typeof buf, buf);
 
       const now = Date.now();
       const isNewResponse = now - lastReceiveTime > NEW_RESPONSE_GAP;
@@ -69,21 +66,8 @@ export const initSocket = (token: string) => {
       );
 
       const bytes = new Uint8Array(int16.buffer, int16.byteOffset, int16.byteLength);
-      //console.log('2️⃣ [Int16 Samples]', `[${[...int16].join(',')}]`);
 
       MyModule.playPCMBuffer(bytes);
-
-      //console.log('isPlaying:', isPlaying);
-      //MyModule.clearQueue(); // 큐 비우기
-      //console.log('arraybuffer test', pcmArrayBuffer instanceof ArrayBuffer); // true 여야 함
-      //MyModule.enqueuePCMData(pcmArrayBuffer);
-      //MyModule.playNextChunk();
-      /*if (!isPlaying) {
-        //재생중이 아니면 큐에서 데이터를 꺼내서 재생합니다.
-        console.log('▶️ 재생 시작');
-        isPlaying = true;
-        MyModule.playNextChunk();
-      }*/
     });
   }
 
@@ -103,19 +87,3 @@ export const disconnectSocket = () => {
 };
 
 export const getSocket = () => socket;
-
-// 서버에 전송
-/*export const sendMicAudio = (samples: number[]) => {
-  const socket = getSocket();
-  if (!socket || !socket.connected) return;
-
-  const pcmBytes = float32ToInt16PCM(samples);
-  socket.emit('mic_audio', pcmBytes); // 바로 전송
-  console.log('📤 mic_audio emitted:', pcmBytes.byteLength, 'bytes');
-};*/
-
-// socketManager.ts
-export const onGeminiResponse = (callback: (text: string) => void) => {
-  const socket = getSocket();
-  if (!socket) return;
-};

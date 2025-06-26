@@ -94,6 +94,7 @@ const googleLogin = async (): Promise<OauthResult> => {
     if (isErrorWithCode(error) && error.code === statusCodes.SIGN_IN_CANCELLED) {
       return OauthResult.UserCancel;
     }
+    console.log(`[ERROR] googleLogin - signIn: ${error}`);
     return OauthResult.OauthError;
   }
 
