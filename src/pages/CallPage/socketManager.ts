@@ -8,7 +8,8 @@ let NEW_RESPONSE_GAP = 1000; // 1초 이상 뜸하면 새로운 응답으로 간
 
 export const initSocket = (token: string) => {
   console.log('🔹 initSocket called with token:', token);
-  if (!socket) {
+
+  if (!socket || !socket.connected) {
     socket = io('https://api.remind4u.co.kr', {
       path: '/socket.io',
       auth: { token },
@@ -30,6 +31,7 @@ export const initSocket = (token: string) => {
 
     socket.on('disconnected', (data) => {
       console.log('[서버 응답]: ', data.message);
+      socket?.disconnect();
     });
     socket.on('pause', (data) => {
       console.log('[서버 응답]: ', data.message);

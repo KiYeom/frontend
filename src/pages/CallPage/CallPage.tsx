@@ -1,43 +1,42 @@
 //간단히 view와 text가 있는 페이지
 import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, Button } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useTranslation } from 'react-i18next';
-import { useNavigation } from '@react-navigation/native';
-import MyModule from '../../../modules/my-module';
-import {
-  initSocket,
-  connectSocket,
-  disconnectSocket,
-  //sendMicAudio,
-  getSocket,
-} from './socketManager';
-import { getAccessToken } from '../../utils/storageUtils';
-import { EventEmitter } from 'expo-modules-core';
 import SimpleWaveform from './SimpleWaveform';
 import { useAudioCall } from '../../../src/hooks/useAudioCall';
-import {
-  endAudioCall,
-  pauseAudioCall,
-  resumeAudioCall,
-  startAudioCall,
-  heartbeatAudioCall,
-} from '../../apis/voice';
+import { CallStatus } from '../../../src/hooks/useAudioCall';
 const CallPage: React.FC = () => {
   // 비즈니스 로직은 모두 커스텀 훅으로 이동
   const [state, handlers] = useAudioCall();
-  const { waveform, remainingTime, responseText } = state;
+  const { waveform, remainingTime, responseText, callStatus } = state;
   const { handleConnect, handleDisconnect, handlePause, handleResume } = handlers;
+  const canStart = callStatus === CallStatus.Idle;
+  const canPause =
+    callStatus === CallStatus.Start ||
+    callStatus === CallStatus.Resumed ||
+    callStatus === CallStatus.Active;
+  const canResume = callStatus === CallStatus.Paused;
+  const canDisconnect =
+    callStatus !== CallStatus.Idle &&
+    callStatus !== CallStatus.End &&
+    callStatus !== CallStatus.Paused;
 
   return (
     <View style={{ paddingTop: 100 }}>
+      <Text>상태 : {callStatus}</Text>
       <Text>남은 시간 : {remainingTime}초</Text>
       <SimpleWaveform data={waveform} width={360} height={80} />
-      <Button title="시작(웹소켓 연결 후 서버 API 호출)" onPress={handleConnect} />
-      <Button title="끊기(음성 통화 종료하기 API 호출" onPress={handleDisconnect} />
-      <Button title="일시중지(pause)" onPress={handlePause} />
-      <Button title="다시시작하기(resume)" onPress={handleResume} />
-      <Button title="테스트" onPress={() => console.log('hi')} />
+      <Button
+        title="시작(웹소켓 연결 후 서버 API 호출)"
+        onPress={handleConnect}
+        disabled={!canStart}
+      />
+      <Button
+        title="끊기(음성 통화 종료하기 API 호출"
+        onPress={handleDisconnect}
+        disabled={!canDisconnect}
+      />
+      <Button title="일시중지(pause)" onPress={handlePause} disabled={!canPause} />
+      <Button title="다시시작하기(resume)" onPress={handleResume} disabled={!canResume} />
       <Text style={{ marginTop: 20, fontSize: 16 }}>🤖 Gemini: {responseText}</Text>
     </View>
   );

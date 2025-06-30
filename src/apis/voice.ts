@@ -3,15 +3,15 @@ import { instance } from './interceptor';
 
 type AudioCallResponse = {
   remainingTime: number;
-  status: 'start' | 'pause' | 'resume' | 'end' | 'active';
+  status: 'start' | 'paused' | 'resumed' | 'end' | 'active';
   action: null | 'end_call' | 'timeout'; // 비정상 종료 처리
 };
 
 export const startAudioCall = async (): Promise<AudioCallResponse> => {
   try {
-    const data = await instance.post('/v1/audio/start');
+    const response = await instance.post('/v1/audio/start');
     //console.log('🔹 startAudioCall response:', data);
-    return data;
+    return response.data;
   } catch (error) {
     //console.log('🔹 startAudioCall error:', error);
     throw error;

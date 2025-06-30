@@ -12,12 +12,22 @@ import {
   heartbeatAudioCall,
 } from '../apis/voice';
 
+export enum CallStatus {
+  Idle = 'idle',
+  Start = 'start',
+  Paused = 'paused',
+  Resumed = 'resumed',
+  End = 'end',
+  Active = 'acrtive',
+}
+
 interface AudioCallState {
   waveform: number[];
   wavFilePath: string | null;
   isAudioSessionActive: boolean;
   remainingTime: number;
   responseText: string;
+  callStatus: CallStatus;
 }
 
 interface AudioCallHandlers {
@@ -34,6 +44,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
   const [isAudioSessionActive, setIsAudioSessionActive] = useState(false);
   const [remainingTime, setRemainingTime] = useState<number>(0);
   const [responseText, setResponseText] = useState<string>('');
+  const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.Idle);
 
   // Refs
   const isAudioSessionActiveRef = useRef(false);
@@ -164,6 +175,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
   // Handler functions
   const handleConnect = useCallback(async () => {
     const socket = getSocket();
+    console.log('🔹 handleConnect 호출:', socket?.connected);
     if (!socket) return;
 
     socket.connect();
@@ -171,7 +183,9 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
     socket.once('connect', async () => {
       try {
         console.log('1. API 호출 시작');
-        await startAudioCall();
+        const response = await startAudioCall();
+        console.log('✅ startAudioCall 응답:', response);
+        setCallStatus(CallStatus.Start);
         console.log('2. startAudioCall 응답 받고 마이크 시작');
         MyModule.startRecording();
         console.log('3. 마이크 시작 완료, 하트비트 시작');
@@ -180,13 +194,16 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
         console.log('4️⃣. startAudioCall 완료');
       } catch (err) {
         console.error('❌ startAudioCall 실패:', err);
+        setCallStatus(CallStatus.Idle);
       }
     });
   }, [startHeartbeat, startCountdown]);
 
   const handleDisconnect = useCallback(async () => {
     try {
-      await endAudioCall();
+      const response = await endAudioCall();
+      console.log('✅ handleDisconnect 응답:', response);
+      setCallStatus(CallStatus.End);
     } catch (err) {
       console.error('❌ endAudioCall 실패:', err);
     } finally {
@@ -194,6 +211,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
       MyModule.stopRealtimePlayback();
       stopHeartbeat();
       stopCountdown();
+      setCallStatus(CallStatus.Idle);
     }
   }, [stopHeartbeat, stopCountdown]);
 
@@ -202,6 +220,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
     try {
       const response = await pauseAudioCall();
       console.log('✅ pauseRecording 응답:', response);
+      setCallStatus(CallStatus.Paused);
       MyModule.stopRecording();
       MyModule.pauseRealtimePlayback();
       stopCountdown();
@@ -215,6 +234,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
     try {
       const response = await resumeAudioCall();
       console.log('✅ resumeRecording 응답:', response);
+      setCallStatus(CallStatus.Resumed);
       MyModule.startRecording();
       MyModule.resumeRealtimePlayback();
       startCountdown();
@@ -230,6 +250,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
       isAudioSessionActive,
       remainingTime,
       responseText,
+      callStatus,
     },
     {
       handleConnect,
