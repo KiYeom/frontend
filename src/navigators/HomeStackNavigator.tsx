@@ -17,6 +17,7 @@ import newFavorites from '../pages/HomePage/favorites/newFavorites';
 import StatisticMain from '../pages/StatisticPage/StatisticMain';
 import Home from '../pages/HomePage/Home';
 import Quote from '../pages/HomePage/quote/quote';
+import CallPage from '../pages/CallPage/CallPage';
 const HomeStack = createNativeStackNavigator();
 
 const HomeStackNavigator: React.FC = () => {
@@ -45,6 +46,11 @@ const HomeStackNavigator: React.FC = () => {
       <HomeStack.Screen
         name={HomeStackName.NewChatRefresh}
         component={DrawerNavigator}
+        options={{ headerShown: false, animation: 'none' }}
+      />
+      <HomeStack.Screen
+        name={HomeStackName.Call}
+        component={CallPage}
         options={{ headerShown: false, animation: 'none' }}
       />
       {/* 1.5.7 UPDATE 일일보고서 추가 */}

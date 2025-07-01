@@ -64,6 +64,10 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
               navigation.navigate(RootStackName.HomeStackNavigator, {
                 screen: HomeStackName.NewChat,
               });
+            } else if (route.name === TabScreenName.Call) {
+              navigation.navigate(RootStackName.HomeStackNavigator, {
+                screen: HomeStackName.Call,
+              });
             } else {
               navigation.navigate(route.name, route.params);
             }

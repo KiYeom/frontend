@@ -4,6 +4,7 @@ import { View, Text, Button } from 'react-native';
 import SimpleWaveform from './SimpleWaveform';
 import { useAudioCall } from '../../../src/hooks/useAudioCall';
 import { CallStatus } from '../../../src/hooks/useAudioCall';
+import Header from '../../../src/components/header/header';
 const CallPage: React.FC = () => {
   // 비즈니스 로직은 모두 커스텀 훅으로 이동
   const [state, handlers] = useAudioCall();
@@ -21,7 +22,14 @@ const CallPage: React.FC = () => {
     callStatus !== CallStatus.Paused;
 
   return (
-    <View style={{ paddingTop: 100 }}>
+    <View>
+      <Header title="쿠키의 전화 통화" />
+      <View>
+        <Text>타이머</Text>
+        <View>
+          <Text>progressbar</Text>
+        </View>
+      </View>
       <Text>상태 : {callStatus}</Text>
       <Text>남은 시간 : {remainingTime}초</Text>
       <SimpleWaveform data={waveform} width={360} height={80} />

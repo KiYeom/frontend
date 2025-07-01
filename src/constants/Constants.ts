@@ -76,6 +76,7 @@ export enum HomeStackName {
   Favorites = 'Favorites',
   Ads = 'Ads',
   Quote = 'Quote',
+  Call = 'Call',
 }
 
 export enum SettingStackName {
