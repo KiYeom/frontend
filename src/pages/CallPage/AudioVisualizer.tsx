@@ -42,18 +42,20 @@ export const AudioVisualizer: React.FC<AudioVisualizerProps> = ({
   style,
 }) => {
   // Shared values
-  const scale = useSharedValue(1);
+  const scale = useSharedValue(0); // 🎯 처음엔 안 보이게
+  const opacity = useSharedValue(0); // 🎯 완전 투명하게
   const rotation = useSharedValue(0);
   const pulse = useSharedValue(1);
-  const opacity = useSharedValue(0.7);
   const blur1 = useSharedValue(20.562);
   const blur2 = useSharedValue(15.4215);
 
   // gemini_audio 수신에 따른 애니메이션
   useEffect(() => {
     if (isReceivingAudio) {
+      scale.value = withTiming(1.2, { duration: 300 });
+      opacity.value = withTiming(1, { duration: 300 });
       // 오디오 수신 시 확대 및 블러 증가
-      scale.value = withSpring(1.3, {
+      scale.value = withSpring(1.2, {
         damping: 10,
         stiffness: 100,
       });
@@ -61,25 +63,13 @@ export const AudioVisualizer: React.FC<AudioVisualizerProps> = ({
       blur2.value = withSpring(20, { damping: 15 });
       opacity.value = withTiming(1, { duration: 200 });
     } else {
-      // 오디오 미수신 시 원래 크기로
-      scale.value = withSpring(1, {
-        damping: 15,
-        stiffness: 150,
-      });
+      scale.value = withTiming(0, { duration: 300 });
+      opacity.value = withTiming(0, { duration: 300 });
       blur1.value = withSpring(20.562, { damping: 20 });
       blur2.value = withSpring(15.4215, { damping: 20 });
-      opacity.value = withTiming(0.7, { duration: 300 });
+      /*opacity.value = withTiming(0.7, { duration: 300 });*/
     }
   }, [isReceivingAudio]);
-
-  // 통화 중 회전 애니메이션
-  useEffect(() => {
-    if (isActive) {
-      rotation.value = withRepeat(withTiming(360, { duration: 20000 }), -1, false);
-    } else {
-      rotation.value = withTiming(0, { duration: 1000 });
-    }
-  }, [isActive]);
 
   // 펄스 애니메이션 (통화 중일 때만)
   useEffect(() => {
@@ -99,10 +89,26 @@ export const AudioVisualizer: React.FC<AudioVisualizerProps> = ({
     if (waveform.length > 0) {
       const avgWaveform = waveform.reduce((a, b) => a + b, 0) / waveform.length;
 
-      // 웨이브폼에 따라 블러 효과도 약간 변경
-      const blurOffset = avgWaveform * 5;
-      blur1.value = withTiming(20.562 + blurOffset, { duration: 100 });
-      blur2.value = withTiming(15.4215 + blurOffset, { duration: 100 });
+      const isSilent = avgWaveform < 0.015;
+
+      if (isSilent) {
+        // 무음 상태 → 블러 축소
+        blur1.value = withTiming(5, { duration: 200 });
+        blur2.value = withTiming(3, { duration: 200 });
+        opacity.value = withTiming(0.2, { duration: 200 });
+      } else {
+        // 웨이브폼의 크기에 따라 블러 조정
+        const blurOffset = avgWaveform * 10;
+        blur1.value = withTiming(20 + blurOffset, { duration: 100 });
+        blur2.value = withTiming(15 + blurOffset, { duration: 100 });
+        opacity.value = withTiming(0.8, { duration: 100 });
+
+        // 🎯 스케일 부드럽게 (최대 1.2)
+        scale.value = withTiming(1 + avgWaveform * 0.2, { duration: 200 });
+
+        // 🎯 회전값 증가 (시계 방향)
+        rotation.value = withTiming(rotation.value + avgWaveform * 20, { duration: 100 });
+      }
     }
   }, [waveform]);
 

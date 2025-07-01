@@ -1,7 +1,7 @@
 //간단히 view와 text가 있는 페이지
 import React, { useEffect, useState, useRef } from 'react';
 import { Image } from 'expo-image';
-import { View, Text, Button, TouchableOpacity } from 'react-native';
+import { View, Text, Button, TouchableOpacity, ScrollView } from 'react-native';
 import { useAudioCall } from '../../../src/hooks/useAudioCall';
 import { CallStatus } from '../../../src/hooks/useAudioCall';
 import Header from '../../../src/components/header/header';
@@ -119,8 +119,27 @@ const CookieAvatar: React.FC<{
         </View>
       </View>
     </View>
-    <View style={{ borderColor: 'pink', borderWidth: 1, width: 300, height: 200 }}>
-      <Text style={{ color: 'white' }}>쿠키의 말</Text>
+    <View style={{ borderColor: 'pink', borderWidth: 1, width: 310, height: 17 * 8 }}>
+      <ScrollView
+        style={{ height: 17 * 5 }}
+        contentContainerStyle={{
+          flexGrow: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          paddingHorizontal: 24,
+        }}>
+        <Text
+          style={{
+            color: 'white',
+            fontFamily: 'Kyobo-handwriting',
+            fontSize: 17,
+            textAlign: 'center',
+            lineHeight: 24,
+          }}>
+          {responseText ||
+            `찾아와줘서 고마워요, reMIND님\n마음 속의 생각을 편하게 이야기 해 주세요`}
+        </Text>
+      </ScrollView>
     </View>
   </View>
 );
@@ -237,10 +256,11 @@ const CallPage: React.FC = () => {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <MicVisualization
+          {/*<MicVisualization
             waveform={waveform}
             isActive={isActive && !isReceivingAudio} // 쿠키가 말하지 않을 때만 활성화
-          />
+          />*/}
+          <View style={{ height: 50, width: 50, backgroundColor: 'pink' }}></View>
           <Text style={{ color: 'white' }}>이야기 하세요</Text>
         </View>
         <CallControls
