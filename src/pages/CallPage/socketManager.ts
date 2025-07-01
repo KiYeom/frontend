@@ -6,6 +6,12 @@ let socket: Socket | null = null;
 let lastReceiveTime = Date.now();
 let NEW_RESPONSE_GAP = 1000; // 1초 이상 뜸하면 새로운 응답으로 간주
 
+let onAudioReceive: (() => void) | null = null;
+
+export const setAudioReceiveHandler = (callback: () => void) => {
+  onAudioReceive = callback;
+};
+
 export const initSocket = (token: string) => {
   console.log('🔹 initSocket called with token:', token);
 
@@ -70,6 +76,9 @@ export const initSocket = (token: string) => {
       const bytes = new Uint8Array(int16.buffer, int16.byteOffset, int16.byteLength);
 
       MyModule.playPCMBuffer(bytes);
+
+      // ✅ 음성 수신 감지 트리거
+      onAudioReceive?.();
     });
   }
 

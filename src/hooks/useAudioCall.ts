@@ -74,6 +74,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
       const samples: number[] = event.samples;
       const normalized = samples.slice(0, 50).map((n) => Math.min(Math.abs(n), 1));
       setWaveform(normalized);
+      console.log('🔊 오디오 버퍼 이벤트 수신:', normalized);
     });
 
     // PCM 전송용

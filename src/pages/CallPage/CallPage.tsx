@@ -9,6 +9,8 @@ import { ProgressBar } from 'react-native-paper';
 import palette from '../../../src/assets/styles/theme';
 import IconButton from '../../../src/components/icon-button/IconButton';
 import Icon from '../../../src/components/icons/icons';
+import { AudioVisualizer } from './AudioVisualizer';
+import { setAudioReceiveHandler } from './socketManager';
 
 // 컴포넌트 분리
 const CallTimer: React.FC<{
@@ -39,7 +41,10 @@ const CallTimer: React.FC<{
 
 const CookieAvatar: React.FC<{
   responseText?: string;
-}> = ({ responseText }) => (
+  isReceivingAudio: boolean;
+  waveform: number[];
+  isActive: boolean;
+}> = ({ responseText, isReceivingAudio, waveform, isActive }) => (
   <View
     style={{
       borderColor: 'green',
@@ -50,20 +55,28 @@ const CookieAvatar: React.FC<{
     }}>
     <View style={{ flexDirection: 'column', alignItems: 'center' }}>
       <Text style={{ color: 'white' }}>리마인드 쿠키</Text>
-      <View
-        style={{
-          backgroundColor: 'white',
-          width: 123,
-          height: 123,
-          borderRadius: 100,
-          overflow: 'hidden',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <Image
-          source={require('../../../src/assets/images/callcookie.png')}
-          style={{ width: 140, height: 120 }}
-        />
+      {/* 쿠키 이미지와 애니메이션을 함께 배치 */}
+      <View style={{ width: 250, height: 250, alignItems: 'center', justifyContent: 'center' }}>
+        {/* 뒤에 위치할 AudioVisualizer */}
+        <AudioVisualizer isReceivingAudio={isReceivingAudio} waveform={waveform} isActive={true} />
+
+        {/* 앞에 위치할 쿠키 이미지 */}
+        <View
+          style={{
+            backgroundColor: 'white',
+            width: 123,
+            height: 123,
+            borderRadius: 100,
+            overflow: 'hidden',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 1,
+          }}>
+          <Image
+            source={require('../../../src/assets/images/callcookie.png')}
+            style={{ width: 140, height: 120 }}
+          />
+        </View>
       </View>
     </View>
     <View style={{ borderColor: 'pink', borderWidth: 1, width: 300, height: 200 }}>
@@ -126,6 +139,14 @@ const CallPage: React.FC = () => {
   const [state, handlers] = useAudioCall();
   const { waveform, remainingTime, responseText, callStatus } = state;
   const { handleConnect, handleDisconnect, handlePause, handleResume } = handlers;
+  // gemini_audio 수신 상태 관리
+  const [isReceivingAudio, setIsReceivingAudio] = useState(false);
+  const audioTimeoutRef = React.useRef<NodeJS.Timeout>();
+  const isActive =
+    callStatus === CallStatus.Start ||
+    callStatus === CallStatus.Resumed ||
+    callStatus === CallStatus.Active;
+
   const canStart = callStatus === CallStatus.Idle;
   const canPause =
     callStatus === CallStatus.Start ||
@@ -133,6 +154,17 @@ const CallPage: React.FC = () => {
     callStatus === CallStatus.Active;
   const canResume = callStatus === CallStatus.Paused;
   const canDisconnect = callStatus !== CallStatus.Idle && callStatus !== CallStatus.End;
+
+  useEffect(() => {
+    setAudioReceiveHandler(() => {
+      setIsReceivingAudio(true);
+
+      if (audioTimeoutRef.current) clearTimeout(audioTimeoutRef.current);
+      audioTimeoutRef.current = setTimeout(() => {
+        setIsReceivingAudio(false);
+      }, 300); // 오디오 수신 후 300ms 간 isReceivingAudio 유지
+    });
+  }, []);
 
   return (
     <>
@@ -149,7 +181,12 @@ const CallPage: React.FC = () => {
           remainingTime={remainingTime}
           onChargePress={() => console.log('충전하기 버튼 클릭')}
         />
-        <CookieAvatar responseText={responseText} />
+        <CookieAvatar
+          responseText={responseText}
+          isReceivingAudio={isReceivingAudio}
+          waveform={waveform}
+          isActive={isActive}
+        />
         <CallControls
           canStart={canStart}
           canPause={canPause}
