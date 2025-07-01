@@ -4,6 +4,9 @@ import { View, Text, Button } from 'react-native';
 import { useAudioCall } from '../../../src/hooks/useAudioCall';
 import { CallStatus } from '../../../src/hooks/useAudioCall';
 import Header from '../../../src/components/header/header';
+import { ProgressBar } from 'react-native-paper';
+import palette from '../../../src/assets/styles/theme';
+import IconButton from '../../../src/components/icon-button/IconButton';
 const CallPage: React.FC = () => {
   // 비즈니스 로직은 모두 커스텀 훅으로 이동
   const [state, handlers] = useAudioCall();
@@ -22,28 +25,47 @@ const CallPage: React.FC = () => {
 
   return (
     <View>
-      <Header title="쿠키의 전화 통화" />
-      <View>
-        <Text>타이머</Text>
+      <Header title="쿠키의 전화 통화" isDark={true} />
+      <View style={{ paddingHorizontal: 24, backgroundColor: palette.dark }}>
         <View>
-          <Text>progressbar</Text>
+          <Text>타이머</Text>
+          <View>
+            <ProgressBar progress={0.5} color={palette.graph[100]} style={{ height: 8 }} />
+          </View>
+        </View>
+        <Text>상태 : {callStatus}</Text>
+        <Text>남은 시간 : {remainingTime}초</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 16 }}>
+          <IconButton
+            name="call-start"
+            width="24"
+            height="24"
+            onPress={handleConnect}
+            disabled={!canStart}
+          />
+          <IconButton
+            name="call-pause"
+            width="24"
+            height="24"
+            onPress={handlePause}
+            disabled={!canDisconnect}
+          />
+          <IconButton
+            name="call-resume"
+            width="24"
+            height="24"
+            onPress={handleResume}
+            disabled={!canResume}
+          />
+          <IconButton
+            name="call-end"
+            width="24"
+            height="24"
+            onPress={handleDisconnect}
+            disabled={!canPause}
+          />
         </View>
       </View>
-      <Text>상태 : {callStatus}</Text>
-      <Text>남은 시간 : {remainingTime}초</Text>
-      <Button
-        title="시작(웹소켓 연결 후 서버 API 호출)"
-        onPress={handleConnect}
-        disabled={!canStart}
-      />
-      <Button
-        title="끊기(음성 통화 종료하기 API 호출"
-        onPress={handleDisconnect}
-        disabled={!canDisconnect}
-      />
-      <Button title="일시중지(pause)" onPress={handlePause} disabled={!canPause} />
-      <Button title="다시시작하기(resume)" onPress={handleResume} disabled={!canResume} />
-      <Text style={{ marginTop: 20, fontSize: 16 }}>🤖 Gemini: {responseText}</Text>
     </View>
   );
 };

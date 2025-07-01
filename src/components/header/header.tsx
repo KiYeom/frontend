@@ -33,6 +33,7 @@ export type HeaderProps = {
   eventFunction?: () => void;
 
   bgcolor?: string;
+  isDark?: boolean;
 };
 const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
   const insets = useSafeAreaInsets();
@@ -58,18 +59,27 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
     eventText = undefined,
     eventFunction = () => {},
     bgcolor = 'white',
+    isDark = false,
   } = props;
   return (
-    <HeaderContainer isTitle={title !== undefined} insets={insets} bgcolor={bgcolor}>
+    <HeaderContainer
+      isTitle={title !== undefined}
+      insets={insets}
+      bgcolor={bgcolor}
+      isDark={isDark}>
       <HeaderCenter>
-        <HeaderTitle ellipsizeMode="tail" numberOfLines={1}>
+        <HeaderTitle ellipsizeMode="tail" numberOfLines={1} isDark={isDark}>
           {title}
         </HeaderTitle>
       </HeaderCenter>
 
       {isLeft && (
         <HeaderLeft onPress={leftFunction} activeOpacity={1} isTitle={title !== undefined}>
-          <Icon name={leftIcon} width={rsWidth * 9 + 'px'} color={palette.neutral[900]} />
+          <Icon
+            name={leftIcon}
+            width={rsWidth * 9 + 'px'}
+            color={!isDark ? palette.neutral[900] : palette.neutral[50]}
+          />
           {leftText !== undefined && <OptionText>{leftText}</OptionText>}
         </HeaderLeft>
       )}
