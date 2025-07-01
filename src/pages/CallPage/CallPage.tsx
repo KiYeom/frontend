@@ -10,34 +10,56 @@ import palette from '../../../src/assets/styles/theme';
 import IconButton from '../../../src/components/icon-button/IconButton';
 import Icon from '../../../src/components/icons/icons';
 import { AudioVisualizer } from './AudioVisualizer';
+import { MicVisualization } from './MicVisualization';
 import { setAudioReceiveHandler } from './socketManager';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // 컴포넌트 분리
 const CallTimer: React.FC<{
   remainingTime: number;
   onChargePress: () => void;
-}> = ({ remainingTime, onChargePress }) => (
-  <View style={{ borderColor: 'red', borderWidth: 1, flexDirection: 'row', marginTop: 36 }}>
-    <Icon name="call-start" width="24" height="24" color={palette.neutral[50]} />
-    <View style={{ flexDirection: 'column', borderWidth: 1, borderColor: 'gray', flexGrow: 1 }}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            gap: 8,
-            alignItems: 'flex-end',
-          }}>
-          <Text style={{ color: 'white', fontSize: 18 }}>{remainingTime}초</Text>
-          <Text style={{ color: 'white', fontSize: 10 }}>남았습니다</Text>
-        </View>
-        <TouchableOpacity onPress={() => console.log('충전하기 버튼 클릭')}>
-          <Text style={{ color: 'white' }}>충전하기</Text>
-        </TouchableOpacity>
+}> = ({ remainingTime, onChargePress }) => {
+  const isCritical = remainingTime <= 180;
+  console.log('남은 시간:', remainingTime, '초', isCritical);
+  const color = isCritical ? '#DA1E28' : '#8CC1FF';
+  return (
+    <View
+      style={{ borderColor: 'red', borderWidth: 1, flexDirection: 'row', marginTop: 36, gap: 8 }}>
+      <View
+        style={{
+          width: 40,
+          height: 40,
+          borderRadius: 20,
+          backgroundColor: color,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <Icon name="clock" width="24" height="24" color={palette.neutral[50]} />
       </View>
-      <ProgressBar progress={0.5} color={palette.graph[100]} style={{ height: 8 }} />
+      <View style={{ flexDirection: 'column', borderWidth: 1, borderColor: 'gray', flex: 1 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              gap: 8,
+              alignItems: 'flex-end',
+            }}>
+            <Text style={{ color: 'white', fontSize: 18 }}>{remainingTime}초</Text>
+            <Text style={{ color: 'white', fontSize: 10 }}>남았습니다</Text>
+          </View>
+          <TouchableOpacity onPress={() => console.log('충전하기 버튼 클릭')}>
+            <Text style={{ color: 'white' }}>충전하기</Text>
+          </TouchableOpacity>
+        </View>
+        <ProgressBar
+          progress={0.5}
+          color={color}
+          style={{ height: 8, backgroundColor: '#E0E0E0', borderRadius: 10 }}
+        />
+      </View>
     </View>
-  </View>
-);
+  );
+};
 
 const CookieAvatar: React.FC<{
   responseText?: string;
@@ -54,13 +76,21 @@ const CookieAvatar: React.FC<{
       justifyContent: 'space-evenly',
     }}>
     <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-      <Text style={{ color: 'white' }}>리마인드 쿠키</Text>
       {/* 쿠키 이미지와 애니메이션을 함께 배치 */}
-      <View style={{ width: 250, height: 250, alignItems: 'center', justifyContent: 'center' }}>
+      <View
+        style={{
+          width: 250,
+          height: 250,
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderColor: 'purple',
+          borderWidth: 1,
+        }}>
         {/* 뒤에 위치할 AudioVisualizer */}
         <AudioVisualizer isReceivingAudio={isReceivingAudio} waveform={waveform} isActive={true} />
 
         {/* 앞에 위치할 쿠키 이미지 */}
+        <Text style={{ color: 'white', paddingBottom: 10 }}>리마인드 쿠키</Text>
         <View
           style={{
             backgroundColor: 'white',
@@ -135,6 +165,7 @@ const CallControls: React.FC<{
 };
 
 const CallPage: React.FC = () => {
+  const insets = useSafeAreaInsets();
   // 비즈니스 로직은 모두 커스텀 훅으로 이동
   const [state, handlers] = useAudioCall();
   const { waveform, remainingTime, responseText, callStatus } = state;
@@ -172,7 +203,7 @@ const CallPage: React.FC = () => {
       <View
         style={{
           paddingHorizontal: 24,
-          paddingBottom: 24,
+          paddingBottom: insets.bottom,
           backgroundColor: palette.dark,
           flex: 1,
           justifyContent: 'space-between',
@@ -187,6 +218,21 @@ const CallPage: React.FC = () => {
           waveform={waveform}
           isActive={isActive}
         />
+        <View
+          style={{
+            borderColor: 'blue',
+            borderWidth: 1,
+            padding: 16,
+            gap: 8,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <MicVisualization
+            waveform={waveform}
+            isActive={isActive && !isReceivingAudio} // 쿠키가 말하지 않을 때만 활성화
+          />
+          <Text style={{ color: 'white' }}>이야기 하세요</Text>
+        </View>
         <CallControls
           canStart={canStart}
           canPause={canPause}
