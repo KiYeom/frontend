@@ -1,7 +1,6 @@
 //간단히 view와 text가 있는 페이지
 import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, Button } from 'react-native';
-import SimpleWaveform from './SimpleWaveform';
 import { useAudioCall } from '../../../src/hooks/useAudioCall';
 import { CallStatus } from '../../../src/hooks/useAudioCall';
 import Header from '../../../src/components/header/header';
@@ -32,7 +31,6 @@ const CallPage: React.FC = () => {
       </View>
       <Text>상태 : {callStatus}</Text>
       <Text>남은 시간 : {remainingTime}초</Text>
-      <SimpleWaveform data={waveform} width={360} height={80} />
       <Button
         title="시작(웹소켓 연결 후 서버 API 호출)"
         onPress={handleConnect}

@@ -1,5 +1,5 @@
 // socketManager.ts
-import { io, Socket } from 'socket.io-client'; // float32ToInt16PCM 함수 임포트
+import { io, Socket } from 'socket.io-client';
 import MyModule from '../../../modules/my-module';
 
 let socket: Socket | null = null;
