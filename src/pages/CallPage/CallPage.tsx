@@ -1,7 +1,7 @@
 //간단히 view와 text가 있는 페이지
 import React, { useEffect, useState, useRef } from 'react';
 import { Image } from 'expo-image';
-import { View, Text, Button, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, Button, TouchableOpacity, ScrollView, Modal } from 'react-native';
 import { useAudioCall } from '../../../src/hooks/useAudioCall';
 import { CallStatus } from '../../../src/hooks/useAudioCall';
 import Header from '../../../src/components/header/header';
@@ -13,6 +13,118 @@ import { AudioVisualizer } from './AudioVisualizer';
 import { MicVisualization } from './MicVisualization';
 import { setAudioReceiveHandler } from './socketManager';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+// 결제 모달 컴포넌트
+const PaymentModal: React.FC<{
+  visible: boolean;
+  onClose: () => void;
+  onPayment: (amount: number) => void;
+}> = ({ visible, onClose, onPayment }) => {
+  const paymentOptions = [
+    { minutes: 10, price: 2200, label: '10분' },
+    { minutes: 30, price: 5900, label: '30분' },
+    { minutes: 60, price: 10900, label: '60분' },
+    { minutes: 120, price: 19900, label: '120분' },
+  ];
+
+  return (
+    <Modal animationType="slide" transparent={true} visible={visible} onRequestClose={onClose}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          justifyContent: 'flex-end',
+        }}>
+        <View
+          style={{
+            backgroundColor: 'white',
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            paddingTop: 20,
+            paddingHorizontal: 20,
+            paddingBottom: 40,
+            minHeight: 400,
+          }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: 20,
+            }}>
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: 'bold',
+                color: palette.neutral[900],
+              }}>
+              통화 시간 충전
+            </Text>
+            <TouchableOpacity
+              onPress={onClose}
+              style={{
+                padding: 8,
+              }}>
+              <Text
+                style={{
+                  fontSize: 24,
+                  color: palette.neutral[500],
+                }}>
+                ✕
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <Text
+            style={{
+              fontSize: 16,
+              color: palette.neutral[500],
+              marginBottom: 30,
+            }}>
+            쿠키에게 전화를 하려면 통화 시간권 구입이 필요해요
+          </Text>
+
+          <View style={{ gap: 12 }}>
+            {paymentOptions.map((option, index) => (
+              <TouchableOpacity
+                key={index}
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: 16,
+                  borderRadius: 12,
+                  backgroundColor: palette.neutral[100],
+                  marginBottom: 12,
+                }}
+                onPress={() => {
+                  console.log(`${option.label} 결제 시작 - ${option.price}원`);
+                  onPayment(option.minutes);
+                  onClose();
+                }}>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    fontWeight: '600',
+                    color: palette.neutral[900],
+                  }}>
+                  {option.label}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: palette.primary[500],
+                    fontWeight: '500',
+                  }}>
+                  {option.price.toLocaleString()}원
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+};
 
 // 컴포넌트 분리
 const CallTimer: React.FC<{
@@ -56,7 +168,7 @@ const CallTimer: React.FC<{
             <Text style={{ color: 'white', fontSize: 18 }}>
               {remainingTime}초 <Text style={{ color: 'white', fontSize: 10 }}>남았습니다</Text>
             </Text>
-            <TouchableOpacity onPress={() => console.log('충전하기 버튼 클릭')}>
+            <TouchableOpacity onPress={onChargePress}>
               <Text style={{ color: 'white' }}>충전하기</Text>
             </TouchableOpacity>
           </View>
@@ -215,6 +327,9 @@ const CallPage: React.FC = () => {
   const canResume = callStatus === CallStatus.Paused;
   const canDisconnect = callStatus !== CallStatus.Idle && callStatus !== CallStatus.End;
 
+  // 결제 모달 상태
+  const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
+
   useEffect(() => {
     setAudioReceiveHandler(() => {
       setIsReceivingAudio(true);
@@ -225,6 +340,12 @@ const CallPage: React.FC = () => {
       }, 300); // 오디오 수신 후 300ms 간 isReceivingAudio 유지
     });
   }, []);
+
+  const handlePayment = (minutes: number) => {
+    // 여기에 실제 결제 로직을 구현
+    console.log(`${minutes}분 충전 완료`);
+    // 충전 후 remainingTime 업데이트 로직 추가
+  };
 
   return (
     <>
@@ -239,7 +360,7 @@ const CallPage: React.FC = () => {
         }}>
         <CallTimer
           remainingTime={remainingTime}
-          onChargePress={() => console.log('충전하기 버튼 클릭')}
+          onChargePress={() => setIsPaymentModalVisible(true)}
         />
         <CookieAvatar
           responseText={responseText}
@@ -274,6 +395,12 @@ const CallPage: React.FC = () => {
           onDisconnect={handleDisconnect}
         />
       </View>
+      {/* 결제 모달 */}
+      <PaymentModal
+        visible={isPaymentModalVisible}
+        onClose={() => setIsPaymentModalVisible(false)}
+        onPayment={handlePayment}
+      />
     </>
   );
 };
