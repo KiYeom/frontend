@@ -19,7 +19,15 @@ const CallTimer: React.FC<{
     <Icon name="call-start" width="24" height="24" color={palette.neutral[50]} />
     <View style={{ flexDirection: 'column', borderWidth: 1, borderColor: 'gray', flexGrow: 1 }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text style={{ color: 'white' }}>{remainingTime}초</Text>
+        <View
+          style={{
+            flexDirection: 'row',
+            gap: 8,
+            alignItems: 'flex-end',
+          }}>
+          <Text style={{ color: 'white', fontSize: 18 }}>{remainingTime}초</Text>
+          <Text style={{ color: 'white', fontSize: 10 }}>남았습니다</Text>
+        </View>
         <TouchableOpacity onPress={() => console.log('충전하기 버튼 클릭')}>
           <Text style={{ color: 'white' }}>충전하기</Text>
         </TouchableOpacity>
@@ -36,26 +44,31 @@ const CookieAvatar: React.FC<{
     style={{
       borderColor: 'green',
       borderWidth: 1,
-      justifyContent: 'center',
+      flex: 1,
       alignItems: 'center',
+      justifyContent: 'space-evenly',
     }}>
-    <Text style={{ color: 'white' }}>리마인드 쿠키</Text>
-    <View
-      style={{
-        backgroundColor: 'white',
-        width: 123,
-        height: 123,
-        borderRadius: 100,
-        overflow: 'hidden',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
-      <Image
-        source={require('../../../src/assets/images/callcookie.png')}
-        style={{ width: 140, height: 120 }}
-      />
+    <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+      <Text style={{ color: 'white' }}>리마인드 쿠키</Text>
+      <View
+        style={{
+          backgroundColor: 'white',
+          width: 123,
+          height: 123,
+          borderRadius: 100,
+          overflow: 'hidden',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <Image
+          source={require('../../../src/assets/images/callcookie.png')}
+          style={{ width: 140, height: 120 }}
+        />
+      </View>
     </View>
-    <Text style={{ color: 'white' }}>쿠키의 말</Text>
+    <View style={{ borderColor: 'pink', borderWidth: 1, width: 300, height: 200 }}>
+      <Text style={{ color: 'white' }}>쿠키의 말</Text>
+    </View>
   </View>
 );
 
