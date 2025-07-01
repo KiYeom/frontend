@@ -36,20 +36,30 @@ const CallTimer: React.FC<{
         }}>
         <Icon name="clock" width="24" height="24" color={palette.neutral[50]} />
       </View>
-      <View style={{ flexDirection: 'column', borderWidth: 1, borderColor: 'gray', flex: 1 }}>
+      <View
+        style={{
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          borderWidth: 1,
+          borderColor: 'gray',
+          flex: 1,
+        }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <View
             style={{
               flexDirection: 'row',
               gap: 8,
+              justifyContent: 'space-between',
               alignItems: 'flex-end',
+              flex: 1,
             }}>
-            <Text style={{ color: 'white', fontSize: 18 }}>{remainingTime}초</Text>
-            <Text style={{ color: 'white', fontSize: 10 }}>남았습니다</Text>
+            <Text style={{ color: 'white', fontSize: 18 }}>
+              {remainingTime}초 <Text style={{ color: 'white', fontSize: 10 }}>남았습니다</Text>
+            </Text>
+            <TouchableOpacity onPress={() => console.log('충전하기 버튼 클릭')}>
+              <Text style={{ color: 'white' }}>충전하기</Text>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={() => console.log('충전하기 버튼 클릭')}>
-            <Text style={{ color: 'white' }}>충전하기</Text>
-          </TouchableOpacity>
         </View>
         <ProgressBar
           progress={0.5}
