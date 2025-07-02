@@ -132,7 +132,6 @@ const CallTimer: React.FC<{
   onChargePress: () => void;
 }> = ({ remainingTime, onChargePress }) => {
   const isCritical = remainingTime <= 180;
-  console.log('남은 시간:', remainingTime, '초', isCritical);
   const color = isCritical ? '#DA1E28' : '#8CC1FF';
   return (
     <View

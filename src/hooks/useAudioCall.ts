@@ -15,8 +15,8 @@ import {
 export enum CallStatus {
   Idle = 'idle',
   Start = 'start',
-  Paused = 'paused',
-  Resumed = 'resumed',
+  Paused = 'pause',
+  Resumed = 'resume',
   End = 'end',
   Active = 'acrtive',
 }
@@ -142,6 +142,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
     heartbeatTimer.current = setInterval(async () => {
       try {
         const data = await heartbeatAudioCall();
+        console.log('💓 Heartbeat 응답:', data);
         setRemainingTime(data.remainingTime);
       } catch (e) {
         console.warn('❌ Heartbeat failed:', e.message);
@@ -156,13 +157,27 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
       console.log('✅ Heartbeat stopped');
     }
   }, []);
+  useEffect(() => {
+    console.log('남은 시간 변화 : ', remainingTime, '초');
+  }, [remainingTime]);
 
   // Countdown management
   const startCountdown = useCallback(() => {
-    if (countdownTimer.current) return;
+    console.log('🚀 startCountdown 진입');
+    console.log('🧭 countdownTimer.current 상태:', countdownTimer.current);
+    if (countdownTimer.current) {
+      console.log('🔁 이미 카운트다운이 진행 중입니다.');
+      return;
+    }
+    console.log('⏳ 카운트다운 시작');
 
     countdownTimer.current = setInterval(() => {
-      setRemainingTime((prev) => Math.max(prev - 1, 0));
+      console.log('⏲️ 카운트다운 tick');
+      setRemainingTime((prev) => {
+        const next = Math.max(prev - 1, 0);
+        console.log('🕐 remainingTime 업데이트:', prev, '→', next);
+        return Math.max(prev - 1, 0);
+      });
     }, 1000);
   }, []);
 
@@ -217,7 +232,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
   }, [stopHeartbeat, stopCountdown]);
 
   const handlePause = useCallback(async () => {
-    console.log('handlePause 호출');
+    console.log('handlePause 호출', callStatus);
     try {
       const response = await pauseAudioCall();
       console.log('✅ pauseRecording 응답:', response);
@@ -235,14 +250,26 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
     try {
       const response = await resumeAudioCall();
       console.log('✅ resumeRecording 응답:', response);
+      if (typeof response.remainingTime === 'number') {
+        console.log('handleResume 남은 시간 업데이트:', response.remainingTime, '초');
+        setRemainingTime(response.remainingTime); // ✅ 상태 갱신 추가
+      }
       setCallStatus(CallStatus.Resumed);
+      startCountdown(); // 카운트다운 재시작
+      console.log('⏳ 카운트다운 재시작');
+
       MyModule.startRecording();
-      MyModule.resumeRealtimePlayback();
-      startCountdown();
+      //MyModule.resumeRealtimePlayback();
     } catch (err) {
       console.error('❌ resumeRecording 실패:', err);
     }
   }, [startCountdown]);
+
+  useEffect(() => {
+    return () => {
+      console.log('🧨 useAudioCall 언마운트됨');
+    };
+  }, []);
 
   return [
     {
