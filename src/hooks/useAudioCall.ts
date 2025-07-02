@@ -259,7 +259,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
       console.log('⏳ 카운트다운 재시작');
 
       MyModule.startRecording();
-      //MyModule.resumeRealtimePlayback();
+      MyModule.resumeRealtimePlayback();
     } catch (err) {
       console.error('❌ resumeRecording 실패:', err);
     }
