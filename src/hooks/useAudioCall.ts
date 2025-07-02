@@ -193,7 +193,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
     countdownTimer.current = setInterval(() => {
       console.log('⏲️ 카운트다운 tick');
       setRemainingTime((prev) => {
-        const next = Math.max(prev - 1, 0);
+        const next = Math.max(prev - 1, 0); //테스트 : 10초씩 감소
         console.log('🕐 remainingTime 업데이트:', prev, '→', next);
         return Math.max(prev - 1, 0);
       });

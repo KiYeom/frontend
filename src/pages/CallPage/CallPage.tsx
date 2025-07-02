@@ -129,10 +129,13 @@ const PaymentModal: React.FC<{
 // 컴포넌트 분리
 const CallTimer: React.FC<{
   remainingTime: number;
+  totalTime: number; // 전체 시간 (선택적)
   onChargePress: () => void;
-}> = ({ remainingTime, onChargePress }) => {
-  const isCritical = remainingTime <= 180;
+}> = ({ totalTime, remainingTime, onChargePress }) => {
+  console.log('CallTimer 렌더링', { remainingTime, totalTime });
+  const isCritical = remainingTime <= 180; // 3분 이하일 때 critical로 간주
   const color = isCritical ? '#DA1E28' : '#8CC1FF';
+  const progress = totalTime > 0 ? remainingTime / totalTime : 0;
   return (
     <View
       style={{ borderColor: 'red', borderWidth: 1, flexDirection: 'row', marginTop: 36, gap: 8 }}>
@@ -173,7 +176,7 @@ const CallTimer: React.FC<{
           </View>
         </View>
         <ProgressBar
-          progress={0.5}
+          progress={progress}
           color={color}
           style={{ height: 8, backgroundColor: '#E0E0E0', borderRadius: 10 }}
         />
@@ -308,7 +311,7 @@ const CallPage: React.FC = () => {
   const insets = useSafeAreaInsets();
   // 비즈니스 로직은 모두 커스텀 훅으로 이동
   const [state, handlers] = useAudioCall();
-  const { waveform, remainingTime, responseText, callStatus } = state;
+  const { waveform, remainingTime, totalTime, responseText, callStatus } = state;
   const { handleConnect, handleDisconnect, handlePause, handleResume } = handlers;
   // gemini_audio 수신 상태 관리
   const [isReceivingAudio, setIsReceivingAudio] = useState(false);
@@ -358,6 +361,7 @@ const CallPage: React.FC = () => {
           justifyContent: 'space-between',
         }}>
         <CallTimer
+          totalTime={totalTime}
           remainingTime={remainingTime}
           onChargePress={() => setIsPaymentModalVisible(true)}
         />
