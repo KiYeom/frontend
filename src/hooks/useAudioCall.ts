@@ -10,6 +10,7 @@ import {
   resumeAudioCall,
   startAudioCall,
   heartbeatAudioCall,
+  getRemainingTime,
 } from '../apis/voice';
 
 export enum CallStatus {
@@ -26,6 +27,7 @@ interface AudioCallState {
   wavFilePath: string | null;
   isAudioSessionActive: boolean;
   remainingTime: number;
+  totalTime: number;
   responseText: string;
   callStatus: CallStatus;
 }
@@ -43,6 +45,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
   const [wavFilePath, setWavFilePath] = useState<string | null>(null);
   const [isAudioSessionActive, setIsAudioSessionActive] = useState(false);
   const [remainingTime, setRemainingTime] = useState<number>(0);
+  const [totalTime, setTotalTime] = useState<number>(0);
   const [responseText, setResponseText] = useState<string>('');
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.Idle);
 
@@ -63,6 +66,22 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
   useEffect(() => {
     const userToken = getAccessToken();
     initSocket(userToken);
+  }, []);
+
+  // 기존 useEffect와 별개로 추가
+  useEffect(() => {
+    const loadTotalTime = async () => {
+      try {
+        const data = await getRemainingTime();
+        console.log('⏱️ 총 통화 시간 불러옴:', data.remainingTime, '초');
+        setTotalTime(data.remainingTime);
+        setRemainingTime(data.remainingTime); // 이 시점에 remainingTime도 초기화 가능
+      } catch (err) {
+        console.error('❌ 총 통화 시간 가져오기 실패:', err);
+      }
+    };
+
+    loadTotalTime();
   }, []);
 
   // Event listeners setup
@@ -277,6 +296,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
       wavFilePath,
       isAudioSessionActive,
       remainingTime,
+      totalTime,
       responseText,
       callStatus,
     },

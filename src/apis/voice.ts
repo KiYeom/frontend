@@ -63,3 +63,14 @@ export const heartbeatAudioCall = async (): Promise<AudioCallResponse> => {
     throw error;
   }
 };
+
+//사용자 전체 음성 통화 시간 조회 (get, /v1/users/remaining-time)
+export const getRemainingTime = async (): Promise<{ remainingTime: number }> => {
+  try {
+    const response = await instance.get('/v1/users/remaining-time');
+    return response.data;
+  } catch (error) {
+    Sentry.captureException(error);
+    throw error;
+  }
+};
