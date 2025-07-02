@@ -208,8 +208,8 @@ const CookieAvatar: React.FC<{
           borderColor: 'purple',
           borderWidth: 1,
         }}>
-        {/* 뒤에 위치할 AudioVisualizer */}
-        <AudioVisualizer isReceivingAudio={isReceivingAudio} waveform={waveform} isActive={true} />
+        {/* 뒤에 위치할 AudioVisualizer
+        <AudioVisualizer isReceivingAudio={isReceivingAudio} waveform={waveform} isActive={true} /> */}
 
         {/* 앞에 위치할 쿠키 이미지 */}
         <Text style={{ color: 'white', paddingBottom: 10 }}>리마인드 쿠키</Text>
