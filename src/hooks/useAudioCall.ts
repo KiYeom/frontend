@@ -4,6 +4,7 @@ import { EventEmitter } from 'expo-modules-core';
 import MyModule from '../../modules/my-module';
 import { getAccessToken } from '../utils/storageUtils';
 import { initSocket, getSocket } from '../pages/CallPage/socketManager';
+import { setTextReceiveHandler } from '../pages/CallPage/socketManager';
 import {
   endAudioCall,
   pauseAudioCall,
@@ -60,6 +61,15 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
     console.log('setAudioSessionActive 호출:', active);
     setIsAudioSessionActive(active);
     isAudioSessionActiveRef.current = active;
+  }, []);
+
+  /** 텍스트 수신시마다 최신 문장으로 교체 (원하면 누적도 가능) */
+  useEffect(() => {
+    console.log('🔹 텍스트 수신 핸들러 설정');
+    setTextReceiveHandler((text) => {
+      setResponseText(text); // 🔹 “교체” 방식
+      // setResponseText((prev) => prev + '\n' + text); // ← “누적”이 필요하면 이 줄로
+    });
   }, []);
 
   // Socket initialization
@@ -161,7 +171,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
     heartbeatTimer.current = setInterval(async () => {
       try {
         const data = await heartbeatAudioCall();
-        console.log('💓 Heartbeat 응답:', data);
+        //console.log('💓 Heartbeat 응답:', data);
         setRemainingTime(data.remainingTime);
       } catch (e) {
         console.warn('❌ Heartbeat failed:', e.message);
@@ -176,9 +186,9 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
       console.log('✅ Heartbeat stopped');
     }
   }, []);
-  useEffect(() => {
-    console.log('남은 시간 변화 : ', remainingTime, '초');
-  }, [remainingTime]);
+  //useEffect(() => {
+  //console.log('남은 시간 변화 : ', remainingTime, '초');
+  //}, [remainingTime]);
 
   // Countdown management
   const startCountdown = useCallback(() => {
@@ -191,10 +201,10 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
     console.log('⏳ 카운트다운 시작');
 
     countdownTimer.current = setInterval(() => {
-      console.log('⏲️ 카운트다운 tick');
+      //console.log('⏲️ 카운트다운 tick');
       setRemainingTime((prev) => {
         const next = Math.max(prev - 1, 0); //테스트 : 10초씩 감소
-        console.log('🕐 remainingTime 업데이트:', prev, '→', next);
+        //console.log('🕐 remainingTime 업데이트:', prev, '→', next);
         return Math.max(prev - 1, 0);
       });
     }, 1000);

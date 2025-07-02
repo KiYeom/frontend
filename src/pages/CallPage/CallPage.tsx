@@ -132,7 +132,7 @@ const CallTimer: React.FC<{
   totalTime: number; // 전체 시간 (선택적)
   onChargePress: () => void;
 }> = ({ totalTime, remainingTime, onChargePress }) => {
-  console.log('CallTimer 렌더링', { remainingTime, totalTime });
+  //console.log('CallTimer 렌더링', { remainingTime, totalTime });
   const isCritical = remainingTime <= 180; // 3분 이하일 때 critical로 간주
   const color = isCritical ? '#DA1E28' : '#8CC1FF';
   const progress = totalTime > 0 ? remainingTime / totalTime : 0;

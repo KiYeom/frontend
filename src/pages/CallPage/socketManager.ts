@@ -7,10 +7,14 @@ let lastReceiveTime = Date.now();
 let NEW_RESPONSE_GAP = 1000; // 1초 이상 뜸하면 새로운 응답으로 간주
 
 let onAudioReceive: (() => void) | null = null;
+let onTextReceive: ((t: string) => void) | null = null; // 🔹 추가
 
 export const setAudioReceiveHandler = (callback: () => void) => {
   onAudioReceive = callback;
 };
+export const setTextReceiveHandler = (cb: (t: string) => void) => {
+  onTextReceive = cb;
+}; // 🔹 추가
 
 export const initSocket = (token: string) => {
   console.log('🔹 initSocket called with token:', token);
@@ -79,6 +83,11 @@ export const initSocket = (token: string) => {
 
       // ✅ 음성 수신 감지 트리거
       onAudioReceive?.();
+    });
+    //오디오 텍스트 응답
+    socket.on('gemini_text', (data) => {
+      console.log('[서버 응답]', data.message);
+      onTextReceive?.(data.message); // 🔹 추가
     });
   }
 
