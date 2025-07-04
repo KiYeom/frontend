@@ -13,6 +13,8 @@ import { AudioVisualizer } from './AudioVisualizer';
 import { MicVisualization } from './MicVisualization';
 import { setAudioReceiveHandler } from './socketManager';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { AudioBars } from './MicLevelBar';
+
 // 결제 모달 컴포넌트
 const PaymentModal: React.FC<{
   visible: boolean;
@@ -311,6 +313,7 @@ const CallPage: React.FC = () => {
   const insets = useSafeAreaInsets();
   // 비즈니스 로직은 모두 커스텀 훅으로 이동
   const [state, handlers] = useAudioCall();
+  const [{ volumeLevel }] = useAudioCall();
   const { waveform, remainingTime, totalTime, responseText, callStatus } = state;
   const { handleConnect, handleDisconnect, handlePause, handleResume } = handlers;
   // gemini_audio 수신 상태 관리
@@ -385,6 +388,7 @@ const CallPage: React.FC = () => {
             isActive={isActive && !isReceivingAudio} // 쿠키가 말하지 않을 때만 활성화
           />*/}
           <View style={{ height: 50, width: 50, backgroundColor: 'pink' }}></View>
+          <AudioBars volume={volumeLevel} />
           <Text style={{ color: 'white' }}>이야기 하세요</Text>
         </View>
         <CallControls

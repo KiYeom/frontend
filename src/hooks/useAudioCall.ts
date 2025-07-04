@@ -31,6 +31,7 @@ interface AudioCallState {
   totalTime: number;
   responseText: string;
   callStatus: CallStatus;
+  volumeLevel: number; // 볼륨 레벨 추가
 }
 
 interface AudioCallHandlers {
@@ -49,6 +50,26 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
   const [totalTime, setTotalTime] = useState<number>(0);
   const [responseText, setResponseText] = useState<string>('');
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.Idle);
+  //볼륨 상태
+  const [volumeLevel, setVolumeLevel] = useState<number>(0);
+
+  // 볼륨 계산 함수
+  function calculateVolume(pcm: Uint8Array): number {
+    if (pcm.length < 2) return 0;
+
+    const view = new DataView(pcm.buffer);
+    let sumSquares = 0;
+    const sampleCount = pcm.length / 2;
+
+    for (let i = 0; i < pcm.length; i += 2) {
+      const sample = view.getInt16(i, true); // 리틀엔디안
+      sumSquares += sample * sample;
+    }
+
+    const rms = Math.sqrt(sumSquares / sampleCount);
+    const normalized = rms / 32768; // Int16 max value
+    return Math.min(normalized, 1); // 0~1로 정규화
+  }
 
   // Refs
   const isAudioSessionActiveRef = useRef(false);
@@ -112,6 +133,11 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
       if (socket && socket.connected) {
         const payload = new Uint8Array(pcm);
         socket.emit('mic_audio', payload);
+
+        // 🎯 감도 측정 및 애니메이션에 반영
+        const uint8 = new Uint8Array(pcm);
+        const volume = calculateVolume(uint8);
+        setVolumeLevel(volume);
       } else {
         console.log('❌ 소켓이 연결되지 않았습니다. mic_audio 전송 실패');
       }
@@ -309,6 +335,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
       totalTime,
       responseText,
       callStatus,
+      volumeLevel, // 볼륨 레벨 추가
     },
     {
       handleConnect,
