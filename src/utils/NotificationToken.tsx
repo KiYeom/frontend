@@ -59,11 +59,15 @@ const requestNotificationPermission = async () => {
   if (isSent && isSent === true) {
     return;
   }
+  console.log('requestNotificationPermission 실행');
   const token = await registerForPushNotificationsAsync();
   const deviceId = getDeviceIdFromMMKV();
+  console.log('🔔 Notification token:', token, deviceId);
   if (token && deviceId) {
     const result = await setNotificationToken(token, deviceId);
+    console.log('🔔 Notification token set:', result);
     if (result) {
+      console.log('setNotificationSent called');
       setNotificationSent(true);
     }
   }

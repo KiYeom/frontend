@@ -96,6 +96,7 @@ const Home: React.FC<any> = ({ navigation }) => {
   };
 
   useEffect(() => {
+    console.log('홈 화면 로드됨. 애널리틱스 이벤트 기록 및 캐러셀 데이터 요청.');
     Analytics.watchTabHomeScreen();
     requestNotificationPermission();
     getCarousel('home')
