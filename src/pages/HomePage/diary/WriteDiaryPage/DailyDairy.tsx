@@ -57,6 +57,7 @@ const localImage: ImageSourcePropType = require('../../../../assets/images/cooki
 const adsImage: ImageSourcePropType = require('../../../../assets/images/ads_cookie.png');
 
 const DailyDairy = ({ navigation, route }) => {
+  console.log('DailyDairy 컴포넌트 렌더링');
   const { dateID } = route.params;
   const insets = useSafeAreaInsets();
 
@@ -73,15 +74,15 @@ const DailyDairy = ({ navigation, route }) => {
   const saveEmotionMutation = useSaveEmotion();
   const saveEmotionWithImageMutation = useSaveEmotionWithImage();
 
-  const rewarded = useMemo(
+  /*const rewarded = useMemo(
     () =>
       RewardedAd.createForAdRequest(adUnitId, {
         keywords: ['fashion', 'clothing'],
       }),
     [],
-  );
+  );*/
 
-  const [loaded, setLoaded] = useState<boolean>(false);
+  //const [loaded, setLoaded] = useState<boolean>(false);
 
   useEffect(() => {
     console.log('DailyDairy useEffect 실행 : getUserInfo');
@@ -96,7 +97,7 @@ const DailyDairy = ({ navigation, route }) => {
         //console.log('getUserInfo error', error);
       });
     //광고 이벤트
-    const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
+    /*const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
       setLoaded(true);
     });
     const unsubscribeEarned = rewarded.addAdEventListener(
@@ -141,7 +142,7 @@ const DailyDairy = ({ navigation, route }) => {
       unsubscribeLoaded();
       unsubscribeEarned();
       unsubscribeClosed();
-    };
+    };*/
   }, []);
 
   //홈으로 돌아가는 코드
@@ -227,7 +228,7 @@ const DailyDairy = ({ navigation, route }) => {
   };
 
   //광고 보기 모달에서 저장하기 버튼 클릭
-  const onConfirmWatchAd = () => {
+  /*const onConfirmWatchAd = () => {
     console.log('광고 보기 버튼 클릭');
     Analytics.clickWatchAdsButton(); // 클릭 이벤트 트래킹
     if (!loaded) {
@@ -241,7 +242,7 @@ const DailyDairy = ({ navigation, route }) => {
   if (!loaded) {
     console.log('no advert ready to show yet');
     return null;
-  }
+  }*/
 
   return (
     <>
@@ -306,7 +307,7 @@ const DailyDairy = ({ navigation, route }) => {
         imageSource={localImage}
         modalContent="사진은 한 장만 등록할 수 있습니다."
       />
-      <AdsModal
+      {/*<AdsModal
         modalVisible={adsModalVisible}
         onClose={() => {
           Analytics.clickNoWatchAdsButton();
@@ -323,7 +324,7 @@ const DailyDairy = ({ navigation, route }) => {
             ? `광고를 시청하면\n일기에 사진을 첨부할 수 있어요 :)`
             : `광고를 시청하면\n일기에 사진을 첨부할 수 있어요!`
         }
-      />
+      />*/}
       {isNavigationLoading && (
         <View
           style={{

@@ -43,9 +43,10 @@ module.exports = {
       googleServicesFile: process.env.GOOGLE_SERVICES_JSON,
       userInterfaceStyle: 'automatic',
     },
-
     androidStatusBar: {
-      translucent: true,
+      translucent: false,
+      backgroundColor: '#ffffff',
+      barStyle: 'light-content',
     },
     scheme: 'remind',
     web: {
