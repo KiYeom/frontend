@@ -1,6 +1,6 @@
 import { css } from '@emotion/native';
 import React, { memo } from 'react';
-import { Text, TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import palette from '../../../../assets/styles/theme';
 import { rsFont, rsHeight, rsWidth } from '../../../../utils/responsive-size';
 import Icon, { TIconName } from '../../../../components/icons/icons';
@@ -40,13 +40,13 @@ const EmotionChip = memo(({ group, keyword, desc }: SelectableEmotion) => {
     <TouchableOpacity
       style={css`
         background-color: ${palette.neutral[100]};
-        height: ${rsHeight * 45 + 'px'};
+        height: ${rsHeight * 50 + 'px'};
         width: ${rsWidth * 150 + 'px'};
         flex-direction: row;
         align-items: center; /* 세로 중앙 정렬 */
         justify-content: center; /* 가로 중앙 정렬 */
         padding-horizontal: ${rsWidth * 5 + 'px'};
-        padding-vertical: ${rsHeight * 10 + 'px'};
+        padding-vertical: ${rsHeight * 5 + 'px'};
         //margin-vertical: ${rsHeight * 5 + 'px'};
         border-radius: 10px;
         border-color: ${isSelected ? palette.primary[500] : `transparent`};
@@ -54,7 +54,7 @@ const EmotionChip = memo(({ group, keyword, desc }: SelectableEmotion) => {
         gap: ${rsWidth * 10 + 'px'};
       `}
       onPress={toggleEmotion}>
-      <Icon name={`${group}-emotion` as TIconName} width={rsWidth * 35 + 'px'} />
+      <Icon name={`${group}-emotion` as TIconName} width={rsWidth * 28 + 'px'} />
       <Text
         style={css`
           flex: 1;
@@ -62,7 +62,7 @@ const EmotionChip = memo(({ group, keyword, desc }: SelectableEmotion) => {
           justify-content: center;
           align-self: center;
           font-family: Pretendard-Regular;
-          font-size: ${rsFont * 15 + 'px'};
+          font-size: ${rsHeight * 14 + 'px'};
         `}>
         {keyword}
       </Text>
