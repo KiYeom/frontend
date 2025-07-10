@@ -14,7 +14,12 @@ import { MicVisualization } from './MicVisualization';
 import { setAudioReceiveHandler } from './socketManager';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AudioBars } from './MicLevelBar';
-
+import Purchases from 'react-native-purchases';
+import {
+  getCurrentOffering,
+  updatePurchaseStatus,
+  purchasePackage,
+} from '../../services/inappService';
 // 결제 모달 컴포넌트
 const PaymentModal: React.FC<{
   visible: boolean;
@@ -285,6 +290,22 @@ const CallControls: React.FC<{
     { name: 'call-resume', onPress: onResume, disabled: !canResume },
     { name: 'call-end', onPress: onDisconnect, disabled: !canDisconnect },
   ];
+  const [hasPurchased, setHasPurchased] = useState<boolean>(false);
+  const [currentOffering, setCurrentOffering] = useState<PurchasesOffering | null>(null);
+  //구매 상태에 따라 버튼 변경
+  useEffect(() => {
+    console.log('😀NewEmojiPanel useEffect 실행됨😀');
+    const setup = async () => {
+      const offering = await getCurrentOffering();
+      setCurrentOffering(offering); //판매 상품
+      const purchased = await updatePurchaseStatus();
+      setHasPurchased(purchased); //구매 상태 (true/false) 설정
+      console.log('offering:', offering);
+      //offeringIdentifier : "emoji_offering"
+      console.log('구매 상태:', purchased);
+    };
+    setup().catch(console.log);
+  }, []);
 
   return (
     <View
@@ -346,10 +367,47 @@ const CallPage: React.FC = () => {
     });
   }, []);
 
-  const handlePayment = (minutes: number) => {
-    // 여기에 실제 결제 로직을 구현
-    console.log(`${minutes}분 충전 완료`);
-    // 충전 후 remainingTime 업데이트 로직 추가
+  const handlePayment = async (minutes: number) => {
+    try {
+      const productIdMap: Record<number, string> = {
+        10: 'time_10min',
+        30: 'time_30min',
+        60: 'time_60min',
+        120: 'time_120min',
+      };
+
+      const productIdentifier = productIdMap[minutes];
+      if (!productIdentifier) {
+        console.warn('해당 시간에 맞는 상품이 없습니다.');
+        return;
+      }
+
+      const offerings = await Purchases.getOfferings();
+      const voiceOffering = offerings.all['voiceTalks'];
+
+      if (!voiceOffering) {
+        console.warn('voiceTalks Offering을 찾을 수 없습니다.');
+        return;
+      }
+
+      const product = voiceOffering.availablePackages.find(
+        (pkg) => pkg.product.identifier === productIdentifier,
+      );
+
+      if (!product) {
+        console.warn(`상품(${productIdentifier})을 Offering에서 찾을 수 없습니다.`);
+        return;
+      }
+
+      const purchaseResult = await Purchases.purchasePackage(product);
+      console.log(`${minutes}분 충전 완료`, purchaseResult);
+
+      // TODO: 구매 완료 처리 (시간 충전, 서버 동기화 등)
+    } catch (e: any) {
+      if (!e.userCancelled) {
+        console.error('결제 중 오류 발생:', e);
+      }
+    }
   };
 
   return (
