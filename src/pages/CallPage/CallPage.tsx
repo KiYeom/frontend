@@ -242,7 +242,7 @@ const CookieAvatar: React.FC<{
     </View>
     <View style={{ borderColor: 'pink', borderWidth: 1, width: 310, height: 17 * 8 }}>
       <ScrollView
-        style={{ height: 17 * 5 }}
+        style={{ height: 17 * 5 + 10 }}
         contentContainerStyle={{
           flexGrow: 1,
           justifyContent: 'center',
@@ -333,9 +333,8 @@ const CallControls: React.FC<{
 const CallPage: React.FC = () => {
   const insets = useSafeAreaInsets();
   // 비즈니스 로직은 모두 커스텀 훅으로 이동
-  const [state, handlers] = useAudioCall();
-  const [{ volumeLevel }] = useAudioCall();
-  const { waveform, remainingTime, totalTime, responseText, callStatus } = state;
+  const [state, handlers] = useAudioCall(); // ✅ 단 한 번만 호출
+  const { waveform, remainingTime, totalTime, responseText, callStatus, volumeLevel } = state;
   const { handleConnect, handleDisconnect, handlePause, handleResume } = handlers;
   // gemini_audio 수신 상태 관리
   const [isReceivingAudio, setIsReceivingAudio] = useState(false);
@@ -438,14 +437,15 @@ const CallPage: React.FC = () => {
             borderWidth: 1,
             padding: 16,
             gap: 8,
-            justifyContent: 'center',
+            justifyContent: 'flex-end',
             alignItems: 'center',
+            height: 100,
           }}>
           {/*<MicVisualization
             waveform={waveform}
             isActive={isActive && !isReceivingAudio} // 쿠키가 말하지 않을 때만 활성화
           />*/}
-          <View style={{ height: 50, width: 50, backgroundColor: 'pink' }}></View>
+
           <AudioBars volume={volumeLevel} />
           <Text style={{ color: 'white' }}>이야기 하세요</Text>
         </View>
