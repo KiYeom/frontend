@@ -56,6 +56,7 @@ import CallPause from './svg/call-pause-icon';
 import CallResume from './svg/call-resume-icon';
 import CallEnd from './svg/call-end-icon';
 import Clock from './svg/clock';
+import Mic from './svg/mic';
 
 export type TIconName =
   | 'airplane'
@@ -117,7 +118,8 @@ export type TIconName =
   | 'call-pause'
   | 'call-resume'
   | 'call-end'
-  | 'clock';
+  | 'clock'
+  | 'mic';
 
 export default function Icon({
   width,
@@ -271,5 +273,7 @@ export default function Icon({
       return <CallEnd width={width} height={height} color={color} disabled={disabled} />;
     case 'clock':
       return <Clock width={width} height={height} color={color} />;
+    case 'mic':
+      return <Mic width={width} height={height} color={color} />;
   }
 }

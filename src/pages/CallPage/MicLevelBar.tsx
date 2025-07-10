@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { View, StyleSheet } from 'react-native';
+import Icon from '../../components/icons/icons';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -15,24 +16,18 @@ export const AudioBars = ({ volume }: { volume: number }) => {
   const bar2 = useSharedValue(0);
   const bar3 = useSharedValue(0);
   const bar4 = useSharedValue(0);
-  const bar5 = useSharedValue(0);
+  //const bar5 = useSharedValue(0);
 
-  const bars = useRef([bar1, bar2, bar3, bar4, bar5]).current;
+  const bars = useRef([bar1, bar2, bar3, bar4]).current;
 
   // ✅ useAnimatedStyle도 최상단에서 정적 호출
-  const animatedStyle1 = useAnimatedStyle(() => ({ height: bar1.value * 80 + 5 }));
-  const animatedStyle2 = useAnimatedStyle(() => ({ height: bar2.value * 80 + 5 }));
-  const animatedStyle3 = useAnimatedStyle(() => ({ height: bar3.value * 80 + 5 }));
-  const animatedStyle4 = useAnimatedStyle(() => ({ height: bar4.value * 80 + 5 }));
-  const animatedStyle5 = useAnimatedStyle(() => ({ height: bar5.value * 80 + 5 }));
+  const animatedStyle1 = useAnimatedStyle(() => ({ height: bar1.value * 120 + 16 }));
+  const animatedStyle2 = useAnimatedStyle(() => ({ height: bar2.value * 120 + 16 }));
+  const animatedStyle3 = useAnimatedStyle(() => ({ height: bar3.value * 120 + 16 }));
+  const animatedStyle4 = useAnimatedStyle(() => ({ height: bar4.value * 120 + 16 }));
+  //const animatedStyle5 = useAnimatedStyle(() => ({ height: bar5.value * 120 + 16 }));
 
-  const animatedStyles = [
-    animatedStyle1,
-    animatedStyle2,
-    animatedStyle3,
-    animatedStyle4,
-    animatedStyle5,
-  ];
+  const animatedStyles = [animatedStyle1, animatedStyle2, animatedStyle3, animatedStyle4];
 
   // 🔁 volume 변화 시 shared value 갱신
   useEffect(() => {
@@ -49,6 +44,7 @@ export const AudioBars = ({ volume }: { volume: number }) => {
 
   return (
     <View style={styles.container}>
+      <Icon name="mic" width={24} color="white" />
       {bars.map((_, i) => (
         <Animated.View key={i} style={[styles.bar, animatedStyles[i]]} />
       ))}
@@ -64,8 +60,8 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   bar: {
-    width: 6,
+    width: 16,
     backgroundColor: 'white',
-    borderRadius: 3,
+    borderRadius: 8,
   },
 });

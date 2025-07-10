@@ -144,8 +144,7 @@ const CallTimer: React.FC<{
   const color = isCritical ? '#DA1E28' : '#8CC1FF';
   const progress = totalTime > 0 ? remainingTime / totalTime : 0;
   return (
-    <View
-      style={{ borderColor: 'red', borderWidth: 1, flexDirection: 'row', marginTop: 36, gap: 8 }}>
+    <View style={{ borderColor: 'red', flexDirection: 'row', marginTop: 36, gap: 8 }}>
       <View
         style={{
           width: 40,
@@ -161,7 +160,6 @@ const CallTimer: React.FC<{
         style={{
           flexDirection: 'column',
           justifyContent: 'space-between',
-          borderWidth: 1,
           borderColor: 'gray',
           flex: 1,
         }}>
@@ -201,7 +199,6 @@ const CookieAvatar: React.FC<{
   <View
     style={{
       borderColor: 'green',
-      borderWidth: 1,
       flex: 1,
       alignItems: 'center',
       justifyContent: 'space-evenly',
@@ -215,7 +212,6 @@ const CookieAvatar: React.FC<{
           alignItems: 'center',
           justifyContent: 'center',
           borderColor: 'purple',
-          borderWidth: 1,
         }}>
         {/* 뒤에 위치할 AudioVisualizer
         <AudioVisualizer isReceivingAudio={isReceivingAudio} waveform={waveform} isActive={true} /> */}
@@ -240,7 +236,7 @@ const CookieAvatar: React.FC<{
         </View>
       </View>
     </View>
-    <View style={{ borderColor: 'pink', borderWidth: 1, width: 310, height: 17 * 8 }}>
+    <View style={{ borderColor: 'pink', width: 310, height: 17 * 8 }}>
       <ScrollView
         style={{ height: 17 * 5 + 10 }}
         contentContainerStyle={{
@@ -311,7 +307,6 @@ const CallControls: React.FC<{
     <View
       style={{
         borderColor: 'yellow',
-        borderWidth: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginVertical: 16,
@@ -434,7 +429,6 @@ const CallPage: React.FC = () => {
         <View
           style={{
             borderColor: 'blue',
-            borderWidth: 1,
             padding: 16,
             gap: 8,
             justifyContent: 'flex-end',

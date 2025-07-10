@@ -17,7 +17,7 @@ export const HeaderContainer = styled.View<{
   align-items: center;
   position: relative;
 
-  border-color: ${palette.neutral[100]};
+  border-color: ${(props) => (props.isDark ? palette.dark : palette.neutral[100])};
   border-bottom-width: ${(props) => (props.isTitle ? `${rsHeight * 1 + 'px'} ` : `0px`)};
   //background-color: ${(props) => props.bgcolor};
   background-color: ${(props) =>
