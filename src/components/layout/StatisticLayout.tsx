@@ -4,6 +4,7 @@ import Header from '../header/header';
 import Icon from '../icons/icons';
 import { rsHeight } from '../../utils/responsive-size';
 import palette from '../../assets/styles/theme';
+import { StatusBar } from 'expo-status-bar';
 import {
   DateLineContainer,
   DateLineText,
@@ -43,6 +44,7 @@ const StatisticLayout: React.FC<StatisticLayoutProps> = ({
 }) => {
   return (
     <>
+      <StatusBar style="dark" backgroundColor={palette.neutral[50]} translucent={true} />
       <Header
         title={headerTitle}
         bgcolor={backgroundColor}
