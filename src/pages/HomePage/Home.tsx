@@ -96,7 +96,7 @@ const Home: React.FC<any> = ({ navigation }) => {
   };
 
   useEffect(() => {
-    Analytics.watchTabHomeScreen();
+    //Analytics.watchTabHomeScreen();
     requestNotificationPermission();
     getCarousel('home')
       .then((res) => {
@@ -135,7 +135,7 @@ const Home: React.FC<any> = ({ navigation }) => {
   useFocusEffect(
     useCallback(() => {
       //console.log('홈 화면 포커스됨. 애널리틱스 및 스트릭 데이터 리페칭.');
-      Analytics.watchTabHomeScreen(); // Also watch tab on focus (if behavior is per-focus)
+      //Analytics.watchTabHomeScreen(); // Also watch tab on focus (if behavior is per-focus)
 
       //화면이 포커스될 때 스트릭 데이터를 무효화하여 다시 가져오도록 함
       refetchStreakData();
@@ -176,16 +176,16 @@ const Home: React.FC<any> = ({ navigation }) => {
             onIconPress={() => {
               switch (riskStatusV2) {
                 case 'safe':
-                  Analytics.clickClinicInfoButton(riskScoreV2);
+                  //Analytics.clickClinicInfoButton(riskScoreV2);
                   WebBrowser.openBrowserAsync(
                     'https://autumn-flier-d18.notion.site/1268e75d989680f7b4f2d63d66f4a08a?pvs=4',
                   );
                   return;
                 case 'danger':
-                  Analytics.clickDangerLetterButton(riskScoreV2);
+                  //Analytics.clickDangerLetterButton(riskScoreV2);
                   break;
                 case 'danger-opened':
-                  Analytics.clickOpenedDangerLetterButton(riskScoreV2);
+                  //Analytics.clickOpenedDangerLetterButton(riskScoreV2);
                   break;
               }
               navigateToDangerAlert();
@@ -213,7 +213,7 @@ const Home: React.FC<any> = ({ navigation }) => {
                 <TouchableOpacity
                   activeOpacity={1}
                   onPress={() => {
-                    Analytics.clickTabHomeCarousel(item.image);
+                    //Analytics.clickTabHomeCarousel(item.image);
                     WebBrowser.openBrowserAsync(item.url);
                   }}>
                   <Image
@@ -294,7 +294,7 @@ const Home: React.FC<any> = ({ navigation }) => {
             navigation.navigate(RootStackName.HomeStackNavigator, {
               screen: HomeStackName.Quote,
             });
-            Analytics.clickTabHomeHappyLyricsButton();
+            //Analytics.clickTabHomeHappyLyricsButton();
           }}></ActionButton>
       </View>
     </Container>

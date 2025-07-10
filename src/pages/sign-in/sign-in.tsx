@@ -61,7 +61,7 @@ const guestLogin = async (): Promise<OauthResult> => {
   }
 
   if (!res.isNewUser) {
-    Analytics.setUser(res.accessToken);
+    //Analytics.setUser(res.accessToken);
     NewLoginInApp(res.accessToken);
 
     setInfoWhenLogin(
@@ -80,17 +80,22 @@ const guestLogin = async (): Promise<OauthResult> => {
 };
 
 const googleLogin = async (): Promise<OauthResult> => {
+  //Google Sign-In SDK 초기화
   GoogleSignin.configure({
     iosClientId: process.env.EXPO_PUBLIC_IOS_CLIENT_ID,
+    webClientId: `94079762653-60nhtdpo208dm5e9pqmmorbp6ueochvs.apps.googleusercontent.com`,
+    offlineAccess: true,
   });
 
   let googleToken;
   try {
-    await GoogleSignin.signOut();
-    await GoogleSignin.signIn();
-    const googleTokens = await GoogleSignin.getTokens();
+    await GoogleSignin.signOut(); //이전에 로그인된 구글 계정이 있다면 로그아웃
+    await GoogleSignin.signIn(); //기기에서 구글 계정 선택 프롬프트를 띄우는 단계
+    const googleTokens = await GoogleSignin.getTokens(); //로그인 성공 시, 구글로부터 인증 토큰을 받아옴
     googleToken = googleTokens.accessToken;
   } catch (error) {
+    console.log(`[ERROR] googleLogin - signIn: ${error}`);
+    console.log(`[ERROR] googleLogin - getTokens: ${JSON.stringify(error)}`);
     if (isErrorWithCode(error) && error.code === statusCodes.SIGN_IN_CANCELLED) {
       return OauthResult.UserCancel;
     }
@@ -109,7 +114,7 @@ const googleLogin = async (): Promise<OauthResult> => {
   }
 
   if (!res.isNewUser) {
-    Analytics.setUser(res.accessToken);
+    //Analytics.setUser(res.accessToken);
     NewLoginInApp(res.accessToken);
     //setUserAccountProvider('google');
     setInfoWhenLogin(
@@ -156,7 +161,7 @@ const appleLogin = async (): Promise<OauthResult> => {
   }
 
   if (!res.isNewUser) {
-    Analytics.setUser(res.accessToken);
+    //Analytics.setUser(res.accessToken);
     NewLoginInApp(res.accessToken);
     setInfoWhenLogin(
       '' + res.nickname,
@@ -254,7 +259,7 @@ const Login: React.FC<any> = ({ navigation }) => {
           onPress={() => {
             //setLastVendor('guest');
             //setGuestModal(true);
-            Analytics.clickGuestModeButton();
+            //Analytics.clickGuestModeButton();
             onHandleLogin(AuthProvider.Guest);
           }}
           disabled={loading}>
@@ -264,7 +269,7 @@ const Login: React.FC<any> = ({ navigation }) => {
           vendor={AuthProvider.Google}
           activeOpacity={1}
           onPress={() => {
-            Analytics.clickGoogleLoginButton();
+            //Analytics.clickGoogleLoginButton();
             onHandleLogin(AuthProvider.Google);
           }}
           disabled={loading}>
@@ -278,7 +283,7 @@ const Login: React.FC<any> = ({ navigation }) => {
             onPress={() => {
               //setLastVendor('apple');
               //setPrivacyModal(true);
-              Analytics.clickAppleLoginButton();
+              //Analytics.clickAppleLoginButton();
               onHandleLogin(AuthProvider.Apple);
               //if (lastVendor) onHandleLogin(lastVendor);
             }}
