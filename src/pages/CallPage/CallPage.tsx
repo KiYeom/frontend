@@ -133,16 +133,26 @@ const PaymentModal: React.FC<{
   );
 };
 
-// 컴포넌트 분리
 const CallTimer: React.FC<{
   remainingTime: number;
   totalTime: number; // 전체 시간 (선택적)
   onChargePress: () => void;
 }> = ({ totalTime, remainingTime, onChargePress }) => {
   //console.log('CallTimer 렌더링', { remainingTime, totalTime });
+
+  // 초를 hh:mm:ss 형식으로 변환하는 함수
+  const formatTime = (seconds: number): string => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
   const isCritical = remainingTime <= 180; // 3분 이하일 때 critical로 간주
   const color = isCritical ? '#DA1E28' : '#8CC1FF';
   const progress = totalTime > 0 ? remainingTime / totalTime : 0;
+
   return (
     <View style={{ borderColor: 'red', flexDirection: 'row', marginTop: 36, gap: 8 }}>
       <View
@@ -172,11 +182,31 @@ const CallTimer: React.FC<{
               alignItems: 'flex-end',
               flex: 1,
             }}>
-            <Text style={{ color: 'white', fontSize: 18 }}>
-              {remainingTime}초 <Text style={{ color: 'white', fontSize: 10 }}>남았습니다</Text>
-            </Text>
-            <TouchableOpacity onPress={onChargePress}>
-              <Text style={{ color: 'white' }}>충전하기</Text>
+            <View style={{ flexDirection: 'row', gap: 8, alignItems: 'flex-end' }}>
+              <Text
+                style={{
+                  color: 'white',
+                  fontSize: 18,
+                  fontFamily: 'Pretendard-SemiBold',
+                  width: 80,
+                }}>
+                {formatTime(remainingTime)}
+              </Text>
+              <Text
+                style={{
+                  color: 'white',
+                  fontSize: 12,
+                  fontFamily: 'Pretendard-Medium',
+                }}>
+                남았습니다
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={onChargePress}
+              style={{ backgroundColor: palette.primary[500], padding: 5, borderRadius: 5 }}>
+              <Text style={{ color: 'white', fontSize: 12, fontFamily: 'Pretendard-SemiBold' }}>
+                충전하기
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -217,7 +247,15 @@ const CookieAvatar: React.FC<{
         <AudioVisualizer isReceivingAudio={isReceivingAudio} waveform={waveform} isActive={true} /> */}
 
         {/* 앞에 위치할 쿠키 이미지 */}
-        <Text style={{ color: 'white', paddingBottom: 10 }}>리마인드 쿠키</Text>
+        <Text
+          style={{
+            color: 'white',
+            paddingBottom: 10,
+            fontSize: 17,
+            fontFamily: 'Pretendard-SemiBold',
+          }}>
+          리마인드 쿠키
+        </Text>
         <View
           style={{
             backgroundColor: 'white',
