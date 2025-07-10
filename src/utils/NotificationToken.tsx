@@ -61,6 +61,8 @@ const requestNotificationPermission = async () => {
   }
   const token = await registerForPushNotificationsAsync();
   const deviceId = getDeviceIdFromMMKV();
+  console.log('Notification Token:', token);
+  console.log('Device ID:', deviceId);
   if (token && deviceId) {
     const result = await setNotificationToken(token, deviceId);
     if (result) {

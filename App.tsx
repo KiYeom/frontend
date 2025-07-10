@@ -1,4 +1,6 @@
 import * as amplitude from '@amplitude/analytics-react-native';
+import analytics from '@react-native-firebase/analytics';
+import { init, track } from '@amplitude/analytics-react-native';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as Sentry from '@sentry/react-native';
@@ -74,13 +76,11 @@ if (isProductionOrStaging && process.env.EXPO_PUBLIC_AMPLITUDE) {
 //앱 시작 시 인앱 결제 초기화
 NewInitializeInApp();
 
-/*amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE, undefined, {
-  minIdLength: 1,
-});*/
-
+//initializing SDK
 amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE, undefined, {
   minIdLength: 1,
 });
+amplitude.track('hi hello');
 
 SplashScreen.preventAutoHideAsync();
 const RootStack = createNativeStackNavigator();

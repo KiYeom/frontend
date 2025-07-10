@@ -12,9 +12,11 @@ export const setNotificationToken = async (
       deviceId,
       notificationToken,
     });
+    console.log('setNotficationToken res', res.data);
     return res.data;
   } catch (error) {
     console.error('[ERROR] Set Token', error);
+    console.log('setNotficationToken error', error);
     return;
   }
 };

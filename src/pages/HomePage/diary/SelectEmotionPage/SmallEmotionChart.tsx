@@ -58,6 +58,7 @@ const SmallEmotionChart = ({ navigation, route }: Props) => {
   }, [openBottomSheet]);
 
   const handleGoToDiary = useCallback(() => {
+    console.log('handleGoToDiary', dateID);
     Analytics.clickGotoDiaryWriteButton();
     navigation.navigate(HomeStackName.DailyDairy, { dateID });
   }, [navigation, dateID]);

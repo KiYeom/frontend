@@ -69,13 +69,13 @@ const Setting: React.FC<any> = ({ navigation }) => {
           text: '아니오', // 버튼 제목
           style: 'cancel',
           onPress: () => {
-            Analytics.clickTabSettingLogoutCancelButton();
+            //Analytics.clickTabSettingLogoutCancelButton();
           },
         },
         {
           text: '네',
           onPress: () => {
-            Analytics.clickTabSettingLogoutConfirmButton();
+            //Analytics.clickTabSettingLogoutConfirmButton();
             logoutRequest();
           },
         },
@@ -85,7 +85,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
   };
 
   useEffect(() => {
-    Analytics.watchTabSettingScreen();
+    //Analytics.watchTabSettingScreen();
   }, []);
 
   useEffect(() => {
@@ -129,7 +129,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
         <UserInfoContainer
           activeOpacity={1}
           onPress={() => {
-            Analytics.clickTabSettingEditInfoButton();
+            //Analytics.clickTabSettingEditInfoButton();
             navigation.navigate(RootStackName.SettingStackNavigator, {
               screen: SettingStackName.EditUserInfo,
             });
@@ -148,7 +148,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
           <MenuRow
             text="알림설정"
             onPress={() => {
-              Analytics.clickTabSettingNotificationButton();
+              //Analytics.clickTabSettingNotificationButton();
               navigation.navigate(RootStackName.SettingStackNavigator, {
                 screen: SettingStackName.UserNotifications,
               });
@@ -157,7 +157,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
           <MenuRow
             text="대화방 설정"
             onPress={() => {
-              Analytics.clickTabSettingChattingSetting();
+              //Analytics.clickTabSettingChattingSetting();
               navigation.navigate(RootStackName.SettingStackNavigator, {
                 screen: SettingStackName.UserChattingSetting,
               });
@@ -166,7 +166,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
           <MenuRow
             text="문의하기"
             onPress={async () => {
-              Analytics.clickTabSettingInquiryButton();
+              //Analytics.clickTabSettingInquiryButton();
               if (Platform.OS === 'android') {
                 await Linking.openURL('https://j2wk7.channel.io/home');
               } else {
@@ -177,7 +177,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
           <MenuRow
             text="서비스 이용약관"
             onPress={() => {
-              Analytics.clickTabSettingServiceTermsButton();
+              //Analytics.clickTabSettingServiceTermsButton();
               WebBrowser.openBrowserAsync(
                 'https://autumn-flier-d18.notion.site/reMIND-167ef1180e2d42b09d019e6d187fccfd',
               );
@@ -186,7 +186,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
           <MenuRow
             text="개인정보 처리방침"
             onPress={() => {
-              Analytics.clickTabSettingPrivacyPolicyButton();
+              //Analytics.clickTabSettingPrivacyPolicyButton();
               WebBrowser.openBrowserAsync(
                 'https://autumn-flier-d18.notion.site/reMIND-167ef1180e2d42b09d019e6d187fccfd',
               );
@@ -195,7 +195,7 @@ const Setting: React.FC<any> = ({ navigation }) => {
           <MenuRow
             text="오픈소스 라이센스"
             onPress={() => {
-              Analytics.clickTabSettingOpenSourceButton();
+              //Analytics.clickTabSettingOpenSourceButton();
               navigation.navigate(RootStackName.SettingStackNavigator, {
                 screen: SettingStackName.LicensePage,
               });
@@ -211,14 +211,14 @@ const Setting: React.FC<any> = ({ navigation }) => {
           <MenuRow
             text="로그아웃"
             onPress={() => {
-              Analytics.clickTabSettingLogoutButton();
+              //Analytics.clickTabSettingLogoutButton();
               logoutAlert();
             }}
           />
           <MenuRow
             text="회원탈퇴"
             onPress={() => {
-              Analytics.clickTabSettingWithdrawalButton();
+              //Analytics.clickTabSettingWithdrawalButton();
               navigation.navigate(RootStackName.SettingStackNavigator, {
                 screen: SettingStackName.DeactivateAlert,
               });

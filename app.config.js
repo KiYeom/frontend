@@ -16,7 +16,7 @@ module.exports = {
   expo: {
     name: 'reMIND',
     slug: 'reMIND',
-    version: '1.8.11',
+    version: '1.8.12',
     orientation: 'portrait',
     icon: './src/assets/images/appicon.png',
     userInterfaceStyle: 'automatic',
@@ -43,9 +43,10 @@ module.exports = {
       googleServicesFile: process.env.GOOGLE_SERVICES_JSON,
       userInterfaceStyle: 'automatic',
     },
-
     androidStatusBar: {
-      translucent: true,
+      translucent: false,
+      backgroundColor: '#ffffff',
+      barStyle: 'light-content',
     },
     scheme: 'remind',
     web: {
