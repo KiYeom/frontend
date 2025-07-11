@@ -187,8 +187,9 @@ const CallTimer: React.FC<{
                 style={{
                   color: 'white',
                   fontSize: 18,
-                  fontFamily: 'Pretendard-SemiBold',
-                  width: 80,
+                  lineHeight: 28,
+                  fontFamily: 'Pretendard-Medium',
+                  width: 85,
                 }}>
                 {formatTime(remainingTime)}
               </Text>
@@ -375,7 +376,7 @@ const CallPage: React.FC = () => {
     callStatus === CallStatus.Resumed ||
     callStatus === CallStatus.Active;
 
-  const canStart = callStatus === CallStatus.Idle;
+  const canStart = callStatus === CallStatus.Idle && totalTime > 0;
   const canPause =
     callStatus === CallStatus.Start ||
     callStatus === CallStatus.Resumed ||

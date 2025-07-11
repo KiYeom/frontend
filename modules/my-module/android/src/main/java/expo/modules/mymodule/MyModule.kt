@@ -48,6 +48,9 @@ class MyModule : Module() {
   //@Volatile private var isRecording = false
   private var micManuallyMuted = false
 
+  private var lastPlaybackEventTime = System.currentTimeMillis()
+
+
   data class TaggedAudio(val data: ByteArray, val isSilent: Boolean)
 
   override fun definition() = ModuleDefinition {
@@ -198,6 +201,7 @@ class MyModule : Module() {
   private fun renderAudioFrames(outputBuffer: ShortArray, frameCount: Int): Int {
     if (!isPlaying) return 0
     var samplesProvided = 0
+    var accumulatedEnergy = 0.0
 
     for (frame in 0 until frameCount) {
       var sample: Float = 0f
@@ -234,11 +238,19 @@ class MyModule : Module() {
 
       outputBuffer[frame] = (sample * 32767).toInt().toShort()
       previousSample = sample
+      accumulatedEnergy += (sample * sample)
     }
 
     if (isFirstBlock && samplesProvided > 0) {
       isFirstBlock = false
       Log.d("MyModule", "🎵 첫 번째 오디오 블록 재생 시작")
+    }
+    
+    val rms = kotlin.math.sqrt(accumulatedEnergy / frameCount)
+    val now = System.currentTimeMillis()
+    if (rms > 0.0002 && now - lastPlaybackEventTime > 16) {
+      emit("onPlaybackFrame", mapOf("level" to rms))
+      lastPlaybackEventTime = now
     }
 
     return frameCount

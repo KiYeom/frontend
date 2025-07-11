@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { use, useEffect, useRef } from 'react';
 import { View, StyleSheet } from 'react-native';
 import Icon from '../../components/icons/icons';
 import Animated, {
@@ -11,6 +11,9 @@ import Animated, {
 const BAR_COUNT = 5;
 
 export const AudioBars = ({ volume }: { volume: number }) => {
+  /*useEffect(() => {
+    console.log('🔊 Audio volume:', volume);
+  }, [volume]);*/
   // ✅ Hook 최상단에서만 호출
   const bar1 = useSharedValue(0);
   const bar2 = useSharedValue(0);
