@@ -91,6 +91,7 @@ const backgroundImages = [
 const appVariant = Constants.expoConfig?.extra?.appVariant;
 const isProductionOrStaging = appVariant === 'production' || appVariant === 'staging';
 const userName = getUserNickname() ?? 'Test_remind_empty';
+console.log('userName in quote', userName);
 const isTestUser = userName === 'Test_remind';
 const adUnitId =
   isProductionOrStaging && !isTestUser
@@ -98,8 +99,8 @@ const adUnitId =
       ? process.env.EXPO_PUBLIC_QUOTE_REWARDED_INTERSTITIAL_AD_UNIT_ID_ANDROID
       : process.env.EXPO_PUBLIC_QUOTE_REWARDED_INTERSTITIAL_AD_UNIT_ID_IOS
     : TestIds.REWARDED_INTERSTITIAL;
-console.log('adUnitId', adUnitId);
-console.log('test?', adUnitId === TestIds.REWARDED_INTERSTITIAL);
+//console.log('adUnitId', adUnitId);
+//console.log('test?', adUnitId === TestIds.REWARDED_INTERSTITIAL);
 const Quote: React.FC = () => {
   //console.log('adUnitId in quote', adUnitId === TestIds.REWARDED);
   //console.log('appVariant in quote', appVariant);
@@ -123,15 +124,15 @@ const Quote: React.FC = () => {
     //console.log('사진 권한 상태', status);
   }
 
-  const rewardedInterstitial = useMemo(
+  /*const rewardedInterstitial = useMemo(
     () =>
       RewardedInterstitialAd.createForAdRequest(adUnitId, {
         keywords: ['fashion', 'clothing'],
       }),
     [],
-  );
+  );*/
 
-  useFocusEffect(
+  /*useFocusEffect(
     useCallback(() => {
       Analytics.startHappyLyricsAdLoad();
       const unsubscribeLoaded = rewardedInterstitial.addAdEventListener(
@@ -202,7 +203,7 @@ const Quote: React.FC = () => {
         //console.log(`리스너 해제됨 : 현재 ${listenerCount}번 등록됨`);
       };
     }, [rewardedInterstitial]),
-  );
+  );*/
 
   // 컴포넌트 초기화 시 저장된 데이터 확인
   useEffect(() => {
@@ -252,7 +253,7 @@ const Quote: React.FC = () => {
     initializeQuote();
   }, []);
 
-  rewardedInterstitial.load();
+  //rewardedInterstitial.load();
   //console.log('uiMode', uiMode);
 
   //랜덤 값 뽑기
@@ -356,7 +357,12 @@ const Quote: React.FC = () => {
             />
             <TitleContainer>
               <TitleTextContainter>
-                <Annotation>{userName}님을 위한</Annotation>
+                {userName === 'Test_remind_empty' || userName.trim() === '' ? (
+                  <Annotation>당신을 위한</Annotation>
+                ) : (
+                  <Annotation>{userName}님을 위한</Annotation>
+                )}
+
                 <Title>오늘의 행복 한 조각</Title>
               </TitleTextContainter>
             </TitleContainer>
@@ -461,7 +467,7 @@ const Quote: React.FC = () => {
           onPress={async () => {
             Analytics.clickHappyLyricsAdShow(); // 애널리틱스 추가
             //console.log('Animation clicked!');
-            if (loaded) {
+            /*if (loaded) {
               try {
                 Analytics.successHappyLyricsAdShow(); // 애널리틱스 추가
                 await rewardedInterstitial.show();
@@ -475,7 +481,20 @@ const Quote: React.FC = () => {
               console.log('광고가 아직 로드되지 않았습니다.');
               Alert.alert('광고를 준비 중입니다. 잠시 후 다시 시도해주세요.');
               rewardedInterstitial.load();
-            }
+            }*/
+            setUiMode('loading');
+            const lyricIndex = Math.floor(Math.random() * happyLyrics.length);
+            const imageIndex = Math.floor(Math.random() * backgroundImages.length);
+            const lyricObject = happyLyrics[lyricIndex];
+            const imageObject = backgroundImages[imageIndex];
+
+            setSelectedLyricObject(lyricObject);
+            setSelectedImageSource(imageObject);
+
+            savePhotoCardData(lyricObject, imageObject);
+            await updateUserCanOpenQuote();
+
+            Analytics.successHappyLyricsAdShow(); // 광고 대체 시 성공 처리
           }}>
           <LottieView
             autoPlay

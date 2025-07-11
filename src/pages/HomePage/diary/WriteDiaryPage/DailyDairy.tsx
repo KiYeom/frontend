@@ -65,7 +65,7 @@ const DailyDairy = ({ navigation, route }) => {
   //이미지 가지고 오기
   //const [image, setImage] = useState<string[]>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false); //사진 경고 모달
-  const [adsModalVisible, setAdsModalVisible] = useState<boolean>(false); //광고 모달
+  //const [adsModalVisible, setAdsModalVisible] = useState<boolean>(false); //광고 모달
 
   //네비게이션 로딩 상태
   const [isNavigationLoading, setNavigationLoading] = useState(false);
@@ -73,27 +73,24 @@ const DailyDairy = ({ navigation, route }) => {
   const saveEmotionMutation = useSaveEmotion();
   const saveEmotionWithImageMutation = useSaveEmotionWithImage();
 
-  const rewarded = useMemo(
+  /*const rewarded = useMemo(
     () =>
       RewardedAd.createForAdRequest(adUnitId, {
         keywords: ['fashion', 'clothing'],
       }),
     [],
-  );
+  );*/
 
-  const [loaded, setLoaded] = useState<boolean>(false);
+  //const [loaded, setLoaded] = useState<boolean>(false);
 
-  useEffect(() => {
+  /*useEffect(() => {
     console.log('DailyDairy useEffect 실행 : getUserInfo');
-    //listenerCount++;
-    //console.log(`리스너 등록 시작 : 현재 총 ${listenerCount}번 등록됨`);
     Analytics.watchDiaryWriteScreen();
     getUserInfo()
       .then((res) => {
-        res && setUserPlan(res.userTier); //사용자의 tier 정보를 저장)
+        res && setUserPlan(res.userTier);
       })
       .catch((error) => {
-        //console.log('getUserInfo error', error);
       });
     //광고 이벤트
     const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
@@ -142,7 +139,7 @@ const DailyDairy = ({ navigation, route }) => {
       unsubscribeEarned();
       unsubscribeClosed();
     };
-  }, []);
+  }, []);*/
 
   //홈으로 돌아가는 코드
   const navigateToHome = (isShownAds: boolean) => {
@@ -157,11 +154,11 @@ const DailyDairy = ({ navigation, route }) => {
         },
       ],
     });
-    isShownAds &&
+    /*isShownAds &&
       Toast.show(`광고를 시청하고 이미지를 첨부했어요!`, {
         duration: Toast.durations.SHORT,
         position: Toast.positions.CENTER,
-      });
+      });*/
   };
 
   //기본 감정 선택 함수
@@ -208,8 +205,10 @@ const DailyDairy = ({ navigation, route }) => {
     const userPlan = getUserPlan();
     console.log('사용자 플랜:', userPlan);
 
-    if (userPlan === 'free') {
-      setAdsModalVisible(true); // 광고 보기 유도
+    // setUserPlan('pro');
+
+    /*if (userPlan === 'free') {
+      //setAdsModalVisible(true); // 광고 보기 유도
     } else {
       try {
         await saveEmotionWithImageMutation.mutateAsync({
@@ -223,11 +222,24 @@ const DailyDairy = ({ navigation, route }) => {
       } catch (e) {
         Toast.show('일기 저장 중 오류가 발생했습니다.');
       }
+    }*/
+    try {
+      await saveEmotionWithImageMutation.mutateAsync({
+        dateID,
+        emotions: allSelectedEmotions,
+        text: diaryText,
+        images: image,
+      });
+      handleStatusUpdate(allSelectedEmotions);
+      console.log('이미지 포함 일기 저장 성공');
+      navigateToHome(false);
+    } catch (e) {
+      Toast.show('일기 저장 중 오류가 발생했습니다.');
     }
   };
 
   //광고 보기 모달에서 저장하기 버튼 클릭
-  const onConfirmWatchAd = () => {
+  /*const onConfirmWatchAd = () => {
     console.log('광고 보기 버튼 클릭');
     Analytics.clickWatchAdsButton(); // 클릭 이벤트 트래킹
     if (!loaded) {
@@ -236,12 +248,12 @@ const DailyDairy = ({ navigation, route }) => {
       return;
     }
     rewarded.show(); // 광고 표시
-  };
+  };*/
 
-  if (!loaded) {
+  /*if (!loaded) {
     console.log('no advert ready to show yet');
     return null;
-  }
+  }*/
 
   return (
     <>
@@ -306,7 +318,7 @@ const DailyDairy = ({ navigation, route }) => {
         imageSource={localImage}
         modalContent="사진은 한 장만 등록할 수 있습니다."
       />
-      <AdsModal
+      {/*<AdsModal
         modalVisible={adsModalVisible}
         onClose={() => {
           Analytics.clickNoWatchAdsButton();
@@ -323,7 +335,7 @@ const DailyDairy = ({ navigation, route }) => {
             ? `광고를 시청하면\n일기에 사진을 첨부할 수 있어요 :)`
             : `광고를 시청하면\n일기에 사진을 첨부할 수 있어요!`
         }
-      />
+      />*/}
       {isNavigationLoading && (
         <View
           style={{
