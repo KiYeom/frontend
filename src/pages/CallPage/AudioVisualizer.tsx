@@ -49,6 +49,10 @@ export const AudioVisualizer: React.FC<AudioVisualizerProps> = ({
   const blur1 = useSharedValue(20.562);
   const blur2 = useSharedValue(15.4215);
 
+  useEffect(() => {
+    console.log('[waveform]', waveform);
+  }, [waveform, isReceivingAudio]);
+
   // gemini_audio 수신에 따른 애니메이션
   useEffect(() => {
     if (isReceivingAudio) {
@@ -158,7 +162,6 @@ export const AudioVisualizer: React.FC<AudioVisualizerProps> = ({
               <FeFlood floodOpacity="0" result="BackgroundImageFix" />
               <FeBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
               <AnimatedFeGaussianBlur
-                stdDeviation={blur1.value}
                 result="effect1_foregroundBlur_537_28654"
                 animatedProps={animatedBlur1Style}
               />
@@ -173,7 +176,6 @@ export const AudioVisualizer: React.FC<AudioVisualizerProps> = ({
               <FeFlood floodOpacity="0" result="BackgroundImageFix" />
               <FeBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
               <AnimatedFeGaussianBlur
-                stdDeviation={blur2.value}
                 result="effect1_foregroundBlur_537_28654"
                 animatedProps={animatedBlur2Style}
               />

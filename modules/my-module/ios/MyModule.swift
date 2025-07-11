@@ -35,6 +35,8 @@ public class MyModule: Module {
 
   private var didInitialRouteChangeHandled = false
 
+  private var lastFrameEventTime: CFTimeInterval = 0
+
   // MARK: - Module definition
   public func definition() -> ModuleDefinition {
     Name("MyModule")
@@ -42,7 +44,7 @@ public class MyModule: Module {
       "BUF_PER_SEC": BUF_PER_SEC
     ])
 
-    Events("onChange", "onAudioBuffer", "onMicAudio", "onRecordingSaved", "onAudioRouteChange", "onRecordingReady")
+    Events("onChange", "onAudioBuffer", "onMicAudio", "onRecordingSaved", "onAudioRouteChange", "onRecordingReady", "onPlaybackFrame")
 
     // public API
     Function("startRecording") { self.startRecording() }
@@ -328,7 +330,8 @@ public class MyModule: Module {
 
   private func renderAudioFrames(frameCount: AVAudioFrameCount, audioBufferList: UnsafeMutablePointer<AudioBufferList>) -> OSStatus {
     let ablPointer = UnsafeMutableAudioBufferListPointer(audioBufferList)
-
+    var accumulatedEnergy: Float = 0.0
+    var peakSample: Float = 0.0
     pcmDataQueue.sync {
       for buffer in ablPointer {
         let frameData = buffer.mData!.bindMemory(to: Float.self, capacity: Int(frameCount))
@@ -358,10 +361,19 @@ public class MyModule: Module {
 
           frameData[frame] = sample
           previousSample = sample
+
+          accumulatedEnergy += sample * sample
+          peakSample = max(peakSample, abs(sample))
         }
       }
 
       if isFirstBlock { isFirstBlock = false }
+      let now = CACurrentMediaTime()
+      if now - lastFrameEventTime > 1.0 / 60.0 {
+        let rms = sqrt(accumulatedEnergy / Float(frameCount))
+        self.sendEvent("onPlaybackFrame", ["level": rms])
+        lastFrameEventTime = now
+      }
     }
     return noErr
   }

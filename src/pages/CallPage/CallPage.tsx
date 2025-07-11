@@ -243,9 +243,7 @@ const CookieAvatar: React.FC<{
           justifyContent: 'center',
           borderColor: 'purple',
         }}>
-        {/* 뒤에 위치할 AudioVisualizer
-        <AudioVisualizer isReceivingAudio={isReceivingAudio} waveform={waveform} isActive={true} /> */}
-
+        <AudioVisualizer isReceivingAudio={isReceivingAudio} waveform={waveform} isActive={true} />
         {/* 앞에 위치할 쿠키 이미지 */}
         <Text
           style={{
