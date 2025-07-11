@@ -395,7 +395,7 @@ class MyModule : Module() {
       micState = MicState.RECORDING
       Log.d("MyModule", "🎙️ 자동으로 마이크 재시작")
     } else {
-      Log.d("MyModule", "🙅️ 수동 음소거 상태이로 재시작 안함")
+      Log.d("MyModule", "🙅️ 수동 음소거 상태이로 재시작 안함..")
     }
   }
   private fun emit(event: String, data: Any?) {

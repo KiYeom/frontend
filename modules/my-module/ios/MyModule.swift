@@ -369,8 +369,8 @@ public class MyModule: Module {
 
       if isFirstBlock { isFirstBlock = false }
       let now = CACurrentMediaTime()
-      if now - lastFrameEventTime > 1.0 / 60.0 {
-        let rms = sqrt(accumulatedEnergy / Float(frameCount))
+      let rms = sqrt(accumulatedEnergy / Float(frameCount))
+      if now - lastFrameEventTime > 1.0 / 60.0 && rms > 0  {
         self.sendEvent("onPlaybackFrame", ["level": rms])
         lastFrameEventTime = now
       }
