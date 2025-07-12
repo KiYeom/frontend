@@ -176,6 +176,16 @@ public class MyModule: Module {
     DispatchQueue.main.async {
       do {
         try self.setupAudioSessionIfNeeded()     // 이미 구성됐다면 no‑op
+        // 🎯[업데이트] 최초 시작 시 무음 버퍼 한 개 삽입 (24 kHz 기준 1/BUF_PER_SEC 초 분량)
+        let silenceSampleCount = Int(self.sampleRate / Double(BUF_PER_SEC))
+        let silenceData = Data(count: silenceSampleCount * MemoryLayout<Int16>.size)
+        self.pcmDataQueue.async {
+        if self.pcmBufferQueue.isEmpty {
+          self.pcmBufferQueue.append(silenceData)
+          print("🔇 무음 버퍼 선삽입 완료 (\(silenceSampleCount) samples)")
+          }
+        }
+        // 🎯[업데이트] 
         self.prepareOutputEngine()
         try self.playerEngine.start()
         self.isPlaying = true

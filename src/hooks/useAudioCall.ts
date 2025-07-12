@@ -167,10 +167,10 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
     });*/
 
     // 파일 경로 받기
-    const fileListener = emitter.addListener('onRecordingSaved', ({ filePath }) => {
+    /*const fileListener = emitter.addListener('onRecordingSaved', ({ filePath }) => {
       console.log('📁 WAV 파일 저장됨:', filePath);
       setWavFilePath(filePath);
-    });
+    });*/
 
     const readySub = emitter.addListener('onRecordingReady', () => {
       console.log('🎙️ 마이크 녹음 준비 완료!');
@@ -204,7 +204,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
     return () => {
       audioBufferSub.remove();
       micSub.remove();
-      fileListener.remove();
+      //fileListener.remove();
       routeChangeSub.remove();
       MyModule.stopRecording?.();
       if (countdownTimer.current) {

@@ -1,7 +1,15 @@
 //간단히 view와 text가 있는 페이지
 import React, { useEffect, useState, useRef } from 'react';
 import { Image } from 'expo-image';
-import { View, Text, Button, TouchableOpacity, ScrollView, Modal } from 'react-native';
+import {
+  View,
+  Text,
+  Button,
+  TouchableOpacity,
+  ScrollView,
+  Modal,
+  ActivityIndicator,
+} from 'react-native';
 import { useAudioCall } from '../../../src/hooks/useAudioCall';
 import { CallStatus } from '../../../src/hooks/useAudioCall';
 import Header from '../../../src/components/header/header';
@@ -9,17 +17,11 @@ import { ProgressBar } from 'react-native-paper';
 import palette from '../../../src/assets/styles/theme';
 import IconButton from '../../../src/components/icon-button/IconButton';
 import Icon from '../../../src/components/icons/icons';
-import { AudioVisualizer } from './AudioVisualizer';
-import { MicVisualization } from './MicVisualization';
 import { setAudioReceiveHandler } from './socketManager';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AudioBars } from './MicLevelBar';
 import Purchases from 'react-native-purchases';
-import {
-  getCurrentOffering,
-  updatePurchaseStatus,
-  purchasePackage,
-} from '../../services/inappService';
+import { getCurrentOffering, updatePurchaseStatus } from '../../services/inappService';
 import { getRemainingTime } from '../../apis/voice';
 import { getUserNickname } from '../../utils/storageUtils';
 // 결제 모달 컴포넌트
@@ -139,7 +141,8 @@ const CallTimer: React.FC<{
   remainingTime: number;
   totalTime: number; // 전체 시간 (선택적)
   onChargePress: () => void;
-}> = ({ totalTime, remainingTime, onChargePress }) => {
+  isLoading?: boolean; // 로딩 상태 추가
+}> = ({ totalTime, remainingTime, onChargePress, isLoading = false }) => {
   //console.log('CallTimer 렌더링', { remainingTime, totalTime });
 
   // 초를 hh:mm:ss 형식으로 변환하는 함수
@@ -185,28 +188,49 @@ const CallTimer: React.FC<{
               flex: 1,
             }}>
             <View style={{ flexDirection: 'row', gap: 8, alignItems: 'flex-end' }}>
-              <Text
-                style={{
-                  color: 'white',
-                  fontSize: 18,
-                  lineHeight: 28,
-                  fontFamily: 'Pretendard-Medium',
-                  width: 85,
-                }}>
-                {formatTime(remainingTime)}
-              </Text>
-              <Text
-                style={{
-                  color: 'white',
-                  fontSize: 12,
-                  fontFamily: 'Pretendard-Medium',
-                }}>
-                남았습니다
-              </Text>
+              {isLoading ? (
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                  <ActivityIndicator size="small" color="white" />
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontSize: 14,
+                      fontFamily: 'Pretendard-Medium',
+                    }}>
+                    로딩중...
+                  </Text>
+                </View>
+              ) : (
+                <>
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontSize: 18,
+                      lineHeight: 28,
+                      fontFamily: 'Pretendard-Medium',
+                      width: 85,
+                    }}>
+                    {formatTime(remainingTime)}
+                  </Text>
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontSize: 12,
+                      fontFamily: 'Pretendard-Medium',
+                    }}>
+                    남았습니다
+                  </Text>
+                </>
+              )}
             </View>
             <TouchableOpacity
               onPress={onChargePress}
-              style={{ backgroundColor: palette.primary[500], padding: 5, borderRadius: 5 }}>
+              disabled={isLoading}
+              style={{
+                backgroundColor: isLoading ? palette.neutral[400] : palette.primary[500],
+                padding: 5,
+                borderRadius: 5,
+              }}>
               <Text style={{ color: 'white', fontSize: 12, fontFamily: 'Pretendard-SemiBold' }}>
                 충전하기
               </Text>
@@ -330,7 +354,6 @@ const CallControls: React.FC<{
   const [currentOffering, setCurrentOffering] = useState<PurchasesOffering | null>(null);
   //구매 상태에 따라 버튼 변경
   useEffect(() => {
-    console.log('😀NewEmojiPanel useEffect 실행됨😀');
     const setup = async () => {
       const offering = await getCurrentOffering();
       setCurrentOffering(offering); //판매 상품
@@ -396,6 +419,8 @@ const CallPage: React.FC = () => {
 
   // 결제 모달 상태
   const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
+  // 결제 로딩 상태 추가
+  const [isPaymentLoading, setIsPaymentLoading] = useState(false);
 
   useEffect(() => {
     setAudioReceiveHandler(() => {
@@ -410,6 +435,9 @@ const CallPage: React.FC = () => {
 
   const handlePayment = async (minutes: number) => {
     try {
+      // 로딩 시작
+      setIsPaymentLoading(true);
+
       const productIdMap: Record<number, string> = {
         10: 'time_10min',
         30: 'time_30min',
@@ -420,6 +448,7 @@ const CallPage: React.FC = () => {
       const productIdentifier = productIdMap[minutes];
       if (!productIdentifier) {
         console.warn('해당 시간에 맞는 상품이 없습니다.');
+        setIsPaymentLoading(false);
         return;
       }
 
@@ -428,6 +457,7 @@ const CallPage: React.FC = () => {
 
       if (!voiceOffering) {
         console.warn('voiceTalks Offering을 찾을 수 없습니다.');
+        setIsPaymentLoading(false);
         return;
       }
 
@@ -437,6 +467,7 @@ const CallPage: React.FC = () => {
 
       if (!product) {
         console.warn(`상품(${productIdentifier})을 Offering에서 찾을 수 없습니다.`);
+        setIsPaymentLoading(false);
         return;
       }
 
@@ -454,6 +485,9 @@ const CallPage: React.FC = () => {
       if (!e.userCancelled) {
         console.error('결제 중 오류 발생:', e);
       }
+    } finally {
+      // 로딩 종료
+      setIsPaymentLoading(false);
     }
   };
 
@@ -472,6 +506,7 @@ const CallPage: React.FC = () => {
           totalTime={totalTime}
           remainingTime={remainingTime}
           onChargePress={() => setIsPaymentModalVisible(true)}
+          isLoading={isPaymentLoading}
         />
         <CookieAvatar
           responseText={responseText}
@@ -488,12 +523,7 @@ const CallPage: React.FC = () => {
             alignItems: 'center',
             height: 100,
           }}>
-          {/*<MicVisualization
-            waveform={waveform}
-            isActive={isActive && !isReceivingAudio} // 쿠키가 말하지 않을 때만 활성화
-          />*/}
-
-          <AudioBars volume={volumeLevel} />
+          <AudioBars volume={volumeLevel} isActive={isActive} />
           <Text style={{ color: 'white' }}>이야기 하세요</Text>
         </View>
         <CallControls

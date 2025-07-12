@@ -67,7 +67,12 @@ export const initSocket = (token: string) => {
       if (isNewResponse) {
         console.log('🆕 감지: 새로운 Gemini 응답 시작!');
         MyModule.clearQueue();
-        MyModule.startPlaybackLoop();
+        MyModule.startRealtimePlayback();
+
+        // 🔹 500ms 무음 추가 (24kHz, 16bit PCM)
+        const silenceSamples = 24000 * 0.5; //
+        const silenceBuffer = new Uint8Array(silenceSamples * 2); // 16bit = 2 bytes
+        MyModule.playPCMBuffer(silenceBuffer);
       }
       const uint8 = new Uint8Array(buf);
       //console.log('1️⃣ [uint8 Samples]', uint8.slice(0, 10));

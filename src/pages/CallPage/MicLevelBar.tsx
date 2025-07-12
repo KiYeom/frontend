@@ -10,11 +10,12 @@ import Animated, {
 
 const BAR_COUNT = 5;
 
-export const AudioBars = ({ volume }: { volume: number }) => {
+export const AudioBars = ({ volume, isActive }: { volume: number; isActive?: boolean }) => {
   /*useEffect(() => {
     console.log('🔊 Audio volume:', volume);
   }, [volume]);*/
   // ✅ Hook 최상단에서만 호출
+
   const bar1 = useSharedValue(0);
   const bar2 = useSharedValue(0);
   const bar3 = useSharedValue(0);
@@ -34,6 +35,14 @@ export const AudioBars = ({ volume }: { volume: number }) => {
 
   // 🔁 volume 변화 시 shared value 갱신
   useEffect(() => {
+    if (!isActive) {
+      bars.forEach((bar) => {
+        bar.value = withTiming(0, {
+          duration: 300,
+        });
+      });
+      return;
+    }
     const safeVolume = Math.max(volume, 0.001);
     const amplified = Math.pow(safeVolume, 0.7);
 
@@ -43,7 +52,7 @@ export const AudioBars = ({ volume }: { volume: number }) => {
         duration: 120,
       });
     });
-  }, [volume]);
+  }, [volume, isActive]);
 
   return (
     <View style={styles.container}>
