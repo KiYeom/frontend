@@ -37,6 +37,10 @@ public class MyModule: Module {
 
   private var lastFrameEventTime: CFTimeInterval = 0
 
+  private var waitingForPrebuffer = false
+  private let minBuffersToStart = 2   // 필요시 1~3 사이에서 조정
+
+
   // MARK: - Module definition
   public func definition() -> ModuleDefinition {
     Name("MyModule")
@@ -275,37 +279,44 @@ public class MyModule: Module {
   }
 
   // MARK: - PCM 스트리밍 & 렌더링 -------------------------------------------
-  func streamPCMData(_ data: Data) {
-    guard isPlaying else {
-      print("⚠️ 재생 중이 아니므로 데이터 무시됨")
-      return
-    }
-    guard data.count > 0 && data.count % MemoryLayout<Int16>.size == 0 else {
-      print("❌ 잘못된 PCM 데이터 형식")
-      return
+func streamPCMData(_ data: Data) {
+  guard data.count > 0,
+        data.count % MemoryLayout<Int16>.size == 0 else { return }
+
+  pcmDataQueue.async {
+    if self.pcmBufferQueue.count < self.maxQueueLength {
+      self.pcmBufferQueue.append(data)
     }
 
-    pcmDataQueue.async {
-      if self.pcmBufferQueue.count < self.maxQueueLength {
-        self.pcmBufferQueue.append(data)
-        self.silenceFramesGenerated = 0
-      } else {
-        print("⚠️ 버퍼 가득 참 → 새 데이터 무시")
-      }
+    // 아직 재생 준비 중이면, 조건 충족 시 자동 시작
+    if self.waitingForPrebuffer,
+       self.pcmBufferQueue.count >= self.minBuffersToStart {
+      self.waitingForPrebuffer = false
+      DispatchQueue.main.async { self.startRealtimePlayback() }
     }
   }
+}
 
-  func playPCMBuffer(_ pcmData: Data) {
-    print("🎧 playPCMBuffer 호출됨 (\(pcmData.count) bytes)")
-    if !isPlaying {
-      startRealtimePlayback()
-      DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-        self.streamPCMData(pcmData)
-      }
-    } else {
-      streamPCMData(pcmData)
+
+func playPCMBuffer(_ pcmData: Data) {
+  print("🎧 playPCMBuffer 호출 (\(pcmData.count)B)")
+
+  pcmDataQueue.async {
+    self.pcmBufferQueue.append(pcmData)
+    // 아직 엔진이 꺼져 있다면 → “대기 모드” 전환
+    if !self.isPlaying && !self.waitingForPrebuffer {
+      self.waitingForPrebuffer = true
+    }
+
+    // Pre-buffer 충족 즉시 startRealtimePlayback() 이 호출될 것
+    if self.waitingForPrebuffer,
+       self.pcmBufferQueue.count >= self.minBuffersToStart {
+      self.waitingForPrebuffer = false
+      DispatchQueue.main.async { self.startRealtimePlayback() }
     }
   }
+}
+
 
   // MARK: - 내부 버퍼 로딩 / 샘플 렌더 --------------------------------------
   private func loadNextBuffer() {
