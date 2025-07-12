@@ -263,20 +263,20 @@ const NewChat: React.FC = ({ navigation }) => {
     toggleEmojiPanel();
   }, [keyboardHeight, toggleEmojiPanel]);
 
-  const rewarded = useMemo(
+  /*const rewarded = useMemo(
     () =>
       RewardedAd.createForAdRequest(adUnitId, {
         keywords: ['fashion', 'clothing'],
       }),
     [],
-  );
+  );*/
   //
 
   //광고 로드 상태
-  const [loaded, setLoaded] = useState(false);
+  //const [loaded, setLoaded] = useState(false);
   //console.log('이모지 패널', emojiPanelHeight);
   //console.log('rewarded', rewarded);
-  useFocusEffect(
+  /*useFocusEffect(
     useCallback(() => {
       const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
         //console.log('광고 로드');
@@ -322,7 +322,7 @@ const NewChat: React.FC = ({ navigation }) => {
         //console.log(`리스너 해제됨 : 현재 ${listenerCount}번 등록됨`);
       };
     }, [rewarded, navigation]),
-  );
+  );*/
 
   //위치하는 y좌표 자리는... 화면 높이 - 입력 필드 높이-키보드 높이
   useEffect(() => {
@@ -385,7 +385,7 @@ const NewChat: React.FC = ({ navigation }) => {
   };
 
   //광고 시청 함수
-  const watchAds = async () => {
+  /*const watchAds = async () => {
     try {
       if (!loaded) {
         Toast.show('광고 로딩중입니다. 잠시 기다려주세요');
@@ -402,7 +402,7 @@ const NewChat: React.FC = ({ navigation }) => {
       setLoaded(false);
       rewarded.load(); // Try to load again
     }
-  };
+  };*/
 
   //1.5.7v3 서버에서 대화 내용을 불러오는 함수 (직접 이미지인지 판단하지 않음)
   /*
@@ -726,7 +726,7 @@ const NewChat: React.FC = ({ navigation }) => {
     const buf = bufferRef.current;
     const img = imageRef.current;
     //console.log('sendMessageToServer 실행', buffer, image);
-    //console.log('sendMessageToServer 내에서 읽은 값', buf, img);
+    console.log('sendMessageToServer 내에서 읽은 값', buf, img);
     if ((!buf && !img) || sending) return; //텍스트도, 이미지도 없는 경우에는 전송하지 않음
     setSending(true);
     setBuffer(null); // 버퍼 비우기
@@ -1135,8 +1135,20 @@ const NewChat: React.FC = ({ navigation }) => {
       //console.log('🧞‍♂️이미지 전송');
       // 이미지를 보낸 경우
       //setBuffer(buffer ? buffer + newMessages[0].text + '\t' : newMessages[0].text + '\t');
+      console.log('이미지 전송~~~', newMessages);
       setBuffer(newMessages[0].text);
-      setModalVisible(true);
+      /*if (textInputRef.current) {
+        //console.log('입력 필드 초기화');
+        textInputRef.current.clear(); // 입력 필드 초기화
+      }*/
+      /*setMessages((previousMessages) => {
+        //setIMessagesV3(previousMessages, newMessages.reverse());
+        console.log('이미지 전송', newMessages);
+        return GiftedChat.append(previousMessages, newMessages);
+      });*/
+      sendMessageToServerWithText(newMessages[0].text);
+
+      //setModalVisible(true);
       /*
       이미지가 화면에 보이려면
           setMessages((previousMessages) => {
@@ -1378,26 +1390,6 @@ const NewChat: React.FC = ({ navigation }) => {
         }}
         pointerEvents="box-none"></Animated.View>
 
-      {/*isEmojiPanelVisible && (
-        <Animated.View
-          style={[
-            css`
-              position: absolute;
-              bottom: 0;
-              left: 0;
-              right: 0;
-            `,
-            emojiPanelAnimatedStyle,
-          ]}>
-          <NewEmojiPanel
-            key="uniqueEmojiPanelKey"
-            height={emojiPanelHeight + insets.bottom}
-            selectedEmoji={selectedEmoji}
-            onSelectEmoji={handleEmojiSelectAsImage}
-            insets={insets}
-          />
-        </Animated.View>
-      )*/}
       <Animated.View
         // 항상 렌더링은 하지만, 애니메이션 값으로 위치와 불투명도를 제어합니다
         style={[
@@ -1421,7 +1413,7 @@ const NewChat: React.FC = ({ navigation }) => {
           onPurchaseEnd={() => setIsPurchasing(false)}
         />
       </Animated.View>
-      <AdsModal
+      {/*<AdsModal
         modalVisible={modalVisible}
         onClose={() => {
           Analytics.clickNoWatchAdsButtonInChatting();
@@ -1429,7 +1421,7 @@ const NewChat: React.FC = ({ navigation }) => {
         }}
         onSubmit={() => {
           Analytics.clickWatchAdsButtonInChatting();
-          watchAds(); //1. 광고 시청하기
+          //watchAds(); //1. 광고 시청하기
           //2. 광고 시청을 성공적으로 하여 보상을 받은 경우, api 를 호출하여 사용자의 사진 추가 권한을 true 로 변경한다. (O)
           //3. 변경 후, 홈 화면으로 가서 사용자의 질문을 보낸다 (화면과 서버에, sendMessageToServer())
           //4. 사용자의 질문과 쿠키의 답변을 화면에 나타낸다.
@@ -1440,7 +1432,7 @@ const NewChat: React.FC = ({ navigation }) => {
             ? `광고를 시청하면\n쿠키에게 사진을 보여줄 수 있어요 :)`
             : `광고를 시청하면\n쿠키에게 사진을 보여줄 수 있어요`
         }
-      />
+      />*/}
       {isPurchasing && (
         <View
           style={{

@@ -5,6 +5,7 @@ import MyModule from '../../modules/my-module';
 import { getAccessToken } from '../utils/storageUtils';
 import { initSocket, getSocket } from '../pages/CallPage/socketManager';
 import { setTextReceiveHandler } from '../pages/CallPage/socketManager';
+import { getUserNickname } from '../utils/storageUtils';
 import {
   endAudioCall,
   pauseAudioCall,
@@ -23,6 +24,18 @@ export enum CallStatus {
   Active = 'acrtive',
 }
 
+const userNickname = getUserNickname(); // 사용자 닉네임 가져오기
+// 상태별 기본 메시지 상수
+const STATUS_MESSAGES = {
+  [CallStatus.Idle]: `찾아와줘서 고마워요${userNickname ? `, ${userNickname}님` : ''}\n마음 속의 생각을 편하게 이야기 해 주세요`,
+  [CallStatus.Start]: '쿠키가 듣고 있어요',
+  [CallStatus.Paused]: '잠시 멈췄어요. 준비되면 다시 시작해주세요',
+  [CallStatus.Resumed]: '다시 들을게요',
+  [CallStatus.End]: '다음에 또 이야기해요 😊',
+  connecting: '연결 중이에요...',
+  error: '연결에 실패했어요. 다시 시도해주세요',
+};
+
 interface AudioCallState {
   waveform: number[];
   wavFilePath: string | null;
@@ -40,6 +53,8 @@ interface AudioCallHandlers {
   handleDisconnect: () => Promise<void>;
   handlePause: () => Promise<void>;
   handleResume: () => Promise<void>;
+  setTotalTime: (seconds: number) => void;
+  setRemainingTime: (seconds: number) => void;
 }
 
 export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
@@ -146,10 +161,10 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
     });
 
     //파형 받기
-    emitter.addListener('onPlaybackFrame', ({ level }) => {
+    /*emitter.addListener('onPlaybackFrame', ({ level }) => {
       console.log('🔈 Playback volume:', level);
       //setSpeakerVolume(volume); // 시각화 용도로 전달
-    });
+    });*/
 
     // 파일 경로 받기
     const fileListener = emitter.addListener('onRecordingSaved', ({ filePath }) => {
@@ -255,6 +270,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
   const handleConnect = useCallback(async () => {
     const socket = getSocket();
     console.log('🔹 handleConnect 호출:', socket?.connected);
+    setResponseText(STATUS_MESSAGES.connecting); //연결 중이에요...
     if (!socket) return;
 
     socket.connect();
@@ -271,9 +287,11 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
         startHeartbeat();
         startCountdown();
         console.log('4️⃣. startAudioCall 완료');
+        setResponseText(STATUS_MESSAGES[CallStatus.Start]); // 쿠키가 듣고 있어요
       } catch (err) {
         console.error('❌ startAudioCall 실패:', err);
         setCallStatus(CallStatus.Idle);
+        setResponseText(STATUS_MESSAGES.error); // 연결에 실패했어요. 다시 시도해주세요
       }
     });
   }, [startHeartbeat, startCountdown]);
@@ -283,14 +301,16 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
       const response = await endAudioCall();
       console.log('✅ handleDisconnect 응답:', response);
       setCallStatus(CallStatus.End);
+      setResponseText(STATUS_MESSAGES[CallStatus.End]); // 다음에 또 이야기해요 😊
     } catch (err) {
       console.error('❌ endAudioCall 실패:', err);
+      setResponseText(STATUS_MESSAGES.error); // 연결에 실패했어요. 다시 시도해주세요
     } finally {
       MyModule.stopRecording();
       MyModule.stopRealtimePlayback();
       stopHeartbeat();
       stopCountdown();
-      setCallStatus(CallStatus.Idle);
+      setCallStatus(CallStatus.Idle); // 상태 초기화
     }
   }, [stopHeartbeat, stopCountdown]);
 
@@ -331,8 +351,10 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
   useEffect(() => {
     return () => {
       console.log('🧨 useAudioCall 언마운트됨');
+      stopCountdown(); // 이 부분 추가
+      stopHeartbeat(); // 이 부분도 추가
     };
-  }, []);
+  }, [stopCountdown, stopHeartbeat]);
 
   return [
     {
@@ -351,6 +373,8 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
       handleDisconnect,
       handlePause,
       handleResume,
+      setTotalTime,
+      setRemainingTime,
     },
   ];
 };

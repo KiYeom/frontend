@@ -41,7 +41,7 @@ const EmotionChip = memo(({ group, keyword, desc }: SelectableEmotion) => {
       style={css`
         background-color: ${palette.neutral[100]};
         height: ${rsHeight * 50 + 'px'};
-        width: ${rsWidth * 150 + 'px'};
+        width: ${rsWidth * 160 + 'px'};
         flex-direction: row;
         align-items: center; /* 세로 중앙 정렬 */
         justify-content: center; /* 가로 중앙 정렬 */
@@ -62,7 +62,7 @@ const EmotionChip = memo(({ group, keyword, desc }: SelectableEmotion) => {
           justify-content: center;
           align-self: center;
           font-family: Pretendard-Regular;
-          font-size: ${rsHeight * 14 + 'px'};
+          font-size: ${rsFont * 14 + 'px'};
         `}>
         {keyword}
       </Text>

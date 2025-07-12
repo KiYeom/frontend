@@ -20,6 +20,8 @@ import {
   updatePurchaseStatus,
   purchasePackage,
 } from '../../services/inappService';
+import { getRemainingTime } from '../../apis/voice';
+import { getUserNickname } from '../../utils/storageUtils';
 // 결제 모달 컴포넌트
 const PaymentModal: React.FC<{
   visible: boolean;
@@ -221,6 +223,7 @@ const CallTimer: React.FC<{
   );
 };
 
+const userNickname = getUserNickname(); // 사용자 닉네임 가져오기
 const CookieAvatar: React.FC<{
   responseText?: string;
   isReceivingAudio: boolean;
@@ -244,8 +247,8 @@ const CookieAvatar: React.FC<{
           justifyContent: 'center',
           borderColor: 'purple',
         }}>
-        <AudioVisualizer isReceivingAudio={isReceivingAudio} waveform={waveform} isActive={true} />
-        {/* 앞에 위치할 쿠키 이미지 */}
+        {/*<AudioVisualizer isReceivingAudio={isReceivingAudio} waveform={waveform} isActive={true} />
+         앞에 위치할 쿠키 이미지 */}
         <Text
           style={{
             color: 'white',
@@ -291,7 +294,7 @@ const CookieAvatar: React.FC<{
             lineHeight: 24,
           }}>
           {responseText ||
-            `찾아와줘서 고마워요, reMIND님\n마음 속의 생각을 편하게 이야기 해 주세요`}
+            `찾아와줘서 고마워요, ${userNickname ? `${userNickname}님` : ''}\n마음 속의 생각을 편하게 이야기 해 주세요`}
         </Text>
       </ScrollView>
     </View>
@@ -367,7 +370,14 @@ const CallPage: React.FC = () => {
   // 비즈니스 로직은 모두 커스텀 훅으로 이동
   const [state, handlers] = useAudioCall(); // ✅ 단 한 번만 호출
   const { waveform, remainingTime, totalTime, responseText, callStatus, volumeLevel } = state;
-  const { handleConnect, handleDisconnect, handlePause, handleResume } = handlers;
+  const {
+    handleConnect,
+    handleDisconnect,
+    handlePause,
+    handleResume,
+    setTotalTime,
+    setRemainingTime,
+  } = handlers;
   // gemini_audio 수신 상태 관리
   const [isReceivingAudio, setIsReceivingAudio] = useState(false);
   const audioTimeoutRef = React.useRef<NodeJS.Timeout>();
@@ -432,6 +442,12 @@ const CallPage: React.FC = () => {
 
       const purchaseResult = await Purchases.purchasePackage(product);
       console.log(`${minutes}분 충전 완료`, purchaseResult);
+      // ✅ 충전 후 서버에서 남은 시간 조회
+      const { remainingTime } = await getRemainingTime();
+      console.log('🔄 서버에서 가져온 남은 시간:', remainingTime);
+
+      setTotalTime(remainingTime);
+      setRemainingTime(remainingTime);
 
       // TODO: 구매 완료 처리 (시간 충전, 서버 동기화 등)
     } catch (e: any) {
