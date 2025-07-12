@@ -2,46 +2,33 @@ import { css } from '@emotion/native';
 import React from 'react';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { rsFont, rsWidth } from '../../../utils/responsive-size';
-import EmotionCard from '../../../components/atoms/EmotionCard/EmotionCard';
-import Icon from '../../../components/icons/icons';
-import { SectionTitle } from '../StatisticMain.style';
-import { Container, KeywordContainer, KeywordText } from './Keyword.style';
 import palette from '../../../assets/styles/theme';
+import AnaylsisBlock from '../AnalysisBlock/AnalysisBlock';
+import ReportEmotionCard from '../ReportEmotionCard/ReportEmotionCard';
+import { TEmotionCheck } from '../../../apis/analyze.type';
+//section : 그 때의 나는 어떤 감정이었나요?
+//감정 카드들을 가로 스크롤로 표시하는 컴포넌트
+type TEmotionAreaProps = {
+  isRecordKeywordList: TEmotionCheck[];
+};
 
-const HINT_NAME = 'record';
-const HINT_MESSAGE = '자신이 선택한 그날의 감정이에요!';
-
-const EmotionArea: React.FC<any> = (props: any) => {
-  const { isRecordKeywordList, hintStatus, setHintStatus } = props;
+const EmotionArea = ({ isRecordKeywordList }: TEmotionAreaProps) => {
   return (
-    <Container>
-      <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
-        <SectionTitle>그 때의 나는 어떤 감정이었나요?</SectionTitle>
-        <View style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 4 }}></View>
-      </View>
-      {isRecordKeywordList.length === 0 ? (
-        <KeywordContainer>
-          <Icon name={'empty-icon'} />
-          <KeywordText>나의 감정은 기록하지 않았어요</KeywordText>
-        </KeywordContainer>
-      ) : (
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={css`
-            flex-grow: 1;
-          `}
-          contentContainerStyle={css`
-            flex-grow: 1;
-            flex-direction: row;
-            gap: ${rsWidth * 8 + 'px'};
-          `}>
-          {isRecordKeywordList.map((emotion, index) => (
-            <EmotionCard key={index} emotion={emotion} onPress={() => {}} status={'default-view'} />
-          ))}
-        </ScrollView>
-      )}
-    </Container>
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      style={{
+        flexGrow: 1,
+      }}
+      contentContainerStyle={{
+        flexGrow: 1,
+        flexDirection: 'row',
+        gap: rsWidth * 8,
+      }}>
+      {isRecordKeywordList.map((emotion, index) => (
+        <ReportEmotionCard key={index} emotion={emotion} />
+      ))}
+    </ScrollView>
   );
 };
 export default EmotionArea;

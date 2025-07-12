@@ -43,7 +43,6 @@ import 'react-native-gesture-handler';
 import Favorites from './src/pages/HomePage/favorites/favorites';
 import Constants from 'expo-constants';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { preloadEmojiImages } from './src/services/imagePreloader';
 import {
   restoreTransactions,
   initializeInApp,
@@ -51,13 +50,14 @@ import {
   NewLoginInApp,
 } from './src/services/inappService';
 import Purchases from 'react-native-purchases';
-
+import { Provider } from 'react-redux';
 /*const { APP_ENV } = Constants.expoConfig?.extra || {};
 // 환경 확인
 const isProduction = APP_ENV === 'production';
 const isStaging = APP_ENV === 'staging';
 const isDevelopment = APP_ENV === 'development' || !APP_ENV; // APP_ENV가 없으면 개발 환경으로 간주
 */
+
 const appVariant = Constants.expoConfig?.extra?.appVariant;
 const isProductionOrStaging = appVariant === 'production' || appVariant === 'staging';
 
@@ -77,6 +77,10 @@ NewInitializeInApp();
 /*amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE, undefined, {
   minIdLength: 1,
 });*/
+
+amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE, undefined, {
+  minIdLength: 1,
+});
 
 SplashScreen.preventAutoHideAsync();
 const RootStack = createNativeStackNavigator();

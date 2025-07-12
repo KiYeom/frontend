@@ -3,7 +3,6 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Text, View } from 'react-native';
 import Cloud from 'react-native-word-cloud';
 import Empty from '../Empty';
-import { SectionTitle } from '../StatisticMain.style';
 import {
   Container,
   HeaderWrapper,
@@ -34,7 +33,6 @@ const EMOTION_INFO_MAP: {
   짜증나는: { intensity: 0.7, category: 'anger' },
   괴로워하는: { intensity: 0.6, category: 'anger' },
   충격받은: { intensity: 0.5, category: 'anger' },
-  '충격 받은': { intensity: 0.5, category: 'anger' },
   걱정스러운: { intensity: 0.3, category: 'anger' },
 
   // — 슬픔 (sadness) —
@@ -51,7 +49,6 @@ const EMOTION_INFO_MAP: {
 
   // — 행복 (happiness) —
   신이난: { intensity: 0.8, category: 'happiness' },
-  '신이 난': { intensity: 0.8, category: 'happiness' },
   자신있는: { intensity: 0.6, category: 'happiness' },
 };
 
@@ -76,11 +73,11 @@ const getEmotionColor = (category: string, intensity: number) => {
 
 // --- 컴포넌트 Props 타입 정의 ---
 interface PeriodEmotionAreaProps {
-  periodEmotionList: string[];
+  periodEmotionList: string[]; // ['우울한', '자신있는', '신이난', ...]
 }
 
-const NewPeriodEmotionArea: React.FC<PeriodEmotionAreaProps> = ({ periodEmotionList }) => {
-  console.log('NewPeriodEmotionArea - periodEmotionList:', periodEmotionList);
+const NewPeriodEmotionArea = ({ periodEmotionList }: PeriodEmotionAreaProps) => {
+  //console.log('NewPeriodEmotionArea - periodEmotionList:', periodEmotionList);
   const isFocused = useIsFocused();
   const [cloudKey, setCloudKey] = useState(0);
 
@@ -126,14 +123,9 @@ const NewPeriodEmotionArea: React.FC<PeriodEmotionAreaProps> = ({ periodEmotionL
 
   return (
     <Container>
-      {/* 헤더 */}
-      <HeaderWrapper>
-        <SectionTitle>그 동안 이러한 감정들을 느꼈어요</SectionTitle>
-      </HeaderWrapper>
-
       {/* 워드 클라우드 */}
       <CardContainer>
-        {isValidEmotionList && wordCloudData.length > 0 ? (
+        {isValidEmotionList && wordCloudData.length > 0 && (
           <Cloud
             key={cloudKey} // 포커스 시에만 변경되는 key
             keywords={wordCloudData}
@@ -144,8 +136,6 @@ const NewPeriodEmotionArea: React.FC<PeriodEmotionAreaProps> = ({ periodEmotionL
               fontFamily: 'Kyobo-handwriting',
             }}
           />
-        ) : (
-          <Empty type="채팅기록" />
         )}
       </CardContainer>
     </Container>

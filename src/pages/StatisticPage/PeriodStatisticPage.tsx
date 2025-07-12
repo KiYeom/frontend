@@ -1,73 +1,60 @@
-import { css } from '@emotion/native';
-import { useNavigation } from '@react-navigation/native';
-import dayjs from 'dayjs';
-import { Image } from 'expo-image';
 import React, { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, TouchableOpacity, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import {
-  periodChart,
-  periodKeyword,
-  periodRecordEmotions,
-  periodTotalEmotion,
-} from '../../apis/analyze';
+import { ActivityIndicator, View, Text, ScrollView } from 'react-native';
+import { css } from '@emotion/native';
+import dayjs from 'dayjs';
+import { periodKeyword, periodRecordEmotions, periodTotalEmotion } from '../../apis/analyze';
 import { TPeriodRecordEmotions } from '../../apis/analyze.type';
 import palette from '../../assets/styles/theme';
 import Analytics from '../../utils/analytics';
-import { rsFont, rsHeight, rsWidth } from '../../utils/responsive-size';
-import RangeDatePickerModal from '../../components/rangeCal/range-date-picker-modal';
-import PeriodRecord from './Period-records/period-record';
-import PeriodFlowChart from './Period_FlowChart/PeriodFlowChartArea';
-import PeriodKeywordArea from './Period_keyword/PeriodKeywordArea';
-//import ReportType from './ReportType';
-import { DateLineContainer, DateLineText, StatisticTitle } from './StatisticMain.style';
-import Icon from '../../components/icons/icons';
-import PeriodEmotionArea from './Period_Emotion/PeriodEmotionArea';
-import Header from '../../components/header/header';
-import EmptyBox from '../../components/emptybox/emptyBox';
-import { RecordedEmotion } from '../HomePage/diary/EmotionChart.style';
 import { RootStackName, HomeStackName } from '../../constants/Constants';
 import { getDate } from '../../utils/times';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import StatisticLayout from '../../components/layout/StatisticLayout';
+import RangeDatePickerModal from '../../components/rangeCal/range-date-picker-modal';
+import PeriodRecord from './Period-records/period-record';
+import CTAButton from '../../components/CTAButton/CTAButton';
 import NewPeriodFlowChartArea from './Period_FlowChart/NewPeriodFlowChartArea';
 import { newPeriodChart } from '../../apis/analyze';
 import NewPeriodEmotionArea from './Period_Emotion/NewPeriodEmotionArea';
 import NewPeriodKeywordArea from './Period_keyword/NewPeriodKeywordArea';
+import AnaylsisBlock from './AnalysisBlock/AnalysisBlock';
+import { TNewPeriodChart } from '../../apis/analyze.type';
 
-const HINT_NAME = 'main';
-const HINT_MESSAGE =
-  '그동안 쿠키와의 대화를 통해 나의 감정 변화를 확인하고, 대화 주제 및 나의 기록을 통해 지난 날의 자신을 돌아보세요!\n※ 본 보고서는 참고용이며, 필요 시 전문가와 상의하세요.';
-
-//기간별 그래프 화면
 const PeriodStatisticPage: React.FC<any> = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [visible, setVisible] = React.useState(false);
-  const [periodKeywordList, setPeriodKeywordList] = useState([]);
+  const [periodKeywordList, setPeriodKeywordList] = useState<string[]>([]); //기간 키워드 리스트
   const [locale, setLocale] = useState('ko');
   const [recordEmotions, setRecordEmotions] = useState<TPeriodRecordEmotions | undefined>(
     undefined,
   );
-  const [totalEmotions, setTotalEmotions] = useState<string[]>([]);
-  const [hintStatus, setHintStatus] = useState<
-    'period-flow' | 'period-keyword' | 'period-record' | 'period-emotion' | 'main' | undefined
-  >(undefined);
+  const [periodEmotionList, setPeriodEmotionList] = useState<string[]>([]);
 
   const [range, setRange] = React.useState<{
     startDate: DateType;
     endDate: DateType;
   }>({
-    startDate: dayjs().subtract(7, 'day').startOf('day'), // 일주일 전 날짜
-    endDate: dayjs().startOf('day'), // 현재 날짜
+    startDate: dayjs().subtract(7, 'day').startOf('day'),
+    endDate: dayjs().startOf('day'),
   });
-  const [emotionsData, setEmotionsData] = useState<string[]>([]);
+  const [emotionsData, setEmotionsData] = useState<TNewPeriodChart | null>(null);
   const [openModal, setOpenModal] = React.useState(false);
 
-  //const navigation = useNavigation();
+  const navigateToNewChat = useCallback(() => {
+    Analytics.clickCTADiaryButtonInPeriod();
+    navigation.navigate(RootStackName.HomeStackNavigator, {
+      screen: HomeStackName.NewChat,
+    });
+  }, [navigation]);
 
-  const insets = useSafeAreaInsets();
+  const navigateToSmallEmotionChart = useCallback(() => {
+    Analytics.clickCTADiaryButtonInPeriod();
+    navigation.navigate(RootStackName.HomeStackNavigator, {
+      screen: HomeStackName.SmallEmotionChart,
+      params: { dateID: getDate(new Date()) },
+    });
+  }, [navigation]);
 
-  //날짜가 변경되는 경우
   useEffect(() => {
     Analytics.watchPeriodStatisticScreen();
     const fetchData = async () => {
@@ -79,22 +66,26 @@ const PeriodStatisticPage: React.FC<any> = ({ navigation }) => {
         const endDateFormatted = dayjs(range.endDate).format('YYYY-MM-DD');
 
         const [res, res2, res3, res4] = await Promise.all([
-          newPeriodChart(startDateFormatted, endDateFormatted), //기간 감정 차트
-          periodKeyword(startDateFormatted, endDateFormatted), //기간 키워드 리스트
-          periodRecordEmotions(startDateFormatted, endDateFormatted), //기간 기록한 감정들
-          periodTotalEmotion(startDateFormatted, endDateFormatted), //기간 기록한 감정들
+          newPeriodChart(startDateFormatted, endDateFormatted),
+          periodKeyword(startDateFormatted, endDateFormatted),
+          periodRecordEmotions(startDateFormatted, endDateFormatted),
+          periodTotalEmotion(startDateFormatted, endDateFormatted),
         ]);
         if (res) {
           setEmotionsData(res);
+          //console.log('emotionsData', res);
         }
         if (res2 && res2.keywords) {
           setPeriodKeywordList(res2.keywords);
+          //console.log('periodKeywordList', res2.keywords);
         }
         if (res3) {
           setRecordEmotions(res3);
+          //console.log('recordEmotions', res3);
         }
         if (res4) {
-          setTotalEmotions(res4.emotions);
+          setPeriodEmotionList(res4.emotions);
+          //console.log('periodEmotionList', res4.emotions);
         }
       } catch (err) {
         setError('데이터를 불러오는 중 오류가 발생했습니다.');
@@ -108,7 +99,7 @@ const PeriodStatisticPage: React.FC<any> = ({ navigation }) => {
   }, [range]);
 
   const onChange = useCallback((newRange) => {
-    setRange(newRange); // RangeDatePickerModal에서 전달된 range로 업데이트
+    setRange(newRange);
   }, []);
 
   if (loading) {
@@ -123,142 +114,78 @@ const PeriodStatisticPage: React.FC<any> = ({ navigation }) => {
       </View>
     );
   }
+
   return (
-    <SafeAreaView
-      edges={['bottom', 'left', 'right']}
-      style={{
-        width: '100%',
-        height: 2000,
-        backgroundColor: palette.neutral[50],
-        flex: 1,
-        flexGrow: 1,
-        flexDirection: 'column',
-      }}>
-      <Header title={'나의 감정 타임라인'} bgcolor={`${palette.neutral[50]}`} />
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{
-          flexGrow: 1,
-          paddingVertical: rsHeight * 16,
-          alignItems: 'center',
-        }}
-        nestedScrollEnabled={false}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}>
-        <View
-          style={css`
-            gap: ${rsHeight * 16 + 'px'};
-            margin-vertical: ${rsHeight * 12 + 'px'};
-            //background-color: pink;
-            justify-content: center;
-            align-items: center;
-            //flex: 1; <- 이거 넣으면 스크롤 안됨
-          `}>
-          <View
-            style={{
-              //backgroundColor: 'yellow',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Icon name="calendar" width={70} height={70} />
-            <View style={{ marginVertical: 10 * rsHeight }}>
-              <DateLineContainer
-                onPress={() => {
-                  Analytics.clickPeriodCalendarButton();
-                  setOpenModal(true);
-                }}>
-                <DateLineText>
-                  {range.startDate && range.endDate
-                    ? `${dayjs(range.startDate).locale(locale).format('YYYY년 M월 D일')} ~ ${dayjs(range.endDate).locale(locale).format('YYYY년 M월 D일')}`
-                    : '날짜를 선택해주세요'}
-                </DateLineText>
-                <Icon name="arrow-down" color={'white'} />
-              </DateLineContainer>
-              <StatisticTitle>
-                쿠키와 함께 돌아보는
-                {'\n'}내 감정의 흐름
-              </StatisticTitle>
-            </View>
-          </View>
-          {periodKeywordList && periodKeywordList.length > 0 && (
-            <>
-              {/*<PeriodFlowChart
-                emotionsData={emotionsData}
-                startDate={dayjs(range.startDate).format('YYYY-MM-DD')}
-                endDate={dayjs(range.endDate).format('YYYY-MM-DD')}
-                hintStatus={hintStatus}
-                setHintStatus={(hint: 'period-flow' | undefined) => {
-                  setHintStatus(hint);
-                }}
-              />*/}
-              <NewPeriodFlowChartArea emotionsData={emotionsData} />
-              {/*<PeriodEmotionArea
-                periodEmotionList={totalEmotions}
-                hintStatus={hintStatus}
-                setHintStatus={(hint: 'period-emotion' | undefined) => {
-                  setHintStatus(hint);
-                }}
-              />*/}
-              <NewPeriodEmotionArea periodEmotionList={totalEmotions} />
-              {/*<PeriodKeywordArea
-                periodKeywordList={periodKeywordList}
-                hintStatus={hintStatus}
-                setHintStatus={(hint: 'period-keyword' | undefined) => {
-                  setHintStatus(hint);
-                }}
-              />*/}
-              <NewPeriodKeywordArea periodKeywordList={periodKeywordList} />
-            </>
-          )}
+    <StatisticLayout
+      headerTitle="나의 감정 타임라인"
+      iconName="calendar"
+      dateText={
+        range.startDate && range.endDate
+          ? `${dayjs(range.startDate).locale(locale).format('YYYY년 M월 D일')} ~ ${dayjs(range.endDate).locale(locale).format('YYYY년 M월 D일')}`
+          : '날짜를 선택해주세요'
+      }
+      onDatePress={() => {
+        Analytics.clickPeriodCalendarButton();
+        setOpenModal(true);
+      }}
+      title={`쿠키와 함께 돌아보는\n내 감정의 흐름`}
+      modalComponent={
+        <RangeDatePickerModal
+          modalVisible={openModal}
+          onClose={() => setOpenModal(false)}
+          onChange={onChange}
+          range={range}
+        />
+      }>
+      {/* children 으로 전달 */}
 
-          {recordEmotions && recordEmotions?.records.length > 0 ? (
-            <PeriodRecord
-              records={recordEmotions ? recordEmotions.records : []}
-              hintStatus={hintStatus}
-              setHintStatus={setHintStatus}
-              navigation={navigation}
-            />
-          ) : (
-            <EmptyBox
-              mainTitle="이 기간에 작성한 일기가 없어요"
-              subTitle="오늘의 감정 일기를 작성하고, 마음 보고서를 채워봐요"
-              isLeftIcon={true}
-              iconName="pencil"
-              iconSize={40}
-              onPress={() => {
-                Analytics.clickCTADiaryButtonInPeriod();
-                navigation.navigate(RootStackName.HomeStackNavigator, {
-                  screen: HomeStackName.SmallEmotionChart,
-                  params: { dateID: getDate(new Date()) },
-                });
-              }}
-            />
-          )}
-          {periodKeywordList.length === 0 && (
-            <EmptyBox
-              mainTitle="이 기간에는 쿠키를 만나지 않았어요"
-              subTitle="오늘 쿠키를 만나보러 가는건 어떠세요?"
-              isLeftIcon={true}
-              iconName="green-chat-icon"
-              iconSize={40}
-              onPress={() => {
-                Analytics.clickCTADiaryButtonInPeriod();
-                navigation.navigate(RootStackName.HomeStackNavigator, {
-                  screen: HomeStackName.NewChat,
-                });
-              }}
-            />
-          )}
-        </View>
-      </ScrollView>
-
-      <RangeDatePickerModal
-        modalVisible={openModal}
-        onClose={() => setOpenModal(false)}
-        onChange={onChange}
-        range={range}
-      />
-    </SafeAreaView>
+      {/* ai 가 분석한 나의 모습 */}
+      {emotionsData && emotionsData.dates.length > 0 && (
+        <AnaylsisBlock title={'얼마나 많은 감정 변화가 있었을까요?'}>
+          <NewPeriodFlowChartArea emotionsData={emotionsData} />
+        </AnaylsisBlock>
+      )}
+      {periodEmotionList && periodEmotionList.length > 0 && (
+        <AnaylsisBlock title={'그 동안 이러한 감정들을 느꼈어요'}>
+          <NewPeriodEmotionArea periodEmotionList={periodEmotionList} />
+        </AnaylsisBlock>
+      )}
+      {periodKeywordList && periodKeywordList.length > 0 && (
+        <AnaylsisBlock title={'그 동안 이런 이야기를 나눴어요'}>
+          <NewPeriodKeywordArea periodKeywordList={periodKeywordList} />
+        </AnaylsisBlock>
+      )}
+      {/* 내가 직접 작성한 나의 모습 */}
+      {recordEmotions && recordEmotions?.records.length > 0 && (
+        <AnaylsisBlock title={'내가 기록한 하루들'}>
+          <PeriodRecord
+            records={recordEmotions ? recordEmotions.records : []}
+            navigation={navigation}
+          />
+        </AnaylsisBlock>
+      )}
+      {/* 대화가 없어 ai 가 분석한 나의 모습이 존재하지 않을 때 */}
+      {emotionsData.dates.length === 0 &&
+        periodKeywordList.length === 0 &&
+        periodKeywordList.length === 0 && (
+          <CTAButton
+            mainTitle="이 기간에는 쿠키를 만나지 않았어요"
+            subTitle="오늘 쿠키를 만나보러 가는건 어떠세요?"
+            iconName="green-chat-icon"
+            onPress={navigateToNewChat}
+          />
+        )}
+      {/* 내가 직접 작성한 나의 모습이 없는 경우 */}
+      {recordEmotions && recordEmotions?.records.length === 0 && (
+        <CTAButton
+          mainTitle="이 기간에 작성한 일기가 없어요"
+          subTitle="오늘의 감정 일기를 작성하고, 마음 보고서를 채워봐요"
+          iconName="pencil"
+          onPress={navigateToSmallEmotionChart}
+        />
+      )}
+    </StatisticLayout>
   );
 };
+
 export default PeriodStatisticPage;

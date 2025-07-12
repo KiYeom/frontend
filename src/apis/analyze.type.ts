@@ -19,6 +19,7 @@ export type DailyRecordDto = {
 export type EmotionKeyword = {
   keyword: string;
   group: string;
+  type?: 'default' | 'custom'; // default, custom
 };
 
 export type DailySummaryDto = {
@@ -43,8 +44,8 @@ export type TPeriodChart = {
 };
 
 export type TNewPeriodChart = {
-  id: number;
-  nickname: string;
+  id?: number;
+  nickname?: string;
   dates: string[];
   groups: string[];
 };
@@ -73,6 +74,13 @@ export type TPeriodTotalEmotions = {
   emotions: string[];
 };
 
+export type TDailyDiaryDatas = {
+  Keywords: EmotionKeyword[];
+  images: string[] | null;
+  isNull: boolean;
+  todayFeeling: string | null;
+};
+
 export type TPeriodRecordEmotions = {
   records: TRecordEmotion[];
 };
@@ -89,8 +97,7 @@ export type TEmotions = {
 
 export type TEmotionCheck = {
   desc?: string;
-  //group: 'angry' | 'sad' | 'happy' | 'calm';
-  group: string;
-  keyword: string;
+  group: string; //group: 'angry' | 'sad' | 'happy' | 'calm';
+  keyword: string; //keyword: '지친', '신나는', '엄준식(커스텀)'
   type?: 'default' | 'custom'; //default, custom
 };

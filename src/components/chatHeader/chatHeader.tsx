@@ -46,7 +46,10 @@ const ChatHeader: React.FC<ChatHeaderProps> = (props: ChatHeaderProps) => {
   //console.log('searchWord', searchWord);
 
   return (
-    <HeaderContainer isTitle={headerProps.title !== undefined} insets={insets} bgcolor="white">
+    <HeaderContainer
+      isTitle={headerProps.title !== undefined}
+      insets={{ top: 0, right: 0, left: 0, bottom: 0 }}
+      bgcolor="white">
       <HeaderCenter>
         {!isSearchMode ? (
           <HeaderTitle ellipsizeMode="tail" numberOfLines={1}>

@@ -3,16 +3,17 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import Header from '../components/header/header';
 //import ChatList from '../components/pages/HomePage/ChatList';
-import SmallEmotionChart from '../pages/HomePage/diary/SmallEmotionChart';
+import SmallEmotionChart from '../pages/HomePage/diary/SelectEmotionPage/SmallEmotionChart';
 import Profile from '../pages/HomePage/Profile/profile';
 import { HomeStackName, RootStackName, TabScreenName } from '../constants/Constants';
 import NewChat from '../pages/HomePage/chat/new-chat';
 //import Chat from '../components/pages/HomePage/Chat';
-import DailyDairy from '../pages/HomePage/diary/DailyDairy';
+import DailyDairy from '../pages/HomePage/diary/WriteDiaryPage/DailyDairy';
 //import { formatDate } from '../utils/Chatting';
 import { Alert } from 'react-native';
 import DrawerNavigator from './DrawerNavigator';
 import Favorites from '../pages/HomePage/favorites/favorites';
+import newFavorites from '../pages/HomePage/favorites/newFavorites';
 import StatisticMain from '../pages/StatisticPage/StatisticMain';
 import Home from '../pages/HomePage/Home';
 import Quote from '../pages/HomePage/quote/quote';
@@ -38,11 +39,9 @@ const HomeStackNavigator: React.FC = () => {
         component={Profile}
         options={{ header: () => <Header /> }}
       />
-      <HomeStack.Screen
-        name={HomeStackName.NewChat}
-        component={DrawerNavigator}
-        options={{ headerShown: false }}
-      />
+      <HomeStack.Screen name={HomeStackName.NewChat} options={{ headerShown: false }}>
+        {() => <DrawerNavigator initialScreen="NewChat" />}
+      </HomeStack.Screen>
       <HomeStack.Screen
         name={HomeStackName.NewChatRefresh}
         component={DrawerNavigator}

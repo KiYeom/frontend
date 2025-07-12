@@ -46,131 +46,107 @@ type NewEmojiPanelProps = {
 
 // 이모지 데이터 타입 정의
 export type EmojiData = {
-  source: ImageSourcePropType;
+  source?: ImageSourcePropType;
   name: string;
-  path?: string;
+  path: string;
   localUri?: string;
 };
 
 // 실제 이미지 소스 배열과 이름 매핑 (24개)
 const emojiData: EmojiData[] = [
   {
-    source: require('../../assets/images/emoji/ver1_item1_goodmorning.png'),
     name: 'goodmorning',
     path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item1_new_goodmorning.png',
   },
   {
-    source: require('../../assets/images/emoji/ver1_item2_goodnight.png'),
     name: 'goodnight',
     path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item2_new_goodnight.png',
   },
   {
-    source: require('../../assets/images/emoji/ver1_item3_gratitude.png'),
     name: 'gratitude',
     path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item3_new_gratitude.png',
   },
   {
-    source: require('../../assets/images/emoji/ver1_item4_love.png'),
     name: 'love',
     path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item4_new_love.png',
   },
   {
-    source: require('../../assets/images/emoji/ver1_item5_hungry.png'),
     name: 'hungry',
     path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item5_new_hungry.png',
   },
   {
-    source: require('../../assets/images/emoji/ver1_item6_sleepy.png'),
     name: 'sleepy',
     path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item6_new_sleepy.png',
   },
   {
-    source: require('../../assets/images/emoji/ver1_item7_congratulation.png'),
     name: 'congratulation',
     path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item7_new_congratulation.png',
   },
   {
-    source: require('../../assets/images/emoji/ver1_item8_fighting.png'),
     name: 'fighting',
     path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item8_new_fighting.png',
   },
   {
-    source: require('../../assets/images/emoji/ver1_item9_play.png'),
     name: 'play',
     path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item9_new_play.png',
   },
   {
-    source: require('../../assets/images/emoji/ver1_item10_secret.png'),
     name: 'secret',
     path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item10_new_secret.png',
   },
   {
-    source: require('../../assets/images/emoji/ver1_item11_wondering.png'),
     name: 'wondering',
     path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item11_new_wondering.png',
   },
   {
-    source: require('../../assets/images/emoji/ver1_item12_dugundugun.png'),
     name: 'dugundugun',
     path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item12_new_dugundugun.png',
   },
   {
-    source: require('../../assets/images/emoji/ver1_item13_upset.png'),
     name: 'ver1 upset',
     path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item13_new_upset.png',
   },
   {
-    source: require('../../assets/images/emoji/ver1_item14_stress.png'),
     name: 'ver1 stress',
     path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item14_new_stress.png',
   },
   {
-    source: require('../../assets/images/emoji/ver1_item15_impressed.png'),
     name: 'ver1 impressed',
     path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item15_new_impressed.png',
   },
   {
-    source: require('../../assets/images/emoji/ver1_item16_badresult.png'),
     name: 'ver1 badresult',
     path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item16_new_badResult.png',
   },
   {
-    source: require('../../assets/images/emoji/ver1_item17_aha.png'),
     name: 'ver1 aha',
     path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item17_new_aha.png',
   },
   {
-    source: require('../../assets/images/emoji/ver1_item18_firefriday.png'),
     name: 'ver1 firefriday',
     path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item18_new_fireFriday.png',
   },
   {
-    source: require('../../assets/images/emoji/ver1_item19_cookiehi.png'),
     name: 'ver1 cookiehi',
     path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item19_new_cookieHi.png',
   },
   {
-    source: require('../../assets/images/emoji/ver1_item20_music.png'),
     name: 'ver1 music',
     path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item20_new_music.png',
   },
   {
-    source: require('../../assets/images/emoji/ver1_item21_netflix.png'),
     name: 'ver1 netflix',
     path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item21_new_netflix.png',
   },
   {
-    source: require('../../assets/images/emoji/ver1_item22_book.png'),
     name: 'ver1 book',
     path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item22_new_book.png',
   },
   {
-    source: require('../../assets/images/emoji/ver1_item23_exercise.png'),
     name: 'ver1 exercise',
     path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item23_new_exercise.png',
   },
   {
-    source: require('../../assets/images/emoji/ver1_item24_lucky.png'),
     name: 'ver1 lucky',
     path: 'https://raw.githubusercontent.com/KiYeom/assets/refs/heads/main/emoji/ver1_item24_new_lucky.png',
   },
@@ -191,19 +167,6 @@ const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({
   //const { selectedEmoji, onSelectEmoji } = useSelectedEmoji();
   const [hasPurchased, setHasPurchased] = useState<boolean>(false);
   const [currentOffering, setCurrentOffering] = useState<PurchasesOffering | null>(null);
-  /*useEffect(() => {
-    console.log('😀useEffect 실행됨😀');
-    const setup = async () => {
-      await initializeInApp();
-      const offering = await getCurrentOffering();
-      setCurrentOffering(offering);
-      const purchased = await updatePurchaseStatus();
-      setHasPurchased(purchased); //구매 상태 (true/false) 설정
-      console.log('offering:', offering);
-      console.log('구매 상태:', purchased);
-    };
-    setup().catch(console.log);
-  }, []);*/
 
   //구매 상태에 따라 버튼 변경
   useEffect(() => {

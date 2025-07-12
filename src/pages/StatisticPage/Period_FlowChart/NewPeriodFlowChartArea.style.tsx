@@ -4,7 +4,6 @@ import styled from '@emotion/native';
 import { Dimensions } from 'react-native';
 import { rsHeight, rsWidth } from '../../../utils/responsive-size';
 import palette from '../../../assets/styles/theme';
-import { SectionTitle } from '../StatisticMain.style';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 // 차트 주변 여백 계산에 사용할 상수들

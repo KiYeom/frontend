@@ -7,6 +7,7 @@ import {
   TPeriodRecordEmotions,
   TPeriodTotalEmotions,
   TNewPeriodChart,
+  TDailyDiaryDatas,
 } from './analyze.type';
 import { instance } from './interceptor';
 import { Platform } from 'react-native';
@@ -191,10 +192,12 @@ export const todayEmotionWithImage = async (
 };
 
 //1.5.7 신규 : 일일분석 - 감정 일기 조회
-export const todayEmotionCheck = async (date: string) => {
+export const todayEmotionCheck = async (date: string): Promise<TDailyDiaryDatas | undefined> => {
+  //console.log('todayEmotionCheck date', date);
   try {
     const res = await instance.get('/v1/analyze/today-record', { params: { date } });
     //console.log('todayEmotionCheck', res.data);
+    //{"Keywords": [{"group": "sad", "keyword": "비참한", "type": "default"}], "images": null, "isNULL": false, "todayFeeling": "호엥"}
     return res.data;
   } catch (error) {
     return;

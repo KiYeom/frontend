@@ -39,68 +39,76 @@ export const chatting = async (
   image?: string,
   isSticker?: boolean,
 ): Promise<TChatAnswerV3 | undefined> => {
-  //console.log('chatting', characterId, question, isDemo, image, isSticker);
+  //console.log('💬 [chatting] 시작', { characterId, question, isDemo, image, isSticker });
+
   const maxAttempts = 3;
   let attempts = 0;
 
   while (attempts < maxAttempts) {
     try {
       attempts++;
+      //console.log(`🔁 [chatting] 시도 ${attempts} / ${maxAttempts}`);
 
       if (image) {
-        //파일 데이터 생성
+        //console.log('🖼️ [chatting] 이미지 요청 준비 중...');
+
         const formData = new FormData();
-        //텍스트 필드 (characterId, question, isDemo, isSticker) 추가
         formData.append('characterId', characterId.toString());
         formData.append('question', question);
         formData.append('isDemo', isDemo ? 'true' : 'false');
-        if (isSticker) {
-          formData.append('isSticker', 'true');
-        }
+        if (isSticker) formData.append('isSticker', 'true');
 
-        //파일명 추출
         const filename = image.split('/').pop() || 'image.jpg';
-        //확장자 추출 : 이미지 URL에서 확장자를 추출하여 소문자로 변환하고, 없으면 'jpg'로 기본 설정
         const match = /\.(\w+)$/.exec(filename);
         const fileExtension = match ? match[1].toLowerCase() : 'jpg';
-        //MIME 타입 설정 : jpg는 jpeg로 변환, 그 외에는 그대로 사용
         const mimeType = `image/${fileExtension === 'jpg' ? 'jpeg' : fileExtension}`;
 
-        // Correct URI handling for Android
         let correctedUri = image;
-        if (Platform.OS === 'android' && !image.startsWith('file://')) {
+        const isRemoteUrl = image.startsWith('http://') || image.startsWith('https://');
+        if (Platform.OS === 'android' && !isRemoteUrl && !image.startsWith('file://')) {
           correctedUri = `file://${image}`;
+          //console.log('📱 [Android] 파일 URI 수정됨:', correctedUri);
         }
 
-        //서버로 전송될 파일 객체
         const fileObj = {
-          uri: correctedUri, //로컬 파일 시스템 상의 이미지 경로
-          name: filename, //서버에 전달될 파일명
-          type: mimeType, //파일의 MIME 타입
+          uri: correctedUri,
+          name: filename,
+          type: mimeType,
         };
 
-        //console.log('Processing image:', fileObj);
+        //console.log('📤 [chatting] 전송할 이미지 데이터:', fileObj);
         formData.append('image', fileObj as any);
 
-        // Let Axios handle content-type and boundary automatically
+        //console.log('📡 [chatting] Axios 이미지 POST 요청 시작');
         const res = await instance.post('/v3/chat/memory', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
+        //console.log('✅ [chatting] 이미지 응답 수신 성공:', res.status);
         return res.data;
       } else {
-        //console.log('🧞‍♂️🧞‍♂️🧞‍♂️🧞‍♂️🧞‍♂️🧞‍♂️🧞‍♂️isSticker 여부', isSticker);
-        const res = await instance.post('/v3/chat/memory', {
-          characterId,
-          question,
-          isDemo,
-        });
+        //console.log('📝 [chatting] 텍스트 요청 준비 중...');
+        const payload = { characterId, question, isDemo };
+        //console.log('📡 [chatting] Axios 텍스트 POST 요청 시작', payload);
+
+        const res = await instance.post('/v3/chat/memory', payload);
+        //console.log('✅ [chatting] 텍스트 응답 수신 성공:', res.status);
         return res.data;
       }
-    } catch (error) {
-      //console.log(`Attempt ${attempts} failed:`, error);
+    } catch (error: any) {
+      console.error(`❌ [chatting] 시도 ${attempts} 실패:`, {
+        message: error.message,
+        code: error.code,
+        isAxiosError: error.isAxiosError,
+        config: error.config?.url,
+        response: error.response?.status,
+        data: error.response?.data,
+      });
 
       if (attempts >= maxAttempts) {
+        //console.error('⛔ [chatting] 최대 재시도 횟수 초과. 에러 throw.');
         throw error;
+      } else {
+        //console.warn('⚠️ [chatting] 다시 시도 중...');
       }
     }
   }
