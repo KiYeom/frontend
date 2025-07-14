@@ -80,29 +80,27 @@ class MyModule : Module() {
       PackageManager.PERMISSION_GRANTED
   }
 
-private fun startRealtimePlayback() {
-  Log.d("MyModule", "▶️ startRealtimePlayback() 호출됨")
-  muteMicrophone()
+  private fun startRealtimePlayback() {
+    Log.d("MyModule", "▶️ startRealtimePlayback() 호출됨")
+    muteMicrophone()
 
-  isPlaying = false // ✅ 아직 재생하지 않음
-  waitingForPrebuffer = true // ✅ 버퍼 쌓기 대기
+    // ✅ AudioTrack만 초기화하고 재생은 하지 않음
+    val bufferSize = AudioTrack.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT)
+    val actualBufferSize = maxOf(bufferSize, sampleRate / 10)
 
-  // AudioTrack 초기화만 준비
-  val bufferSize = AudioTrack.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT)
-  val actualBufferSize = maxOf(bufferSize, sampleRate / 10)
+    audioTrack = AudioTrack(
+      AudioManager.STREAM_VOICE_CALL,
+      sampleRate,
+      AudioFormat.CHANNEL_OUT_MONO,
+      AudioFormat.ENCODING_PCM_16BIT,
+      actualBufferSize,
+      AudioTrack.MODE_STREAM
+    )
 
-  audioTrack = AudioTrack(
-    AudioManager.STREAM_VOICE_CALL,
-    sampleRate,
-    AudioFormat.CHANNEL_OUT_MONO,
-    AudioFormat.ENCODING_PCM_16BIT,
-    actualBufferSize,
-    AudioTrack.MODE_STREAM
-  )
-
-  // playbackJob은 아직 시작하지 않음
-}
-
+    // ✅ 재생은 버퍼가 충분히 쌓일 때까지 대기
+    isPlaying = false
+    waitingForPrebuffer = true
+  }
 
   private fun resumeRealtimePlayback() {
     audioTrack?.play()
@@ -137,7 +135,6 @@ private fun startRealtimePlayback() {
     }
   }
 
-
   private fun stopRealtimePlayback() {
     Log.d("MyModule", "⏹️ stopRealtimePlayback() 호출됨")
     isPlaying = false
@@ -168,51 +165,47 @@ private fun startRealtimePlayback() {
       taggedBufferQueue.offer(TaggedAudio(data, isSilent))
       pcmBufferQueue.offer(data)
       silenceFramesGenerated = 0
-      Log.d("MyModule", "📡 ${if (isSilent) "무음" else "음성"} 버퍼 추가됨 (${data.size} bytes)")
+      Log.d("MyModule", "📡 ${if (isSilent) "무음" else "음성"} 버퍼 추가됨 (${data.size} bytes) - 현재 큐 크기: ${pcmBufferQueue.size}")
 
+      // ✅ 버퍼가 충분히 쌓이고 대기 중이면 자동 시작
       if (waitingForPrebuffer && pcmBufferQueue.size >= minBuffersToStart) {
         waitingForPrebuffer = false
+        Log.d("MyModule", "✅ 버퍼 ${pcmBufferQueue.size}개 확보 → 재생 시작")
+        
+        // AudioTrack 준비 및 재생 시작
+        audioTrack?.play()
+        isPlaying = true
 
-        CoroutineScope(Dispatchers.Main).launch {
-          Log.d("MyModule", "✅ 버퍼 확보 → AudioTrack 재생 루프 시작")
-
-          isPlaying = true
-          audioTrack?.play()
-
-          playbackJob = CoroutineScope(Dispatchers.IO).launch {
-            val frameSize = 1024
-            val outputBuffer = ShortArray(frameSize)
-            while (isPlaying) {
-              val samplesWritten = renderAudioFrames(outputBuffer, frameSize)
-              if (samplesWritten > 0) {
-                audioTrack?.write(outputBuffer, 0, samplesWritten)
-              } else {
-                delay(5)
-              }
+        playbackJob = CoroutineScope(Dispatchers.IO).launch {
+          val frameSize = 1024
+          val outputBuffer = ShortArray(frameSize)
+          while (isPlaying) {
+            val samplesWritten = renderAudioFrames(outputBuffer, frameSize)
+            if (samplesWritten > 0) {
+              audioTrack?.write(outputBuffer, 0, samplesWritten)
+            } else {
+              delay(5)
             }
           }
-
-          startMicAutoController()
         }
+
+        startMicAutoController()
       }
     } else {
       Log.w("MyModule", "⚠️ 버퍼 가득 참 → 새 데이터 무시")
     }
   }
 
-
-
   private fun playPCMBuffer(data: ByteArray) {
     Log.d("MyModule", "🎧 playPCMBuffer 호출됨 (${data.size} bytes)")
-    if (!isPlaying) {
+    
+    // ✅ AudioTrack이 없으면 초기화
+    if (audioTrack == null) {
       startRealtimePlayback()
-      CoroutineScope(Dispatchers.IO).launch {
-        delay(100)
-        streamPCMData(data)
-      }
-    } else {
-      streamPCMData(data)
     }
+    
+    // ✅ 데이터를 큐에 추가 (streamPCMData가 자동으로 재생 시작을 처리)
+    streamPCMData(data)
   }
 
   private fun renderAudioFrames(outputBuffer: ShortArray, frameCount: Int): Int {
@@ -393,6 +386,7 @@ private fun startRealtimePlayback() {
       Log.d("MyModule", "🧵 recordJob 루프 종료")
     }
   }
+  
   private fun stopRecording() {
     Log.d("MyModule", "🔵 stopRecording() 호출됨, 이전 상태: $micState")
 
@@ -427,6 +421,7 @@ private fun startRealtimePlayback() {
       Log.d("MyModule", "🙅️ 수동 음소거 상태이로 재시작 안함..")
     }
   }
+  
   private fun emit(event: String, data: Any?) {
     try {
       when (data) {
