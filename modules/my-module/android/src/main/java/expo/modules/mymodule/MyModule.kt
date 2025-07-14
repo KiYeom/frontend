@@ -20,6 +20,7 @@ class MyModule : Module() {
     MUTED_MANUAL
   }
   @Volatile private var micState = MicState.IDLE
+  @Volatile private var waitingForPrebuffer = true
   private val BUF_PER_SEC = 15
   private val sampleRate = 24000
   private val channels = 1
@@ -50,6 +51,8 @@ class MyModule : Module() {
 
   private var lastPlaybackEventTime = System.currentTimeMillis()
 
+  private val minBuffersToStart = 2 
+
 
   data class TaggedAudio(val data: ByteArray, val isSilent: Boolean)
 
@@ -77,44 +80,29 @@ class MyModule : Module() {
       PackageManager.PERMISSION_GRANTED
   }
 
-  private fun startRealtimePlayback() {
-    Log.d("MyModule", "▶️ startRealtimePlayback() 호출됨")
-    muteMicrophone()
+private fun startRealtimePlayback() {
+  Log.d("MyModule", "▶️ startRealtimePlayback() 호출됨")
+  muteMicrophone()
 
-    val bufferSize = AudioTrack.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT)
-    val actualBufferSize = maxOf(bufferSize, sampleRate / 10)
+  isPlaying = false // ✅ 아직 재생하지 않음
+  waitingForPrebuffer = true // ✅ 버퍼 쌓기 대기
 
-    audioTrack = AudioTrack(
-      AudioManager.STREAM_VOICE_CALL,
-      sampleRate,
-      AudioFormat.CHANNEL_OUT_MONO,
-      AudioFormat.ENCODING_PCM_16BIT,
-      actualBufferSize,
-      AudioTrack.MODE_STREAM
-    )
-    audioTrack?.play()
-    isPlaying = true
-    isFirstBlock = true
-    silenceFramesGenerated = 0
-    currentPCMData = null
-    currentReadPosition = 0
-    currentDataLength = 0
+  // AudioTrack 초기화만 준비
+  val bufferSize = AudioTrack.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT)
+  val actualBufferSize = maxOf(bufferSize, sampleRate / 10)
 
-    startMicAutoController()
+  audioTrack = AudioTrack(
+    AudioManager.STREAM_VOICE_CALL,
+    sampleRate,
+    AudioFormat.CHANNEL_OUT_MONO,
+    AudioFormat.ENCODING_PCM_16BIT,
+    actualBufferSize,
+    AudioTrack.MODE_STREAM
+  )
 
-    playbackJob = CoroutineScope(Dispatchers.IO).launch {
-      val frameSize = 1024
-      val outputBuffer = ShortArray(frameSize)
-      while (isPlaying) {
-        val samplesWritten = renderAudioFrames(outputBuffer, frameSize)
-        if (samplesWritten > 0) {
-          audioTrack?.write(outputBuffer, 0, samplesWritten)
-        } else {
-          delay(5)
-        }
-      }
-    }
-  }
+  // playbackJob은 아직 시작하지 않음
+}
+
 
   private fun resumeRealtimePlayback() {
     audioTrack?.play()
@@ -169,10 +157,11 @@ class MyModule : Module() {
     silenceFramesGenerated = 0
 
     unmuteMicrophone()
+    waitingForPrebuffer = true
   }
 
   private fun streamPCMData(data: ByteArray) {
-    if (!isPlaying || data.isEmpty() || data.size % 2 != 0) return
+    if (data.isEmpty() || data.size % 2 != 0) return
 
     if (pcmBufferQueue.size < maxQueueLength) {
       val isSilent = isSilentBuffer(data)
@@ -180,10 +169,38 @@ class MyModule : Module() {
       pcmBufferQueue.offer(data)
       silenceFramesGenerated = 0
       Log.d("MyModule", "📡 ${if (isSilent) "무음" else "음성"} 버퍼 추가됨 (${data.size} bytes)")
+
+      if (waitingForPrebuffer && pcmBufferQueue.size >= minBuffersToStart) {
+        waitingForPrebuffer = false
+
+        CoroutineScope(Dispatchers.Main).launch {
+          Log.d("MyModule", "✅ 버퍼 확보 → AudioTrack 재생 루프 시작")
+
+          isPlaying = true
+          audioTrack?.play()
+
+          playbackJob = CoroutineScope(Dispatchers.IO).launch {
+            val frameSize = 1024
+            val outputBuffer = ShortArray(frameSize)
+            while (isPlaying) {
+              val samplesWritten = renderAudioFrames(outputBuffer, frameSize)
+              if (samplesWritten > 0) {
+                audioTrack?.write(outputBuffer, 0, samplesWritten)
+              } else {
+                delay(5)
+              }
+            }
+          }
+
+          startMicAutoController()
+        }
+      }
     } else {
       Log.w("MyModule", "⚠️ 버퍼 가득 참 → 새 데이터 무시")
     }
   }
+
+
 
   private fun playPCMBuffer(data: ByteArray) {
     Log.d("MyModule", "🎧 playPCMBuffer 호출됨 (${data.size} bytes)")
