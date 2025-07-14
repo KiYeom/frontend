@@ -9,7 +9,12 @@ import {
   ScrollView,
   Modal,
   ActivityIndicator,
+  PermissionsAndroid,
+  Platform,
+  Alert,
+  Linking,
 } from 'react-native';
+
 import { useAudioCall } from '../../../src/hooks/useAudioCall';
 import { CallStatus } from '../../../src/hooks/useAudioCall';
 import Header from '../../../src/components/header/header';
@@ -431,6 +436,42 @@ const CallPage: React.FC = () => {
         setIsReceivingAudio(false);
       }, 300); // 오디오 수신 후 300ms 간 isReceivingAudio 유지
     });
+  }, []);
+
+  useEffect(() => {
+    const requestMicPermission = async () => {
+      if (Platform.OS !== 'android') return;
+
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+          {
+            title: '마이크 권한 요청',
+            message: '통화를 위해 마이크 접근 권한이 필요합니다.',
+            buttonNeutral: '나중에',
+            buttonNegative: '거부',
+            buttonPositive: '허용',
+          },
+        );
+
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('✅ 마이크 권한 허용됨');
+        } else {
+          Alert.alert(
+            '마이크 권한이 거부되었습니다',
+            '설정에서 마이크 권한을 수동으로 허용해 주세요.',
+            [
+              { text: '취소', style: 'cancel' },
+              { text: '설정 열기', onPress: () => Linking.openSettings() },
+            ],
+          );
+        }
+      } catch (err) {
+        console.warn('권한 요청 오류:', err);
+      }
+    };
+
+    requestMicPermission();
   }, []);
 
   const handlePayment = async (minutes: number) => {
