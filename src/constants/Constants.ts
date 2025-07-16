@@ -53,6 +53,7 @@ export enum TabScreenName {
   Setting = 'Setting',
   Statistic = 'Statistic',
   NewChat = 'TabNewChat',
+  Call = 'Call',
 }
 
 export enum TabBarLabel {
@@ -60,6 +61,7 @@ export enum TabBarLabel {
   NewChat = '채팅',
   Setting = '설정',
   Statistic = '보고서',
+  Call = '전화',
 }
 
 export enum HomeStackName {
@@ -74,6 +76,7 @@ export enum HomeStackName {
   Favorites = 'Favorites',
   Ads = 'Ads',
   Quote = 'Quote',
+  Call = 'Call',
 }
 
 export enum SettingStackName {

@@ -51,6 +51,12 @@ import EmojiIcon from './svg/emoji';
 import EmojiThumbnail from './svg/emoji-thumbnail-on';
 import EmojiThumbnailOff from './svg/emoji-thumbnail-off';
 import Lock from './svg/lock';
+import CallStart from './svg/call-start-icon';
+import CallPause from './svg/call-pause-icon';
+import CallResume from './svg/call-resume-icon';
+import CallEnd from './svg/call-end-icon';
+import Clock from './svg/clock';
+import Mic from './svg/mic';
 
 export type TIconName =
   | 'airplane'
@@ -107,7 +113,13 @@ export type TIconName =
   | 'emojiIcon'
   | 'emoji-thumbnail'
   | 'emoji-thumbnail-off'
-  | 'lock';
+  | 'lock'
+  | 'call-start'
+  | 'call-pause'
+  | 'call-resume'
+  | 'call-end'
+  | 'clock'
+  | 'mic';
 
 export default function Icon({
   width,
@@ -119,6 +131,7 @@ export default function Icon({
   messageId,
   onFavoritePress,
   iconType,
+  disabled,
 }: {
   width?: number | string;
   height?: number | string;
@@ -129,6 +142,7 @@ export default function Icon({
   messageId?: string;
   onFavoritePress?: (messageId: string) => void;
   iconType?: string;
+  disabled?: boolean;
 }) {
   switch (name) {
     case 'airplane':
@@ -249,5 +263,17 @@ export default function Icon({
       return <EmojiThumbnailOff width={width} height={height} color={color} />;
     case 'lock':
       return <Lock width={width} height={height} color={color} />;
+    case 'call-start':
+      return <CallStart width={width} height={height} color={color} disabled={disabled} />;
+    case 'call-pause':
+      return <CallPause width={width} height={height} color={color} disabled={disabled} />;
+    case 'call-resume':
+      return <CallResume width={width} height={height} color={color} disabled={disabled} />;
+    case 'call-end':
+      return <CallEnd width={width} height={height} color={color} disabled={disabled} />;
+    case 'clock':
+      return <Clock width={width} height={height} color={color} />;
+    case 'mic':
+      return <Mic width={width} height={height} color={color} />;
   }
 }

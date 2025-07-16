@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, TextInput } from 'react-native';
 import { rsHeight } from '../../../../utils/responsive-size';
 import palette from '../../../../assets/styles/theme';
-import NewCheckBox from '../../../../components/v3-checkbox/NewCheckBox';
+import NewCheckBox from '../../../../components/checkbox/NewCheckBox';
 
 const CustomCheckBox = ({ title, checked, toggleCheck, index, text, setText }: any) => {
   return (

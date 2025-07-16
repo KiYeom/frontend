@@ -271,8 +271,8 @@ google-services.json
 .nfs*
 
 # build file
-android/
-ios/
+/android/
+/ios/
 
 # ios firebase file
 GoogleService-Info.plist

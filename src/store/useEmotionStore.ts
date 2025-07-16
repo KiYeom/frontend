@@ -25,7 +25,7 @@ export interface ServerData {
 }
 
 interface EmotionStore {
-  selectedEmotionKeywords: Set<string>;
+  selectedEmotionKeywords: Set<string>; //선택한 감정 키워드들 (set)
   allSelectedEmotions: Emotion[];
   diaryText: string;
   image: string[];

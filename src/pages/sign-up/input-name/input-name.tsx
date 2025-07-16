@@ -32,7 +32,7 @@ import {
 } from './input-name.styles';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { rsWidth, rsHeight } from '../../../utils/responsive-size';
-import NewCheckBox from '../../../components/v3-checkbox/NewCheckBox';
+import NewCheckBox from '../../../components/checkbox/NewCheckBox';
 import { switchChatTone } from '../../../apis/setting';
 import {
   checkPurchaseHistory,

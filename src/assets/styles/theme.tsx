@@ -39,5 +39,6 @@ const palette = {
     happy: '#FFE372',
     calm: '#ABEBC5',
   },
+  dark: '#2B2E27',
 };
 export default palette;

@@ -22,7 +22,7 @@ import {
   Title,
   TitleContainer,
 } from './organization-connect.style';
-import NewCheckBox from '../../../../components/v3-checkbox/NewCheckBox';
+import NewCheckBox from '../../../../components/checkbox/NewCheckBox';
 import palette from '../../../../assets/styles/theme';
 import { rsHeight, rsWidth } from '../../../../utils/responsive-size';
 import * as WebBrowser from 'expo-web-browser';

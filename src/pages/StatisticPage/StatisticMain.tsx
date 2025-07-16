@@ -95,6 +95,7 @@ const StatisticMain: React.FC<any> = ({ navigation, route }) => {
   }, [navigation]);
 
   const navigateToSmallEmotionChart = useCallback(() => {
+    console.log('navigateToSmallEmotionChart called with dateID:', dateID);
     navigation.navigate(RootStackName.HomeStackNavigator, {
       screen: HomeStackName.SmallEmotionChart,
       params: { dateID },

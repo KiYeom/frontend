@@ -7,6 +7,7 @@ export const HeaderContainer = styled.View<{
   isTitle: boolean;
   insets: EdgeInsets;
   bgcolor: string;
+  isDark?: boolean;
 }>`
   margin-top: ${(props) => props.insets.top + 'px'};
   height: ${rsHeight * 56 + 'px'};
@@ -16,9 +17,11 @@ export const HeaderContainer = styled.View<{
   align-items: center;
   position: relative;
 
-  border-color: ${palette.neutral[100]};
+  border-color: ${(props) => (props.isDark ? palette.dark : palette.neutral[100])};
   border-bottom-width: ${(props) => (props.isTitle ? `${rsHeight * 1 + 'px'} ` : `0px`)};
-  background-color: ${(props) => props.bgcolor};
+  //background-color: ${(props) => props.bgcolor};
+  background-color: ${(props) =>
+    props.isDark ? palette.dark : props.bgcolor ? props.bgcolor : palette.neutral[50]};
   z-index: 1000;
 `;
 
@@ -67,12 +70,13 @@ export const HeaderCenter = styled.View`
   width: 100%;
 `;
 
-export const HeaderTitle = styled.Text`
+export const HeaderTitle = styled.Text<{ isDark?: boolean }>`
   text-align: center;
   font-size: ${rsFont * 18 + 'px'};
   font-family: Pretendard-SemiBold;
   width: flex;
   max-width: ${rsWidth * 200 + 'px'};
+  color: ${(props) => (props.isDark ? palette.neutral[50] : palette.neutral[900])};
 `;
 
 export const OptionText = styled.Text`

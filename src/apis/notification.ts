@@ -8,6 +8,7 @@ export const setNotificationToken = async (
   deviceId: string,
 ): Promise<TCommonResult | undefined> => {
   try {
+    console.log('🔔 ======== Setting notification token ======', notificationToken, deviceId);
     const res = await instance.patch('/v1/notifications/token', {
       deviceId,
       notificationToken,
