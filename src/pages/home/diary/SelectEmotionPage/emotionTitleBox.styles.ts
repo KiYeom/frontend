@@ -26,4 +26,5 @@ export const EmotionTitleContainer = styled.View`
   align-items: center;
   gap: ${rsWidth * 12 + 'px'};
   padding-horizontal: ${rsWidth * 12 + 'px'};
+  margin-top: ${rsHeight * 12 + 'px'};
 `;

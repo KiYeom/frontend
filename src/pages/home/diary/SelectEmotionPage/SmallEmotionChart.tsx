@@ -82,6 +82,7 @@ const SmallEmotionChart = ({ navigation, route }: Props) => {
             mainTitle={'지금 어떤 감정이 드나요?'}
             subTitle={'나의 마음을 표현해보세요.'}
           />
+          {/* 감정 선택 스크롤뷰 */}
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -99,9 +100,12 @@ const SmallEmotionChart = ({ navigation, route }: Props) => {
               </View>
             ))}
           </ScrollView>
+          {/* 선택된 감정 설명 */}
           <SelectedEmotionDesc />
+          {/* 선택된 감정 칩들 */}
           <SelectedEmotionChip />
         </KeyboardAwareScrollView>
+        {/* 하단 선택 버튼 */}
         <EmotionFooterButtons onNoEmotionPress={handleNoEmotion} onGoToDiary={handleGoToDiary} />
       </View>
       {bottomSheetIndex !== -1 && (

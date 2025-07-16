@@ -24,6 +24,7 @@ module.exports = function (api) {
             '@screens': './src/screens',
             '@assets': './src/assets',
             '@query': './src/query',
+            '@hooks': './src/hooks',
           },
         },
       ],

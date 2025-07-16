@@ -2,7 +2,6 @@ import React from 'react';
 import { View, ScrollView, Platform, Alert, Linking } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { rsWidth, rsHeight } from '../../../../utils/responsive-size';
-//import UploadButton from '../../../../components/upload-picture/UploadButton';
 import UploadButton from '@components/upload-picture/UploadButton';
 import useEmotionStore from '../../../../store/useEmotionStore';
 import { MAX_DIARY_IMAGE_COUNT } from '../../../../constants/Constants';

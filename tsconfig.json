@@ -10,7 +10,8 @@
       "@components/*": ["src/components/*"],
       "@screens/*": ["src/screens/*"],
       "@assets/*": ["src/assets/*"],
-      "@query/*": ["src/query/*"]
+      "@query/*": ["src/query/*"],
+      "@hooks/*": ["src/hooks/*"]
     }
   },
   "include": ["src", "declarations.d.ts"]
