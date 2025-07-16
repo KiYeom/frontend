@@ -2,11 +2,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import palette from '../assets/styles/theme';
 import BottomTabBar from '../components/bottom/bottom-tab-bar';
-import Home from '../pages/HomePage/Home';
+import Home from '../pages/home/Home';
 import Setting from '../pages/SettingPage/Setting';
 import { HomeStackName, TabBarLabel, TabScreenName } from '../constants/Constants';
 import StatisticStackNavigator from './StatisticStackNavigator';
-import NewChat from '../pages/HomePage/chat/new-chat';
+import NewChat from '../pages/home/chat/new-chat';
 import CallPage from '../pages/CallPage/CallPage';
 const Tab = createBottomTabNavigator();
 

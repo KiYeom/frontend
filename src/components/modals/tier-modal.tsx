@@ -12,7 +12,7 @@ import {
 import palette from '../../assets/styles/theme';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import Button from '../button/button';
-import NewCheckBox from '../v3-checkbox/NewCheckBox';
+import NewCheckBox from '../checkbox/NewCheckBox';
 import { Image } from 'react-native';
 
 const TierModal = ({

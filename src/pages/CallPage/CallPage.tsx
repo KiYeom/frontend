@@ -14,7 +14,6 @@ import {
   Alert,
   Linking,
 } from 'react-native';
-
 import { useAudioCall } from '../../../src/hooks/useAudioCall';
 import { CallStatus } from '../../../src/hooks/useAudioCall';
 import Header from '../../../src/components/header/header';

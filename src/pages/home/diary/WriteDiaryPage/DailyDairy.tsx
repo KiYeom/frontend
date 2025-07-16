@@ -16,17 +16,6 @@ import TierModal from '../../../../components/modals/tier-modal';
 import AdsModal from '../../../../components/modals/ads-modal';
 import { getUserInfo } from '../../../../apis/setting';
 import { ActivityIndicator, StyleSheet } from 'react-native';
-import { updateSendPhotoPermission } from '../../../../apis/chatting';
-import {
-  BannerAd,
-  BannerAdSize,
-  TestIds,
-  useForeground,
-  InterstitialAd,
-  AdEventType,
-  RewardedAd,
-  RewardedAdEventType,
-} from 'react-native-google-mobile-ads';
 import {
   getUserPlan,
   setUserPlan,
@@ -42,16 +31,6 @@ import DiaryImageSection from './DiaryImageSection';
 import SelectedEmotionChip from '../SelectEmotionPage/SelectedEmotionChip';
 import TextInputSection from './TextInputSection';
 import { useSaveEmotion, useSaveEmotionWithImage } from '../../../../queries/emotionQueries';
-const userName = getUserNickname() ?? 'Test_remind_empty';
-const appVariant = Constants.expoConfig?.extra?.appVariant;
-const isProductionOrStaging = appVariant === 'production' || appVariant === 'staging';
-const isTestUser = userName === 'Test_remind';
-const adUnitId =
-  isProductionOrStaging && !isTestUser
-    ? Platform.OS === 'android'
-      ? process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_ANDROID
-      : process.env.EXPO_PUBLIC_REWARED_AD_UNIT_ID_IOS
-    : TestIds.REWARDED;
 
 const localImage: ImageSourcePropType = require('../../../../assets/images/cookie_pic_alarm.png');
 const adsImage: ImageSourcePropType = require('../../../../assets/images/ads_cookie.png');
@@ -74,74 +53,6 @@ const DailyDairy = ({ navigation, route }) => {
   const saveEmotionMutation = useSaveEmotion();
   const saveEmotionWithImageMutation = useSaveEmotionWithImage();
 
-  /*const rewarded = useMemo(
-    () =>
-      RewardedAd.createForAdRequest(adUnitId, {
-        keywords: ['fashion', 'clothing'],
-      }),
-    [],
-  );*/
-
-  //const [loaded, setLoaded] = useState<boolean>(false);
-
-  /*useEffect(() => {
-    console.log('DailyDairy useEffect 실행 : getUserInfo');
-    Analytics.watchDiaryWriteScreen();
-    getUserInfo()
-      .then((res) => {
-        res && setUserPlan(res.userTier);
-      })
-      .catch((error) => {
-      });
-    //광고 이벤트
-    /*const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
-      setLoaded(true);
-    });
-    const unsubscribeEarned = rewarded.addAdEventListener(
-      RewardedAdEventType.EARNED_REWARD,
-      async (reward) => {
-        console.log('User earned reward of ', reward);
-        setUserPlan('pro');
-        await onPressSaveDiary();
-      },
-    );
-    const unsubscribeClosed = rewarded.addAdEventListener(AdEventType.CLOSED, () => {
-      console.log('Ad was closed');
-      setAdsModalVisible(false);
-      setNavigationLoading(true); // 네비게이션 로딩 시작
-      // 짧은 지연 후 네비게이션 - 로딩 표시가 보이도록
-      setTimeout(() => {
-        navigation.reset({
-          index: 0,
-          routes: [
-            {
-              name: RootStackName.BottomTabNavigator,
-              state: {
-                routes: [{ name: TabScreenName.Home }],
-              },
-            },
-          ],
-        });
-        Toast.show('광고 시청 완료! 일기를 기록했어요.', {
-          duration: Toast.durations.SHORT,
-          position: Toast.positions.CENTER,
-        });
-        // 네비게이션 후 로딩 상태 해제
-        setNavigationLoading(false);
-      }, 1000); // 1초 지연
-    });
-
-    // Start loading the rewarded ad straight away
-    rewarded.load();
-
-    // Unsubscribe from events on unmount
-    return () => {
-      unsubscribeLoaded();
-      unsubscribeEarned();
-      unsubscribeClosed();
-    };
-  }, []);*/
-
   //홈으로 돌아가는 코드
   const navigateToHome = (isShownAds: boolean) => {
     navigation.reset({
@@ -155,11 +66,6 @@ const DailyDairy = ({ navigation, route }) => {
         },
       ],
     });
-    /*isShownAds &&
-      Toast.show(`광고를 시청하고 이미지를 첨부했어요!`, {
-        duration: Toast.durations.SHORT,
-        position: Toast.positions.CENTER,
-      });*/
   };
 
   //기본 감정 선택 함수
@@ -205,25 +111,6 @@ const DailyDairy = ({ navigation, route }) => {
   const handleImageDiaryFlow = async ({ dateID, image, allSelectedEmotions, diaryText }) => {
     const userPlan = getUserPlan();
     console.log('사용자 플랜:', userPlan);
-
-    // setUserPlan('pro');
-
-    /*if (userPlan === 'free') {
-      //setAdsModalVisible(true); // 광고 보기 유도
-    } else {
-      try {
-        await saveEmotionWithImageMutation.mutateAsync({
-          dateID,
-          emotions: allSelectedEmotions,
-          text: diaryText,
-          images: image,
-        });
-        handleStatusUpdate(allSelectedEmotions);
-        console.log('유료 사용자 - 이미지 포함 일기 저장 성공');
-      } catch (e) {
-        Toast.show('일기 저장 중 오류가 발생했습니다.');
-      }
-    }*/
     try {
       await saveEmotionWithImageMutation.mutateAsync({
         dateID,
@@ -238,23 +125,6 @@ const DailyDairy = ({ navigation, route }) => {
       Toast.show('일기 저장 중 오류가 발생했습니다.');
     }
   };
-
-  //광고 보기 모달에서 저장하기 버튼 클릭
-  /*const onConfirmWatchAd = () => {
-    console.log('광고 보기 버튼 클릭');
-    Analytics.clickWatchAdsButton(); // 클릭 이벤트 트래킹
-    if (!loaded) {
-      Toast.show('광고를 불러오는 중입니다. 잠시만 기다려주세요.');
-      rewarded.load(); // 다시 로드 시도
-      return;
-    }
-    rewarded.show(); // 광고 표시
-  };*/
-
-  /*if (!loaded) {
-    console.log('no advert ready to show yet');
-    return null;
-  }*/
 
   return (
     <>
@@ -319,24 +189,6 @@ const DailyDairy = ({ navigation, route }) => {
         imageSource={localImage}
         modalContent="사진은 한 장만 등록할 수 있습니다."
       />
-      {/*<AdsModal
-        modalVisible={adsModalVisible}
-        onClose={() => {
-          Analytics.clickNoWatchAdsButton();
-          setAdsModalVisible(false);
-        }}
-        onSubmit={() => {
-          Analytics.clickWatchAdsButton();
-          console.log('광고 보기 버튼 클릭');
-          onConfirmWatchAd();
-        }}
-        imageSource={adsImage}
-        modalContent={
-          TestIds.REWARDED === adUnitId
-            ? `광고를 시청하면\n일기에 사진을 첨부할 수 있어요 :)`
-            : `광고를 시청하면\n일기에 사진을 첨부할 수 있어요!`
-        }
-      />*/}
       {isNavigationLoading && (
         <View
           style={{
