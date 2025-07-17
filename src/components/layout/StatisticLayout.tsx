@@ -1,6 +1,6 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, Text, ScrollView } from 'react-native';
-import Header from '../header/header';
+import Header from '../header/Header';
 import Icon from '../icons/icons';
 import { rsHeight } from '../../utils/responsive-size';
 import palette from '../../assets/styles/theme';

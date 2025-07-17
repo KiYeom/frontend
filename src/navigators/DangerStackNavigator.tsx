@@ -1,8 +1,8 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import Header from '../components/header/header';
-import ClinicPage from '../pages/DangerPage/ClinicPage';
-import DangerAlertPage from '../pages/DangerPage/DangerAlertPage';
+import Header from '../components/header/Header';
+import ClinicPage from '../pages/danger/ClinicPage';
+import DangerAlertPage from '../pages/danger/DangerAlertPage';
 import { DangerStackName } from '../constants/Constants';
 
 const DangerStack = createNativeStackNavigator();

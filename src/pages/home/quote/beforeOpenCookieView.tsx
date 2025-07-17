@@ -10,7 +10,7 @@ import {
   Title,
   Container,
   AnimationContainer,
-} from './qutoe.style';
+} from './QutoePage.style';
 
 const BeforeOpenCookieView: React.FC<{
   onOpenCookie: () => void;

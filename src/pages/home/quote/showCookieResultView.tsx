@@ -19,13 +19,13 @@ import {
   Title,
   ButtonGroup,
   ImageContainer,
-} from './qutoe.style';
-import Button from '../../../components/button/button';
+} from './QutoePage.style';
+import Button from '../../../components/button/Button';
 import { captureRef } from 'react-native-view-shot';
 import * as MediaLibrary from 'expo-media-library';
 import * as Sharing from 'expo-sharing';
 import { happyLyrics, happyLyricsObject } from '../../../constants/Constants';
-import PhotoCard from '../../../components/photo-card/photo-card';
+import PhotoCard from '../../../components/photo-card/PhotoCard';
 import { useShowCookieAnimation } from '@hooks/useShowCookieAnimation';
 import Analytics from '../../../utils/analytics';
 const ShowCookieResultView: React.FC<{

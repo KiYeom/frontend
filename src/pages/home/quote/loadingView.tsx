@@ -2,9 +2,9 @@ import React from 'react';
 import { View, Image } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LottieView from 'lottie-react-native';
-import { Container, AnimationContainer } from './qutoe.style';
+import { Container, AnimationContainer } from './QutoePage.style';
 import { happyLyrics, happyLyricsObject } from '../../../constants/Constants';
-import PhotoCard from '../../../components/photo-card/photo-card';
+import PhotoCard from '../../../components/photo-card/PhotoCard';
 
 const LoadingView: React.FC<{
   selectedImageSource: any | null;

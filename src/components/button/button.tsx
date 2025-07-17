@@ -1,7 +1,7 @@
 import React from 'react';
 import Icon from '../icons/icons';
-import './button.styles';
-import { ButtonContainer, ButtonLabel } from './button.styles';
+import './Button.styles';
+import { ButtonContainer, ButtonLabel } from './Button.styles';
 
 export type ButtonProps = {
   title: string;

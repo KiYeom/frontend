@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
 import Icon from '../icons/icons';
-import { Card, IconContainer, TextContainer, ValueText, LabelText } from './streak.styles';
+import { Card, IconContainer, TextContainer, ValueText, LabelText } from './Streak.styles';
 import { TIconName } from '../icons/icons';
 import LottieView from 'lottie-react-native';
 type StreakProps = {
