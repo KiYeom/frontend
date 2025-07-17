@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import PeriodStatisticPage from '../pages/StatisticPage/PeriodStatisticPage';
-import StatisticMain from '../pages/StatisticPage/StatisticMain';
+import PeriodStatisticPage from '../pages/statistic/PeriodStatisticPage';
+import StatisticMain from '../pages/statistic/DailyStatisticPage';
 import { StatisticStackName } from '../constants/Constants';
 
 const StatisticStack = createNativeStackNavigator();

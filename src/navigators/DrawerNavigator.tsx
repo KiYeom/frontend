@@ -1,9 +1,9 @@
 import React from 'react';
-import Header from '../components/header/header';
-import DangerAlertPage from '../pages/DangerPage/DangerAlertPage';
+import Header from '../components/header/Header';
+import DangerAlertPage from '../pages/danger/DangerAlertPage';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import NewChat from '../pages/home/chat/new-chat';
-import CustomDrawerContent from '../pages/home/CustomDrawerContent';
+import NewChat from '../pages/home/chat/NewChatPage';
+import CustomDrawerContent from '../pages/home/DrawerContent';
 
 const Drawer = createDrawerNavigator();
 

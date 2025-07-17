@@ -2,7 +2,7 @@ import { StyleProp, TextStyle } from 'react-native';
 import palette from '../../assets/styles/theme';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import Icon, { TIconName } from '../icons/icons';
-import { IconContainer, InputContainer, InputField, WithMessage } from './input.styles';
+import { IconContainer, InputContainer, InputField, WithMessage } from './Input.styles';
 
 type InputProps = {
   keyboardType?: 'numeric';

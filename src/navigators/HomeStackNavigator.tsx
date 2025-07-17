@@ -1,23 +1,23 @@
 import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import Header from '../components/header/header';
+import Header from '../components/header/Header';
 //import ChatList from '../components/pages/HomePage/ChatList';
-import SmallEmotionChart from '../pages/home/diary/SelectEmotionPage/SmallEmotionChart';
-import Profile from '../pages/home/Profile/profile';
+import SmallEmotionChart from '../pages/home/diary/select-emotion/SmallEmotionChartPage';
+import Profile from '../pages/home/profile/CookieProfilePage';
 import { HomeStackName, RootStackName, TabScreenName } from '../constants/Constants';
-import NewChat from '../pages/home/chat/new-chat';
+import NewChat from '../pages/home/chat/NewChatPage';
 //import Chat from '../components/pages/HomePage/Chat';
-import DailyDairy from '../pages/home/diary/WriteDiaryPage/DailyDairy';
+import DailyDairy from '../pages/home/diary/write-diary/DailyDairyPage';
 //import { formatDate } from '../utils/Chatting';
 import { Alert } from 'react-native';
 import DrawerNavigator from './DrawerNavigator';
-import Favorites from '../pages/home/favorites/favorites';
-import newFavorites from '../pages/home/favorites/newFavorites';
-import StatisticMain from '../pages/StatisticPage/StatisticMain';
-import Home from '../pages/home/Home';
-import Quote from '../pages/home/quote/quote';
-import CallPage from '../pages/CallPage/CallPage';
+import Favorites from '../pages/home/favorites/FavoritesPage';
+import newFavorites from '../pages/home/favorites/FavoritesPage';
+import StatisticMain from '../pages/statistic/DailyStatisticPage';
+import Home from '../pages/home/HomePage';
+import Quote from '../pages/home/quote/QuotePage';
+import CallPage from '../pages/voice/VoicePage';
 const HomeStack = createNativeStackNavigator();
 
 const HomeStackNavigator: React.FC = () => {

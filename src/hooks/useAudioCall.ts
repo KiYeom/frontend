@@ -3,8 +3,8 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import { EventEmitter } from 'expo-modules-core';
 import MyModule from '../../modules/my-module';
 import { getAccessToken } from '../utils/storageUtils';
-import { initSocket, getSocket } from '../pages/CallPage/socketManager';
-import { setTextReceiveHandler } from '../pages/CallPage/socketManager';
+import { initSocket, getSocket } from '../pages/voice/socketManager';
+import { setTextReceiveHandler } from '../pages/voice/socketManager';
 import { getUserNickname } from '../utils/storageUtils';
 import {
   endAudioCall,

@@ -12,7 +12,7 @@ import {
   HeaderRight,
   HeaderTitle,
   OptionText,
-} from './header.styles';
+} from './Header.styles';
 
 export type HeaderProps = {
   title?: string;
