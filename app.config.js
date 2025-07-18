@@ -107,6 +107,9 @@ module.exports = {
           android: {
             usesCleartextTraffic: true,
             newArchEnabled: true,
+            compileSdkVersion: 35,
+            targetSdkVersion: 35,
+            buildToolsVersion: '35.0.0',
           },
           ios: {
             newArchEnabled: true,
