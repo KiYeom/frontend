@@ -17,23 +17,23 @@ const adUnitId = isProductionOrStaging
 const AdMobBanner = () => {
   const insets = useSafeAreaInsets();
   const [sdkReady, setSdkReady] = useState(false);
-  console.log('AdMobBanner ', adUnitId);
+  //console.log('AdMobBanner ', adUnitId);
   useEffect(() => {
-    console.log('AdMobBanner adUnitId:', adUnitId);
+    //console.log('AdMobBanner adUnitId:', adUnitId);
 
     mobileAds()
       .setRequestConfiguration({
         testDeviceIdentifiers: ['6FE50E1C-9140-4519-B46A-68F69D4C2FD8'],
       })
       .then(() => {
-        console.log('🔧 Request configuration set');
+        //console.log('🔧 Request configuration set');
         return mobileAds().initialize();
       })
       .then((adapterStatuses) => {
-        console.log('✅ AdMob SDK 초기화 성공:', adapterStatuses);
+        //console.log('✅ AdMob SDK 초기화 성공:', adapterStatuses);
       })
       .catch((error) => {
-        console.log('❌ AdMob SDK 초기화 실패:', error);
+        //console.log('❌ AdMob SDK 초기화 실패:', error);
       });
   }, []);
 
@@ -45,7 +45,8 @@ const AdMobBanner = () => {
         marginTop: insets.top,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'rgba(0,0,0,0.1)', // 배경 추가로 위치 확인
+        backgroundColor: 'rgba(255,255,255,1)', // 배경 추가로 위치 확인
+        zIndex: 1000, // 다른 컴포넌트 위에 표시되도록 zIndex 설정
       }}>
       <BannerAd
         unitId={adUnitId}

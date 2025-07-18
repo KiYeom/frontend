@@ -80,7 +80,7 @@ const CustomBottomSheet = (props: BottomSheetProps) => {
   }, []);
 
   useEffect(() => {
-    //Analytics.watchCustomEmotionSheet();
+    Analytics.watchCustomEmotionSheet();
     const showSub = Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
     const hideSub = Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide);
 

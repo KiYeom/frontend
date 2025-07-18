@@ -86,6 +86,7 @@ const Quote: React.FC = () => {
     null,
   );
   const [selectedImageSource, setSelectedImageSource] = React.useState<any | null>(null);
+  //console.log('seectedImageSource', selectedImageSource);
   if (status === null) {
     requestPermission();
   } else {
@@ -96,26 +97,30 @@ const Quote: React.FC = () => {
     const initializeQuote = async () => {
       try {
         const response = await getUserCanOpenQuote();
+        //console.log('API 응답:', response);
         //const response = { result: false }; // 테스트용으로 항상 false로 설정
         //deletePhotoCardData();
 
         //1. 오늘 열어본 적 없는 경우
-        if (response && response.result) {
+        if (response && !response.result) {
           console.log('오늘 열어본 적 없음');
+          const newData = createAndSaveNewData();
+          setSelectedLyricObject(newData.lyric);
+          setSelectedImageSource(newData.image);
           setUiMode(QuoteUiMode.BEFORE_OPEN_COOKIE);
           Analytics.watchBeforeOpenHappyLyricsImageScreen();
           return;
         }
         //오늘 이미 열어본 경우
-        if (response && !response.result) {
+        if (response && response.result) {
           const savedData = loadSavedData();
           if (savedData) {
-            console.log('저장된 데이터가 있음', savedData);
+            //console.log('저장된 데이터가 있음', savedData);
             setSelectedLyricObject(savedData.lyric);
             setSelectedImageSource(savedData.image);
             setUiMode(QuoteUiMode.SHOW_COOKIE_RESULT);
           } else {
-            console.log('저장된 데이터가 없음, 새로운 데이터 생성');
+            //console.log('저장된 데이터가 없음, 새로운 데이터 생성');
             const newData = createAndSaveNewData();
             setSelectedLyricObject(newData.lyric);
             setSelectedImageSource(newData.image);
@@ -126,7 +131,7 @@ const Quote: React.FC = () => {
         }
         throw new Error('API 응답 오류');
       } catch (error) {
-        console.error('Quote 컴포넌트 초기화 오류:', error);
+        //console.error('Quote 컴포넌트 초기화 오류:', error);
         Alert.alert('오류 발생', '잠시 후 다시 시도해주세요.');
         setUiMode(QuoteUiMode.BEFORE_OPEN_COOKIE);
       }

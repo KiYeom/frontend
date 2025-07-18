@@ -178,7 +178,7 @@ module.exports = {
         },
       ],
     ],
-    runtimeVersion: '1.0.3',
+    runtimeVersion: '1.0.4',
     updates: {
       url: 'https://u.expo.dev/1cd0480c-0399-4503-ae2d-ec73641ea4fd',
     },

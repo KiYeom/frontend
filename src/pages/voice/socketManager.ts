@@ -17,7 +17,7 @@ export const setTextReceiveHandler = (cb: (t: string) => void) => {
 }; // 🔹 추가
 
 export const initSocket = (token: string) => {
-  console.log('🔹 initSocket called with token:', token);
+  //console.log('🔹 initSocket called with token:', token);
 
   if (!socket || !socket.connected) {
     socket = io('https://api.remind4u.co.kr', {

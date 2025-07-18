@@ -1,19 +1,6 @@
 //간단히 view와 text가 있는 페이지
 import React, { useEffect, useState, useRef } from 'react';
-import { Image } from 'expo-image';
-import {
-  View,
-  Text,
-  Button,
-  TouchableOpacity,
-  ScrollView,
-  Modal,
-  ActivityIndicator,
-  PermissionsAndroid,
-  Platform,
-  Alert,
-  Linking,
-} from 'react-native';
+import { View, Text, PermissionsAndroid, Platform, Alert, Linking } from 'react-native';
 import { useAudioCall } from '../../hooks/useAudioCall';
 import { CallStatus } from '../../hooks/useAudioCall';
 import Header from '../../components/header/Header';
@@ -25,10 +12,13 @@ import { AudioBars } from './MicLevelBar';
 import Purchases from 'react-native-purchases';
 import { getCurrentOffering, updatePurchaseStatus } from '../../services/inappService';
 import { getRemainingTime } from '../../apis/voice';
-import { getUserNickname } from '../../utils/storageUtils';
 import CallTimer from './components/CallTimer';
 import CookieAvatar from './components/CookieAvatar';
 import PaymentModal from './components/PaymentModal';
+import { PurchasesOffering } from 'react-native-purchases';
+import MyModule from '../../../modules/my-module/src/MyModule';
+import * as Sentry from '@sentry/react-native';
+import Analytics from '../../utils/analytics';
 const CallControls: React.FC<{
   canStart: boolean;
   canPause: boolean;
@@ -54,20 +44,10 @@ const CallControls: React.FC<{
     { name: 'call-resume', onPress: onResume, disabled: !canResume },
     { name: 'call-end', onPress: onDisconnect, disabled: !canDisconnect },
   ];
-  const [hasPurchased, setHasPurchased] = useState<boolean>(false);
-  const [currentOffering, setCurrentOffering] = useState<PurchasesOffering | null>(null);
+
   //구매 상태에 따라 버튼 변경
   useEffect(() => {
-    const setup = async () => {
-      const offering = await getCurrentOffering();
-      setCurrentOffering(offering); //판매 상품
-      const purchased = await updatePurchaseStatus();
-      setHasPurchased(purchased); //구매 상태 (true/false) 설정
-      console.log('offering:', offering);
-      //offeringIdentifier : "emoji_offering"
-      console.log('구매 상태:', purchased);
-    };
-    setup().catch(console.log);
+    Analytics.watchTabVoiceScreen(); //홈 화면 진입
   }, []);
 
   return (
@@ -105,14 +85,17 @@ const CallPage: React.FC = () => {
     setTotalTime,
     setRemainingTime,
   } = handlers;
-  // gemini_audio 수신 상태 관리
+  //마이크 권한 상
+  const [micPermissionStatus, setMicPermissionStatus] = useState<
+    'undetermined' | 'granted' | 'denied'
+  >('undetermined');
   const [isReceivingAudio, setIsReceivingAudio] = useState(false);
-  const audioTimeoutRef = React.useRef<NodeJS.Timeout>();
+  const audioTimeoutRef = useRef<NodeJS.Timeout>();
+  const syncRetryCount = useRef<number>(0);
   const isActive =
     callStatus === CallStatus.Start ||
     callStatus === CallStatus.Resumed ||
     callStatus === CallStatus.Active;
-
   const canStart = callStatus === CallStatus.Idle && totalTime > 0;
   const canPause =
     callStatus === CallStatus.Start ||
@@ -120,11 +103,160 @@ const CallPage: React.FC = () => {
     callStatus === CallStatus.Active;
   const canResume = callStatus === CallStatus.Paused;
   const canDisconnect = callStatus !== CallStatus.Idle && callStatus !== CallStatus.End;
+  const canCharge = callStatus === CallStatus.Idle;
 
   // 결제 모달 상태
   const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
   // 결제 로딩 상태 추가
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [isAudioSessionActive, setIsAudioSessionActive] = useState(false);
+
+  useEffect(() => {
+    const activateSession = async () => {
+      try {
+        MyModule.activateAudioSession();
+        setIsAudioSessionActive(true);
+        //console.log('✅ CallPage: 오디오 세션 활성화 성공');
+      } catch (error) {
+        console.error('❌ CallPage: 오디오 세션 활성화 실패:', error);
+        // Sentry에 에러 전송
+        Sentry.captureException(error, {
+          tags: {
+            component: 'CallPage',
+            action: 'activateAudioSession',
+          },
+          contexts: {
+            audioSession: {
+              isActive: isAudioSessionActive,
+              callStatus: callStatus,
+            },
+          },
+        });
+        Alert.alert('오디오 초기화 실패', '오디오 기능을 사용할 수 없습니다. 앱을 재시작해주세요.');
+      }
+    };
+
+    activateSession();
+
+    return () => {
+      try {
+        MyModule.deactivateAudioSession();
+        setIsAudioSessionActive(false);
+        //console.log('✅ CallPage: 오디오 세션 비활성화 성공');
+      } catch (error) {
+        console.error('⚠️ CallPage: 오디오 세션 비활성화 실패:', error);
+        // Sentry에 에러 전송 (심각하지 않은 에러이므로 captureMessage 사용)
+        Sentry.captureMessage('오디오 세션 비활성화 실패', {
+          level: 'warning',
+          tags: {
+            component: 'CallPage',
+            action: 'deactivateAudioSession',
+          },
+        });
+      }
+    };
+  }, []);
+
+  // 통화 종료 시 오디오 세션 비활성화
+  useEffect(() => {
+    if (callStatus === CallStatus.End) {
+      // 통화가 완전히 종료되면 잠시 후 오디오 세션 비활성화
+      const timer = setTimeout(() => {
+        if (isAudioSessionActive) {
+          MyModule.deactivateAudioSession();
+          setIsAudioSessionActive(false);
+          console.log('📞 통화 종료: 오디오 세션 비활성화');
+        }
+      }, 1000); // 1초 후 비활성화
+
+      return () => clearTimeout(timer);
+    }
+  }, [callStatus, isAudioSessionActive]);
+
+  // 5. 오류 발생 시 복구 시도
+  const handleAudioSessionError = async () => {
+    console.log('🔧 오디오 세션 복구 시도...');
+    try {
+      // 기존 세션 정리
+      MyModule.deactivateAudioSession();
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      // 세션 재활성화
+      MyModule.activateAudioSession();
+      setIsAudioSessionActive(true);
+      console.log('✅ 오디오 세션 복구 성공');
+    } catch (error) {
+      console.error('❌ 오디오 세션 복구 실패:', error);
+      // Sentry에 복구 실패 에러 전송
+      Sentry.captureException(error, {
+        tags: {
+          component: 'CallPage',
+          action: 'handleAudioSessionError',
+          severity: 'critical',
+        },
+        contexts: {
+          recovery: {
+            attempt: 'audio_session_recovery',
+            previousState: isAudioSessionActive,
+          },
+        },
+      });
+      Alert.alert('오디오 오류', '오디오 기능에 문제가 발생했습니다. 앱을 재시작해주세요.', [
+        { text: '확인' },
+      ]);
+    }
+  };
+  const handleConnectWithSessionCheck = async () => {
+    if (!isAudioSessionActive) {
+      console.log('⚠️ 오디오 세션이 비활성화 상태, 재활성화 시도');
+      await handleAudioSessionError();
+    }
+    handleConnect();
+  };
+
+  // 백엔드와 동기화하는 함수
+  const syncWithBackend = async (optimisticTotalTime: number, optimisticRemainingTime: number) => {
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    try {
+      // 백엔드에서 실제 남은 시간 조회
+      const { remainingTime: serverRemainingTime } = await getRemainingTime();
+      console.log(
+        '🔄 서버 동기화 - 서버 시간:',
+        serverRemainingTime,
+        '프론트 시간:',
+        optimisticRemainingTime,
+      );
+
+      // 서버 값과 다른 경우에만 업데이트
+      if (Math.abs(serverRemainingTime - optimisticRemainingTime) > 10) {
+        // 10초 이상 차이날 때만
+        console.log('⚠️ 서버와 프론트 시간 불일치 감지, 서버 값으로 업데이트');
+        setTotalTime(serverRemainingTime);
+        setRemainingTime(serverRemainingTime);
+
+        // 사용자에게 알림 (선택사항)
+        // Alert.alert('시간 동기화', '서버와 시간이 동기화되었습니다.');
+      } else {
+        console.log('✅ 서버와 프론트 시간 일치');
+      }
+    } catch (error) {
+      console.error('백엔드 동기화 실패:', error);
+      // 동기화 실패 시 재시도 로직 (선택사항)
+      if (!syncRetryCount.current || syncRetryCount.current < 3) {
+        syncRetryCount.current = (syncRetryCount.current || 0) + 1;
+        console.log(`🔄 동기화 재시도 ${syncRetryCount.current}/3`);
+        setTimeout(() => {
+          syncWithBackend(optimisticTotalTime, optimisticRemainingTime);
+        }, 3000);
+      } else {
+        console.error('❌ 동기화 최대 재시도 횟수 초과');
+        syncRetryCount.current = 0;
+      }
+    } finally {
+      setIsSyncing(false);
+    }
+  };
 
   useEffect(() => {
     setAudioReceiveHandler(() => {
@@ -139,8 +271,7 @@ const CallPage: React.FC = () => {
 
   useEffect(() => {
     const requestMicPermission = async () => {
-      if (Platform.OS !== 'android') return;
-
+      if (Platform.OS !== 'android') return; // iOS는 권한 요청 필요 없음
       try {
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
@@ -154,7 +285,7 @@ const CallPage: React.FC = () => {
         );
 
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.log('✅ 마이크 권한 허용됨');
+          //console.log('✅ 마이크 권한 허용됨');
         } else {
           Alert.alert(
             '마이크 권한이 거부되었습니다',
@@ -213,17 +344,36 @@ const CallPage: React.FC = () => {
 
       const purchaseResult = await Purchases.purchasePackage(product);
       console.log(`${minutes}분 충전 완료`, purchaseResult);
-      // ✅ 충전 후 서버에서 남은 시간 조회
-      const { remainingTime } = await getRemainingTime();
-      console.log('🔄 서버에서 가져온 남은 시간:', remainingTime);
+      // ✅ 낙관적 업데이트: 결제 성공 시 프론트엔드에서 먼저 시간 업데이트
+      const newTotalTime = totalTime + minutes * 60; // 분을 초로 변환
+      const newRemainingTime = remainingTime + minutes * 60;
 
-      setTotalTime(remainingTime);
-      setRemainingTime(remainingTime);
+      setTotalTime(newTotalTime);
+      setRemainingTime(newRemainingTime);
+
+      // 결제 모달 닫기
+      setIsPaymentModalVisible(false);
+
+      setIsSyncing(true);
+      syncWithBackend(newTotalTime, newRemainingTime);
 
       // TODO: 구매 완료 처리 (시간 충전, 서버 동기화 등)
     } catch (e: any) {
       if (!e.userCancelled) {
         console.error('결제 중 오류 발생:', e);
+        // 결제 에러를 Sentry에 전송
+        Sentry.captureException(e, {
+          tags: {
+            component: 'CallPage',
+            action: 'handlePayment',
+            severity: 'high',
+          },
+          extra: {
+            minutes,
+            userCancelled: e.userCancelled,
+          },
+        });
+        Alert.alert('결제 오류', '결제 처리 중 문제가 발생했습니다. 다시 시도해주세요.');
       }
     } finally {
       // 로딩 종료
@@ -245,14 +395,21 @@ const CallPage: React.FC = () => {
         <CallTimer
           totalTime={totalTime}
           remainingTime={remainingTime}
-          onChargePress={() => setIsPaymentModalVisible(true)}
+          onChargePress={() => {
+            //console.log('충전 버튼 클릭');
+            Analytics.clickTabVoiceChargeButton();
+            setIsPaymentModalVisible(true);
+          }}
           isLoading={isPaymentLoading}
+          isSyncing={isSyncing}
+          isChargeDisabled={!canCharge}
         />
         <CookieAvatar
           responseText={responseText}
           isReceivingAudio={isReceivingAudio}
           waveform={waveform}
           isActive={isActive}
+          isChargeDisabled={!canCharge}
         />
         <View
           style={{
@@ -271,7 +428,7 @@ const CallPage: React.FC = () => {
           canPause={canPause}
           canResume={canResume}
           canDisconnect={canDisconnect}
-          onConnect={handleConnect}
+          onConnect={handleConnectWithSessionCheck}
           onPause={handlePause}
           onResume={handleResume}
           onDisconnect={handleDisconnect}

@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { use } from 'react';
 import { View, Image } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LottieView from 'lottie-react-native';
 import { Container, AnimationContainer } from './QutoePage.style';
 import { happyLyrics, happyLyricsObject } from '../../../constants/Constants';
 import PhotoCard from '../../../components/photo-card/PhotoCard';
+import { useEffect } from 'react';
+import Analytics from '../../../utils/analytics';
 
 const LoadingView: React.FC<{
   selectedImageSource: any | null;
@@ -12,6 +14,9 @@ const LoadingView: React.FC<{
   onLoadingComplete: () => void;
 }> = ({ selectedImageSource, selectedLyricObject, onLoadingComplete }) => {
   const insets = useSafeAreaInsets();
+  useEffect(() => {
+    Analytics.watchHappyLyricsImageScreen();
+  }, []);
 
   return (
     <Container insets={insets}>

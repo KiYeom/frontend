@@ -170,7 +170,7 @@ const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({
 
   //구매 상태에 따라 버튼 변경
   useEffect(() => {
-    console.log('😀NewEmojiPanel useEffect 실행됨😀');
+    //console.log('😀NewEmojiPanel useEffect 실행됨😀');
     const setup = async () => {
       const offering = await getCurrentOffering();
       setCurrentOffering(offering); //판매 상품

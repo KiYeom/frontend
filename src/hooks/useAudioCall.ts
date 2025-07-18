@@ -1,5 +1,6 @@
 // hooks/useAudioCall.ts
 import { useEffect, useState, useRef, useCallback } from 'react';
+import { Platform } from 'react-native';
 import { EventEmitter } from 'expo-modules-core';
 import MyModule from '../../modules/my-module';
 import { getAccessToken } from '../utils/storageUtils';
@@ -13,8 +14,8 @@ import {
   startAudioCall,
   heartbeatAudioCall,
   getRemainingTime,
-} from '../apis/voice';
-
+} from '@apis/voice';
+import Analytics from '../utils/analytics';
 export enum CallStatus {
   Idle = 'idle',
   Start = 'start',
@@ -22,6 +23,8 @@ export enum CallStatus {
   Resumed = 'resume',
   End = 'end',
   Active = 'acrtive',
+  CONNECTING = 'connecting',
+  ERROR = 'error',
 }
 
 const userNickname = getUserNickname(); // 사용자 닉네임 가져오기
@@ -32,8 +35,8 @@ const STATUS_MESSAGES = {
   [CallStatus.Paused]: '잠시 멈췄어요. 준비되면 다시 시작해주세요',
   [CallStatus.Resumed]: '다시 들을게요',
   [CallStatus.End]: '다음에 또 이야기해요 😊',
-  connecting: '연결 중이에요...',
-  error: '연결에 실패했어요. 다시 시도해주세요',
+  [CallStatus.CONNECTING]: '연결 중이에요...',
+  [CallStatus.ERROR]: '연결에 실패했어요. 다시 시도해주세요',
 };
 
 interface AudioCallState {
@@ -57,6 +60,8 @@ interface AudioCallHandlers {
   setRemainingTime: (seconds: number) => void;
 }
 
+const GAIN_CORRECTION = 20; // 실험적으로 조정, 10~25 정도
+const THRESHOLD = 0.00015; // 0.0001~0.0002
 export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
   // State
   const [waveform, setWaveform] = useState<number[]>([]);
@@ -85,7 +90,9 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
 
     const rms = Math.sqrt(sumSquares / sampleCount);
     const normalized = rms / 32768; // Int16 max value
-    return Math.min(normalized, 1); // 0~1로 정규화
+    const boosted = normalized * GAIN_CORRECTION;
+    return boosted < THRESHOLD ? 0 : Math.min(boosted, 1);
+    //return Math.min(normalized, 1); // 0~1로 정규화
   }
 
   // Refs
@@ -103,7 +110,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
 
   /** 텍스트 수신시마다 최신 문장으로 교체 (원하면 누적도 가능) */
   useEffect(() => {
-    console.log('🔹 텍스트 수신 핸들러 설정');
+    //console.log('🔹 텍스트 수신 핸들러 설정');
     setTextReceiveHandler((text) => {
       setResponseText(text); // 🔹 “교체” 방식
       // setResponseText((prev) => prev + '\n' + text); // ← “누적”이 필요하면 이 줄로
@@ -121,7 +128,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
     const loadTotalTime = async () => {
       try {
         const data = await getRemainingTime();
-        console.log('⏱️ 총 통화 시간 불러옴:', data.remainingTime, '초');
+        //console.log('⏱️ 총 통화 시간 불러옴:', data.remainingTime, '초');
         setTotalTime(data.remainingTime);
         setRemainingTime(data.remainingTime); // 이 시점에 remainingTime도 초기화 가능
       } catch (err) {
@@ -154,6 +161,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
         // 1. 볼륨 계산
         const uint8 = new Uint8Array(pcm);
         const volume = calculateVolume(uint8);
+        //console.log('volume', volume);
         setVolumeLevel(volume);
       } else {
         console.log('❌ 소켓이 연결되지 않았습니다. mic_audio 전송 실패');
@@ -268,9 +276,11 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
 
   // Handler functions
   const handleConnect = useCallback(async () => {
+    Analytics.clickVoiceControlButton('call-start');
     const socket = getSocket();
     console.log('🔹 handleConnect 호출:', socket?.connected);
-    setResponseText(STATUS_MESSAGES.connecting); //연결 중이에요...
+    setCallStatus(CallStatus.CONNECTING);
+    setResponseText(STATUS_MESSAGES[CallStatus.CONNECTING]); //연결 중이에요...
     if (!socket) return;
 
     socket.connect();
@@ -291,12 +301,13 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
       } catch (err) {
         console.error('❌ startAudioCall 실패:', err);
         setCallStatus(CallStatus.Idle);
-        setResponseText(STATUS_MESSAGES.error); // 연결에 실패했어요. 다시 시도해주세요
+        setResponseText(STATUS_MESSAGES[CallStatus.ERROR]); // 연결에 실패했어요. 다시 시도해주세요
       }
     });
   }, [startHeartbeat, startCountdown]);
 
   const handleDisconnect = useCallback(async () => {
+    Analytics.clickVoiceControlButton('call-end');
     try {
       const response = await endAudioCall();
       console.log('✅ handleDisconnect 응답:', response);
@@ -304,7 +315,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
       setResponseText(STATUS_MESSAGES[CallStatus.End]); // 다음에 또 이야기해요 😊
     } catch (err) {
       console.error('❌ endAudioCall 실패:', err);
-      setResponseText(STATUS_MESSAGES.error); // 연결에 실패했어요. 다시 시도해주세요
+      setResponseText(STATUS_MESSAGES[CallStatus.ERROR]); // 연결에 실패했어요. 다시 시도해주세요
     } finally {
       MyModule.stopRecording();
       MyModule.stopRealtimePlayback();
@@ -316,6 +327,8 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
 
   const handlePause = useCallback(async () => {
     console.log('handlePause 호출', callStatus);
+    Analytics.clickVoiceControlButton('call-pause');
+
     try {
       const response = await pauseAudioCall();
       console.log('✅ pauseRecording 응답:', response);
@@ -330,6 +343,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
 
   const handleResume = useCallback(async () => {
     console.log('handleResume 호출');
+    Analytics.clickVoiceControlButton('call-resume');
     try {
       const response = await resumeAudioCall();
       console.log('✅ resumeRecording 응답:', response);
@@ -340,9 +354,17 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
       setCallStatus(CallStatus.Resumed);
       startCountdown(); // 카운트다운 재시작
       console.log('⏳ 카운트다운 재시작');
-
-      MyModule.startRecording();
       MyModule.resumeRealtimePlayback();
+      //MyModule.startRecording();
+      // 플랫폼별 처리
+      if (Platform.OS === 'ios') {
+        // iOS는 마이크 수동 시작 필요
+        MyModule.startRecording();
+        MyModule.resumeRealtimePlayback();
+      } else {
+        // Android는 자동 제어에 맡김
+        MyModule.resumeRealtimePlayback();
+      }
     } catch (err) {
       console.error('❌ resumeRecording 실패:', err);
     }
@@ -350,7 +372,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
 
   useEffect(() => {
     return () => {
-      console.log('🧨 useAudioCall 언마운트됨');
+      //console.log('🧨 useAudioCall 언마운트됨');
       stopCountdown(); // 이 부분 추가
       stopHeartbeat(); // 이 부분도 추가
     };

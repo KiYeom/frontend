@@ -86,7 +86,11 @@ const SmallEmotionChart = ({ navigation, route }: Props) => {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 12, gap: 12, flexDirection: 'row' }}>
+            contentContainerStyle={{
+              paddingHorizontal: 12,
+              gap: 12,
+              flexDirection: 'row',
+            }}>
             {emotionsByColumn.map((column, colIndex) => (
               <View key={colIndex} style={{ gap: 12 /*backgroundColor: 'red'*/ }}>
                 {column.map((emotion: SelectableEmotion, i: number) => (

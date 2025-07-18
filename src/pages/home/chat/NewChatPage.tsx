@@ -1135,7 +1135,7 @@ const NewChat: React.FC = ({ navigation }) => {
       //console.log('🧞‍♂️이미지 전송');
       // 이미지를 보낸 경우
       //setBuffer(buffer ? buffer + newMessages[0].text + '\t' : newMessages[0].text + '\t');
-      console.log('이미지 전송~~~', newMessages);
+      //console.log('이미지 전송~~~', newMessages);
       setBuffer(newMessages[0].text);
       /*if (textInputRef.current) {
         //console.log('입력 필드 초기화');

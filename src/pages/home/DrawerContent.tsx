@@ -39,14 +39,14 @@ const deleteAllMessages = (onConfirm?: () => void): void => {
         style: 'cancel',
         onPress: () => {
           //console.log('아니요 클릭');
-          //Analytics.clickSideMenuDeleteAllCancelButton();
+          Analytics.clickSideMenuDeleteAllCancelButton();
         },
       },
       {
         text: '네',
         onPress: () => {
           //console.log('확인 클릭');
-          //Analytics.clickSideMenuDeleteAllConfirmButton();
+          Analytics.clickSideMenuDeleteAllConfirmButton();
           if (onConfirm) onConfirm();
         },
       },
@@ -86,7 +86,7 @@ const CustomDrawerContent = (props: any) => {
   };
 
   useEffect(() => {
-    console.log('사이드바가 오픈됨');
+    //console.log('사이드바가 오픈됨');
     Analytics.watchOpenedSideMenuScreen();
     getUserInfo() //반말 존댓말 정보 가져옴
       .then((res) => {
@@ -124,14 +124,14 @@ const CustomDrawerContent = (props: any) => {
               //console.log('쿠키 편지를 클릭함');
               if (riskStatusV2 === 'danger') {
                 //console.log('위험 상태일 때');
-                //Analytics.clickSideMenuDangerLetterButton(riskScoreV2);
+                Analytics.clickSideMenuDangerLetterButton(riskScoreV2);
                 navigateToDangerAlert();
                 return;
               }
               if (riskStatusV2 === 'danger-opened') {
                 //위험한 상태일 때 확인을 했으면
                 //console.log('위험 상태일 때 확인을 했으면');
-                //Analytics.clickSideMenuOpenedDangerLetterButton(riskScoreV2);
+                Analytics.clickSideMenuOpenedDangerLetterButton(riskScoreV2);
                 //const letterIndex = getRiskData()?.letterIndex;
                 navigateToDangerAlert();
                 return;
@@ -154,7 +154,7 @@ const CustomDrawerContent = (props: any) => {
           onPress={async () => {
             switchChatTone(!isInFormalMode); //변경 사항을 서버에 patch로 업데이트
             setIsInformalMode(!isInFormalMode); //화면의 토글이 변경
-            //Analytics.clickChattingRoomSettingSwitch('반말 사용하기 (on/off)', !isInFormalMode);
+            Analytics.clickChattingRoomSettingSwitch('반말 사용하기 (on/off)', !isInFormalMode);
           }}
         />
         <MenuRow
@@ -167,10 +167,10 @@ const CustomDrawerContent = (props: any) => {
           onPress={async () => {
             switchEmojiTone(!isEmojiMode); //변경 사항을 서버에 patch로 업데이트
             setIsEmojiMode(!isEmojiMode); //화면의 토글이 변경
-            /*Analytics.clickChattingRoomSettingEmojiSwitch(
+            Analytics.clickChattingRoomSettingEmojiSwitch(
               '쿠키 답변에 이모티콘 추가하기 (on/off)',
               !isEmojiMode,
-            );*/
+            );
           }}
         />
       </UserSettingContainer>
@@ -185,7 +185,7 @@ const CustomDrawerContent = (props: any) => {
             navigation.navigate(RootStackName.HomeStackNavigator, {
               screen: HomeStackName.Favorites,
             });
-            //Analytics.clickSideMenuWarmChatButton();
+            Analytics.clickSideMenuWarmChatButton();
           }}
           iconName="favorite-icon"
         />
@@ -194,7 +194,7 @@ const CustomDrawerContent = (props: any) => {
           onPress={() => {
             //console.log('모든 대화 삭제하기');
             deleteAllMessages(handleDeleteAllMessages);
-            //Analytics.clickSideMenuDeleteAllButton();
+            Analytics.clickSideMenuDeleteAllButton();
           }}
           iconName="trash-icon"
         />
@@ -206,7 +206,7 @@ const CustomDrawerContent = (props: any) => {
         <MenuRow
           text="버그 제보하기"
           onPress={async () => {
-            //Analytics.clickSideMenuBugReportButton();
+            Analytics.clickSideMenuBugReportButton();
             if (Platform.OS === 'android') {
               await Linking.openURL('https://j2wk7.channel.io/home');
             } else {
@@ -217,7 +217,7 @@ const CustomDrawerContent = (props: any) => {
         <MenuRow
           text="제안 및 문의"
           onPress={async () => {
-            //Analytics.clickSideMenuInquiryButton();
+            Analytics.clickSideMenuInquiryButton();
             await Linking.openURL('https://asked.kr/remind_cookie');
           }}
         />
