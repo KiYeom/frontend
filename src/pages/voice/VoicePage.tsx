@@ -17,6 +17,7 @@ import CookieAvatar from './components/CookieAvatar';
 import PaymentModal from './components/PaymentModal';
 import { PurchasesOffering } from 'react-native-purchases';
 import MyModule from '../../../modules/my-module/src/MyModule';
+import * as Sentry from '@sentry/react-native';
 import Analytics from '../../utils/analytics';
 const CallControls: React.FC<{
   canStart: boolean;
@@ -119,6 +120,19 @@ const CallPage: React.FC = () => {
         //console.log('✅ CallPage: 오디오 세션 활성화 성공');
       } catch (error) {
         console.error('❌ CallPage: 오디오 세션 활성화 실패:', error);
+        // Sentry에 에러 전송
+        Sentry.captureException(error, {
+          tags: {
+            component: 'CallPage',
+            action: 'activateAudioSession',
+          },
+          contexts: {
+            audioSession: {
+              isActive: isAudioSessionActive,
+              callStatus: callStatus,
+            },
+          },
+        });
         Alert.alert('오디오 초기화 실패', '오디오 기능을 사용할 수 없습니다. 앱을 재시작해주세요.');
       }
     };
@@ -132,6 +146,14 @@ const CallPage: React.FC = () => {
         //console.log('✅ CallPage: 오디오 세션 비활성화 성공');
       } catch (error) {
         console.error('⚠️ CallPage: 오디오 세션 비활성화 실패:', error);
+        // Sentry에 에러 전송 (심각하지 않은 에러이므로 captureMessage 사용)
+        Sentry.captureMessage('오디오 세션 비활성화 실패', {
+          level: 'warning',
+          tags: {
+            component: 'CallPage',
+            action: 'deactivateAudioSession',
+          },
+        });
       }
     };
   }, []);
@@ -166,6 +188,20 @@ const CallPage: React.FC = () => {
       console.log('✅ 오디오 세션 복구 성공');
     } catch (error) {
       console.error('❌ 오디오 세션 복구 실패:', error);
+      // Sentry에 복구 실패 에러 전송
+      Sentry.captureException(error, {
+        tags: {
+          component: 'CallPage',
+          action: 'handleAudioSessionError',
+          severity: 'critical',
+        },
+        contexts: {
+          recovery: {
+            attempt: 'audio_session_recovery',
+            previousState: isAudioSessionActive,
+          },
+        },
+      });
       Alert.alert('오디오 오류', '오디오 기능에 문제가 발생했습니다. 앱을 재시작해주세요.', [
         { text: '확인' },
       ]);
@@ -325,6 +361,18 @@ const CallPage: React.FC = () => {
     } catch (e: any) {
       if (!e.userCancelled) {
         console.error('결제 중 오류 발생:', e);
+        // 결제 에러를 Sentry에 전송
+        Sentry.captureException(e, {
+          tags: {
+            component: 'CallPage',
+            action: 'handlePayment',
+            severity: 'high',
+          },
+          extra: {
+            minutes,
+            userCancelled: e.userCancelled,
+          },
+        });
         Alert.alert('결제 오류', '결제 처리 중 문제가 발생했습니다. 다시 시도해주세요.');
       }
     } finally {

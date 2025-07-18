@@ -125,7 +125,7 @@ const CookieAvatar = (props: CookieAvatarProps) => {
                 elevation: 5,
                 opacity: !isChargeDisabled ? 1 : 0.5,
               }}>
-              <Text style={{ fontSize: 12 }}>📞</Text>
+              <Text style={{ fontSize: 12 }}>⚠️</Text>
               <Text
                 style={{
                   color: !isChargeDisabled ? '#333' : '#ffffff',
