@@ -95,13 +95,13 @@ import {
   RewardedAdEventType,
 } from 'react-native-google-mobile-ads';
 import Constants from 'expo-constants';
-import { getUserInfo } from '../../../apis/setting';
+import { getUserInfo } from '@apis/setting';
 import Animated, { useAnimatedStyle, withTiming, interpolate } from 'react-native-reanimated';
 //import adUnitId from '../../../utils/advertise'; //앱 시작 시 결정된 값
-import { useEmojiPanel } from '../../../hooks/useEmojiPanel';
-import { useSelectedEmoji } from '../../../hooks/useSelectedEmoji';
-import NewEmojiPanel from '../../../components/emoji-panel/NewEmojiPanel';
-import AdMobBanner from '../../../components/ads/AdmobBanner';
+import { useEmojiPanel } from '@hooks/useEmojiPanel';
+import { useSelectedEmoji } from '@hooks/useSelectedEmoji';
+import NewEmojiPanel from '@components/emoji-panel/NewEmojiPanel';
+import AdMobBanner from '@components/ads/AdMobBanner';
 const userName = getUserNickname() ?? 'Test_remind_empty';
 const appVariant = Constants.expoConfig?.extra?.appVariant;
 const isProductionOrStaging = appVariant === 'production' || appVariant === 'staging';
