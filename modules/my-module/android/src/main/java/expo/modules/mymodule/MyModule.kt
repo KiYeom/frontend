@@ -21,6 +21,7 @@ class MyModule : Module() {
   }
   @Volatile private var micState = MicState.IDLE
   @Volatile private var waitingForPrebuffer = true
+  @Volatile private var audioSessionActive = false
   private val BUF_PER_SEC = 15
   private val sampleRate = 24000
   private val channels = 1
@@ -30,6 +31,8 @@ class MyModule : Module() {
 
   private var audioTrack: AudioTrack? = null
   private var audioRecord: AudioRecord? = null
+  private var audioManager: AudioManager? = null 
+  private var originalAudioMode: Int = AudioManager.MODE_NORMAL  
   private var isPlaying = false
   private var isFirstBlock = true
   private var silenceFramesGenerated = 0
@@ -71,8 +74,84 @@ class MyModule : Module() {
     Function("playPCMBuffer") { data: ByteArray -> playPCMBuffer(data) }
     Function("pauseRealtimePlayback") { pauseRealtimePlayback() }
     Function("resumeRealtimePlayback") { resumeRealtimePlayback() }
+    Function("activateAudioSession") { activateAudioSession() }
+    Function("deactivateAudioSession") { deactivateAudioSession() }
+    Function("checkMicrophonePermission") { checkMicrophonePermission() }
     Function("hello") { "Hello world! 👋" }
+
+    OnCreate {
+      // ✅ AudioManager 초기화만 하고 세션은 활성화하지 않음
+      audioManager = appContext.reactContext?.getSystemService(Context.AUDIO_SERVICE) as? AudioManager
+      Log.d("MyModule", "🔧 MyModule 생성됨 (오디오 세션은 아직 비활성)")
+    }
   }
+
+   // ✅ 오디오 세션 활성화
+  private fun activateAudioSession() {
+    if (audioSessionActive) {
+      Log.w("MyModule", "⚠️ 오디오 세션이 이미 활성화됨")
+      return
+    }
+    
+    try {
+      audioManager?.let { manager ->
+        // 현재 오디오 모드 저장
+        originalAudioMode = manager.mode
+        
+        // 통화 모드로 설정 (에코 캔슬레이션 등 활성화)
+        manager.mode = AudioManager.MODE_IN_COMMUNICATION
+        
+        // 스피커폰 설정 (선택적)
+        manager.isSpeakerphoneOn = true
+        
+        audioSessionActive = true
+        Log.d("MyModule", "✅ 오디오 세션 활성화 완료")
+      }
+    } catch (e: Exception) {
+      Log.e("MyModule", "❌ 오디오 세션 활성화 실패: ${e.message}")
+    }
+  }
+
+  // ✅ 오디오 세션 비활성화
+  private fun deactivateAudioSession() {
+    if (!audioSessionActive) {
+      Log.w("MyModule", "⚠️ 오디오 세션이 이미 비활성화됨")
+      return
+    }
+    
+    // 진행 중인 작업 정리
+    if (isPlaying) {
+      stopRealtimePlayback()
+    }
+    if (micState == MicState.RECORDING) {
+      stopRecording()
+    }
+    
+    try {
+      audioManager?.let { manager ->
+        // 원래 오디오 모드로 복원
+        manager.mode = originalAudioMode
+        manager.isSpeakerphoneOn = false
+        
+        audioSessionActive = false
+        Log.d("MyModule", "✅ 오디오 세션 비활성화 완료")
+      }
+    } catch (e: Exception) {
+      Log.e("MyModule", "⚠️ 오디오 세션 비활성화 실패: ${e.message}")
+    }
+  }
+
+  // ✅ 마이크 권한 확인
+  private fun checkMicrophonePermission(): String {
+    val context = appContext.reactContext ?: return "denied"
+    
+    return when {
+      context.checkSelfPermission(android.Manifest.permission.RECORD_AUDIO) == 
+        PackageManager.PERMISSION_GRANTED -> "granted"
+      else -> "denied"
+    }
+  }
+
 
   private fun hasRecordAudioPermission(): Boolean {
     val context = appContext.reactContext
@@ -82,9 +161,14 @@ class MyModule : Module() {
 
   private fun startRealtimePlayback() {
     Log.d("MyModule", "▶️ startRealtimePlayback() 호출됨")
+
+    // ✅ 오디오 세션이 비활성화되어 있으면 활성화
+    if (!audioSessionActive) {
+      activateAudioSession()
+    }
     muteMicrophone()
 
-    // ✅ AudioTrack만 초기화하고 재생은 하지 않음
+    // AudioTrack만 초기화하고 재생은 하지 않음
     val bufferSize = AudioTrack.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT)
     val actualBufferSize = maxOf(bufferSize, sampleRate / 10)
 
@@ -97,13 +181,17 @@ class MyModule : Module() {
       AudioTrack.MODE_STREAM
     )
 
-    // ✅ 재생은 버퍼가 충분히 쌓일 때까지 대기
+    //재생은 버퍼가 충분히 쌓일 때까지 대기
     isPlaying = false
     waitingForPrebuffer = true
   }
 
   private fun resumeRealtimePlayback() {
     Log.d("MyModule", "🔄 resumeRealtimePlayback() 시작")
+    // ✅ 오디오 세션 확인
+    if (!audioSessionActive) {
+      activateAudioSession()
+    }
     audioTrack?.play()
     val hasAudioBuffers = taggedBufferQueue.any { !it.isSilent }
     Log.d("MyModule", "📊 버퍼 상태 - 음성 버퍼 존재: $hasAudioBuffers, 큐 크기: ${taggedBufferQueue.size}")
@@ -182,10 +270,15 @@ class MyModule : Module() {
       silenceFramesGenerated = 0
       Log.d("MyModule", "📡 ${if (isSilent) "무음" else "음성"} 버퍼 추가됨 (${data.size} bytes) - 현재 큐 크기: ${pcmBufferQueue.size}")
 
-      // ✅ 버퍼가 충분히 쌓이고 대기 중이면 자동 시작
+      // 버퍼가 충분히 쌓이고 대기 중이면 자동 시작
       if (waitingForPrebuffer && pcmBufferQueue.size >= minBuffersToStart) {
         waitingForPrebuffer = false
         Log.d("MyModule", "✅ 버퍼 ${pcmBufferQueue.size}개 확보 → 재생 시작")
+
+        // ✅ 오디오 세션 확인
+        if (!audioSessionActive) {
+          activateAudioSession()
+        }
         
         // AudioTrack 준비 및 재생 시작
         audioTrack?.play()
@@ -371,6 +464,11 @@ class MyModule : Module() {
     if (micState == MicState.RECORDING) {
       Log.d("MyModule", "⚠️ 이미 논음 중")
       return
+    }
+
+    // ✅ 오디오 세션 확인
+    if (!audioSessionActive) {
+      activateAudioSession()
     }
 
     val minBuffer = AudioRecord.getMinBufferSize(16000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT)

@@ -379,6 +379,7 @@ const CallPage: React.FC = () => {
           isReceivingAudio={isReceivingAudio}
           waveform={waveform}
           isActive={isActive}
+          isChargeDisabled={!canCharge}
         />
         <View
           style={{

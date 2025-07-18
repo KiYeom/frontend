@@ -25,12 +25,14 @@ type CookieAvatarProps = {
   isReceivingAudio?: boolean;
   waveform?: number[];
   isActive?: boolean;
+  isChargeDisabled?: boolean;
 };
 
 const CookieAvatar = (props: CookieAvatarProps) => {
-  const { responseText, isReceivingAudio, waveform, isActive } = props;
+  const { responseText, isReceivingAudio, waveform, isActive, isChargeDisabled } = props;
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [issueDescription, setIssueDescription] = useState('');
+  console.log('CookieAvatar props:', props);
 
   // 기기 정보 가져오기
   const deviceInfo = `${Device.brand} ${Device.modelName || Device.deviceName || ''}`;
@@ -63,6 +65,14 @@ const CookieAvatar = (props: CookieAvatarProps) => {
     }
   };
 
+  // 정보 아이콘 핸들러
+  const handleInfoPress = () => {
+    console.log('정보 아이콘 클릭됨', isChargeDisabled);
+    if (!isChargeDisabled) {
+      setShowInfoModal(true);
+    }
+  };
+
   return (
     <View
       style={{
@@ -83,36 +93,42 @@ const CookieAvatar = (props: CookieAvatarProps) => {
           {/* 제목과 정보 아이콘을 포함하는 컨테이너 */}
           <View
             style={{
-              flexDirection: 'row',
+              flexDirection: 'column',
               alignItems: 'center',
               paddingBottom: 10,
               gap: 8,
             }}>
-            <Text
-              style={{
-                color: 'white',
-                fontSize: 17,
-                fontFamily: 'Pretendard-SemiBold',
-              }}>
-              리마인드 쿠키
-            </Text>
             <TouchableOpacity
-              onPress={() => setShowInfoModal(true)}
+              onPress={handleInfoPress}
+              disabled={isChargeDisabled}
               style={{
-                width: 20,
-                height: 20,
-                borderRadius: 10,
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                justifyContent: 'center',
+                backgroundColor: !isChargeDisabled
+                  ? 'rgba(255, 255, 255, 0.9)'
+                  : 'rgba(255, 255, 255, 0.3)',
+                paddingHorizontal: 12,
+                paddingVertical: 6,
+                borderRadius: 16,
+                flexDirection: 'row',
                 alignItems: 'center',
+                gap: 4,
+                shadowColor: '#000',
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowOpacity: 0.25,
+                shadowRadius: 3.84,
+                elevation: 5,
+                opacity: !isChargeDisabled ? 1 : 0.5,
               }}>
+              <Text style={{ fontSize: 12 }}>📞</Text>
               <Text
                 style={{
-                  color: 'white',
+                  color: !isChargeDisabled ? '#333' : '#ffffff',
                   fontSize: 12,
-                  fontFamily: 'Pretendard-Bold',
+                  fontFamily: 'Pretendard-SemiBold',
                 }}>
-                i
+                전화 가이드 (필독)
               </Text>
             </TouchableOpacity>
           </View>
@@ -127,12 +143,21 @@ const CookieAvatar = (props: CookieAvatarProps) => {
               justifyContent: 'center',
               alignItems: 'center',
               zIndex: 1,
+              marginBottom: 10,
             }}>
             <Image
               source={require('@assets/images/callcookie.png')}
               style={{ width: 140, height: 120 }}
             />
           </View>
+          <Text
+            style={{
+              color: 'white',
+              fontSize: 17,
+              fontFamily: 'Pretendard-SemiBold',
+            }}>
+            리마인드 쿠키
+          </Text>
         </View>
       </View>
 
