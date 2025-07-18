@@ -53,6 +53,8 @@ import {
 } from './src/services/inappService';
 import Purchases from 'react-native-purchases';
 import { Provider } from 'react-redux';
+import mobileAds from 'react-native-google-mobile-ads';
+
 /*const { APP_ENV } = Constants.expoConfig?.extra || {};
 // 환경 확인
 const isProduction = APP_ENV === 'production';
@@ -80,7 +82,33 @@ NewInitializeInApp();
 amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE, undefined, {
   minIdLength: 1,
 });
-amplitude.track('hi hello');
+
+// Mobile Ads 초기화
+mobileAds()
+  .initialize()
+  .then((adapterStatuses) => {
+    // 초기화 완료
+    //console.log('Mobile Ads initialized successfully');
+    // 각 어댑터의 상태를 확인
+    /*Object.keys(adapterStatuses).forEach((adapterName) => {
+      const status = adapterStatuses[adapterName];
+      //console.log(`Adapter ${adapterName}: ${status.state} - ${status.description}`);
+    });*/
+  })
+  .catch((error) => {
+    console.error('Mobile Ads initialization failed:', error);
+    Sentry.captureException(new Error('Mobile Ads initialization failed'), {
+      level: 'error',
+      extra: {
+        error: error.message,
+        adapterStatuses: error.adapterStatuses,
+      },
+      tags: {
+        component: 'MobileAds',
+        errorType: 'initialization',
+      },
+    });
+  });
 
 SplashScreen.preventAutoHideAsync();
 const RootStack = createNativeStackNavigator();
