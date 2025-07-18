@@ -7,6 +7,7 @@ public class MyModule: Module {
   // MARK: - Audio session & engines
   private let audioSession = AVAudioSession.sharedInstance()
   private var sessionConfigured = false          // ✅ 세션은 최초 1회만 설정
+   private var sessionActive = false  // 세션 활성화 상태 추적
   private let sampleRate: Double = 24_000        // 원하는 출력(재생) 샘플레이트
   private let channels: UInt32 = 1
 
@@ -59,28 +60,65 @@ public class MyModule: Module {
     Function("resumeRealtimePlayback") { self.resumeRealtimePlayback() }
     Function("streamPCMData") { (data: Data) in self.streamPCMData(data) }
     Function("playPCMBuffer") { (data: Data) in self.playPCMBuffer(data) }
+    Function("activateAudioSession") { self.activateAudioSession() }
+    Function("deactivateAudioSession") { self.deactivateAudioSession() }
 
     // 최초 생성 시 단 한 번 오디오 세션 구성 & 노티 등록
     OnCreate {
-      do {
-        try self.setupAudioSessionIfNeeded()
-      } catch {
-        print("❌ AudioSession 초기화 실패: \(error)")
-      }
-
       NotificationCenter.default.addObserver(
         self,
         selector: #selector(self.handleAudioRouteChange(_:)),
         name: AVAudioSession.routeChangeNotification,
         object: nil
       )
+      print("🔧 MyModule 생성됨 (AudioSession은 아직 비활성)")
     }
   }
 
   deinit {
     pauseRealtimePlayback()
     stopRecording()
+    deactivateAudioSession()
     NotificationCenter.default.removeObserver(self, name: AVAudioSession.routeChangeNotification, object: nil)
+  }
+
+  func activateAudioSession() {
+    guard !sessionActive else {
+      print("⚠️ AudioSession 이미 활성화됨")
+      return
+    }
+    
+    do {
+      try setupAudioSessionIfNeeded()
+      try audioSession.setActive(true)
+      sessionActive = true
+      print("✅ AudioSession 활성화 완료")
+    } catch {
+      print("❌ AudioSession 활성화 실패: \(error)")
+    }
+  }
+
+  func deactivateAudioSession() {
+    guard sessionActive else {
+      print("⚠️ AudioSession 이미 비활성화됨")
+      return
+    }
+    
+    // 진행 중인 작업 정리
+    if isPlaying {
+      stopRealtimePlayback()
+    }
+    if audioEngine.isRunning {
+      stopRecording()
+    }
+    
+    do {
+      try audioSession.setActive(false, options: .notifyOthersOnDeactivation)
+      sessionActive = false
+      print("✅ AudioSession 비활성화 완료")
+    } catch {
+      print("⚠️ AudioSession 비활성화 실패 (다른 앱이 사용 중일 수 있음): \(error)")
+    }
   }
 
   // MARK: - AudioSession (one‑time)
@@ -92,7 +130,6 @@ public class MyModule: Module {
                                  options: [.defaultToSpeaker, .allowBluetooth, .mixWithOthers])
     try audioSession.setPreferredSampleRate(sampleRate)
     try audioSession.setPreferredIOBufferDuration(0.005)
-    try audioSession.setActive(true)               // 👉 단 한 번만 활성화
 
     sessionConfigured = true
     print("🔧 AudioSession configured once (actual SR: \(audioSession.sampleRate))")
@@ -100,6 +137,7 @@ public class MyModule: Module {
 
   // MARK: - Route‑change handler
   @objc private func handleAudioRouteChange(_ notification: Notification) {
+    guard sessionActive else { return } // 세션이 활성화되지 않았으면 무시
     guard let userInfo = notification.userInfo,
           let reasonValue = userInfo[AVAudioSessionRouteChangeReasonKey] as? UInt,
           let reason = AVAudioSession.RouteChangeReason(rawValue: reasonValue) else { return }
@@ -125,7 +163,9 @@ public class MyModule: Module {
 
       DispatchQueue.main.async {
         do {
-          try self.setupAudioSessionIfNeeded()   // 이미 구성됐다면 no‑op
+          if !self.sessionActive {
+            self.activateAudioSession()
+          }
 
           let inputNode = self.audioEngine.inputNode
           try? inputNode.setVoiceProcessingEnabled(true)
@@ -179,7 +219,10 @@ public class MyModule: Module {
   func startRealtimePlayback() {
     DispatchQueue.main.async {
       do {
-        try self.setupAudioSessionIfNeeded()     // 이미 구성됐다면 no‑op
+        // 재생 시작 시 세션 활성화
+        if !self.sessionActive {
+          self.activateAudioSession()
+        }
         // 🎯[업데이트] 최초 시작 시 무음 버퍼 한 개 삽입 (24 kHz 기준 1/BUF_PER_SEC 초 분량)
         let silenceSampleCount = Int(self.sampleRate / Double(BUF_PER_SEC))
         let silenceData = Data(count: silenceSampleCount * MemoryLayout<Int16>.size)
@@ -239,7 +282,9 @@ public class MyModule: Module {
     print("▶️ 실시간 재생 재개 시도")
     DispatchQueue.main.async {
       do {
-        try self.setupAudioSessionIfNeeded()   // no‑op if already done
+        if !self.sessionActive {
+          self.activateAudioSession()
+        }
         self.prepareOutputEngine()
         try self.playerEngine.start()
         self.isPlaying = true

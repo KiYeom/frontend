@@ -52,6 +52,8 @@ declare class MyModule extends NativeModule<MyModuleEvents> {
   playPCMBuffer(pcmBuffer: Uint8Array): void;
   pauseRealtimePlayback(): void;
   resumeRealtimePlayback(): void;
+  activateAudioSession(): void;
+  deactivateAudioSession(): void;
 }
 
 // ✅ 모듈 불러오기

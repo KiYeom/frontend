@@ -212,29 +212,6 @@ const CookieAvatar = (props: CookieAvatarProps) => {
               paddingTop: 20,
               paddingBottom: 40,
             }}>
-            {/* 기본 안내사항 */}
-            <View style={{ marginBottom: 24 }}>
-              <Text
-                style={{
-                  fontSize: 18,
-                  fontFamily: 'Pretendard-SemiBold',
-                  color: '#333',
-                  marginBottom: 16,
-                }}>
-                💡 이용 팁
-              </Text>
-
-              <View style={{ gap: 12 }}>
-                <Text style={styles.guideText}>• 조용한 환경에서 진행하시기를 권장드립니다</Text>
-
-                <Text style={styles.guideText}>• 마이크에 가까이 대고 또렷하게 말씀해주세요</Text>
-
-                <Text style={styles.guideText}>• 쿠키가 대답을 마칠 때까지 기다려주세요</Text>
-
-                <Text style={styles.guideText}>• 네트워크 연결 상태를 확인해주세요</Text>
-              </View>
-            </View>
-
             {/* 문제 해결 */}
             <View style={{ marginBottom: 24 }}>
               <Text
@@ -244,7 +221,7 @@ const CookieAvatar = (props: CookieAvatarProps) => {
                   color: '#333',
                   marginBottom: 16,
                 }}>
-                🔧 문제 해결
+                ☘️ 이용 안내
               </Text>
 
               <View style={{ gap: 12 }}>
@@ -294,6 +271,29 @@ const CookieAvatar = (props: CookieAvatarProps) => {
                 </Text>
 
                 <Text style={styles.guideText}>• 앱을 완전히 종료 후 다시 실행해보세요</Text>
+              </View>
+            </View>
+
+            {/* 기본 안내사항 */}
+            <View style={{ marginBottom: 24 }}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontFamily: 'Pretendard-SemiBold',
+                  color: '#333',
+                  marginBottom: 16,
+                }}>
+                💡 쿠키와의 전화 연결 환경
+              </Text>
+
+              <View style={{ gap: 12 }}>
+                <Text style={styles.guideText}>• 조용한 환경에서 진행하시기를 권장드립니다</Text>
+
+                <Text style={styles.guideText}>• 마이크에 가까이 대고 또렷하게 말씀해주세요</Text>
+
+                <Text style={styles.guideText}>• 쿠키가 대답을 마칠 때까지 기다려주세요</Text>
+
+                <Text style={styles.guideText}>• 네트워크 연결 상태를 확인해주세요</Text>
               </View>
             </View>
 

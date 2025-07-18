@@ -1,6 +1,5 @@
 //간단히 view와 text가 있는 페이지
 import React, { useEffect, useState, useRef } from 'react';
-import { Image } from 'expo-image';
 import {
   View,
   Text,
@@ -30,6 +29,7 @@ import CallTimer from './components/CallTimer';
 import CookieAvatar from './components/CookieAvatar';
 import PaymentModal from './components/PaymentModal';
 import { PurchasesOffering } from 'react-native-purchases';
+import MyModule from '../../../modules/my-module/src/MyModule';
 const CallControls: React.FC<{
   canStart: boolean;
   canPause: boolean;
@@ -106,7 +106,10 @@ const CallPage: React.FC = () => {
     setTotalTime,
     setRemainingTime,
   } = handlers;
-  // gemini_audio 수신 상태 관리
+  //마이크 권한 상
+  const [micPermissionStatus, setMicPermissionStatus] = useState<
+    'undetermined' | 'granted' | 'denied'
+  >('undetermined');
   const [isReceivingAudio, setIsReceivingAudio] = useState(false);
   const audioTimeoutRef = useRef<NodeJS.Timeout>();
   const syncRetryCount = useRef<number>(0);
@@ -128,6 +131,75 @@ const CallPage: React.FC = () => {
   // 결제 로딩 상태 추가
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [isAudioSessionActive, setIsAudioSessionActive] = useState(false);
+
+  useEffect(() => {
+    const activateSession = async () => {
+      try {
+        MyModule.activateAudioSession();
+        setIsAudioSessionActive(true);
+        console.log('✅ CallPage: 오디오 세션 활성화 성공');
+      } catch (error) {
+        console.error('❌ CallPage: 오디오 세션 활성화 실패:', error);
+        Alert.alert('오디오 초기화 실패', '오디오 기능을 사용할 수 없습니다. 앱을 재시작해주세요.');
+      }
+    };
+
+    activateSession();
+
+    return () => {
+      try {
+        MyModule.deactivateAudioSession();
+        setIsAudioSessionActive(false);
+        console.log('✅ CallPage: 오디오 세션 비활성화 성공');
+      } catch (error) {
+        console.error('⚠️ CallPage: 오디오 세션 비활성화 실패:', error);
+      }
+    };
+  }, []);
+
+  // 통화 종료 시 오디오 세션 비활성화
+  useEffect(() => {
+    if (callStatus === CallStatus.End) {
+      // 통화가 완전히 종료되면 잠시 후 오디오 세션 비활성화
+      const timer = setTimeout(() => {
+        if (isAudioSessionActive) {
+          MyModule.deactivateAudioSession();
+          setIsAudioSessionActive(false);
+          console.log('📞 통화 종료: 오디오 세션 비활성화');
+        }
+      }, 1000); // 1초 후 비활성화
+
+      return () => clearTimeout(timer);
+    }
+  }, [callStatus, isAudioSessionActive]);
+
+  // 5. 오류 발생 시 복구 시도
+  const handleAudioSessionError = async () => {
+    console.log('🔧 오디오 세션 복구 시도...');
+    try {
+      // 기존 세션 정리
+      MyModule.deactivateAudioSession();
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      // 세션 재활성화
+      MyModule.activateAudioSession();
+      setIsAudioSessionActive(true);
+      console.log('✅ 오디오 세션 복구 성공');
+    } catch (error) {
+      console.error('❌ 오디오 세션 복구 실패:', error);
+      Alert.alert('오디오 오류', '오디오 기능에 문제가 발생했습니다. 앱을 재시작해주세요.', [
+        { text: '확인' },
+      ]);
+    }
+  };
+  const handleConnectWithSessionCheck = async () => {
+    if (!isAudioSessionActive) {
+      console.log('⚠️ 오디오 세션이 비활성화 상태, 재활성화 시도');
+      await handleAudioSessionError();
+    }
+    handleConnect();
+  };
 
   // 백엔드와 동기화하는 함수
   const syncWithBackend = async (optimisticTotalTime: number, optimisticRemainingTime: number) => {
@@ -325,7 +397,7 @@ const CallPage: React.FC = () => {
           canPause={canPause}
           canResume={canResume}
           canDisconnect={canDisconnect}
-          onConnect={handleConnect}
+          onConnect={handleConnectWithSessionCheck}
           onPause={handlePause}
           onResume={handleResume}
           onDisconnect={handleDisconnect}
