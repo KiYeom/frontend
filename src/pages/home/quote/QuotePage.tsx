@@ -86,6 +86,7 @@ const Quote: React.FC = () => {
     null,
   );
   const [selectedImageSource, setSelectedImageSource] = React.useState<any | null>(null);
+  console.log('seectedImageSource', selectedImageSource);
   if (status === null) {
     requestPermission();
   } else {
@@ -96,18 +97,22 @@ const Quote: React.FC = () => {
     const initializeQuote = async () => {
       try {
         const response = await getUserCanOpenQuote();
+        console.log('API 응답:', response);
         //const response = { result: false }; // 테스트용으로 항상 false로 설정
         //deletePhotoCardData();
 
         //1. 오늘 열어본 적 없는 경우
-        if (response && response.result) {
+        if (response && !response.result) {
           console.log('오늘 열어본 적 없음');
+          const newData = createAndSaveNewData();
+          setSelectedLyricObject(newData.lyric);
+          setSelectedImageSource(newData.image);
           setUiMode(QuoteUiMode.BEFORE_OPEN_COOKIE);
           Analytics.watchBeforeOpenHappyLyricsImageScreen();
           return;
         }
         //오늘 이미 열어본 경우
-        if (response && !response.result) {
+        if (response && response.result) {
           const savedData = loadSavedData();
           if (savedData) {
             console.log('저장된 데이터가 있음', savedData);
