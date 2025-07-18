@@ -922,4 +922,46 @@ export default class Analytics {
   public static clickImagePickerErrorButton = (errorMessage: any, errorCode: any): void => {
     this.sendEvent('이미지 첨부 에러 발생', 'imagePickerErrorButton', { errorMessage, errorCode });
   };
+  //전화 화면
+  //전화 통화 화면 진입
+  public static watchTabVoiceScreen = (): void => {
+    this.sendEvent('탭-전화 화면 진입', 'tabVoiceScreen');
+  };
+  //시간권 충전하기 버튼 클릭
+  public static clickTabVoiceChargeButton = (): void => {
+    this.sendEvent('탭-전화 화면 - 시간권 충전하기 버튼 클릭', 'tabVoiceChargeButton');
+  };
+  //통화 시간 충전 모달 진입
+  public static watchTabVoiceChargeModal = (): void => {
+    this.sendEvent('전화화면 - 시간권 충전 모달 진입', 'tabVoiceChargeModal');
+  };
+  //시간 충전 버튼 클릭 (파라미터 : 분 단위)
+  public static clickVoiceChargeButtonByMinute = (minute: number): void => {
+    this.sendEvent('시간권 충전 모달 - 결제 버튼 클릭', 'tabVoiceChargeButtonByMinute', { minute });
+  };
+  //통화 컨트롤 버튼 클릭 (통화 시작, 일시 정지, 다시 시작, 통화 종료)
+  public static clickVoiceControlButton = (
+    action: 'call-start' | 'call-pause' | 'call-resume' | 'call-end',
+  ): void => {
+    this.sendEvent('탭-전화 화면 - 통화 컨트롤 버튼 클릭', 'ClickVoiceControlButton', { action });
+  };
+  //공지사항 버튼 클릭
+  public static clickTabVoiceNoticeButton = (): void => {
+    this.sendEvent('탭-전화 화면 - 공지사항 버튼 클릭', 'tabVoiceNoticeButton');
+  };
+  //공지사항 X 버튼 클릭
+  public static clickTabVoiceNoticeCloseButton = (): void => {
+    this.sendEvent('탭-전화 화면 - 공지사항 X 버튼 클릭', 'tabVoiceNoticeCloseButton');
+  };
+  //공지사항 문의 글 복사하기 버튼 클릭
+  public static clickTabVoiceNoticeCopyButton = (): void => {
+    this.sendEvent(
+      '탭-전화 화면 - 공지사항 - 문의 글 복사하기 버튼 클릭',
+      'tabVoiceNoticeCopyButton',
+    );
+  };
+  //공지사항 문의하기 버튼 클릭
+  public static clickTabVoiceNoticeInquiryButton = (): void => {
+    this.sendEvent('탭-전화 화면 - 공지사항 - 문의하기 버튼 클릭', 'tabVoiceNoticeInquiryButton');
+  };
 }

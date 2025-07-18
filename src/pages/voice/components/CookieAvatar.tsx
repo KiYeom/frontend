@@ -17,6 +17,7 @@ import { getUserNickname } from '../../../utils/storageUtils';
 import * as WebBrowser from 'expo-web-browser';
 import * as Device from 'expo-device';
 import palette from '@assets/styles/theme';
+import Analytics from '../../../utils/analytics';
 
 const userNickname = getUserNickname() || '';
 
@@ -49,11 +50,13 @@ const CookieAvatar = (props: CookieAvatarProps) => {
   // 클립보드에 복사
   const copyToClipboard = () => {
     Clipboard.setString(getIssueTemplate());
+    Analytics.clickTabVoiceNoticeCopyButton();
     Alert.alert('복사 완료', '문의 내용이 클립보드에 복사되었습니다.');
   };
 
   // 문의 페이지로 이동
   const openSupportPage = async () => {
+    Analytics.clickTabVoiceNoticeInquiryButton();
     try {
       if (Platform.OS === 'android') {
         await Linking.openURL('https://j2wk7.channel.io/home');
@@ -68,6 +71,7 @@ const CookieAvatar = (props: CookieAvatarProps) => {
   // 정보 아이콘 핸들러
   const handleInfoPress = () => {
     console.log('정보 아이콘 클릭됨', isChargeDisabled);
+    Analytics.clickTabVoiceNoticeButton();
     if (!isChargeDisabled) {
       setShowInfoModal(true);
     }
@@ -211,7 +215,10 @@ const CookieAvatar = (props: CookieAvatarProps) => {
             </Text>
 
             <TouchableOpacity
-              onPress={() => setShowInfoModal(false)}
+              onPress={() => {
+                Analytics.clickTabVoiceNoticeCloseButton();
+                setShowInfoModal(false);
+              }}
               style={{
                 width: 32,
                 height: 32,

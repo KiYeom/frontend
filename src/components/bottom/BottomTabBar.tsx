@@ -59,7 +59,7 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
 
           //탭 클릭 시 이동
           if (!isFocused && !event.defaultPrevented) {
-            //Analytics.clickTabButton(label);
+            Analytics.clickTabButton(label);
             if (route.name === TabScreenName.NewChat) {
               navigation.navigate(RootStackName.HomeStackNavigator, {
                 screen: HomeStackName.NewChat,

@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, Modal, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import palette from '@assets/styles/theme';
 import { PAYMENT_OPTIONS } from '../types/call.types';
+import Analytics from '../../../utils/analytics';
 type PaymentModalProps = {
   visible: boolean;
   onClose: () => void;
@@ -82,6 +83,7 @@ const PaymentModal = (props: PaymentModalProps) => {
                   }}
                   onPress={() => {
                     console.log(`${option.label} 결제 시작 - ${option.price}원`);
+                    Analytics.clickVoiceChargeButtonByMinute(option.minutes);
                     onPayment(option.minutes);
                     onClose();
                   }}>

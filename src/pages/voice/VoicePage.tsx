@@ -1,18 +1,6 @@
 //간단히 view와 text가 있는 페이지
 import React, { useEffect, useState, useRef } from 'react';
-import {
-  View,
-  Text,
-  Button,
-  TouchableOpacity,
-  ScrollView,
-  Modal,
-  ActivityIndicator,
-  PermissionsAndroid,
-  Platform,
-  Alert,
-  Linking,
-} from 'react-native';
+import { View, Text, PermissionsAndroid, Platform, Alert, Linking } from 'react-native';
 import { useAudioCall } from '../../hooks/useAudioCall';
 import { CallStatus } from '../../hooks/useAudioCall';
 import Header from '../../components/header/Header';
@@ -24,12 +12,12 @@ import { AudioBars } from './MicLevelBar';
 import Purchases from 'react-native-purchases';
 import { getCurrentOffering, updatePurchaseStatus } from '../../services/inappService';
 import { getRemainingTime } from '../../apis/voice';
-import { getUserNickname } from '../../utils/storageUtils';
 import CallTimer from './components/CallTimer';
 import CookieAvatar from './components/CookieAvatar';
 import PaymentModal from './components/PaymentModal';
 import { PurchasesOffering } from 'react-native-purchases';
 import MyModule from '../../../modules/my-module/src/MyModule';
+import Analytics from '../../utils/analytics';
 const CallControls: React.FC<{
   canStart: boolean;
   canPause: boolean;
@@ -55,20 +43,10 @@ const CallControls: React.FC<{
     { name: 'call-resume', onPress: onResume, disabled: !canResume },
     { name: 'call-end', onPress: onDisconnect, disabled: !canDisconnect },
   ];
-  const [hasPurchased, setHasPurchased] = useState<boolean>(false);
-  const [currentOffering, setCurrentOffering] = useState<PurchasesOffering | null>(null);
+
   //구매 상태에 따라 버튼 변경
   useEffect(() => {
-    const setup = async () => {
-      const offering = await getCurrentOffering();
-      setCurrentOffering(offering); //판매 상품
-      const purchased = await updatePurchaseStatus();
-      setHasPurchased(purchased); //구매 상태 (true/false) 설정
-      console.log('offering:', offering);
-      //offeringIdentifier : "emoji_offering"
-      console.log('구매 상태:', purchased);
-    };
-    setup().catch(console.log);
+    Analytics.watchTabVoiceScreen(); //홈 화면 진입
   }, []);
 
   return (
@@ -369,7 +347,11 @@ const CallPage: React.FC = () => {
         <CallTimer
           totalTime={totalTime}
           remainingTime={remainingTime}
-          onChargePress={() => setIsPaymentModalVisible(true)}
+          onChargePress={() => {
+            //console.log('충전 버튼 클릭');
+            Analytics.clickTabVoiceChargeButton();
+            setIsPaymentModalVisible(true);
+          }}
           isLoading={isPaymentLoading}
           isSyncing={isSyncing}
           isChargeDisabled={!canCharge}

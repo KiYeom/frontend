@@ -15,7 +15,7 @@ import {
   heartbeatAudioCall,
   getRemainingTime,
 } from '@apis/voice';
-
+import Analytics from '../utils/analytics';
 export enum CallStatus {
   Idle = 'idle',
   Start = 'start',
@@ -276,6 +276,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
 
   // Handler functions
   const handleConnect = useCallback(async () => {
+    Analytics.clickVoiceControlButton('call-start');
     const socket = getSocket();
     console.log('🔹 handleConnect 호출:', socket?.connected);
     setCallStatus(CallStatus.CONNECTING);
@@ -306,6 +307,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
   }, [startHeartbeat, startCountdown]);
 
   const handleDisconnect = useCallback(async () => {
+    Analytics.clickVoiceControlButton('call-end');
     try {
       const response = await endAudioCall();
       console.log('✅ handleDisconnect 응답:', response);
@@ -325,6 +327,8 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
 
   const handlePause = useCallback(async () => {
     console.log('handlePause 호출', callStatus);
+    Analytics.clickVoiceControlButton('call-pause');
+
     try {
       const response = await pauseAudioCall();
       console.log('✅ pauseRecording 응답:', response);
@@ -339,6 +343,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
 
   const handleResume = useCallback(async () => {
     console.log('handleResume 호출');
+    Analytics.clickVoiceControlButton('call-resume');
     try {
       const response = await resumeAudioCall();
       console.log('✅ resumeRecording 응답:', response);

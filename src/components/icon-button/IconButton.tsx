@@ -4,6 +4,7 @@ import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { rsHeight, rsWidth } from '../../utils/responsive-size';
 import palette from '../../assets/styles/theme';
 import Icon, { TIconName } from '../icons/icons';
+import Analytics from '../../utils/analytics';
 
 type IconButtonProps = {
   name: TIconName;
