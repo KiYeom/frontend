@@ -1,5 +1,6 @@
 // hooks/useAudioCall.ts
 import { useEffect, useState, useRef, useCallback } from 'react';
+import { Platform } from 'react-native';
 import { EventEmitter } from 'expo-modules-core';
 import MyModule from '../../modules/my-module';
 import { getAccessToken } from '../utils/storageUtils';
@@ -57,6 +58,8 @@ interface AudioCallHandlers {
   setRemainingTime: (seconds: number) => void;
 }
 
+const GAIN_CORRECTION = 20; // 실험적으로 조정, 10~25 정도
+const THRESHOLD = 0.00015; // 0.0001~0.0002
 export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
   // State
   const [waveform, setWaveform] = useState<number[]>([]);
@@ -85,7 +88,9 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
 
     const rms = Math.sqrt(sumSquares / sampleCount);
     const normalized = rms / 32768; // Int16 max value
-    return Math.min(normalized, 1); // 0~1로 정규화
+    const boosted = normalized * GAIN_CORRECTION;
+    return boosted < THRESHOLD ? 0 : Math.min(boosted, 1);
+    //return Math.min(normalized, 1); // 0~1로 정규화
   }
 
   // Refs
@@ -154,6 +159,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
         // 1. 볼륨 계산
         const uint8 = new Uint8Array(pcm);
         const volume = calculateVolume(uint8);
+        //console.log('volume', volume);
         setVolumeLevel(volume);
       } else {
         console.log('❌ 소켓이 연결되지 않았습니다. mic_audio 전송 실패');
@@ -340,9 +346,17 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
       setCallStatus(CallStatus.Resumed);
       startCountdown(); // 카운트다운 재시작
       console.log('⏳ 카운트다운 재시작');
-
-      MyModule.startRecording();
       MyModule.resumeRealtimePlayback();
+      //MyModule.startRecording();
+      // 플랫폼별 처리
+      if (Platform.OS === 'ios') {
+        // iOS는 마이크 수동 시작 필요
+        MyModule.startRecording();
+        MyModule.resumeRealtimePlayback();
+      } else {
+        // Android는 자동 제어에 맡김
+        MyModule.resumeRealtimePlayback();
+      }
     } catch (err) {
       console.error('❌ resumeRecording 실패:', err);
     }

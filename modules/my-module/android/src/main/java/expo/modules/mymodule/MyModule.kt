@@ -89,7 +89,7 @@ class MyModule : Module() {
     val actualBufferSize = maxOf(bufferSize, sampleRate / 10)
 
     audioTrack = AudioTrack(
-      AudioManager.STREAM_VOICE_CALL,
+      AudioManager.STREAM_MUSIC,
       sampleRate,
       AudioFormat.CHANNEL_OUT_MONO,
       AudioFormat.ENCODING_PCM_16BIT,
@@ -103,8 +103,17 @@ class MyModule : Module() {
   }
 
   private fun resumeRealtimePlayback() {
+    Log.d("MyModule", "🔄 resumeRealtimePlayback() 시작")
     audioTrack?.play()
+    val hasAudioBuffers = taggedBufferQueue.any { !it.isSilent }
+    Log.d("MyModule", "📊 버퍼 상태 - 음성 버퍼 존재: $hasAudioBuffers, 큐 크기: ${taggedBufferQueue.size}")
+    // MUTED_MANUAL 상태를 MUTED_AUTO로 변경
+    if (micState == MicState.MUTED_MANUAL || micState == MicState.IDLE) {
+      micState = MicState.MUTED_AUTO
+      Log.d("MyModule", "🔄 micState를 MUTED_AUTO로 변경 (이전: $micState)")
+    }
     if (playbackJob == null || !playbackJob!!.isActive) {
+      Log.d("MyModule", "🎵 새로운 playbackJob 시작")
       isPlaying = true
       playbackJob = CoroutineScope(Dispatchers.IO).launch {
         val frameSize = 1024
@@ -119,13 +128,18 @@ class MyModule : Module() {
         }
       }
     } else {
+      Log.d("MyModule", "♻️ 기존 playbackJob 재사용")
       isPlaying = true
     }
+    Log.d("MyModule", "🎯 startMicAutoController 호출 전 - micAutoControlJob: ${micAutoControlJob?.isActive}, isPlaying: $isPlaying")
+    startMicAutoController()
   }
 
   private fun pauseRealtimePlayback() {
+    Log.d("MyModule", "⏸️ pauseRealtimePlayback() 시작 - 현재 micState: $micState")
     isPlaying = false
     audioTrack?.pause()
+    Log.d("MyModule", "🛑 micAutoControlJob 취소")
     micAutoControlJob?.cancel()
 
     if (micState == MicState.RECORDING) {
@@ -133,6 +147,7 @@ class MyModule : Module() {
       micState = MicState.MUTED_MANUAL
       Log.d("MyModule", "🔚 수동으로 마이크 끝내지기")
     }
+    Log.d("MyModule", "📊 일시정지 시 버퍼 상태 - pcm: ${pcmBufferQueue.size}, tagged: ${taggedBufferQueue.size}")
   }
 
   private fun stopRealtimePlayback() {
@@ -274,7 +289,7 @@ class MyModule : Module() {
       val silenceBuffer = ByteArray(silenceSampleCount * 2)
       pcmBufferQueue.offer(silenceBuffer)
       taggedBufferQueue.offer(TaggedAudio(silenceBuffer, true))
-      Log.d("MyModule", "🤫 버퍼 없음 → 무음 추가됨 (${silenceBuffer.size} bytes)")
+      //Log.d("MyModule", "🤫 버퍼 없음 → 무음 추가됨 (${silenceBuffer.size} bytes)")
     }
 
     val nextData = pcmBufferQueue.poll() ?: return
@@ -311,6 +326,11 @@ class MyModule : Module() {
   }
 
   private fun startMicAutoController() {
+    // 기존 Job이 활성화되어 있으면 취소
+    if (micAutoControlJob?.isActive == true) {
+      Log.d("MyModule", "⚠️ 기존 micAutoControlJob 활성화 중 - 취소 후 재시작")
+      micAutoControlJob?.cancel()
+    }
     micAutoControlJob = CoroutineScope(Dispatchers.Default).launch {
       var silentCounter = 0
       val silentThreshold = 5
@@ -321,7 +341,7 @@ class MyModule : Module() {
           Log.d("MyModule", "tagged.isSilent : ${tagged.isSilent}")
           if (tagged.isSilent) {
             silentCounter++
-            Log.d("MyModule", "🤫 무음 감지됨 ($silentCounter / $silentThreshold)")
+            //Log.d("MyModule", "🤫 무음 감지됨 ($silentCounter / $silentThreshold)")
             if (silentCounter >= silentThreshold && micState == MicState.MUTED_AUTO) {
               Log.d("MyModule", "🔊 무음 지속 → 마이크 자동 켜짐 시도")
               unmuteMicrophone()
@@ -413,7 +433,9 @@ class MyModule : Module() {
   }
 
   private fun unmuteMicrophone() {
+    Log.d("MyModule", "🎙️ unmuteMicrophone() 호출 - 현재 상태: $micState")
     if (micState == MicState.MUTED_AUTO) {
+      Log.d("MyModule", "✅ MUTED_AUTO 상태 확인 → 마이크 시작")
       startRecording()
       micState = MicState.RECORDING
       Log.d("MyModule", "🎙️ 자동으로 마이크 재시작")
