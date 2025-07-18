@@ -29,6 +29,7 @@ import { getUserNickname } from '../../utils/storageUtils';
 import CallTimer from './components/CallTimer';
 import CookieAvatar from './components/CookieAvatar';
 import PaymentModal from './components/PaymentModal';
+import { PurchasesOffering } from 'react-native-purchases';
 const CallControls: React.FC<{
   canStart: boolean;
   canPause: boolean;
@@ -107,12 +108,12 @@ const CallPage: React.FC = () => {
   } = handlers;
   // gemini_audio 수신 상태 관리
   const [isReceivingAudio, setIsReceivingAudio] = useState(false);
-  const audioTimeoutRef = React.useRef<NodeJS.Timeout>();
+  const audioTimeoutRef = useRef<NodeJS.Timeout>();
+  const syncRetryCount = useRef<number>(0);
   const isActive =
     callStatus === CallStatus.Start ||
     callStatus === CallStatus.Resumed ||
     callStatus === CallStatus.Active;
-
   const canStart = callStatus === CallStatus.Idle && totalTime > 0;
   const canPause =
     callStatus === CallStatus.Start ||
@@ -120,11 +121,56 @@ const CallPage: React.FC = () => {
     callStatus === CallStatus.Active;
   const canResume = callStatus === CallStatus.Paused;
   const canDisconnect = callStatus !== CallStatus.Idle && callStatus !== CallStatus.End;
+  const canCharge = callStatus === CallStatus.Idle;
 
   // 결제 모달 상태
   const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
   // 결제 로딩 상태 추가
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  // 백엔드와 동기화하는 함수
+  const syncWithBackend = async (optimisticTotalTime: number, optimisticRemainingTime: number) => {
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    try {
+      // 백엔드에서 실제 남은 시간 조회
+      const { remainingTime: serverRemainingTime } = await getRemainingTime();
+      console.log(
+        '🔄 서버 동기화 - 서버 시간:',
+        serverRemainingTime,
+        '프론트 시간:',
+        optimisticRemainingTime,
+      );
+
+      // 서버 값과 다른 경우에만 업데이트
+      if (Math.abs(serverRemainingTime - optimisticRemainingTime) > 10) {
+        // 10초 이상 차이날 때만
+        console.log('⚠️ 서버와 프론트 시간 불일치 감지, 서버 값으로 업데이트');
+        setTotalTime(serverRemainingTime);
+        setRemainingTime(serverRemainingTime);
+
+        // 사용자에게 알림 (선택사항)
+        // Alert.alert('시간 동기화', '서버와 시간이 동기화되었습니다.');
+      } else {
+        console.log('✅ 서버와 프론트 시간 일치');
+      }
+    } catch (error) {
+      console.error('백엔드 동기화 실패:', error);
+      // 동기화 실패 시 재시도 로직 (선택사항)
+      if (!syncRetryCount.current || syncRetryCount.current < 3) {
+        syncRetryCount.current = (syncRetryCount.current || 0) + 1;
+        console.log(`🔄 동기화 재시도 ${syncRetryCount.current}/3`);
+        setTimeout(() => {
+          syncWithBackend(optimisticTotalTime, optimisticRemainingTime);
+        }, 3000);
+      } else {
+        console.error('❌ 동기화 최대 재시도 횟수 초과');
+        syncRetryCount.current = 0;
+      }
+    } finally {
+      setIsSyncing(false);
+    }
+  };
 
   useEffect(() => {
     setAudioReceiveHandler(() => {
@@ -139,8 +185,7 @@ const CallPage: React.FC = () => {
 
   useEffect(() => {
     const requestMicPermission = async () => {
-      if (Platform.OS !== 'android') return;
-
+      if (Platform.OS !== 'android') return; // iOS는 권한 요청 필요 없음
       try {
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
@@ -213,17 +258,24 @@ const CallPage: React.FC = () => {
 
       const purchaseResult = await Purchases.purchasePackage(product);
       console.log(`${minutes}분 충전 완료`, purchaseResult);
-      // ✅ 충전 후 서버에서 남은 시간 조회
-      const { remainingTime } = await getRemainingTime();
-      console.log('🔄 서버에서 가져온 남은 시간:', remainingTime);
+      // ✅ 낙관적 업데이트: 결제 성공 시 프론트엔드에서 먼저 시간 업데이트
+      const newTotalTime = totalTime + minutes * 60; // 분을 초로 변환
+      const newRemainingTime = remainingTime + minutes * 60;
 
-      setTotalTime(remainingTime);
-      setRemainingTime(remainingTime);
+      setTotalTime(newTotalTime);
+      setRemainingTime(newRemainingTime);
+
+      // 결제 모달 닫기
+      setIsPaymentModalVisible(false);
+
+      setIsSyncing(true);
+      syncWithBackend(newTotalTime, newRemainingTime);
 
       // TODO: 구매 완료 처리 (시간 충전, 서버 동기화 등)
     } catch (e: any) {
       if (!e.userCancelled) {
         console.error('결제 중 오류 발생:', e);
+        Alert.alert('결제 오류', '결제 처리 중 문제가 발생했습니다. 다시 시도해주세요.');
       }
     } finally {
       // 로딩 종료
@@ -247,6 +299,8 @@ const CallPage: React.FC = () => {
           remainingTime={remainingTime}
           onChargePress={() => setIsPaymentModalVisible(true)}
           isLoading={isPaymentLoading}
+          isSyncing={isSyncing}
+          isChargeDisabled={!canCharge}
         />
         <CookieAvatar
           responseText={responseText}

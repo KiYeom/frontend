@@ -14,7 +14,7 @@ import {
   startAudioCall,
   heartbeatAudioCall,
   getRemainingTime,
-} from '../apis/voice';
+} from '@apis/voice';
 
 export enum CallStatus {
   Idle = 'idle',
@@ -23,6 +23,8 @@ export enum CallStatus {
   Resumed = 'resume',
   End = 'end',
   Active = 'acrtive',
+  CONNECTING = 'connecting',
+  ERROR = 'error',
 }
 
 const userNickname = getUserNickname(); // 사용자 닉네임 가져오기
@@ -33,8 +35,8 @@ const STATUS_MESSAGES = {
   [CallStatus.Paused]: '잠시 멈췄어요. 준비되면 다시 시작해주세요',
   [CallStatus.Resumed]: '다시 들을게요',
   [CallStatus.End]: '다음에 또 이야기해요 😊',
-  connecting: '연결 중이에요...',
-  error: '연결에 실패했어요. 다시 시도해주세요',
+  [CallStatus.CONNECTING]: '연결 중이에요...',
+  [CallStatus.ERROR]: '연결에 실패했어요. 다시 시도해주세요',
 };
 
 interface AudioCallState {
@@ -276,7 +278,8 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
   const handleConnect = useCallback(async () => {
     const socket = getSocket();
     console.log('🔹 handleConnect 호출:', socket?.connected);
-    setResponseText(STATUS_MESSAGES.connecting); //연결 중이에요...
+    setCallStatus(CallStatus.CONNECTING);
+    setResponseText(STATUS_MESSAGES[CallStatus.CONNECTING]); //연결 중이에요...
     if (!socket) return;
 
     socket.connect();
@@ -297,7 +300,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
       } catch (err) {
         console.error('❌ startAudioCall 실패:', err);
         setCallStatus(CallStatus.Idle);
-        setResponseText(STATUS_MESSAGES.error); // 연결에 실패했어요. 다시 시도해주세요
+        setResponseText(STATUS_MESSAGES[CallStatus.ERROR]); // 연결에 실패했어요. 다시 시도해주세요
       }
     });
   }, [startHeartbeat, startCountdown]);
@@ -310,7 +313,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
       setResponseText(STATUS_MESSAGES[CallStatus.End]); // 다음에 또 이야기해요 😊
     } catch (err) {
       console.error('❌ endAudioCall 실패:', err);
-      setResponseText(STATUS_MESSAGES.error); // 연결에 실패했어요. 다시 시도해주세요
+      setResponseText(STATUS_MESSAGES[CallStatus.ERROR]); // 연결에 실패했어요. 다시 시도해주세요
     } finally {
       MyModule.stopRecording();
       MyModule.stopRealtimePlayback();
