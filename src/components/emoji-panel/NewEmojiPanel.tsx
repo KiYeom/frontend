@@ -176,9 +176,9 @@ const NewEmojiPanel: React.FC<NewEmojiPanelProps> = ({
       setCurrentOffering(offering); //판매 상품
       const purchased = await updatePurchaseStatus();
       setHasPurchased(purchased); //구매 상태 (true/false) 설정
-      console.log('offering:', offering);
+      //console.log('offering:', offering);
       //offeringIdentifier : "emoji_offering"
-      console.log('구매 상태:', purchased);
+      //console.log('구매 상태:', purchased);
     };
     setup().catch(console.log);
   }, []);
