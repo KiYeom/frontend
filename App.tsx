@@ -79,9 +79,9 @@ if (isProductionOrStaging && process.env.EXPO_PUBLIC_AMPLITUDE) {
 NewInitializeInApp();
 
 //initializing SDK
-amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE, undefined, {
+/*amplitude.init(process.env.EXPO_PUBLIC_AMPLITUDE, undefined, {
   minIdLength: 1,
-});
+});*/
 
 // Mobile Ads 초기화
 mobileAds()
