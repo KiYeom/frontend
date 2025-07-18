@@ -255,7 +255,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
       console.log('🔁 이미 카운트다운이 진행 중입니다.');
       return;
     }
-    console.log('⏳ 카운트다운 시작');
+    //console.log('⏳ 카운트다운 시작');
 
     countdownTimer.current = setInterval(() => {
       //console.log('⏲️ 카운트다운 tick');
@@ -346,14 +346,14 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
     Analytics.clickVoiceControlButton('call-resume');
     try {
       const response = await resumeAudioCall();
-      console.log('✅ resumeRecording 응답:', response);
+      //console.log('✅ resumeRecording 응답:', response);
       if (typeof response.remainingTime === 'number') {
-        console.log('handleResume 남은 시간 업데이트:', response.remainingTime, '초');
+        //console.log('handleResume 남은 시간 업데이트:', response.remainingTime, '초');
         setRemainingTime(response.remainingTime); // ✅ 상태 갱신 추가
       }
       setCallStatus(CallStatus.Resumed);
       startCountdown(); // 카운트다운 재시작
-      console.log('⏳ 카운트다운 재시작');
+      //console.log('⏳ 카운트다운 재시작');
       MyModule.resumeRealtimePlayback();
       //MyModule.startRecording();
       // 플랫폼별 처리

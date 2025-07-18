@@ -33,7 +33,7 @@ const CookieAvatar = (props: CookieAvatarProps) => {
   const { responseText, isReceivingAudio, waveform, isActive, isChargeDisabled } = props;
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [issueDescription, setIssueDescription] = useState('');
-  console.log('CookieAvatar props:', props);
+  //console.log('CookieAvatar props:', props);
 
   // 기기 정보 가져오기
   const deviceInfo = `${Device.brand} ${Device.modelName || Device.deviceName || ''}`;
