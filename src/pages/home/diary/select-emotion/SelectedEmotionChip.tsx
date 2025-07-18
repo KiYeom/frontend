@@ -25,7 +25,6 @@ const SelectedEmotionChip = () => {
         marginTop: rsHeight * 12,
         gap: rsWidth * 6,
         paddingHorizontal: rsWidth * 24,
-        paddingBottom: 50,
       }}>
       {allSelectedEmotions.map((emotion, index) => (
         <EmotionCardDefault key={emotion.keyword} emotion={emotion} />
