@@ -110,7 +110,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
 
   /** 텍스트 수신시마다 최신 문장으로 교체 (원하면 누적도 가능) */
   useEffect(() => {
-    console.log('🔹 텍스트 수신 핸들러 설정');
+    //console.log('🔹 텍스트 수신 핸들러 설정');
     setTextReceiveHandler((text) => {
       setResponseText(text); // 🔹 “교체” 방식
       // setResponseText((prev) => prev + '\n' + text); // ← “누적”이 필요하면 이 줄로
@@ -128,7 +128,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
     const loadTotalTime = async () => {
       try {
         const data = await getRemainingTime();
-        console.log('⏱️ 총 통화 시간 불러옴:', data.remainingTime, '초');
+        //console.log('⏱️ 총 통화 시간 불러옴:', data.remainingTime, '초');
         setTotalTime(data.remainingTime);
         setRemainingTime(data.remainingTime); // 이 시점에 remainingTime도 초기화 가능
       } catch (err) {
@@ -372,7 +372,7 @@ export const useAudioCall = (): [AudioCallState, AudioCallHandlers] => {
 
   useEffect(() => {
     return () => {
-      console.log('🧨 useAudioCall 언마운트됨');
+      //console.log('🧨 useAudioCall 언마운트됨');
       stopCountdown(); // 이 부분 추가
       stopHeartbeat(); // 이 부분도 추가
     };

@@ -731,7 +731,7 @@ export default class Analytics {
     this.sendEvent('일기 기록 화면 진입', 'diaryWriteScreen');
   };
 
-  //일기 기록 화면 - <쿠키에게 알려주기> 버튼 클릭
+  //일기 기록 화면 - <일기 기록하기> 버튼 클릭
   public static clickDiaryWriteButton = (): void => {
     this.sendEvent('일기 기록 화면 - <일기 기록하기> 버튼 클릭', 'diaryWriteButton');
   };

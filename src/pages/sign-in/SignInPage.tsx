@@ -61,7 +61,7 @@ const guestLogin = async (): Promise<OauthResult> => {
   }
 
   if (!res.isNewUser) {
-    //Analytics.setUser(res.accessToken);
+    Analytics.setUser(res.accessToken);
     NewLoginInApp(res.accessToken);
 
     setInfoWhenLogin(
@@ -115,7 +115,7 @@ const googleLogin = async (): Promise<OauthResult> => {
   }
 
   if (!res.isNewUser) {
-    //Analytics.setUser(res.accessToken);
+    Analytics.setUser(res.accessToken);
     NewLoginInApp(res.accessToken);
     //setUserAccountProvider('google');
     setInfoWhenLogin(
@@ -162,7 +162,7 @@ const appleLogin = async (): Promise<OauthResult> => {
   }
 
   if (!res.isNewUser) {
-    //Analytics.setUser(res.accessToken);
+    Analytics.setUser(res.accessToken);
     NewLoginInApp(res.accessToken);
     setInfoWhenLogin(
       '' + res.nickname,
@@ -260,7 +260,7 @@ const Login: React.FC<any> = ({ navigation }) => {
           onPress={() => {
             //setLastVendor('guest');
             //setGuestModal(true);
-            //Analytics.clickGuestModeButton();
+            Analytics.clickGuestModeButton();
             onHandleLogin(AuthProvider.Guest);
           }}
           disabled={loading}>
@@ -270,7 +270,7 @@ const Login: React.FC<any> = ({ navigation }) => {
           vendor={AuthProvider.Google}
           activeOpacity={1}
           onPress={() => {
-            //Analytics.clickGoogleLoginButton();
+            Analytics.clickGoogleLoginButton();
             onHandleLogin(AuthProvider.Google);
           }}
           disabled={loading}>
@@ -284,7 +284,7 @@ const Login: React.FC<any> = ({ navigation }) => {
             onPress={() => {
               //setLastVendor('apple');
               //setPrivacyModal(true);
-              //Analytics.clickAppleLoginButton();
+              Analytics.clickAppleLoginButton();
               onHandleLogin(AuthProvider.Apple);
               //if (lastVendor) onHandleLogin(lastVendor);
             }}

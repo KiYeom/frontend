@@ -6,6 +6,7 @@ import UploadButton from '@components/upload-picture/UploadButton';
 import useEmotionStore from '../../../../store/useEmotionStore';
 import { MAX_DIARY_IMAGE_COUNT } from '../../../../constants/Constants';
 import AttachmentPreview from '@components/image-container/AttachmentPreview';
+import Analytics from '../../../../utils/analytics';
 const DiaryImageSection = () => {
   const image = useEmotionStore((state) => state.image);
   const addImage = useEmotionStore((state) => state.addImage);
@@ -54,6 +55,7 @@ const DiaryImageSection = () => {
       const uris = result.assets.map((asset) => asset.uri);
       addImage(uris[0]);
     }
+    Analytics.clickAddPicButton();
   };
 
   return (

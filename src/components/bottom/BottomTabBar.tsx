@@ -47,7 +47,6 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
               : route.name;
         const isFocused = state.index === index;
         //현재의 탭이 포커스 되어있는지
-        console.log('BottomTabBar', label, isFocused);
 
         //탭 버튼 클릭 시 호출되는 함수
         const onPress = () => {

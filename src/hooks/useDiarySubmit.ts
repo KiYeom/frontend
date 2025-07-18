@@ -7,6 +7,7 @@ import { useSaveEmotionWithImage } from '../queries/emotionQueries';
 import Toast from 'react-native-root-toast';
 import useEmotionStore from '../store/useEmotionStore';
 import { TabScreenName, RootStackName } from '../constants/Constants';
+import Analytics from '../utils/analytics';
 const useDiarySubmit = (dateID, navigation) => {
   const { updateEntryStatus } = useCalendarStore();
   const saveEmotionMutation = useSaveEmotion();
@@ -60,6 +61,7 @@ const useDiarySubmit = (dateID, navigation) => {
       }
 
       handleStatusUpdate(allSelectedEmotions);
+      Analytics.clickDiaryWriteButton();
       navigateToHome();
     } catch (error) {
       Toast.show('일기 저장 중 오류가 발생했습니다.');

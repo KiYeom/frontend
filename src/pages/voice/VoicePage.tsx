@@ -116,7 +116,7 @@ const CallPage: React.FC = () => {
       try {
         MyModule.activateAudioSession();
         setIsAudioSessionActive(true);
-        console.log('✅ CallPage: 오디오 세션 활성화 성공');
+        //console.log('✅ CallPage: 오디오 세션 활성화 성공');
       } catch (error) {
         console.error('❌ CallPage: 오디오 세션 활성화 실패:', error);
         Alert.alert('오디오 초기화 실패', '오디오 기능을 사용할 수 없습니다. 앱을 재시작해주세요.');
@@ -129,7 +129,7 @@ const CallPage: React.FC = () => {
       try {
         MyModule.deactivateAudioSession();
         setIsAudioSessionActive(false);
-        console.log('✅ CallPage: 오디오 세션 비활성화 성공');
+        //console.log('✅ CallPage: 오디오 세션 비활성화 성공');
       } catch (error) {
         console.error('⚠️ CallPage: 오디오 세션 비활성화 실패:', error);
       }
@@ -249,7 +249,7 @@ const CallPage: React.FC = () => {
         );
 
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.log('✅ 마이크 권한 허용됨');
+          //console.log('✅ 마이크 권한 허용됨');
         } else {
           Alert.alert(
             '마이크 권한이 거부되었습니다',
