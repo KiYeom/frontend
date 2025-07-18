@@ -25,10 +25,10 @@ export const AudioBars = ({ volume, isActive }: { volume: number; isActive?: boo
   const bars = useRef([bar1, bar2, bar3, bar4]).current;
 
   // ✅ useAnimatedStyle도 최상단에서 정적 호출
-  const animatedStyle1 = useAnimatedStyle(() => ({ height: bar1.value * 120 + 16 }));
-  const animatedStyle2 = useAnimatedStyle(() => ({ height: bar2.value * 120 + 16 }));
-  const animatedStyle3 = useAnimatedStyle(() => ({ height: bar3.value * 120 + 16 }));
-  const animatedStyle4 = useAnimatedStyle(() => ({ height: bar4.value * 120 + 16 }));
+  const animatedStyle1 = useAnimatedStyle(() => ({ height: bar1.value * 50 + 16 }));
+  const animatedStyle2 = useAnimatedStyle(() => ({ height: bar2.value * 50 + 16 }));
+  const animatedStyle3 = useAnimatedStyle(() => ({ height: bar3.value * 50 + 16 }));
+  const animatedStyle4 = useAnimatedStyle(() => ({ height: bar4.value * 50 + 16 }));
   //const animatedStyle5 = useAnimatedStyle(() => ({ height: bar5.value * 120 + 16 }));
 
   const animatedStyles = [animatedStyle1, animatedStyle2, animatedStyle3, animatedStyle4];
