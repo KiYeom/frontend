@@ -8,7 +8,7 @@ import Carousel, { ICarouselInstance, Pagination } from 'react-native-reanimated
 import { useSharedValue } from 'react-native-reanimated';
 import { getCarousel } from '../../apis/carousel';
 import { TCarousel } from '../../apis/carousel.types';
-import StreakCard from '../../components/streak/Streak';
+import StreakCard from '@components/streak/Streak';
 import { DangerStackName, HomeStackName, RootStackName } from '../../constants/Constants';
 import Analytics from '../../utils/analytics';
 import requestNotificationPermission from '../../utils/NotificationToken';
@@ -96,7 +96,7 @@ const Home: React.FC<any> = ({ navigation }) => {
   };
 
   useEffect(() => {
-    console.log('홈 화면 로드됨. 애널리틱스 이벤트 기록 및 캐러셀 데이터 요청.');
+    //console.log('홈 화면 로드됨. 애널리틱스 이벤트 기록 및 캐러셀 데이터 요청.');
     Analytics.watchTabHomeScreen();
     requestNotificationPermission();
     getCarousel('home')

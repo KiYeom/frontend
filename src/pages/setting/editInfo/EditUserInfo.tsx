@@ -14,8 +14,8 @@ import {
 } from '../../../utils/storageUtils';
 import { validateBirth } from '../../../utils/ValidateBirth';
 import { validateName } from '../../../utils/ValidateName';
-import Button from '../../../components/button/Button';
-import Input from '../../../components/input/Input';
+import Button from '@components/button/Button';
+import Input from '@components/input/Input';
 import { ContentContainer } from '../../sign-up/SignUpPage.styles';
 import { BtnLabel, ButtonGroup, FormContainer, GenderButton, Label } from './input-profile.styles';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
